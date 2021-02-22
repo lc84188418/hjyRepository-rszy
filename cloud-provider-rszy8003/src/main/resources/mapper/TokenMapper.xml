@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_system.dao.TSysTokenMapper">
+
+    <sql id="BaseColumnList" >
+        pk_token_id,
+        fk_user_id,
+        username,
+        password,
+        expire_time,
+        update_time,
+        full_name,
+        id_card,
+        ip,
+  </sql>
+    <insert id="insertToken" parameterType="com.hjy.cloud.t_system.entity.SysToken">
+        insert into T_SYS_TOKEN
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkTokenId != null and pkTokenId != ''">
+                PK_TOKEN_ID,
+            </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                FK_USER_ID,
+            </if>
+            <if test="username != null and username != ''">
+                USERNAME,
+            </if>
+            <if test="password != null and password != ''">
+                PASSWORD,
+            </if>
+            <if test="expireTime != null">
+                EXPIRE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="fullName != null and fullName != ''">
+                FULL_NAME,
+            </if>
+            <if test="idcard != null and idcard != ''">
+                ID_CARD,
+            </if>
+            <if test="ip != null">
+                IP,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+            <if test="pkTokenId != null and pkTokenId != ''">
+                #{pkTokenId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                #{fkUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null and username != ''">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password != ''">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="expireTime != null">
+                #{expireTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="fullName != null and fullName != ''">
+                #{fullName,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateToken" parameterType="com.hjy.cloud.t_system.entity.SysToken">
+        update t_sys_token
+        <set>
+            <if test="pkTokenId != null and pkTokenId != ''">
+                pk_token_id = #{pkTokenId,jdbcType=VARCHAR},
+            </if>
+            <if test="username != null and username != ''">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="fullName != null and fullName != ''">
+                full_name = #{fullName,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                id_card = #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                fk_user_id = #{fkUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime,jdbcType=DATE},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=DATE},
+            </if>
+        </set>
+        where fk_user_id = #{fkUserId,jdbcType=VARCHAR}
+    </update>
+    <!--No problem    删除所有token-->
+    <delete id="deleteAll">
+        delete from t_sys_token
+    </delete>
+    <delete id="deleteTokenByIp">
+        delete from T_SYS_TOKEN where IP = #{ip,jdbcType=VARCHAR}
+    </delete>
+    <!--No problem    通过tokenid删除token-->
+    <delete id="deleteToken" parameterType="java.lang.String">
+        delete from t_sys_token where pk_token_id = #{tokenId,jdbcType=VARCHAR}
+    </delete>
+    <!--No problem    通过tokenid查找token-->
+    <select id="findByToken" resultType="com.hjy.cloud.t_system.entity.SysToken" parameterType="java.lang.String">
+        select * from hjy_cloud.T_SYS_TOKEN where PK_TOKEN_ID = #{accessToken,jdbcType=VARCHAR}
+    </select>
+    <!--No problem    通过userid查找token-->
+    <select id="selectByUserId" resultType="com.hjy.cloud.t_system.entity.SysToken" parameterType="java.lang.String">
+        select * from T_SYS_TOKEN where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectIpByUsername" resultType="java.lang.String">
+        select t."ip" from t_sys_token t where username = #{username,jdbcType=VARCHAR}
+    </select>
+
+</mapper>

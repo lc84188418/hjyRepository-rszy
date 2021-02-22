@@ -1,0 +1,21 @@
+server:
+  port: 7001
+eureka:
+  instance:
+#    hostname: 114.55.102.249
+    hostname: localhost
+#    hostname: eureka7001.com #集群版
+  client:
+#    false表示不向注册中心注册自己
+    register-with-eureka: false
+#    false表示自己端就是注册中心，职责是维护服务实例，不需要检索服务
+    fetch-registry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+#      defaultZone: http://eureka7002.com:7002/eureka/ #集群版
+#  this.serviceUrl.put("defaultZone", "http://localhost:8761/eureka/");
+  server:
+    #关闭自我保护意识，保证不可用服务及时剔除
+    enable-self-preservation: false
+    #多少时间后剔除，毫秒
+    eviction-interval-timer-in-ms: 60000
