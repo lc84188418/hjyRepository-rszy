@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * shiro配置
  */
-@Configuration
+//@Configuration
 public class ShiroConfig {
     @Bean("securityManager")
     public SecurityManager securityManager(AuthRealm authRealm) {

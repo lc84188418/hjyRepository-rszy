@@ -35,25 +35,25 @@
     </select>
     <!--No problem 新增数据-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_system.entity.TSysRole">
-        insert into t_sys_role
+        insert into T_SYS_ROLE
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkRoleId != null and pkRoleId != ''">
-                pk_role_id,
+                PK_ROLE_ID,
             </if>
             <if test="roleName != null and roleName != ''">
-                role_name,
+                ROLE_NAME,
             </if>
             <if test="roleDesc != null and roleDesc != ''">
-                role_desc,
+                ROLE_DESC,
             </if>
             <if test="createDate != null">
-                create_date,
+                CREATE_DATE,
             </if>
             <if test="enableStatus != null">
-                enable_status,
+                ENABLE_STATUS,
             </if>
             <if test="modifyTime != null">
-                modify_time,
+                MODIFY_TIME,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -151,7 +151,7 @@
     </delete>
     <!--No problem    通过roleId删除原有的所有菜单-->
     <delete id="deleteRolePermsByRoleId" parameterType="java.lang.String">
-        delete from re_role_perms where fk_role_id =#{fkRoleId,jdbcType=VARCHAR}
+        delete from RE_ROLE_PERMS where FK_ROLE_ID =#{fkRoleId,jdbcType=VARCHAR}
     </delete>
     <!--No Problem    通过roleId删除用户角色-->
     <delete id="deleteUserRoleByRoleId" parameterType="java.lang.String">

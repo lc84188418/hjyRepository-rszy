@@ -8,7 +8,7 @@ import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.utils.page.PageUtils;
+import com.hjy.cloud.utils.page.PageUtil;
 import com.hjy.cloud.t_system.entity.TSysPerms;
 import com.hjy.cloud.t_system.dao.TSysPermsMapper;
 import com.hjy.cloud.t_system.service.TSysPermsService;
@@ -135,6 +135,6 @@ public class TSysPermsServiceImpl implements TSysPermsService {
         }
         PageHelper.startPage(pageNum, pageSize);
         List<TSysPerms> list = tSysPermsMapper.selectAllPage(tSysPerms);
-        return PageUtils.getPageResult(new PageInfo<TSysPerms>(list));
+        return PageUtil.getPageResult(new PageInfo<TSysPerms>(list));
     }
 }

@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper">
+
+    <resultMap type="com.hjy.cloud.t_outfit.entity.TOutfitCompany" id="TOutfitCompanyMap">
+        <result property="pkCompanyId" column="PK_COMPANY_ID" jdbcType="VARCHAR"/>
+        <result property="companyName" column="COMPANY_NAME" jdbcType="VARCHAR"/>
+        <result property="companyAddress" column="COMPANY_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="shxydm" column="SHXYDM" jdbcType="VARCHAR"/>
+        <result property="clsj" column="CLSJ" jdbcType="TIMESTAMP"/>
+        <result property="frdb" column="FRDB" jdbcType="VARCHAR"/>
+        <result property="frzjh" column="FRZJH" jdbcType="VARCHAR"/>
+        <result property="tel" column="TEL" jdbcType="VARCHAR"/>
+        <result property="khyh" column="KHYH" jdbcType="VARCHAR"/>
+        <result property="yhzh" column="YHZH" jdbcType="VARCHAR"/>
+        <result property="sjgs" column="SJGS" jdbcType="VARCHAR"/>
+        <result property="introduction" column="INTRODUCTION" jdbcType="VARCHAR"/>
+        <result property="industry" column="INDUSTRY" jdbcType="VARCHAR"/>
+        <result property="label" column="LABEL" jdbcType="VARCHAR"/>
+        <result property="enterpriseHonor" column="ENTERPRISE_HONOR" jdbcType="VARCHAR"/>
+        <result property="registeredCapital" column="REGISTERED_CAPITAL" jdbcType="BIGINT"/>
+        <result property="operationStatus" column="OPERATION_STATUS" jdbcType="INTEGER"/>
+        <result property="operationArea" column="OPERATION_AREA" jdbcType="VARCHAR"/>
+        <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TOutfitCompanyMap">
+        select
+          PK_COMPANY_ID, COMPANY_NAME, COMPANY_ADDRESS, SHXYDM, CLSJ, FRDB, FRZJH, TEL, KHYH, YHZH, SJGS, INTRODUCTION, INDUSTRY, LABEL, ENTERPRISE_HONOR, REGISTERED_CAPITAL, OPERATION_STATUS, OPERATION_AREA, REMARKS
+        from hjy_cloud.T_OUTFIT_COMPANY
+        where PK_COMPANY_ID = #{pkCompanyId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_OUTFIT_COMPANY
+        where 1 = 1
+        <if test="pkCompanyId != null and pkCompanyId != ''">
+            and PK_COMPANY_ID = #{pkCompanyId}
+        </if>
+        <if test="companyName != null and companyName != ''">
+            and COMPANY_NAME = #{companyName}
+        </if>
+        <if test="companyAddress != null and companyAddress != ''">
+            and COMPANY_ADDRESS = #{companyAddress}
+        </if>
+        <if test="shxydm != null and shxydm != ''">
+            and SHXYDM = #{shxydm}
+        </if>
+        <if test="clsj != null">
+            and CLSJ = #{clsj}
+        </if>
+        <if test="frdb != null and frdb != ''">
+            and FRDB = #{frdb}
+        </if>
+        <if test="frzjh != null and frzjh != ''">
+            and FRZJH = #{frzjh}
+        </if>
+        <if test="tel != null and tel != ''">
+            and TEL = #{tel}
+        </if>
+        <if test="khyh != null and khyh != ''">
+            and KHYH = #{khyh}
+        </if>
+        <if test="yhzh != null and yhzh != ''">
+            and YHZH = #{yhzh}
+        </if>
+        <if test="sjgs != null and sjgs != ''">
+            and SJGS = #{sjgs}
+        </if>
+        <if test="introduction != null and introduction != ''">
+            and INTRODUCTION = #{introduction}
+        </if>
+        <if test="industry != null and industry != ''">
+            and INDUSTRY = #{industry}
+        </if>
+        <if test="label != null and label != ''">
+            and LABEL = #{label}
+        </if>
+        <if test="enterpriseHonor != null and enterpriseHonor != ''">
+            and ENTERPRISE_HONOR = #{enterpriseHonor}
+        </if>
+        <if test="registeredCapital != null">
+            and REGISTERED_CAPITAL = #{registeredCapital}
+        </if>
+        <if test="operationStatus != null">
+            and OPERATION_STATUS = #{operationStatus}
+        </if>
+        <if test="operationArea != null and operationArea != ''">
+            and OPERATION_AREA = #{operationArea}
+        </if>
+        <if test="remarks != null and remarks != ''">
+            and REMARKS = #{remarks}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TOutfitCompanyMap">
+        select * from hjy_cloud.T_OUTFIT_COMPANY
+        <where>
+            <if test="pkCompanyId != null and pkCompanyId != ''">
+                and PK_COMPANY_ID = #{pkCompanyId}
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and COMPANY_NAME like '%${companyName}%'
+            </if>
+            <if test="companyAddress != null and companyAddress != ''">
+                and COMPANY_ADDRESS = #{companyAddress}
+            </if>
+            <if test="shxydm != null and shxydm != ''">
+                and SHXYDM = #{shxydm}
+            </if>
+            <if test="clsj != null">
+                and CLSJ = #{clsj}
+            </if>
+            <if test="frdb != null and frdb != ''">
+                and FRDB = #{frdb}
+            </if>
+            <if test="frzjh != null and frzjh != ''">
+                and FRZJH = #{frzjh}
+            </if>
+            <if test="tel != null and tel != ''">
+                and TEL = #{tel}
+            </if>
+            <if test="khyh != null and khyh != ''">
+                and KHYH = #{khyh}
+            </if>
+            <if test="yhzh != null and yhzh != ''">
+                and YHZH = #{yhzh}
+            </if>
+            <if test="sjgs != null and sjgs != ''">
+                and SJGS = #{sjgs}
+            </if>
+            <if test="introduction != null and introduction != ''">
+                and INTRODUCTION = #{introduction}
+            </if>
+            <if test="industry != null and industry != ''">
+                and INDUSTRY = #{industry}
+            </if>
+            <if test="label != null and label != ''">
+                and LABEL = #{label}
+            </if>
+            <if test="enterpriseHonor != null and enterpriseHonor != ''">
+                and ENTERPRISE_HONOR = #{enterpriseHonor}
+            </if>
+            <if test="registeredCapital != null">
+                and REGISTERED_CAPITAL = #{registeredCapital}
+            </if>
+            <if test="operationStatus != null">
+                and OPERATION_STATUS = #{operationStatus}
+            </if>
+            <if test="operationArea != null and operationArea != ''">
+                and OPERATION_AREA = #{operationArea}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and REMARKS = #{remarks}
+            </if>
+        </where>
+    </select>
+    <select id="select_PkId_name" resultType="com.hjy.cloud.t_outfit.entity.TOutfitCompany">
+        select PK_COMPANY_ID,COMPANY_NAME from hjy_cloud.T_OUTFIT_COMPANY
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkCompanyId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_OUTFIT_COMPANY(PK_COMPANY_ID,COMPANY_NAME, COMPANY_ADDRESS, SHXYDM, CLSJ, FRDB, FRZJH, TEL, KHYH, YHZH, SJGS, INTRODUCTION, INDUSTRY, LABEL, ENTERPRISE_HONOR, REGISTERED_CAPITAL, OPERATION_STATUS, OPERATION_AREA, REMARKS)
+        values (#{companyName}, #{companyAddress}, #{shxydm}, #{clsj}, #{frdb}, #{frzjh}, #{tel}, #{khyh}, #{yhzh}, #{sjgs}, #{introduction}, #{industry}, #{label}, #{enterpriseHonor}, #{registeredCapital}, #{operationStatus}, #{operationArea}, #{remarks})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitCompany">
+        insert into T_OUTFIT_COMPANY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkCompanyId != null and pkCompanyId != ''">
+                PK_COMPANY_ID,
+            </if>
+            <if test="companyName != null and companyName != ''">
+                COMPANY_NAME,
+            </if>
+            <if test="companyAddress != null and companyAddress != ''">
+                COMPANY_ADDRESS,
+            </if>
+            <if test="shxydm != null and shxydm != ''">
+                SHXYDM,
+            </if>
+            <if test="clsj != null">
+                CLSJ,
+            </if>
+            <if test="frdb != null and frdb != ''">
+                FRDB,
+            </if>
+            <if test="frzjh != null and frzjh != ''">
+                FRZJH,
+            </if>
+            <if test="tel != null and tel != ''">
+                TEL,
+            </if>
+            <if test="khyh != null and khyh != ''">
+                KHYH,
+            </if>
+            <if test="yhzh != null and yhzh != ''">
+                YHZH,
+            </if>
+            <if test="sjgs != null and sjgs != ''">
+                SJGS,
+            </if>
+            <if test="introduction != null and introduction != ''">
+                INTRODUCTION,
+            </if>
+            <if test="industry != null and industry != ''">
+                INDUSTRY,
+            </if>
+            <if test="label != null and label != ''">
+                LABEL,
+            </if>
+            <if test="enterpriseHonor != null and enterpriseHonor != ''">
+                ENTERPRISE_HONOR,
+            </if>
+            <if test="registeredCapital != null">
+                REGISTERED_CAPITAL,
+            </if>
+            <if test="operationStatus != null">
+                OPERATION_STATUS,
+            </if>
+            <if test="operationArea != null and operationArea != ''">
+                OPERATION_AREA,
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkCompanyId != null and pkCompanyId != ''">
+                #{pkCompanyId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="companyAddress != null and companyAddress != ''">
+                #{companyAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="shxydm != null and shxydm != ''">
+                #{shxydm,jdbcType=VARCHAR},
+            </if>
+            <if test="clsj != null">
+                #{clsj,jdbcType=DATE},
+            </if>
+            <if test="frdb != null and frdb != ''">
+                #{frdb,jdbcType=VARCHAR},
+            </if>
+            <if test="frzjh != null and frzjh != ''">
+                #{frzjh,jdbcType=VARCHAR},
+            </if>
+            <if test="tel != null and tel != ''">
+                #{tel,jdbcType=VARCHAR},
+            </if>
+            <if test="khyh != null and khyh != ''">
+                #{khyh,jdbcType=VARCHAR},
+            </if>
+            <if test="yhzh != null and yhzh != ''">
+                #{yhzh,jdbcType=VARCHAR},
+            </if>
+            <if test="sjgs != null and sjgs != ''">
+                #{sjgs,jdbcType=VARCHAR},
+            </if>
+            <if test="introduction != null and introduction != ''">
+                #{introduction,jdbcType=VARCHAR},
+            </if>
+            <if test="industry != null and industry != ''">
+                #{industry,jdbcType=VARCHAR},
+            </if>
+            <if test="label != null and label != ''">
+                #{label,jdbcType=VARCHAR},
+            </if>
+            <if test="enterpriseHonor != null and enterpriseHonor != ''">
+                #{enterpriseHonor,jdbcType=VARCHAR},
+            </if>
+            <if test="registeredCapital != null">
+                #{registeredCapital,jdbcType=BIGINT},
+            </if>
+            <if test="operationStatus != null">
+                #{operationStatus,jdbcType=INTEGER},
+            </if>
+            <if test="operationArea != null and operationArea != ''">
+                #{operationArea,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_OUTFIT_COMPANY
+        <set>
+            <if test="companyName != null and companyName != ''">
+                COMPANY_NAME = #{companyName},
+            </if>
+            <if test="companyAddress != null and companyAddress != ''">
+                COMPANY_ADDRESS = #{companyAddress},
+            </if>
+            <if test="shxydm != null and shxydm != ''">
+                SHXYDM = #{shxydm},
+            </if>
+            <if test="clsj != null">
+                CLSJ = #{clsj},
+            </if>
+            <if test="frdb != null and frdb != ''">
+                FRDB = #{frdb},
+            </if>
+            <if test="frzjh != null and frzjh != ''">
+                FRZJH = #{frzjh},
+            </if>
+            <if test="tel != null and tel != ''">
+                TEL = #{tel},
+            </if>
+            <if test="khyh != null and khyh != ''">
+                KHYH = #{khyh},
+            </if>
+            <if test="yhzh != null and yhzh != ''">
+                YHZH = #{yhzh},
+            </if>
+            <if test="sjgs != null and sjgs != ''">
+                SJGS = #{sjgs},
+            </if>
+            <if test="introduction != null and introduction != ''">
+                INTRODUCTION = #{introduction},
+            </if>
+            <if test="industry != null and industry != ''">
+                INDUSTRY = #{industry},
+            </if>
+            <if test="label != null and label != ''">
+                LABEL = #{label},
+            </if>
+            <if test="enterpriseHonor != null and enterpriseHonor != ''">
+                ENTERPRISE_HONOR = #{enterpriseHonor},
+            </if>
+            <if test="registeredCapital != null">
+                REGISTERED_CAPITAL = #{registeredCapital},
+            </if>
+            <if test="operationStatus != null">
+                OPERATION_STATUS = #{operationStatus},
+            </if>
+            <if test="operationArea != null and operationArea != ''">
+                OPERATION_AREA = #{operationArea},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS = #{remarks},
+            </if>
+        </set>
+        where PK_COMPANY_ID = #{pkCompanyId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId}
+    </delete>
+
+</mapper>

@@ -27,4 +27,13 @@ public class PageObjectUtils {
     public static Integer calcPageLimit(Integer limit) {
         return (limit == null || limit < PAGE_NUM_MIN || limit > PAGE_MUN_MAX) ? PAGE_MUN_MAX : limit;
     }
+    public static PageRequest getRequest(PageRequest pageRequest) {
+        Integer pageIndex = pageRequest.getPageNum();
+        Integer limit= pageRequest.getPageSize();
+        pageIndex = (pageIndex == null || pageIndex < PAGE_START_INDEX) ? PAGE_START_INDEX : pageIndex;
+        int startRow = (pageIndex - 1) * limit+1;
+        pageRequest.setStartRow(startRow);
+        pageRequest.setEndRow(pageIndex*limit);
+        return pageRequest;
+    }
 }

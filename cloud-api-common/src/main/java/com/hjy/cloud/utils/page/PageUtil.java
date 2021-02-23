@@ -2,7 +2,7 @@ package com.hjy.cloud.utils.page;
 
 import com.github.pagehelper.PageInfo;
 
-public class PageUtils {
+public class PageUtil {
 
     /**
      * 将分页信息封装到统一的接口

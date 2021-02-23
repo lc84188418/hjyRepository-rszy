@@ -58,7 +58,7 @@ public class TSysRoleServiceImpl implements TSysRoleService {
         tSysRole.setModifyTime(new Date());
         tSysRoleMapper.insertSelective(tSysRole);
         //为新角色默认添加主页权限
-        ObjectAsyncTask.addDefultRoelPerms(uuid);
+//        ObjectAsyncTask.addDefultRoelPerms(uuid);
     }
 
     /**

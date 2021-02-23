@@ -14,12 +14,12 @@ import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.PasswordEncryptUtils;
 import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.utils.page.PageUtils;
 import com.hjy.cloud.t_system.dao.TSysRoleMapper;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,7 +149,8 @@ public class TSysUserServiceImpl implements TSysUserService {
         }
         PageHelper.startPage(pageNum, pageSize);
         List<TSysUser> users = tSysUserMapper.selectAllPage(user);
-        return PageUtils.getPageResult(new PageInfo<TSysUser>(users));
+        return PageUtil.getPageResult(new PageInfo<TSysUser>(users));
+
     }
 
     @Override

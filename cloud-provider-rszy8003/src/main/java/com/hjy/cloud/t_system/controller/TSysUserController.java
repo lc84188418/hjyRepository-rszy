@@ -15,6 +15,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,6 +44,8 @@ public class TSysUserController {
     private TOutfitDeptService tOutfitDeptService;
     @Autowired
     private TSysPermsService tSysPermsService;
+    @Value("${server.port}")
+    private String serverPort;
 
     /**
      * 1 跳转到新增页面
@@ -97,7 +100,7 @@ public class TSysUserController {
             //部门
             List<String> deptName = tOutfitDeptService.selectAllDeptName();
             jsonObject.put("depts",deptName);
-            return new CommonResult(200,"success","查询数据成功!",jsonObject);
+            return new CommonResult(200,"success",serverPort+"查询数据成功!",jsonObject);
         } catch (Exception e) {
             String message = "查询数据失败";
             log.error(message, e);

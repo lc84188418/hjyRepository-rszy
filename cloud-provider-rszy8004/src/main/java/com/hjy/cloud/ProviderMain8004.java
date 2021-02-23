@@ -15,7 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  * @Description TODO
  */
 
-@MapperScan("com.hjy.cloud.t_system.dao")
+@MapperScan("com.hjy.cloud.*.dao")
 @EnableAsync  //开启异步注解功能
 @EnableScheduling   //开启基于注解的定时任务
 @SpringBootApplication
