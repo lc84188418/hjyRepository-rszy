@@ -5,6 +5,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -42,6 +43,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 新增结果
      */
+    @RequiresPermissions({"company:add"})
     @PostMapping(value = "/outfit/company/add")
     public CommonResult insert(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -58,6 +60,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 删除结果
      */
+    @RequiresPermissions({"company:del"})
     @DeleteMapping(value = "/outfit/company/del")
     public CommonResult delete(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -74,6 +77,7 @@ public class TOutfitCompanyController {
      * @param param json参数
      * @return 所有数据
      */
+    @RequiresPermissions({"company:view"})
     @PostMapping(value = "/outfit/company/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -89,6 +93,7 @@ public class TOutfitCompanyController {
      *
      * @param tOutfitCompany
      */
+    @RequiresPermissions({"company:get"})
     @PostMapping(value = "/outfit/company/get")
     public CommonResult selectOne(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -105,6 +110,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 修改结果
      */
+    @RequiresPermissions({"company:update"})
     @PutMapping(value = "/outfit/company/update")
     public CommonResult update(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
