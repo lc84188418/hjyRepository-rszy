@@ -3,51 +3,51 @@
 <mapper namespace="com.hjy.cloud.t_system.dao.TSysPermsMapper">
 
     <sql id="BaseColumnList" >
-        pk_perms_id,
-        p_id,
-        menu_name,
+        PK_PERMS_ID,
+        P_ID,
+        MENU_NAME,
         path,
-        perms_code,
-        menu_type,
-        create_time,
-        modify_time,
-        modify_username,
+        PERMS_CODE,
+        MENU_TYPE,
+        CREATE_TIME,
+        MODIFY_TIME,
+        MODIFY_USERNAME,
         fk_user_id,
   </sql>
     <!--No problem通过主键查询单个-->
     <select id="selectById" resultType="com.hjy.cloud.t_system.entity.TSysPerms" parameterType="com.hjy.cloud.t_system.entity.TSysPerms">
-        select * from t_sys_perms where pk_perms_id = #{pkPermsId,jdbcType=VARCHAR}
+        select * from T_SYS_PERMS where PK_PERMS_ID = #{pkPermsId,jdbcType=VARCHAR}
     </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllByEntity" resultType="com.hjy.cloud.t_system.entity.TSysPerms" parameterType="com.hjy.cloud.t_system.entity.TSysPerms">
-        select * from t_sys_perms
+        select * from T_SYS_PERMS
         <where>
             <if test="pkPermsId != null and pkPermsId != ''">
-                and pk_perms_id = #{pkPermsId,jdbcType=VARCHAR}
+                and PK_PERMS_ID = #{pkPermsId,jdbcType=VARCHAR}
             </if>
             <if test="pId != null and pId != ''">
-                and p_id = #{pId,jdbcType=VARCHAR}
+                and P_ID = #{pId,jdbcType=VARCHAR}
             </if>
             <if test="menuName != null and menuName != ''">
-                and menu_name = #{menuName,jdbcType=VARCHAR}
+                and MENU_NAME = #{menuName,jdbcType=VARCHAR}
             </if>
             <if test="path != null and path != ''">
-                and path = #{path,jdbcType=VARCHAR}
+                and PATH = #{path,jdbcType=VARCHAR}
             </if>
             <if test="permsCode != null and permsCode != ''">
-                and perms_code = #{permsCode,jdbcType=VARCHAR}
+                and PERMS_CODE = #{permsCode,jdbcType=VARCHAR}
             </if>
             <if test="menuType != null and menuType != ''">
-                and menu_type = #{menuType,jdbcType=VARCHAR}
+                and MENU_TYPE = #{menuType,jdbcType=VARCHAR}
             </if>
             <if test="createTime != null">
-                and create_time = #{createTime,jdbcType=DATE}
+                and CREATE_TIME = #{createTime,jdbcType=DATE}
             </if>
             <if test="modifyTime != null">
-                and modify_time = #{modifyTime,jdbcType=DATE}
+                and MODIFY_TIME = #{modifyTime,jdbcType=DATE}
             </if>
             <if test="modifyUsername != null and modifyUsername != ''">
-                and modify_username = #{modifyUsername,jdbcType=VARCHAR}
+                and MODIFY_USERNAME = #{modifyUsername,jdbcType=VARCHAR}
             </if>
             <if test="fkUserId != null">
                 and fk_user_id = #{fkUserId,jdbcType=VARCHAR}
@@ -57,34 +57,34 @@
 
     <!--新增所有列-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_system.entity.TSysPerms">
-        insert into t_sys_perms
+        insert into T_SYS_PERMS
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkPermsId != null and pkPermsId != ''">
-                pk_perms_id,
+                PK_PERMS_ID,
             </if>
             <if test="pId != null and pId != ''">
-                p_id,
+                P_ID,
             </if>
             <if test="menuName != null and menuName != ''">
-                menu_name,
+                MENU_NAME,
             </if>
             <if test="path != null and path != ''">
-                path,
+                PATH,
             </if>
             <if test="permsCode != null and permsCode != ''">
-                perms_code,
+                PERMS_CODE,
             </if>
             <if test="menuType != null and menuType != ''">
-                menu_type,
+                MENU_TYPE,
             </if>
             <if test="createTime != null">
-                create_time,
+                CREATE_TIME,
             </if>
             <if test="modifyTime != null">
-                modify_time,
+                MODIFY_TIME,
             </if>
             <if test="modifyUsername != null and modifyUsername != ''">
-                modify_username,
+                MODIFY_USERNAME,
             </if>
             <if test="fkUserId != null and fkUserId != ''">
                 fk_user_id,
@@ -129,67 +129,67 @@
         update t_sys_perms
         <set>
             <if test="pId != null and pId != ''">
-                p_id = #{pId,jdbcType=VARCHAR},
+                P_ID = #{pId,jdbcType=VARCHAR},
             </if>
             <if test="menuName != null and menuName != ''">
-                menu_name = #{menuName,jdbcType=VARCHAR},
+                MENU_NAME = #{menuName,jdbcType=VARCHAR},
             </if>
             <if test="path != null and path != ''">
-                path = #{path,jdbcType=VARCHAR},
+                PATH = #{path,jdbcType=VARCHAR},
             </if>
             <if test="permsCode != null and permsCode != ''">
-                perms_code = #{permsCode,jdbcType=VARCHAR},
+                PERMS_CODE = #{permsCode,jdbcType=VARCHAR},
             </if>
             <if test="menuType != null and menuType != ''">
-                menu_type = #{menuType,jdbcType=VARCHAR},
+                MENU_TYPE = #{menuType,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
-                create_time = #{createTime,jdbcType=DATE},
+                CREATE_TIME = #{createTime,jdbcType=DATE},
             </if>
             <if test="modifyTime != null">
-                modify_time = #{modifyTime,jdbcType=DATE},
+                MODIFY_TIME = #{modifyTime,jdbcType=DATE},
             </if>
             <if test="modifyUsername != null and modifyUsername != ''">
-                modify_username = #{modifyUsername,jdbcType=VARCHAR},
+                MODIFY_USERNAME = #{modifyUsername,jdbcType=VARCHAR},
             </if>
             <if test="fkUserId != null and fkUserId != ''">
                 fk_user_id = #{fkUserId,jdbcType=VARCHAR},
             </if>
         </set>
-        where pk_perms_id = #{pkPermsId,jdbcType=VARCHAR}
+        where PK_PERMS_ID = #{pkPermsId,jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById" parameterType="com.hjy.cloud.t_system.entity.TSysPerms">
-        delete from t_sys_perms where pk_perms_id = #{pkPermsId,jdbcType=VARCHAR}
+        delete from T_SYS_PERMS where PK_PERMS_ID = #{pkPermsId,jdbcType=VARCHAR}
     </delete>
     <!--查询所有行数据-->
     <select id="selectAll" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
-        select * from t_sys_perms
+        select * from T_SYS_PERMS
     </select>
     <select id="selectAllIdAndName" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
-        select pk_perms_id,menu_name from t_sys_perms
+        select PK_PERMS_ID,MENU_NAME from T_SYS_PERMS
     </select>
     <!--No problem 分页-模糊查询用户列表-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
-        select * from t_sys_perms
+        select * from T_SYS_PERMS
         where 1=1
         <if test="menuName != null">
-            and menu_name like '%${menuName}%'
+            and MENU_NAME like '%${menuName}%'
         </if>
         <if test="path != null">
             and path like '%${path}%'
         </if>
         <if test="permsCode != null">
-            and perms_code like '%${permsCode}%'
+            and PERMS_CODE like '%${permsCode}%'
         </if>
         <if test="menuType != null">
-            and menu_type like '%${menuType}%'
+            and MENU_TYPE like '%${menuType}%'
         </if>
     </select>
     <select id="selectDistributeByrole_id" resultType="java.lang.String"
             parameterType="java.lang.String">
-        select fk_perms_id from re_role_perms where fk_role_id = #{fk_role_id,jdbcType=VARCHAR}
+        select FK_PERMS_ID from RE_ROLE_PERMS where FK_ROLE_ID = #{fk_role_id,jdbcType=VARCHAR}
     </select>
 
 </mapper>

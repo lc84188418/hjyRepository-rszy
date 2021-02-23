@@ -3,46 +3,46 @@
 <mapper namespace="com.hjy.cloud.t_system.dao.TSysParamMapper">
 
     <sql id="BaseColumnList" >
-        pk_param_id,
-        param_key,
-        param_value,
-        operator_people,
-        operator_time,
+        PK_PARAM_ID,
+        PARAM_KEY,
+        PARAM_VALUE,
+        OPERATOR_PEOPLE,
+        OPERATOR_TIME,
   </sql>
 
     <!--通过主键修改数据-->
     <update id="updateById" parameterType="com.hjy.cloud.t_system.entity.TSysParam">
-        update t_sys_param
+        update T_SYS_PARAM
         <set>
             <if test="paramKey != null and paramKey != ''">
-                param_key = #{paramKey,jdbcType=VARCHAR},
+                PARAM_KEY = #{paramKey,jdbcType=VARCHAR},
             </if>
             <if test="paramValue != null and paramValue != ''">
-                param_value = #{paramValue,jdbcType=VARCHAR},
+                PARAM_VALUE = #{paramValue,jdbcType=VARCHAR},
             </if>
             <if test="operatorPeople != null and operatorPeople != ''">
-                operator_people = #{operatorPeople,jdbcType=VARCHAR},
+                OPERATOR_PEOPLE = #{operatorPeople,jdbcType=VARCHAR},
             </if>
             <if test="operatorTime != null">
-                operator_time = #{operatorTime,jdbcType=DATE},
+                OPERATOR_TIME = #{operatorTime,jdbcType=DATE},
             </if>
         </set>
-        where pk_param_id = #{pkParamId,jdbcType=VARCHAR}
+        where PK_PARAM_ID = #{pkParamId,jdbcType=VARCHAR}
     </update>
 
     <!--No problem 查询所有行数据-->
     <select id="selectAll" resultType="com.hjy.cloud.t_system.entity.TSysParam">
-        select * from t_sys_param
+        select * from T_SYS_PARAM
     </select>
     <!--No problem 通过关键字查询单条数据-->
     <select id="selectById" resultType="com.hjy.cloud.t_system.entity.TSysParam">
-        select * from t_sys_param
-        where  pk_param_id = '${pkParamId}'
+        select * from T_SYS_PARAM
+        where  PK_PARAM_ID = '${pkParamId}'
     </select>
     <!--No problem 通过关键字查询单条参数值-->
     <select id="selectParamById" resultType="java.lang.String">
-        select param_value from t_sys_param
-        where  pk_param_id = #{pkParamId,jdbcType=VARCHAR}
+        select PARAM_VALUE from T_SYS_PARAM
+        where  PK_PARAM_ID = #{pkParamId,jdbcType=VARCHAR}
     </select>
 
 </mapper>

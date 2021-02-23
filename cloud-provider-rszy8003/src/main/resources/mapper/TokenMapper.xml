@@ -3,14 +3,14 @@
 <mapper namespace="com.hjy.cloud.t_system.dao.TSysTokenMapper">
 
     <sql id="BaseColumnList" >
-        pk_token_id,
-        fk_user_id,
+        PK_TOKEN_ID,
+        FK_USER_ID,
         username,
         password,
-        expire_time,
-        update_time,
-        full_name,
-        id_card,
+        EXPIRE_TIME,
+        UPDATE_TIME,
+        FULL_NAME,
+        ID_CARD,
         ip,
   </sql>
     <insert id="insertToken" parameterType="com.hjy.cloud.t_system.entity.SysToken">
@@ -75,48 +75,48 @@
         </trim>
     </insert>
     <update id="updateToken" parameterType="com.hjy.cloud.t_system.entity.SysToken">
-        update t_sys_token
+        update T_SYS_TOKEN
         <set>
             <if test="pkTokenId != null and pkTokenId != ''">
-                pk_token_id = #{pkTokenId,jdbcType=VARCHAR},
+                PK_TOKEN_ID = #{pkTokenId,jdbcType=VARCHAR},
             </if>
             <if test="username != null and username != ''">
-                username = #{username,jdbcType=VARCHAR},
+                USERNAME = #{username,jdbcType=VARCHAR},
             </if>
             <if test="password != null and password != ''">
-                password = #{password,jdbcType=VARCHAR},
+                PASSWORD = #{password,jdbcType=VARCHAR},
             </if>
             <if test="ip != null">
-                ip = #{ip,jdbcType=VARCHAR},
+                IP = #{ip,jdbcType=VARCHAR},
             </if>
             <if test="fullName != null and fullName != ''">
-                full_name = #{fullName,jdbcType=VARCHAR},
+                FULL_NAME = #{fullName,jdbcType=VARCHAR},
             </if>
             <if test="idcard != null and idcard != ''">
-                id_card = #{idcard,jdbcType=VARCHAR},
+                ID_CARD = #{idcard,jdbcType=VARCHAR},
             </if>
             <if test="fkUserId != null and fkUserId != ''">
-                fk_user_id = #{fkUserId,jdbcType=VARCHAR},
+                FK_USER_ID = #{fkUserId,jdbcType=VARCHAR},
             </if>
             <if test="expireTime != null">
-                expire_time = #{expireTime,jdbcType=DATE},
+                EXPIRE_TIME = #{expireTime,jdbcType=DATE},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=DATE},
+                UPDATE_TIME = #{updateTime,jdbcType=DATE},
             </if>
         </set>
-        where fk_user_id = #{fkUserId,jdbcType=VARCHAR}
+        where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
     </update>
     <!--No problem    删除所有token-->
     <delete id="deleteAll">
-        delete from t_sys_token
+        delete from T_SYS_TOKEN
     </delete>
     <delete id="deleteTokenByIp">
         delete from T_SYS_TOKEN where IP = #{ip,jdbcType=VARCHAR}
     </delete>
     <!--No problem    通过tokenid删除token-->
     <delete id="deleteToken" parameterType="java.lang.String">
-        delete from t_sys_token where pk_token_id = #{tokenId,jdbcType=VARCHAR}
+        delete from T_SYS_TOKEN where PK_TOKEN_ID = #{tokenId,jdbcType=VARCHAR}
     </delete>
     <!--No problem    通过tokenid查找token-->
     <select id="findByToken" resultType="com.hjy.cloud.t_system.entity.SysToken" parameterType="java.lang.String">
@@ -127,7 +127,7 @@
         select * from T_SYS_TOKEN where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
     </select>
     <select id="selectIpByUsername" resultType="java.lang.String">
-        select t."ip" from t_sys_token t where username = #{username,jdbcType=VARCHAR}
+        select t."ip" from T_SYS_TOKEN t where username = #{username,jdbcType=VARCHAR}
     </select>
 
 </mapper>
