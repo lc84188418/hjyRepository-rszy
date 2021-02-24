@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper">
+
+    <resultMap type="com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress" id="TOutfitWorkaddressMap">
+        <result property="pkWorkadressId" column="PK_WORKADRESS_ID" jdbcType="VARCHAR"/>
+        <result property="workadressName" column="WORKADRESS_NAME" jdbcType="VARCHAR"/>
+        <result property="fkCityId" column="FK_CITY_ID" jdbcType="VARCHAR"/>
+        <result property="fkAreaId" column="FK_AREA_ID" jdbcType="VARCHAR"/>
+        <result property="workadressAddress" column="WORKADRESS_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="workadressType" column="WORKADRESS_TYPE" jdbcType="VARCHAR"/>
+        <result property="workadressFzr" column="WORKADRESS_FZR" jdbcType="VARCHAR"/>
+        <result property="workadressTel" column="WORKADRESS_TEL" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TOutfitWorkaddressMap">
+        select
+          PK_WORKADRESS_ID, WORKADRESS_NAME, FK_CITY_ID, FK_AREA_ID, WORKADRESS_ADDRESS, WORKADRESS_TYPE, WORKADRESS_FZR, WORKADRESS_TEL
+        from hjy_cloud.T_OUTFIT_WORKADDRESS
+        where PK_WORKADRESS_ID = #{pkWorkadressId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_OUTFIT_WORKADDRESS
+        where 1 = 1
+        <if test="pkWorkadressId != null and pkWorkadressId != ''">
+            and PK_WORKADRESS_ID = #{pkWorkadressId}
+        </if>
+        <if test="workadressName != null and workadressName != ''">
+            and WORKADRESS_NAME = #{workadressName}
+        </if>
+        <if test="fkCityId != null and fkCityId != ''">
+            and FK_CITY_ID = #{fkCityId}
+        </if>
+        <if test="fkAreaId != null and fkAreaId != ''">
+            and FK_AREA_ID = #{fkAreaId}
+        </if>
+        <if test="workadressAddress != null and workadressAddress != ''">
+            and WORKADRESS_ADDRESS = #{workadressAddress}
+        </if>
+        <if test="workadressType != null and workadressType != ''">
+            and WORKADRESS_TYPE = #{workadressType}
+        </if>
+        <if test="workadressFzr != null and workadressFzr != ''">
+            and WORKADRESS_FZR = #{workadressFzr}
+        </if>
+        <if test="workadressTel != null and workadressTel != ''">
+            and WORKADRESS_TEL = #{workadressTel}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TOutfitWorkaddressMap">
+        select
+        PK_WORKADRESS_ID, WORKADRESS_NAME, FK_CITY_ID, FK_AREA_ID, WORKADRESS_ADDRESS, WORKADRESS_TYPE, WORKADRESS_FZR,
+        WORKADRESS_TEL
+        from hjy_cloud.T_OUTFIT_WORKADDRESS
+        <where>
+            <if test="pkWorkadressId != null and pkWorkadressId != ''">
+                and PK_WORKADRESS_ID = #{pkWorkadressId}
+            </if>
+            <if test="workadressName != null and workadressName != ''">
+                and WORKADRESS_NAME = #{workadressName}
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                and FK_CITY_ID = #{fkCityId}
+            </if>
+            <if test="fkAreaId != null and fkAreaId != ''">
+                and FK_AREA_ID = #{fkAreaId}
+            </if>
+            <if test="workadressAddress != null and workadressAddress != ''">
+                and WORKADRESS_ADDRESS = #{workadressAddress}
+            </if>
+            <if test="workadressType != null and workadressType != ''">
+                and WORKADRESS_TYPE = #{workadressType}
+            </if>
+            <if test="workadressFzr != null and workadressFzr != ''">
+                and WORKADRESS_FZR = #{workadressFzr}
+            </if>
+            <if test="workadressTel != null and workadressTel != ''">
+                and WORKADRESS_TEL = #{workadressTel}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkWorkadressId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_OUTFIT_WORKADDRESS(WORKADRESS_NAME, FK_CITY_ID, FK_AREA_ID, WORKADRESS_ADDRESS, WORKADRESS_TYPE, WORKADRESS_FZR, WORKADRESS_TEL)
+        values (#{workadressName}, #{fkCityId}, #{fkAreaId}, #{workadressAddress}, #{workadressType}, #{workadressFzr}, #{workadressTel})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress">
+        insert into hjy_cloud.T_OUTFIT_WORKADDRESS
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkWorkadressId != null and pkWorkadressId != ''">
+                PK_WORKADRESS_ID,
+            </if>
+            <if test="workadressName != null and workadressName != ''">
+                WORKADRESS_NAME,
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                FK_CITY_ID,
+            </if>
+            <if test="fkAreaId != null and fkAreaId != ''">
+                FK_AREA_ID,
+            </if>
+            <if test="workadressAddress != null and workadressAddress != ''">
+                WORKADRESS_ADDRESS,
+            </if>
+            <if test="workadressType != null and workadressType != ''">
+                WORKADRESS_TYPE,
+            </if>
+            <if test="workadressFzr != null and workadressFzr != ''">
+                WORKADRESS_FZR,
+            </if>
+            <if test="workadressTel != null and workadressTel != ''">
+                WORKADRESS_TEL,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workadressName != null and workadressName != ''">
+                #{workadressName},
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                #{fkCityId},
+            </if>
+            <if test="fkAreaId != null and fkAreaId != ''">
+                #{fkAreaId},
+            </if>
+            <if test="workadressAddress != null and workadressAddress != ''">
+                #{workadressAddress},
+            </if>
+            <if test="workadressType != null and workadressType != ''">
+                #{workadressType},
+            </if>
+            <if test="workadressFzr != null and workadressFzr != ''">
+                #{workadressFzr},
+            </if>
+            <if test="workadressTel != null and workadressTel != ''">
+                #{workadressTel},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_OUTFIT_WORKADDRESS
+        <set>
+            <if test="workadressName != null and workadressName != ''">
+                WORKADRESS_NAME = #{workadressName},
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                FK_CITY_ID = #{fkCityId},
+            </if>
+            <if test="fkAreaId != null and fkAreaId != ''">
+                FK_AREA_ID = #{fkAreaId},
+            </if>
+            <if test="workadressAddress != null and workadressAddress != ''">
+                WORKADRESS_ADDRESS = #{workadressAddress},
+            </if>
+            <if test="workadressType != null and workadressType != ''">
+                WORKADRESS_TYPE = #{workadressType},
+            </if>
+            <if test="workadressFzr != null and workadressFzr != ''">
+                WORKADRESS_FZR = #{workadressFzr},
+            </if>
+            <if test="workadressTel != null and workadressTel != ''">
+                WORKADRESS_TEL = #{workadressTel},
+            </if>
+        </set>
+        where PK_WORKADRESS_ID = #{pkWorkadressId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_OUTFIT_WORKADDRESS where PK_WORKADRESS_ID = #{pkWorkadressId}
+    </delete>
+
+</mapper>
+
