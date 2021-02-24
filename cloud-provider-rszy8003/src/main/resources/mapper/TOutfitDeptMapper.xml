@@ -16,50 +16,81 @@
         <result property="maxNum" column="MAX_NUM" jdbcType="INTEGER"/>
     </resultMap>
 
-    <!--通过主键查询单个-->
-    <select id="selectById" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        select * from T_SYS_DEPT where PK_DEPT_ID = #{pkDeptId,jdbcType=VARCHAR}
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TOutfitDeptMap">
+        select
+          PK_DEPT_ID, DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, DEPT_LEVEL, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME, LEADER_CARD, MAX_NUM
+        from hjy_cloud.T_OUTFIT_DEPT
+        where PK_DEPT_ID = #{pkDeptId}
     </select>
+
+
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllByEntity" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept"
-            parameterType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        select * from T_SYS_DEPT
+    <select id="selectAllPage" resultMap="TOutfitDeptMap">
+        select
+        PK_DEPT_ID, DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, DEPT_LEVEL, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME,
+        LEADER_CARD, MAX_NUM
+        from hjy_cloud.T_OUTFIT_DEPT
         <where>
-            <if test="pkDeptId != null">
-                and "PK_DEPT_ID" = #{pkDeptId,jdbcType=VARCHAR}
+            <if test="pkDeptId != null and pkDeptId != ''">
+                and PK_DEPT_ID = #{pkDeptId}
             </if>
             <if test="deptName != null and deptName != ''">
-                and "DEPT_NAME" = #{deptName,jdbcType=VARCHAR}
+                and DEPT_NAME = #{deptName}
             </if>
             <if test="deptAddress != null and deptAddress != ''">
-                and "DEPT_ADDRESS" = #{deptAddress,jdbcType=VARCHAR}
+                and DEPT_ADDRESS = #{deptAddress}
             </if>
             <if test="createTime != null">
-                and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
-            </if>
-            <if test="deptLevel != null and deptLevel != ''">
-                and DEPT_LEVEL = #{deptLevel,jdbcType=VARCHAR}
+                and CREATE_TIME = #{createTime}
             </if>
             <if test="superiorDept != null and superiorDept != ''">
-                and SUPERIOR_DEPT = #{superiorDept,jdbcType=VARCHAR}
+                and SUPERIOR_DEPT = #{superiorDept}
             </if>
             <if test="deptLeader != null and deptLeader != ''">
-                and DEPT_LEADER = #{deptLeader,jdbcType=VARCHAR}
+                and DEPT_LEADER = #{deptLeader}
             </if>
             <if test="remarks != null and remarks != ''">
-                and "REMARKS" = #{remarks,jdbcType=VARCHAR}
+                and REMARKS = #{remarks}
             </if>
             <if test="modifyTime != null">
-                and MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP}
+                and MODIFY_TIME = #{modifyTime}
             </if>
             <if test="leaderCard != null and leaderCard != ''">
-                and LEADER_CARD = #{leaderCard,jdbcType=VARCHAR}
+                and LEADER_CARD = #{leaderCard}
+            </if>
+            <if test="maxNum != null">
+                and MAX_NUM = #{maxNum}
             </if>
         </where>
     </select>
+    <select id="selectAllIdAndName" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
+        select PK_DEPT_ID,DEPT_NAME FROM T_OUTFIT_DEPT
+    </select>
+    <select id="selectDeptUser_userIded" resultType="java.lang.String">
+        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID in (select distinct FK_DEPT_ID from  RE_DEPT_USER)
+    </select>
+    <select id="selectDeptUserByDept" resultType="java.lang.String" parameterType="java.lang.String">
+        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+    </select>
+    <!--No problem 查询所有部门单位数据-->
+    <select id="selectAllDeptName" resultType="java.lang.String">
+        select DEPT_NAME from T_SYS_DEPT
+    </select>
+    <select id="selectDeptIdByUserId" resultType="java.lang.String">
+        select FK_DEPT_ID from RE_DEPT_USER where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSuperiorDeptId" resultType="java.lang.String">
+        select SUPERIOR_DEPT from T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId,jdbcType=VARCHAR}
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkDeptId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_OUTFIT_DEPT(DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME, LEADER_CARD, MAX_NUM)
+        values (#{deptName}, #{deptAddress}, #{createTime}, #{superiorDept}, #{deptLeader}, #{remarks}, #{modifyTime}, #{leaderCard}, #{maxNum})
+    </insert>
     <!--No problem 新增数据-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitDept" >
-        insert into T_SYS_DEPT
+        insert into T_OUTFIT_DEPT
         <trim prefix="(" suffix=")" suffixOverrides="," >
             <if test="pkDeptId != null and pkDeptId != ''">
                 PK_DEPT_ID,
@@ -72,9 +103,6 @@
             </if>
             <if test="createTime != null">
                 CREATE_TIME,
-            </if>
-            <if test="deptLevel != null and deptLevel != ''">
-                DEPT_LEVEL,
             </if>
             <if test="superiorDept != null and superiorDept != ''">
                 SUPERIOR_DEPT,
@@ -91,6 +119,9 @@
             <if test="leaderCard != null and leaderCard != ''">
                 LEADER_CARD,
             </if>
+            <if test="maxNum != null">
+                MAX_NUM,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides="," >
             <if test="pkDeptId != null and pkDeptId != ''">
@@ -105,9 +136,6 @@
             <if test="createTime != null">
                 #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="deptLevel != null and deptLevel != ''">
-                #{deptLevel,jdbcType=VARCHAR},
-            </if>
             <if test="superiorDept != null and superiorDept != ''">
                 #{superiorDept,jdbcType=VARCHAR},
             </if>
@@ -121,74 +149,15 @@
                 #{modifyTime,jdbcType=TIMESTAMP},
             </if>
             <if test="leaderCard != null and leaderCard != ''">
-                #{leaderCard,jdbcType=VARCHAR}
+                #{leaderCard,jdbcType=VARCHAR},
+            </if>
+            <if test="maxNum != null">
+                #{maxNum,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
 
-    <!--通过主键修改数据-->
-    <update id="updateById" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        update T_SYS_DEPT
-        <set>
-            <if test="deptName != null and deptName != ''">
-                DEPT_NAME = #{deptName,jdbcType=VARCHAR},
-            </if>
-            <if test="deptAddress != null and deptAddress != ''">
-                DEPT_ADDRESS = #{deptAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="deptLevel != null and deptLevel != ''">
-                DEPT_LEVEL = #{deptLevel,jdbcType=VARCHAR},
-            </if>
-            <if test="superiorDept != null and superiorDept != ''">
-                SUPERIOR_DEPT = #{superiorDept,jdbcType=VARCHAR},
-            </if>
-            <if test="deptLeader != null and deptLeader != ''">
-                DEPT_LEADER = #{deptLeader,jdbcType=VARCHAR},
-            </if>
-            <if test="remarks != null and remarks != ''">
-                REMARKS = #{remarks,jdbcType=VARCHAR},
-            </if>
-            <if test="modifyTime != null">
-                MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="leaderCard != null and leaderCard != ''">
-                LEADER_CARD = #{leaderCard,jdbcType=VARCHAR},
-            </if>
-        </set>
-        where PK_DEPT_ID = #{pkDeptId,jdbcType=VARCHAR}
-    </update>
 
-    <!--通过主键删除-->
-    <delete id="deleteById" parameterType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        delete from T_SYS_DEPT where PK_DEPT_ID = #{pkDeptId,jdbcType=VARCHAR}
-    </delete>
-    <!--查询所有行数据-->
-    <select id="selectAll" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        select * from T_SYS_DEPT
-    </select>
-    <select id="selectAllIdAndName" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
-        select PK_DEPT_ID,DEPT_NAME from t_sys_dept
-    </select>
-    <!--No problem 查询所有部门单位数据-->
-    <select id="selectAllDeptName" resultType="java.lang.String">
-        select DEPT_NAME from T_SYS_DEPT
-    </select>
-
-    <select id="selectDeptUser_userIded" resultType="java.lang.String">
-        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID in (select distinct FK_DEPT_ID from  RE_DEPT_USER)
-    </select>
-    <select id="selectDeptUserByDept" resultType="java.lang.String" parameterType="java.lang.String">
-        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
-    </select>
-    <select id="selectDeptIdByUserId" resultType="java.lang.String">
-        select FK_DEPT_ID from RE_DEPT_USER where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
-    </select>
-    <delete id="deleteDeptUserByDeptId" parameterType="java.lang.String">
-        delete from RE_DEPT_USER where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
-    </delete>
     <!--部门批量添加用户    -->
     <insert id="addDeptUserByList" parameterType="list">
         insert  INTO
@@ -207,8 +176,51 @@
        insert into RE_DEPT_USER(PK_DEPTUSER_ID,FK_DEPT_ID,FK_USER_ID)
         values (#{pk_deptUser_id},#{fk_dept_id},#{fk_user_id})
     </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_OUTFIT_DEPT
+        <set>
+            <if test="deptName != null and deptName != ''">
+                DEPT_NAME = #{deptName},
+            </if>
+            <if test="deptAddress != null and deptAddress != ''">
+                DEPT_ADDRESS = #{deptAddress},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="superiorDept != null and superiorDept != ''">
+                SUPERIOR_DEPT = #{superiorDept},
+            </if>
+            <if test="deptLeader != null and deptLeader != ''">
+                DEPT_LEADER = #{deptLeader},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS = #{remarks},
+            </if>
+            <if test="modifyTime != null">
+                MODIFY_TIME = #{modifyTime},
+            </if>
+            <if test="leaderCard != null and leaderCard != ''">
+                LEADER_CARD = #{leaderCard},
+            </if>
+            <if test="maxNum != null">
+                MAX_NUM = #{maxNum},
+            </if>
+        </set>
+        where PK_DEPT_ID = #{pkDeptId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId}
+    </delete>
+    <delete id="deleteDeptUserByDeptId">
+        delete from RE_DEPT_USER where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
+    </delete>
     <!--No problem 删除用户部门    -->
     <delete id="deleteDeptUserByUserId" parameterType="java.lang.String">
         delete from RE_DEPT_USER where FK_USER_ID =#{fkUserId,jdbcType=VARCHAR}
     </delete>
+
 </mapper>

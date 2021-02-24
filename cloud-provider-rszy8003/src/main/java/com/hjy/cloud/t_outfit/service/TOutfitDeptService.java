@@ -10,75 +10,82 @@ import java.util.List;
  * (TOutfitDept)表服务接口
  *
  * @author makejava
- * @since 2021-02-23 00:07:06
+ * @since 2021-02-24 21:13:39
  */
 public interface TOutfitDeptService {
     /**
-     * 通过ID查询单条数据
+     * 添加前获取数据
      *
-     * @param pkDeptId 主键
-     * @return 实例对象
+     * @return
      */
-    TOutfitDept selectById(String pkDeptId) throws Exception;
-
+    CommonResult insertPage();
 
     /**
-     * 新增数据
+     * 添加数据
      *
-     * @param tOutfitDept 实例对象
-     * @return 实例对象
+     * @param tOutfitDept
+     * @return
      */
-    int insert(TOutfitDept tOutfitDept) throws Exception;
+    CommonResult insert(TOutfitDept tOutfitDept);
 
     /**
      * 修改数据
      *
-     * @param tOutfitDept 实例对象
-     * @return 实例对象
+     * @param tOutfitDept
+     * @return
      */
-    int updateById(TOutfitDept tOutfitDept) throws Exception;
+    CommonResult updateByPkId(TOutfitDept tOutfitDept);
 
     /**
-     * 通过主键删除数据
+     * 删除数据
      *
-     * @param pkDeptId 主键
-     * @return 是否成功
+     * @param tOutfitDept
+     * @return
      */
-    int deleteById(String pkDeptId);
+    CommonResult delete(TOutfitDept tOutfitDept);
 
     /**
      * 查询所有数据
      *
-     * @return list
+     * @param param
+     * @return
      */
-    List<TOutfitDept> selectAll() throws Exception;
+    CommonResult selectAll(String param);
 
     /**
-     * 通过实体查询所有数据
+     * 获取单个数据
      *
-     * @return list
+     * @param tOutfitDept 实体对象
+     * @return
      */
-    List<TOutfitDept> selectAllByEntity(TOutfitDept tOutfitDept) throws Exception;
+    CommonResult selectById(TOutfitDept tOutfitDept);
+    /**
+     * 给部门下发用户UI
+     *
+     * @param param json参数
+     * @return
+     */
+    CommonResult addUserUI(String param);
+    /**
+     * 给部门下发用户
+     *
+     * @param param json参数
+     * @return
+     */
+    CommonResult addUser(String param);
 
+    /**
+     * 添加用户部门
+     */
+    void addDeptUserByDeptUser(ReDeptUser deptUser);
+    /**
+     * 获取所有部门的ID和名称
+     */
+    List<TOutfitDept> selectAllIdAndName();
+    /**
+     * 获取所有部门名称
+     */
     List<String> selectAllDeptName();
 
-    List<String> selectDeptUser_userIded();
-
-    List<String> selectDeptUserByDept(String deptIdStr);
-    //删除原有的部门及用户角色
-    int deleteDeptUserByDeptId(String fk_dept_id);
-    //添加部门用户
-    int addDeptUserByList(String fk_dept_id, List<String> idList);
-
-    List<TOutfitDept> selectAllIdAndName();
-
-    void addDeptUserByDeptUser(ReDeptUser deptUser);
-    //删除该用户的已分配的部门
-    int deleteDeptUserByUserId(String pkUserId);
-
     String selectDeptIdByUserId(String idStr);
-
-    CommonResult addUser(String param);
-//
-//    CommonResult deptDel(String param);
 }

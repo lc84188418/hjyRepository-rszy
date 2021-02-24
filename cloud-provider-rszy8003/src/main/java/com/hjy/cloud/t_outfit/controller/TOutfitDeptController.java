@@ -1,28 +1,21 @@
 package com.hjy.cloud.t_outfit.controller;
 
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
-import com.hjy.cloud.t_system.entity.TSysUser;
-import com.hjy.cloud.t_system.service.TSysUserService;
-import com.hjy.cloud.utils.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * (TOutfitDept)表控制层
  *
  * @author makejava
- * @since 2021-02-23 00:07:07
+ * @since 2021-02-24 21:13:39
  */
 @Slf4j
 @RestController
@@ -32,100 +25,112 @@ public class TOutfitDeptController {
      */
     @Resource
     private TOutfitDeptService tOutfitDeptService;
-    @Autowired
-    private TSysUserService tSysUserService;
 
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/system/dept/addPage")
-    public CommonResult tOutfitDeptAddPage() throws FebsException {
+    @GetMapping(value = "/outfit/dept/addPage")
+    public CommonResult insertPage() throws FebsException {
         try {
-            //
-            List<TOutfitDept> list = tOutfitDeptService.selectAllIdAndName();
-            return new CommonResult(200,"success","成功!",list);
+            return tOutfitDeptService.insertPage();
         } catch (Exception e) {
             String message = "失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-    /**
-     * 1 新增数据
-     * @param tOutfitDept 实体对象
-     * @return 新增结果
-     */
-    @RequiresPermissions({"dept:add"})
-    @PostMapping("/system/dept/add")
-    public CommonResult tOutfitDeptAdd(@RequestBody TOutfitDept tOutfitDept) throws FebsException{
-        try {
-            //
-            tOutfitDeptService.insert(tOutfitDept);
-            return new CommonResult(200,"success","数据添加成功!",null);
-        } catch (Exception e) {
-            String message = "数据添加失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-    /**
-     * 2 查询所有数据
-     * @return 所有数据
-     */
-    @RequiresPermissions({"dept:view"})
-    @PostMapping("/system/dept/list")
-    public CommonResult tOutfitDeptList() throws FebsException{
-        try {
-            //
-            List<TOutfitDept> tOutfitDeptList = tOutfitDeptService.selectAll();
-            return new CommonResult(200,"success","查询数据成功!",tOutfitDeptList);
-        } catch (Exception e) {
-            String message = "查询数据失败";
-            log.error(message, e);
             throw new FebsException(message);
         }
     }
 
     /**
-     * 3 删除数据
+     * 新增数据
+     *
+     * @param tOutfitDept 实体对象
+     * @return 新增结果
+     */
+    @RequiresPermissions({"dept:add"})
+    @PostMapping(value = "/outfit/dept/add")
+    public CommonResult insert(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
+        try {
+            return tOutfitDeptService.insert(tOutfitDept);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 删除数据
+     *
+     * @param tOutfitDept 实体对象
      * @return 删除结果
      */
     @RequiresPermissions({"dept:del"})
-    @DeleteMapping("/system/dept/del")
-    public CommonResult tOutfitDeptDel(@RequestBody String param) throws FebsException{
-        JSONObject jsonObject = JSON.parseObject(param);
-        String idStr=String.valueOf(jsonObject.get("pk_id"));
+    @DeleteMapping(value = "/outfit/dept/del")
+    public CommonResult delete(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
         try {
-            //
-            tOutfitDeptService.deleteById(idStr);
-            return new CommonResult(200,"success","数据删除成功!",null);
+            return tOutfitDeptService.delete(tOutfitDept);
         } catch (Exception e) {
-            String message = "数据删除失败";
-            log.error(message, e);
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 分页查询所有数据
+     *
+     * @param param json参数
+     * @return 所有数据
+     */
+    @RequiresPermissions({"dept:view"})
+    @PostMapping(value = "/outfit/dept/list")
+    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+        try {
+            return tOutfitDeptService.selectAll(param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 通过主键查询单条数据
+     *
+     * @param tOutfitDept 实体对象
+     */
+    @PostMapping(value = "/outfit/dept/get")
+    public CommonResult selectOne(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
+        try {
+            return tOutfitDeptService.selectById(tOutfitDept);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 修改数据
+     *
+     * @param tOutfitDept 实体对象
+     * @return 修改结果
+     */
+    @RequiresPermissions({"dept:update"})
+    @PutMapping(value = "/outfit/dept/update")
+    public CommonResult update(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
+        try {
+            return tOutfitDeptService.updateByPkId(tOutfitDept);
+        } catch (Exception e) {
+            String message = "失败";
             throw new FebsException(message);
         }
     }
     /**
-     * 6 给部门下发用户
+     * 给部门下发用户UI
+     *
+     * @param param json参数
+     * @return 修改结果
      */
-    @PostMapping("/system/dept/addUserUI")
-    public CommonResult systemRoleAddUserUI(@RequestBody String parm) throws FebsException{
-        JSONObject json = JSON.parseObject(parm);
-        String deptIdStr=String.valueOf(json.get("fk_dept_id"));
-        JSONObject jsonObject = new JSONObject();
+    @PostMapping("/outfit/dept/addUserUI")
+    public CommonResult deptAddUserUI(@RequestBody String param) throws FebsException{
         try {
-            //通过deptIdStr查找部门
-            TOutfitDept tOutfitDept = tOutfitDeptService.selectById(deptIdStr);
-            jsonObject.put("dept",tOutfitDept);
-            //查找所有用户
-            List<TSysUser> tSysUserList = tSysUserService.selectAll();
-            jsonObject.put("userList",tSysUserList);
-            //查询已分配的用户部门并进行回显
-            List<String> deptUserList = tOutfitDeptService.selectDeptUser_userIded();
-            List<String> deptUserList2 = tOutfitDeptService.selectDeptUserByDept(deptIdStr);
-            jsonObject.put("ids",deptUserList);
-            jsonObject.put("idsFP",deptUserList2);
-            return new CommonResult(200,"success","获取部门已分配用户成功!",jsonObject);
+            return tOutfitDeptService.addUserUI(param);
         } catch (Exception e) {
             String message = "获取部门已分配用户失败";
             log.error(message, e);
@@ -133,57 +138,18 @@ public class TOutfitDeptController {
         }
     }
     /**
-     * 6 给部门下发用户
+     * 给部门下发用户
+     *
+     * @param param json参数
+     * @return 修改结果
      */
     @RequiresPermissions({"dept:addUser"})
     @PostMapping("/system/dept/addUser")
-    public CommonResult systemRoleAddUser(@RequestBody String param) throws FebsException{
+    public CommonResult deptAddUser(@RequestBody String param) throws FebsException{
         try {
             return tOutfitDeptService.addUser(param);
         } catch (Exception e) {
             String message = "部门添加用户失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-    /**
-     * 4 通过主键查询单条数据
-     * @return 单条数据
-     */
-    @PostMapping("/system/dept/getOne")
-    public CommonResult tOutfitDeptgetOne(@RequestBody String param) throws FebsException{
-        JSONObject json = JSON.parseObject(param);
-        String idStr= JsonUtil.getStringParam(json,"pk_id");
-        try {
-            //
-            JSONObject jsonObject = new JSONObject();
-            TOutfitDept tOutfitDept = tOutfitDeptService.selectById(idStr);
-            jsonObject.put("dept",tOutfitDept);
-            List<TOutfitDept> list = tOutfitDeptService.selectAllIdAndName();
-            jsonObject.put("depts",list);
-            return new CommonResult(200,"success","数据获取成功!",jsonObject);
-        } catch (Exception e) {
-            String message = "数据获取失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-
-    /**
-     * 4 修改数据
-     * @param tOutfitDept 实体对象
-     * @return 修改结果
-     */
-    @RequiresPermissions({"dept:update"})
-    @PutMapping("/system/dept/update")
-    public CommonResult tOutfitDeptUpdate(@RequestBody TOutfitDept tOutfitDept) throws FebsException{
-        try {
-            //
-            tOutfitDeptService.updateById(tOutfitDept);
-            TOutfitDept tOutfitDept2 = tOutfitDeptService.selectById(tOutfitDept.getPkDeptId());
-            return new CommonResult(200,"success","修改成功!",tOutfitDept2);
-        } catch (Exception e) {
-            String message = "修改失败";
             log.error(message, e);
             throw new FebsException(message);
         }

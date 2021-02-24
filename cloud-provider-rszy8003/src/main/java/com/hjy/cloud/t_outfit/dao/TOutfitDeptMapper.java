@@ -2,7 +2,6 @@ package com.hjy.cloud.t_outfit.dao;
 
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -10,74 +9,96 @@ import java.util.List;
  * (TOutfitDept)表数据库访问层
  *
  * @author makejava
- * @since 2021-02-23 00:07:06
+ * @since 2021-02-24 21:13:38
  */
 public interface TOutfitDeptMapper {
 
     /**
+     * 分页记录条数
+     * @return 记录条数
+     */
+    int selectSize(TOutfitDept tOutfitDept);
+
+    /**
      * 通过ID查询单条数据
-     *
-     * @param pkDeptId 主键
      * @return 实例对象
      */
-    TOutfitDept selectById(String pkDeptId);
+    TOutfitDept selectByPkId(String pk_id);
+
+    /**
+     * 通过实体作为筛选条件查询
+     * @return 对象列表
+     */
+    List<TOutfitDept> selectAllPage(TOutfitDept tOutfitDept);
 
     /**
      * 新增数据
-     *
-     * @param TOutfitDept 实例对象
      * @return 影响行数
      */
-    int insertSelective(TOutfitDept TOutfitDept);
+    int insertSelective(TOutfitDept tOutfitDept);
+    /**
+     * 新增所有列数据
+     * @return 影响行数
+     */
+    int insert(TOutfitDept tOutfitDept);
 
     /**
      * 修改数据
-     *
-     * @param TOutfitDept 实例对象
      * @return 影响行数
      */
-    int updateById(TOutfitDept TOutfitDept);
+    int updateByPkId(TOutfitDept tOutfitDept);
 
     /**
      * 通过主键删除数据
-     *
-     * @param pkDeptId 主键
      * @return 影响行数
      */
-    int deleteById(String pkDeptId);
-
+    int deleteById(TOutfitDept tOutfitDept);
     /**
-     * 查询所有行数据
-     * @return 对象列表
+     * 获取所有部门列表
+     * @return 所有部门的ID和名称
      */
-    List<TOutfitDept> selectAll();
-    /**
-     * 通过实体作为筛选条件查询
-     *
-     * @param TOutfitDept 实例对象
-     * @return 对象列表
-     */
-    List<TOutfitDept> selectAllByEntity(TOutfitDept TOutfitDept);
-
-
-    List<String> selectAllDeptName();
-
-    List<String> selectDeptUser_userIded();
-
-    List<String> selectDeptUserByDept(@Param("fkDeptId")String deptIdStr);
-
-    int deleteDeptUserByDeptId(@Param("fkDeptId")String fk_dept_id);
-
-    /**
-     * 批量添加部门用户
-     */
-    int addDeptUserByList(@Param("idList")List<ReDeptUser> idList);
-
     List<TOutfitDept> selectAllIdAndName();
 
+    /**
+     * 查询已分配的用户部门并进行回显
+     * @return
+     */
+    List<String> selectDeptUser_userIded();
+    /**
+     * 查询已分配的用户部门并进行回显
+     * @return
+     */
+    List<String> selectDeptUserByDept(String pkDeptId);
+    /**
+     * 查询所有部门名称
+     * @return
+     */
+    List<String> selectAllDeptName();
+    /**
+     * 删除原有的部门及用户
+     * @return
+     */
+    int deleteDeptUserByDeptId(String pkDeptId);
+    /**
+     * 批量添加部门用户
+     * @return
+     */
+    int addDeptUserByList(List<ReDeptUser> deptUsers);
+    /**
+     * 通过用户ID删除原有部门信息
+     * @return
+     */
+    int deleteDeptUserByUserId(String pkUserId);
+    /**
+     * 添加用户部门
+     * @return
+     */
     int addDeptUserByDeptUser(ReDeptUser deptUser);
 
-    int deleteDeptUserByUserId(@Param("fkUserId")String fkUserId);
-
-    String selectDeptIdByUserId(@Param("fkUserId")String fkUserId);
+    String selectDeptIdByUserId(String idStr);
+    /**
+     * 查询该部门是否含有上级部门
+     * @return
+     */
+    String selectSuperiorDeptId(String pkDeptId);
 }

@@ -130,8 +130,8 @@ public class TSysUserController {
      * @return 单条数据
      */
     @PostMapping("/system/user/getOne")
-    public CommonResult tSysUsergetOne(@RequestBody String parm) throws FebsException{
-        JSONObject jsonObject = JSON.parseObject(parm);
+    public CommonResult tSysUsergetOne(@RequestBody String param) throws FebsException{
+        JSONObject jsonObject = JSON.parseObject(param);
         String idStr=String.valueOf(jsonObject.get("pk_id"));
         try {
             //
@@ -142,8 +142,8 @@ public class TSysUserController {
             jsonObject2.put("roles",roles);
             String role = tSysRoleService.selectRoleIdByUserId(idStr);
             jsonObject2.put("roleId",role);
-            List<TOutfitDept> depts = tOutfitDeptService.selectAll();
-            jsonObject2.put("depts",depts);
+//            List<TOutfitDept> depts = tOutfitDeptService.selectAll(param);
+//            jsonObject2.put("depts",depts);
             String deptId = tOutfitDeptService.selectDeptIdByUserId(idStr);
             jsonObject2.put("deptId",deptId);
             return new CommonResult(200,"success","数据获取成功!",jsonObject2);
