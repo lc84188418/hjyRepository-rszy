@@ -56,4 +56,18 @@ public interface TOutfitCompanyService {
      * @return
      */
     CommonResult selectById(TOutfitCompany tOutfitCompany);
+    /**
+     * 分配部门UI
+     *
+     * @param tOutfitCompany
+     * @return
+     */
+    CommonResult distributeDeptUI(TOutfitCompany tOutfitCompany);
+    /**
+     * 分配部门
+     *
+     * @param param
+     * @return
+     */
+    CommonResult distributeDept(String param);
 }

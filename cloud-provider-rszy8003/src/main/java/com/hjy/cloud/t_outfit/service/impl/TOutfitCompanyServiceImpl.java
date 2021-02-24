@@ -1,13 +1,18 @@
 package com.hjy.cloud.t_outfit.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
+import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
+import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
+import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
+import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
@@ -18,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +38,8 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
 
     @Resource
     private TOutfitCompanyMapper tOutfitCompanyMapper;
-
+    @Resource
+    private TOutfitDeptMapper tOutfitDeptMapper;
     /**
      * 添加前获取数据
      *
@@ -158,5 +165,67 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
 
         }
         return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+
+    /**
+     * 分配部门UI
+     *
+     * @param tOutfitCompany
+     * @return
+     */
+    @Override
+    public CommonResult distributeDeptUI(TOutfitCompany tOutfitCompany) {
+        //当前公司信息
+        TOutfitCompany currentEntity = tOutfitCompanyMapper.selectByPkId(tOutfitCompany.getPkCompanyId());
+        //获取所有部门列表
+        List<TOutfitDept> deptList = tOutfitDeptMapper.selectAllIdAndName();
+        //获取该公司已经分配的部门ID
+        List<String> ids = tOutfitCompanyMapper.selectFPDeptId(tOutfitCompany.getPkCompanyId());
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("entity", currentEntity);
+        resultJson.put("deptList", deptList);
+        resultJson.put("ids", ids);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+
+    }
+    /**
+     * 分配部门
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public CommonResult distributeDept(String param) {
+        JSONObject jsonObject = JSON.parseObject(param);
+        String fkCompanyId=String.valueOf(jsonObject.get("fkCompanyId"));
+        //删除原有的公司及部门
+        tOutfitCompanyMapper.deleteCompanyByCompanyId(fkCompanyId);
+        JSONArray jsonArray = jsonObject.getJSONArray("ids");
+        if(jsonArray != null){
+            String deptIdsStr = jsonArray.toString();
+            List<String> idList = JSONArray.parseArray(deptIdsStr,String.class);
+            //添加公司部门
+            this.addCompanyDeptByList(fkCompanyId,idList);
+        }
+        return new CommonResult(200,"success","公司添加部门成功!",null);
+
+    }
+    /**
+     * 添加公司部门
+     *
+     * @param fkCompanyId，idList
+     * @return
+     */
+    private int addCompanyDeptByList(String fkCompanyId, List<String> idList) {
+        List<ReCompanyDept> companyDepts = new ArrayList<>();
+        for (String s:idList){
+            ReCompanyDept companyDept = new ReCompanyDept();
+            companyDept.setPkCompanydeptId(IDUtils.getUUID());
+            companyDept.setFkCompanyId(fkCompanyId);
+            companyDept.setFkDeptId(s);
+            companyDepts.add(companyDept);
+        }
+        //批量添加公司部门信息
+        return tOutfitCompanyMapper.addCompanyDeptByList(companyDepts);
     }
 }

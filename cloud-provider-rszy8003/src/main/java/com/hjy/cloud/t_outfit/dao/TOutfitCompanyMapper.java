@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_outfit.dao;
 
+import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 
 import java.util.List;
@@ -67,4 +68,22 @@ public interface TOutfitCompanyMapper {
      * @return 对象列表
      */
     List<TOutfitCompany> select_PkId_name();
+    /**
+     * 获取该公司已经分配的部门ID
+     *
+     * @return 已分配的部门ID值列表
+     */
+    List<String> selectFPDeptId(String pkCompanyId);
+    /**
+     * 删除原有的公司及部门
+     *
+     * @return 公司ID
+     */
+    void deleteCompanyByCompanyId(String fkCompanyId);
+    /**
+     * 批量添加公司部门信息
+     *
+     * @return 添加数据条数
+     */
+    int addCompanyDeptByList(List<ReCompanyDept> companyDepts);
 }

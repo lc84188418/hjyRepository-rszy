@@ -161,6 +161,10 @@
     <select id="select_PkId_name" resultType="com.hjy.cloud.t_outfit.entity.TOutfitCompany">
         select PK_COMPANY_ID,COMPANY_NAME from hjy_cloud.T_OUTFIT_COMPANY
     </select>
+<!--    获取该公司已经分配的部门ID-->
+    <select id="selectFPDeptId" resultType="java.lang.String">
+        SELECT FK_DEPT_ID FROM RE_COMPANY_DEPT WHERE FK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkCompanyId" useGeneratedKeys="true">
@@ -289,6 +293,19 @@
             </if>
         </trim>
     </insert>
+<!--    批量添加公司部门信息-->
+    <insert id="addCompanyDeptByList" parameterType="list">
+        insert  INTO
+        RE_COMPANY_DEPT(PK_COMPANYDEPT_ID,FK_COMPANY_ID,FK_DEPT_ID)
+        values
+        <foreach collection="idList" item="item" index="index" separator=",">
+            (
+            #{item.pkCompanydeptId, jdbcType=VARCHAR},
+            #{item.fkCompanyId, jdbcType=VARCHAR},
+            #{item.fkDeptId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
         update hjy_cloud.T_OUTFIT_COMPANY
@@ -348,12 +365,15 @@
                 REMARKS = #{remarks},
             </if>
         </set>
-        where PK_COMPANY_ID = #{pkCompanyId}
+        where PK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId}
+        delete from hjy_cloud.T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteCompanyByCompanyId">
+        delete from RE_COMPANY_DEPT where FK_COMPANY_ID =#{fkCompanyId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

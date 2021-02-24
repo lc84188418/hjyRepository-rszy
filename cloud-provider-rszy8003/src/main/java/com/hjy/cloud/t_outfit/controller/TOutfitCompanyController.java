@@ -4,6 +4,7 @@ package com.hjy.cloud.t_outfit.controller;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
+import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
@@ -121,5 +122,33 @@ public class TOutfitCompanyController {
         }
     }
 
-
+    /**
+     * 分配部门UI
+     * @param tOutfitCompany 实体对象
+     * @return 修改结果
+     */
+    @PostMapping("/outfit/company/distributeDeptUI")
+    public CommonResult distributeDeptUI(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException{
+        try {
+            return tOutfitCompanyService.distributeDeptUI(tOutfitCompany);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 分配部门
+     * @param param json参数
+     * @return 修改结果
+     */
+    @RequiresPermissions({"company:distributeDept"})
+    @PostMapping("/outfit/company/distributeDept")
+    public CommonResult distributeDeptUI(@RequestBody String param) throws FebsException{
+        try {
+            return tOutfitCompanyService.distributeDept(param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }
