@@ -187,23 +187,9 @@ public class TSysRoleController {
      * 6 给角色下发用户
      */
     @PostMapping("/outfit/role/addUserUI")
-    public CommonResult systemRoleAddUserUI(@RequestBody String parm) throws FebsException{
-        JSONObject json = JSON.parseObject(parm);
-        String roleIdStr=String.valueOf(json.get("fk_role_id"));
-        JSONObject jsonObject = new JSONObject();
+    public CommonResult systemRoleAddUserUI(@RequestBody String param) throws FebsException{
         try {
-            //通过角色id查找角色
-            TSysRole role = tSysRoleService.selectById(roleIdStr);
-            jsonObject.put("role",role);
-            //查找所有用户
-            List<TSysUser> tSysUserList = tSysUserService.selectAll();
-            jsonObject.put("userList",tSysUserList);
-            //查询已分配的用户角色并进行回显
-            List<String> userRoleList = tSysRoleService.selectUserRole_userIded();
-            List<String> userRoleList2 = tSysRoleService.selectUserRoleByrole_id(roleIdStr);
-            jsonObject.put("ids",userRoleList);
-            jsonObject.put("idsFP",userRoleList2);
-            return new CommonResult(200,"success","获取角色已分配用户成功!",jsonObject);
+            return tSysRoleService.systemRoleAddUserUI(param);
         } catch (Exception e) {
             String message = "获取角色已分配用户失败";
             log.error(message, e);

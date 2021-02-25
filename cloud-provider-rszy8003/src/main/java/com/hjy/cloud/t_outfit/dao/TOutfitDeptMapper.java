@@ -2,6 +2,7 @@ package com.hjy.cloud.t_outfit.dao;
 
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -63,12 +64,12 @@ public interface TOutfitDeptMapper {
      * 查询已分配的用户部门并进行回显
      * @return
      */
-    List<String> selectDeptUser_userIded();
+    List<String> selectDeptUser_userIded(@Param("fkCompanyId")String fkCompanyId);
     /**
      * 查询已分配的用户部门并进行回显
      * @return
      */
-    List<String> selectDeptUserByDept(String pkDeptId);
+    List<String> selectDeptUserByDept(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
     /**
      * 查询所有部门名称
      * @return
@@ -78,12 +79,12 @@ public interface TOutfitDeptMapper {
      * 删除原有的部门及用户
      * @return
      */
-    int deleteDeptUserByDeptId(String pkDeptId);
+    int deleteDeptUserByDeptId(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
     /**
      * 批量添加部门用户
      * @return
      */
-    int addDeptUserByList(List<ReDeptUser> deptUsers);
+    int addDeptUserByList(@Param("idList") List<ReDeptUser> idList);
     /**
      * 通过用户ID删除原有部门信息
      * @return
@@ -101,4 +102,18 @@ public interface TOutfitDeptMapper {
      * @return
      */
     String selectSuperiorDeptId(String pkDeptId);
+    /**
+     * 合并部门前获取所有部门数据，除开当前部门
+     */
+    List<TOutfitDept> selectAllIdAndName_BBKDQBM(String pkDeptId);
+    /**
+     * 通过部门ID删除公司部门信息
+     */
+    void deleteCompanyDeptByDeptId(@Param("fkDeptId")String fkDeptId);
+
+    /**
+     * 移动该部门的人到目标部门
+     * @param hbdDeptId
+     */
+    void updateByDeptId(@Param("hbDeptId")String hbDeptId,@Param("hbdDeptId")String hbdDeptId);
 }

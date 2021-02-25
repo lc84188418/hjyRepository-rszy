@@ -168,18 +168,19 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     @Override
     public CommonResult addUserUI(String param) {
         JSONObject json = JSON.parseObject(param);
-        String pkDeptId=String.valueOf(json.get("pkDeptId"));
+        String fkDeptId=String.valueOf(json.get("pkDeptId"));
+        String fkCompanyId=String.valueOf(json.get("fkCompanyId"));
         JSONObject jsonObject = new JSONObject();
         //通过deptIdStr查找部门
-        TOutfitDept tOutfitDept = tOutfitDeptMapper.selectByPkId(pkDeptId);
+        TOutfitDept tOutfitDept = tOutfitDeptMapper.selectByPkId(fkDeptId);
         jsonObject.put("dept",tOutfitDept);
         //查找所有用户
         List<TSysUser> tSysUserList = tSysUserMapper.selectAll();
         jsonObject.put("userList",tSysUserList);
         //查询已分配的用户部门并进行回显
-        List<String> deptUserList = tOutfitDeptMapper.selectDeptUser_userIded();
-        List<String> deptUserList2 = tOutfitDeptMapper.selectDeptUserByDept(pkDeptId);
+        List<String> deptUserList = tOutfitDeptMapper.selectDeptUser_userIded(fkCompanyId);
         jsonObject.put("ids",deptUserList);
+        List<String> deptUserList2 = tOutfitDeptMapper.selectDeptUserByDept(fkDeptId,fkCompanyId);
         jsonObject.put("idsFP",deptUserList2);
         return new CommonResult(200,"success","获取部门已分配用户成功!",jsonObject);
     }
@@ -194,16 +195,56 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     public CommonResult addUser(String param) {
         JSONObject jsonObject = JSON.parseObject(param);
         String pkDeptId = String.valueOf(jsonObject.get("pkDeptId"));
+        String fkCompanyId = String.valueOf(jsonObject.get("fkCompanyId"));
         //删除原有的部门及用户
-        tOutfitDeptMapper.deleteDeptUserByDeptId(pkDeptId);
+        tOutfitDeptMapper.deleteDeptUserByDeptId(pkDeptId,fkCompanyId);
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
         if(jsonArray != null){
             String userIdsStr = jsonArray.toString();
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
-            //添加部门用户
-            this.addDeptUserByList(pkDeptId,idList);
+            //查询该部门基本信息
+            TOutfitDept dept = tOutfitDeptMapper.selectByPkId(pkDeptId);
+            if(idList.size()>dept.getMaxNum()){
+                return new CommonResult(201,"error","该部门已达最大人数!",null);
+            }else {
+                //添加部门用户
+                this.addDeptUserByList(pkDeptId,fkCompanyId,idList);
+                return new CommonResult(200,"success","部门添加用户成功!",null);
+            }
+        }else {
+            return new CommonResult(444,"error","未选择员工!",null);
+
         }
-        return new CommonResult(200,"success","部门添加用户成功!",null);
+    }
+    /**
+     * 合并部门前获取所有部门数据
+     */
+    @Override
+    public CommonResult deptMergeUI(String param) {
+        JSONObject jsonObject = JSON.parseObject(param);
+        String pkDeptId = String.valueOf(jsonObject.get("pkDeptId"));
+        List<TOutfitDept> deptList = tOutfitDeptMapper.selectAllIdAndName_BBKDQBM(pkDeptId);
+        return new CommonResult(200,"success","获取部门信息成功!",deptList);
+
+    }
+    /**
+     * 合并部门
+     */
+    @Override
+    public CommonResult deptMerge(String param) {
+        JSONObject jsonObject = JSON.parseObject(param);
+        String hbDeptId = String.valueOf(jsonObject.get("hbDeptId"));
+        String hbdDeptId = String.valueOf(jsonObject.get("hbdDeptId"));
+        //删除公司的该部门信息
+        tOutfitDeptMapper.deleteCompanyDeptByDeptId(hbDeptId);
+        //删除部门基本信息
+        TOutfitDept delDept = new TOutfitDept();
+        delDept.setPkDeptId(hbDeptId);
+        tOutfitDeptMapper.deleteById(delDept);
+        //移动该部门的人到目标部门
+        tOutfitDeptMapper.updateByDeptId(hbDeptId,hbdDeptId);
+        return new CommonResult(200,"success","合并部门成功!",null);
+
     }
 
     @Override
@@ -226,17 +267,21 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
         return tOutfitDeptMapper.selectDeptIdByUserId(idStr);
     }
 
+
+
     /**
      * 批量添加部门用户
      * @return
      */
-    private void addDeptUserByList(String pkDeptId, List<String> idList) {
+    private void addDeptUserByList(String pkDeptId,String fkCompanyId,List<String> idList) {
+        System.err.println(idList);
         List<ReDeptUser> deptUsers = new ArrayList<>();
         for (String s:idList){
             ReDeptUser deptUser = new ReDeptUser();
             deptUser.setPk_deptUser_id(IDUtils.getUUID());
             deptUser.setFk_user_id(s);
             deptUser.setFk_dept_id(pkDeptId);
+            deptUser.setFk_company_id(fkCompanyId);
             deptUsers.add(deptUser);
         }
         tOutfitDeptMapper.addDeptUserByList(deptUsers);
@@ -251,4 +296,5 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
         resultJson.put("PageResult", result);
         return resultJson;
     }
+
 }

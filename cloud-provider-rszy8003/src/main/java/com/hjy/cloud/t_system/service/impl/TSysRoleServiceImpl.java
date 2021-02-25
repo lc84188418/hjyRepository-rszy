@@ -8,6 +8,8 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
+import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.t_system.service.TSysUserService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.t_system.entity.ReRolePerms;
 import com.hjy.cloud.t_system.entity.ReUserRole;
@@ -35,7 +37,8 @@ import java.util.List;
 public class TSysRoleServiceImpl implements TSysRoleService {
     @Resource
     private TSysRoleMapper tSysRoleMapper;
-
+    @Resource
+    private TSysUserService tSysUserService;
     /**
      * 通过ID查询单条数据
      *
@@ -272,15 +275,15 @@ public class TSysRoleServiceImpl implements TSysRoleService {
     @Override
     public CommonResult systemRoleAddUser(String parm) {
         JSONObject jsonObject = JSON.parseObject(parm);
-        String fk_role_id=String.valueOf(jsonObject.get("fk_role_id"));
+        String pkRoleId=String.valueOf(jsonObject.get("pkRoleId"));
         //删除原有的用户角色
-        int i = tSysRoleMapper.deleteUserRoleByRoleId(fk_role_id);
+        int i = tSysRoleMapper.deleteUserRoleByRoleId(pkRoleId);
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
         if(jsonArray != null){
             String userIdsStr = jsonArray.toString();
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
             //添加用户角色
-            int j = this.addUserRoleByList(fk_role_id,idList);
+            int j = this.addUserRoleByList(pkRoleId,idList);
         }
         if(i>0){
             return new CommonResult(200,"success","角色添加用户成功!",null);
@@ -334,6 +337,25 @@ public class TSysRoleServiceImpl implements TSysRoleService {
         }else {
             return new CommonResult(444,"error","角色修改失败!",null);
         }
+    }
+
+    @Override
+    public CommonResult systemRoleAddUserUI(String param) {
+        JSONObject json = JSON.parseObject(param);
+        String pkRoleId=String.valueOf(json.get("pkRoleId"));
+        JSONObject jsonObject = new JSONObject();
+        //通过角色id查找角色
+        TSysRole role = tSysRoleMapper.selectById(pkRoleId);
+        jsonObject.put("role",role);
+        //查找所有用户
+        List<TSysUser> tSysUserList = tSysUserService.selectAll();
+        jsonObject.put("userList",tSysUserList);
+        //查询已分配的用户角色并进行回显
+        List<String> userRoleList = tSysRoleMapper.selectUserRole_userIded();
+        List<String> userRoleList2 = tSysRoleMapper.selectUserRoleByrole_id(pkRoleId);
+        jsonObject.put("ids",userRoleList);
+        jsonObject.put("idsFP",userRoleList2);
+        return new CommonResult(200,"success","获取角色已分配用户成功!",jsonObject);
     }
 
     private JSONObject getListInfo() {

@@ -70,4 +70,10 @@ public interface TOutfitCompanyService {
      * @return
      */
     CommonResult distributeDept(String param);
+    /**
+     * 组织架构
+     *
+     * @return
+     */
+    CommonResult structure();
 }

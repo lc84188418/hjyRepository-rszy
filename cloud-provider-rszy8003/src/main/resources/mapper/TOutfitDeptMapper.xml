@@ -7,7 +7,6 @@
         <result property="deptName" column="DEPT_NAME" jdbcType="VARCHAR"/>
         <result property="deptAddress" column="DEPT_ADDRESS" jdbcType="VARCHAR"/>
         <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
-        <result property="deptLevel" column="DEPT_LEVEL" jdbcType="VARCHAR"/>
         <result property="superiorDept" column="SUPERIOR_DEPT" jdbcType="VARCHAR"/>
         <result property="deptLeader" column="DEPT_LEADER" jdbcType="VARCHAR"/>
         <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
@@ -18,19 +17,14 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TOutfitDeptMap">
-        select
-          PK_DEPT_ID, DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, DEPT_LEVEL, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME, LEADER_CARD, MAX_NUM
-        from hjy_cloud.T_OUTFIT_DEPT
+        select * from hjy_cloud.T_OUTFIT_DEPT
         where PK_DEPT_ID = #{pkDeptId}
     </select>
 
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TOutfitDeptMap">
-        select
-        PK_DEPT_ID, DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, DEPT_LEVEL, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME,
-        LEADER_CARD, MAX_NUM
-        from hjy_cloud.T_OUTFIT_DEPT
+        select * from hjy_cloud.T_OUTFIT_DEPT
         <where>
             <if test="pkDeptId != null and pkDeptId != ''">
                 and PK_DEPT_ID = #{pkDeptId}
@@ -68,10 +62,13 @@
         select PK_DEPT_ID,DEPT_NAME FROM T_OUTFIT_DEPT
     </select>
     <select id="selectDeptUser_userIded" resultType="java.lang.String">
-        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID in (select distinct FK_DEPT_ID from  RE_DEPT_USER)
+        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID in
+        (select distinct FK_DEPT_ID from  RE_DEPT_USER where FK_COMPANY_ID = #{fkCompanyId,jdbcType=VARCHAR})
     </select>
     <select id="selectDeptUserByDept" resultType="java.lang.String" parameterType="java.lang.String">
-        select FK_USER_ID from RE_DEPT_USER where FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+        select FK_USER_ID from RE_DEPT_USER
+        where FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+        and FK_COMPANY_ID = #{fkCompanyId,jdbcType=VARCHAR}
     </select>
     <!--No problem 查询所有部门单位数据-->
     <select id="selectAllDeptName" resultType="java.lang.String">
@@ -82,6 +79,9 @@
     </select>
     <select id="selectSuperiorDeptId" resultType="java.lang.String">
         select SUPERIOR_DEPT from T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectAllIdAndName_BBKDQBM" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
+        select PK_DEPT_ID,DEPT_NAME FROM T_OUTFIT_DEPT where PK_DEPT_ID != #{pkDeptId,jdbcType=VARCHAR}
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkDeptId" useGeneratedKeys="true">
@@ -161,13 +161,14 @@
     <!--部门批量添加用户    -->
     <insert id="addDeptUserByList" parameterType="list">
         insert  INTO
-        RE_DEPT_USER(pk_deptuser_id,FK_DEPT_ID,FK_USER_ID)
+        RE_DEPT_USER(PK_DEPTUSER_ID,FK_DEPT_ID,FK_USER_ID)
         values
         <foreach collection="idList" item="item" index="index" separator=",">
             (
             #{item.pk_deptUser_id, jdbcType=VARCHAR},
             #{item.fk_dept_id, jdbcType=VARCHAR},
-            #{item.fk_user_id, jdbcType=VARCHAR}
+            #{item.fk_user_id, jdbcType=VARCHAR},
+            #{item.fk_company_id, jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
@@ -210,17 +211,26 @@
         </set>
         where PK_DEPT_ID = #{pkDeptId}
     </update>
+    <update id="updateByDeptId">
+        update RE_DEPT_USER SET  FK_DEPT_ID = #{hbdDeptId,jdbcType=VARCHAR}
+        where FK_DEPT_ID = #{hbDeptId,jdbcType=VARCHAR}
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from hjy_cloud.T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId}
     </delete>
     <delete id="deleteDeptUserByDeptId">
-        delete from RE_DEPT_USER where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
+        delete from RE_DEPT_USER
+        where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
+        and FK_COMPANY_ID = #{fkCompanyId,jdbcType=VARCHAR}
     </delete>
     <!--No problem 删除用户部门    -->
     <delete id="deleteDeptUserByUserId" parameterType="java.lang.String">
         delete from RE_DEPT_USER where FK_USER_ID =#{fkUserId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteCompanyDeptByDeptId">
+        delete from RE_COMPANY_DEPT where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

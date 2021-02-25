@@ -101,7 +101,7 @@ public class TSysUserServiceImpl implements TSysUserService {
      * @return 对象列表
      */
     @Override
-    public List<TSysUser> selectAll() throws Exception {
+    public List<TSysUser> selectAll(){
         return this.tSysUserMapper.selectAll();
     }
 

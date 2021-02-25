@@ -102,4 +102,6 @@ public interface TSysRoleService {
     CommonResult selectByPkId(TSysRole tSysRole);
 
     CommonResult tSysRoleUpdate(TSysRole tSysRole);
+
+    CommonResult systemRoleAddUserUI(String param);
 }

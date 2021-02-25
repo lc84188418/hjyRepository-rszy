@@ -11,6 +11,7 @@ import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.TSysUser;
@@ -210,6 +211,19 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
         return new CommonResult(200,"success","公司添加部门成功!",null);
 
     }
+    /**
+     * 组织架构
+     *
+     * @return
+     */
+    @Override
+    public CommonResult structure() {
+        List<TOutfitStructure> structures = tOutfitCompanyMapper.selectStructure();
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("structure", structures);
+        return new CommonResult(200,"success","获取组织架构数据成功!",resultJson);
+    }
+
     /**
      * 添加公司部门
      *

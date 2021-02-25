@@ -50,7 +50,7 @@ public interface TSysUserService {
      * 查询所有数据
      * @return list
      */
-    List<TSysUser> selectAll() throws Exception;
+    List<TSysUser> selectAll();
     /**
      * 通过实体查询所有数据
      * @return list

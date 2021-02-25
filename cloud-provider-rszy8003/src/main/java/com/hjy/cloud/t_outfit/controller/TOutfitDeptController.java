@@ -144,12 +144,46 @@ public class TOutfitDeptController {
      * @return 修改结果
      */
     @RequiresPermissions({"dept:addUser"})
-    @PostMapping("/system/dept/addUser")
+    @PostMapping("/outfit/dept/addUser")
     public CommonResult deptAddUser(@RequestBody String param) throws FebsException{
         try {
             return tOutfitDeptService.addUser(param);
         } catch (Exception e) {
             String message = "部门添加用户失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 合并部门UI
+     *
+     * @param param json参数
+     * @return 修改结果
+     */
+    @PostMapping("/outfit/dept/mergeUI")
+    public CommonResult deptMergeUI(@RequestBody String param) throws FebsException{
+        try {
+            return tOutfitDeptService.deptMergeUI(param);
+        } catch (Exception e) {
+            String message = "获取其他部门数据失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 合并部门
+     *
+     * @param param json参数
+     * @return 修改结果
+     */
+    @RequiresPermissions({"dept:merge"})
+    @PostMapping("/outfit/dept/merge")
+    public CommonResult deptMerge(@RequestBody String param) throws FebsException{
+        try {
+            return tOutfitDeptService.deptMerge(param);
+        } catch (Exception e) {
+            String message = "部门合并失败";
             log.error(message, e);
             throw new FebsException(message);
         }

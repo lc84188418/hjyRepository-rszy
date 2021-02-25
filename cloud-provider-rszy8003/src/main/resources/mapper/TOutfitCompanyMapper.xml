@@ -165,6 +165,29 @@
     <select id="selectFPDeptId" resultType="java.lang.String">
         SELECT FK_DEPT_ID FROM RE_COMPANY_DEPT WHERE FK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
     </select>
+    <select id="selectStructure" resultType="com.hjy.cloud.t_outfit.entity.TOutfitStructure">
+SELECT
+	T_OUTFIT_COMPANY.PK_COMPANY_ID as companyId,
+	T_OUTFIT_COMPANY.COMPANY_NAME as companyName,
+	T_OUTFIT_DEPT.PK_DEPT_ID as deptId,
+	T_OUTFIT_DEPT.DEPT_NAME as deptName,
+	T_OUTFIT_DEPT.DEPT_LEADER as fzr,
+	a.num as zzNum
+FROM
+	RE_COMPANY_DEPT
+	INNER JOIN
+	T_OUTFIT_COMPANY
+	ON
+		RE_COMPANY_DEPT.FK_COMPANY_ID = T_OUTFIT_COMPANY.PK_COMPANY_ID
+	INNER JOIN
+	T_OUTFIT_DEPT
+	ON
+		RE_COMPANY_DEPT.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+	LEFT JOIN
+	(SELECT FK_COMPANY_ID,FK_DEPT_ID,count(*) as num FROM RE_DEPT_USER where FK_COMPANY_ID !='' GROUP BY FK_DEPT_ID,FK_COMPANY_ID) as a
+	on a.FK_COMPANY_ID = T_OUTFIT_COMPANY.PK_COMPANY_ID
+	and T_OUTFIT_DEPT.PK_DEPT_ID = a.FK_DEPT_ID
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkCompanyId" useGeneratedKeys="true">

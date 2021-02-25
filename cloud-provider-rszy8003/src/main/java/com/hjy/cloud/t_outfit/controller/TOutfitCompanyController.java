@@ -151,4 +151,19 @@ public class TOutfitCompanyController {
             throw new FebsException(message);
         }
     }
+    /**
+     * 组织架构
+     * 分公司、分部门来查询
+     * @param
+     * @return 修改结果
+     */
+    @GetMapping("/outfit/organization/structure")
+    public CommonResult structure() throws FebsException{
+        try {
+            return tOutfitCompanyService.structure();
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }

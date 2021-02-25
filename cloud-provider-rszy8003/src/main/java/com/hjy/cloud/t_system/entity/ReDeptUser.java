@@ -7,4 +7,5 @@ public class ReDeptUser {
     private String pk_deptUser_id;
     private String fk_dept_id;
     private String fk_user_id;
+    private String fk_company_id;
 }

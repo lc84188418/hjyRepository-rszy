@@ -2,6 +2,7 @@ package com.hjy.cloud.t_outfit.dao;
 
 import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
+import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
 
 import java.util.List;
 
@@ -86,4 +87,10 @@ public interface TOutfitCompanyMapper {
      * @return 添加数据条数
      */
     int addCompanyDeptByList(List<ReCompanyDept> companyDepts);
+    /**
+     * 组织架构
+     *
+     * @return
+     */
+    List<TOutfitStructure> selectStructure();
 }

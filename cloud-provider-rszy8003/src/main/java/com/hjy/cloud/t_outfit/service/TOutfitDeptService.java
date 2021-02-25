@@ -88,4 +88,12 @@ public interface TOutfitDeptService {
     List<String> selectAllDeptName();
 
     String selectDeptIdByUserId(String idStr);
+    /**
+     * 合并部门前获取所有部门数据
+     */
+    CommonResult deptMergeUI(String param);
+    /**
+     * 合并部门
+     */
+    CommonResult deptMerge(String param);
 }
