@@ -40,7 +40,7 @@ public class TSysRoleController {
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/system/role/addPage")
+    @GetMapping(value = "/outfit/role/addPage")
     public CommonResult tSysRoleAddPage() throws FebsException{
         try {
             //
@@ -57,12 +57,11 @@ public class TSysRoleController {
      * @return 新增结果
      */
     @RequiresPermissions({"role:add"})
-    @PostMapping("/system/role/add")
+    @PostMapping("/outfit/role/add")
     public CommonResult tSysRoleAdd(@RequestBody TSysRole tSysRole) throws FebsException{
         try {
             //
-            tSysRoleService.insert(tSysRole);
-            return new CommonResult(200,"success","数据添加成功!",null);
+            return tSysRoleService.insert(tSysRole);
         } catch (Exception e) {
             String message = "数据添加失败";
             log.error(message, e);
@@ -74,31 +73,11 @@ public class TSysRoleController {
      * @return 所有数据
      */
     @RequiresPermissions({"role:view"})
-    @GetMapping("/system/role/list")
-    public CommonResult tSysRoleList() throws FebsException {
+    @PostMapping("/outfit/role/list")
+    public CommonResult tSysRoleList(@RequestBody String param) throws FebsException {
         try {
             //
-            JSONObject jsonObject = new JSONObject();
-            //查询所有角色
-            List<TSysRole> tSysRoleList = tSysRoleService.selectAll();
-            jsonObject.put("roleList",tSysRoleList);
-            return new CommonResult(200,"success","查询数据成功!",jsonObject);
-        } catch (Exception e) {
-            String message = "查询数据失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
-    /**
-     * 2 通过实体查询所有数据
-     * @return 所有数据
-     */
-    @GetMapping("/system/role/listByEntity")
-    public CommonResult tSysRoleListByEntity(@RequestBody TSysRole tSysRole) throws FebsException{
-        try {
-            //
-            List<TSysRole> tSysRoleList = tSysRoleService.selectAllByEntity(tSysRole);
-            return new CommonResult(200,"success","查询数据成功!",tSysRoleList);
+            return tSysRoleService.selectAll(param);
         } catch (Exception e) {
             String message = "查询数据失败";
             log.error(message, e);
@@ -111,10 +90,10 @@ public class TSysRoleController {
      * @return 删除结果
      */
     @RequiresPermissions({"role:del"})
-    @DeleteMapping("/system/role/del")
-    public CommonResult tSysRoleDel(@RequestBody String parm) throws FebsException{
+    @DeleteMapping("/outfit/role/del")
+    public CommonResult tSysRoleDel(@RequestBody String param) throws FebsException{
         try {
-            CommonResult commonResult = tSysRoleService.roleDel(parm);
+            CommonResult commonResult = tSysRoleService.roleDel(param);
             return commonResult;
         } catch (Exception e) {
             String message = "数据删除失败";
@@ -127,14 +106,11 @@ public class TSysRoleController {
      * 4 通过主键查询单条数据
      * @return 单条数据
      */
-    @PostMapping("/system/role/getOne")
-    public CommonResult tSysRolegetOne(@RequestBody String parm) throws FebsException{
-        JSONObject jsonObject = JSON.parseObject(parm);
-        String idStr=String.valueOf(jsonObject.get("pk_id"));
+    @PostMapping("/outfit/role/get")
+    public CommonResult tSysRoleGetOne(@RequestBody TSysRole tSysRole) throws FebsException{
         try {
             //
-            TSysRole tSysRole = tSysRoleService.selectById(idStr);
-            return new CommonResult(200,"success","数据获取成功!",tSysRole);
+            return tSysRoleService.selectByPkId(tSysRole);
         } catch (Exception e) {
             String message = "数据获取失败";
             log.error(message, e);
@@ -148,15 +124,11 @@ public class TSysRoleController {
      * @return 修改结果
      */
     @RequiresPermissions({"role:update"})
-    @PutMapping("/system/role/update")
+    @PutMapping("/outfit/role/update")
     public CommonResult tSysRoleUpdate(@RequestBody TSysRole tSysRole) throws FebsException{
-        if("1595564064909".equals(tSysRole.getPkRoleId()) || "1598010216782".equals(tSysRole.getPkRoleId())){
-            return new CommonResult(444,"error","超级管理员和普通用户不可修改!",null);
-        }
         try {
             //
-            tSysRoleService.updateById(tSysRole);
-            return new CommonResult(200,"success","修改成功!",null);
+            return tSysRoleService.tSysRoleUpdate(tSysRole);
         } catch (Exception e) {
             String message = "修改失败";
             log.error(message, e);
@@ -166,7 +138,7 @@ public class TSysRoleController {
     /**
      * 5 给角色分配菜单权限
      */
-    @PostMapping("/system/role/distributeUI")
+    @PostMapping("/outfit/role/distributeUI")
     public CommonResult FPRoleMenuUI(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
         String roleIdStr=String.valueOf(json.get("pk_id"));
@@ -192,7 +164,7 @@ public class TSysRoleController {
      * 5 给角色分配菜单权限
      */
     @RequiresPermissions({"role:distributePerms"})
-    @PostMapping("/system/role/distribute")
+    @PostMapping("/outfit/role/distribute")
     public CommonResult FPRoleMenu(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
         String fk_role_id=String.valueOf(json.get("fk_role_id"));
@@ -214,7 +186,7 @@ public class TSysRoleController {
     /**
      * 6 给角色下发用户
      */
-    @PostMapping("/system/role/addUserUI")
+    @PostMapping("/outfit/role/addUserUI")
     public CommonResult systemRoleAddUserUI(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
         String roleIdStr=String.valueOf(json.get("fk_role_id"));
@@ -242,7 +214,7 @@ public class TSysRoleController {
      * 6 给角色下发用户
      */
     @RequiresPermissions({"role:addUser"})
-    @PostMapping("/system/role/addUser")
+    @PostMapping("/outfit/role/addUser")
     public CommonResult systemRoleAddUser(@RequestBody String parm) throws FebsException{
         try {
             CommonResult commonResult = tSysRoleService.systemRoleAddUser(parm);

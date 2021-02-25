@@ -27,7 +27,7 @@ public interface TSysRoleService {
      * @param tSysRole 实例对象
      * @return 实例对象
      */
-    void insert(TSysRole tSysRole);
+    CommonResult insert(TSysRole tSysRole);
 
     /**
      * 修改数据
@@ -50,6 +50,7 @@ public interface TSysRoleService {
      * @return list
      */
     List<TSysRole> selectAll();
+    CommonResult selectAll(String param);
     /**
      * 通过实体查询所有数据
      * @return list
@@ -97,4 +98,8 @@ public interface TSysRoleService {
     CommonResult systemRoleAddUser(String parm);
 
     CommonResult roleDel(String parm);
+
+    CommonResult selectByPkId(TSysRole tSysRole);
+
+    CommonResult tSysRoleUpdate(TSysRole tSysRole);
 }

@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_outfit.service.TOutfitWorkaddressService;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,20 +52,17 @@ public class TOutfitWorkaddressServiceImpl implements TOutfitWorkaddressService 
     @Transactional()
     @Override
     public CommonResult insert(TOutfitWorkaddress tOutfitWorkaddress) {
+        tOutfitWorkaddress.setPkWorkadressId(IDUtils.getUUID());
         int i = this.tOutfitWorkaddressMapper.insertSelective(tOutfitWorkaddress);
         if (i > 0) {
-            TOutfitWorkaddress entity = new TOutfitWorkaddress();
-            //分页记录条数
-            PageHelper.startPage(1, 10);
-            List<TOutfitWorkaddress> list = this.tOutfitWorkaddressMapper.selectAllPage(entity);
-            PageResult result = PageUtil.getPageResult(new PageInfo<TOutfitWorkaddress>(list));
-            JSONObject resultJson = new JSONObject();
-            resultJson.put("PageResult", result);
+            JSONObject resultJson = this.getListInfo();
             return new CommonResult(200, "success", "添加数据成功", resultJson);
         } else {
             return new CommonResult(444, "error", "添加数据失败", null);
         }
     }
+
+
 
     /**
      * 修改数据
@@ -77,7 +75,9 @@ public class TOutfitWorkaddressServiceImpl implements TOutfitWorkaddressService 
     public CommonResult updateByPkId(TOutfitWorkaddress tOutfitWorkaddress) {
         int i = this.tOutfitWorkaddressMapper.updateByPkId(tOutfitWorkaddress);
         if (i > 0) {
-            return new CommonResult(200, "success", "修改数据成功", null);
+            JSONObject resultJson = this.getListInfo();
+
+            return new CommonResult(200, "success", "修改数据成功", resultJson);
         } else {
             return new CommonResult(444, "error", "修改数据失败", null);
         }
@@ -94,7 +94,9 @@ public class TOutfitWorkaddressServiceImpl implements TOutfitWorkaddressService 
     public CommonResult delete(TOutfitWorkaddress tOutfitWorkaddress) {
         int i = this.tOutfitWorkaddressMapper.deleteById(tOutfitWorkaddress);
         if (i > 0) {
-            return new CommonResult(200, "success", "删除数据成功", null);
+            JSONObject resultJson = this.getListInfo();
+
+            return new CommonResult(200, "success", "删除数据成功", resultJson);
         } else {
             return new CommonResult(444, "error", "删除数据失败", null);
         }
@@ -110,7 +112,6 @@ public class TOutfitWorkaddressServiceImpl implements TOutfitWorkaddressService 
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TOutfitWorkaddress entity = new TOutfitWorkaddress();
@@ -145,6 +146,16 @@ public class TOutfitWorkaddressServiceImpl implements TOutfitWorkaddressService 
         JSONObject resultJson = new JSONObject();
         resultJson.put("entity", entity);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+    private JSONObject getListInfo() {
+        TOutfitWorkaddress entity = new TOutfitWorkaddress();
+        //分页记录条数
+        PageHelper.startPage(1, 10);
+        List<TOutfitWorkaddress> list = this.tOutfitWorkaddressMapper.selectAllPage(entity);
+        PageResult result = PageUtil.getPageResult(new PageInfo<TOutfitWorkaddress>(list));
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("PageResult", result);
+        return resultJson;
     }
 }
     

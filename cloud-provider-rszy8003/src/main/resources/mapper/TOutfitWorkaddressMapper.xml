@@ -120,6 +120,9 @@
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkWorkadressId != null and pkWorkadressId != ''">
+                #{pkWorkadressId},
+            </if>
             <if test="workadressName != null and workadressName != ''">
                 #{workadressName},
             </if>
