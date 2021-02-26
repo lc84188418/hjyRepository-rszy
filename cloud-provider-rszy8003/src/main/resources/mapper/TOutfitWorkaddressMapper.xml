@@ -84,6 +84,9 @@
             </if>
         </where>
     </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress">
+        select PK_WORKADRESS_ID,WORKADRESS_NAME from T_OUTFIT_WORKADDRESS
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkWorkadressId" useGeneratedKeys="true">

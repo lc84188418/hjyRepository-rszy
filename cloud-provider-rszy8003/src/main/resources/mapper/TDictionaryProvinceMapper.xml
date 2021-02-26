@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryProvinceMapper">
+
+    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryProvince" id="TDictionaryProvinceMap">
+        <result property="pkProvinceId" column="PK_PROVINCE_ID" jdbcType="VARCHAR"/>
+        <result property="provinceName" column="PROVINCE_NAME" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="abbreviation" column="ABBREVIATION" jdbcType="VARCHAR"/>
+        <result property="provinceCapital" column="PROVINCE_CAPITAL" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionaryProvinceMap">
+        select * from hjy_cloud.T_DICTIONARY_PROVINCE
+        where PK_PROVINCE_ID = #{pkProvinceId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_DICTIONARY_PROVINCE
+        where 1 = 1
+        <if test="pkProvinceId != null and pkProvinceId != ''">
+            and PK_PROVINCE_ID = #{pkProvinceId}
+        </if>
+        <if test="provinceName != null and provinceName != ''">
+            and PROVINCE_NAME = #{provinceName}
+        </if>
+        <if test="turnOn != null">
+            and TURN_ON = #{turnOn}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime}
+        </if>
+        <if test="abbreviation != null and abbreviation != ''">
+            and ABBREVIATION = #{abbreviation}
+        </if>
+        <if test="provinceCapital != null and provinceCapital != ''">
+            and PROVINCE_CAPITAL = #{provinceCapital}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionaryProvinceMap">
+        select
+        PK_PROVINCE_ID, PROVINCE_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, ABBREVIATION, PROVINCE_CAPITAL
+        from hjy_cloud.T_DICTIONARY_PROVINCE
+        <where>
+            <if test="pkProvinceId != null and pkProvinceId != ''">
+                and PK_PROVINCE_ID = #{pkProvinceId}
+            </if>
+            <if test="provinceName != null and provinceName != ''">
+                and PROVINCE_NAME = #{provinceName}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime}
+            </if>
+            <if test="abbreviation != null and abbreviation != ''">
+                and ABBREVIATION = #{abbreviation}
+            </if>
+            <if test="provinceCapital != null and provinceCapital != ''">
+                and PROVINCE_CAPITAL = #{provinceCapital}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryProvince">
+        select
+        PK_PROVINCE_ID, PROVINCE_NAME
+        from T_DICTIONARY_PROVINCE
+        where TURN_ON = 1
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkProvinceId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_DICTIONARY_PROVINCE(PROVINCE_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, ABBREVIATION, PROVINCE_CAPITAL)
+        values (#{provinceName}, #{turnOn}, #{createTime}, #{updateTime}, #{abbreviation}, #{provinceCapital})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryProvince">
+        insert into hjy_cloud.T_DICTIONARY_PROVINCE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkProvinceId != null and pkProvinceId != ''">
+                PK_PROVINCE_ID,
+            </if>
+            <if test="provinceName != null and provinceName != ''">
+                PROVINCE_NAME,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="abbreviation != null and abbreviation != ''">
+                ABBREVIATION,
+            </if>
+            <if test="provinceCapital != null and provinceCapital != ''">
+                PROVINCE_CAPITAL,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkProvinceId != null and pkProvinceId != ''">
+                #{pkProvinceId},
+            </if>
+            <if test="provinceName != null and provinceName != ''">
+                #{provinceName},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="abbreviation != null and abbreviation != ''">
+                #{abbreviation},
+            </if>
+            <if test="provinceCapital != null and provinceCapital != ''">
+                #{provinceCapital},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_PROVINCE
+        <set>
+            <if test="provinceName != null and provinceName != ''">
+                PROVINCE_NAME = #{provinceName},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+            <if test="abbreviation != null and abbreviation != ''">
+                ABBREVIATION = #{abbreviation},
+            </if>
+            <if test="provinceCapital != null and provinceCapital != ''">
+                PROVINCE_CAPITAL = #{provinceCapital},
+            </if>
+        </set>
+        where PK_PROVINCE_ID = #{pkProvinceId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_PROVINCE where PK_PROVINCE_ID = #{pkProvinceId}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionarySurveyMapper">
+
+    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionarySurvey" id="TDictionarySurveyMap">
+        <result property="pkSurveyId" column="PK_SURVEY_ID" jdbcType="VARCHAR"/>
+        <result property="staffSurvey" column="STAFF_SURVEY" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionarySurveyMap">
+        select * from hjy_cloud.T_DICTIONARY_SURVEY
+        where PK_SURVEY_ID = #{pkSurveyId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_DICTIONARY_SURVEY
+        where 1 = 1
+        <if test="pkSurveyId != null and pkSurveyId != ''">
+            and PK_SURVEY_ID = #{pkSurveyId}
+        </if>
+        <if test="staffSurvey != null and staffSurvey != ''">
+            and STAFF_SURVEY = #{staffSurvey}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime}
+        </if>
+        <if test="turnOn != null">
+            and TURN_ON = #{turnOn}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionarySurveyMap">
+        select
+        PK_SURVEY_ID, STAFF_SURVEY, CREATE_TIME, UPDATE_TIME, TURN_ON
+        from hjy_cloud.T_DICTIONARY_SURVEY
+        <where>
+            <if test="pkSurveyId != null and pkSurveyId != ''">
+                and PK_SURVEY_ID = #{pkSurveyId}
+            </if>
+            <if test="staffSurvey != null and staffSurvey != ''">
+                and STAFF_SURVEY = #{staffSurvey}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionarySurvey">
+        select PK_SURVEY_ID,STAFF_SURVEY from T_DICTIONARY_SURVEY where TURN_ON = 1
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkSurveyId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_DICTIONARY_SURVEY(STAFF_SURVEY, CREATE_TIME, UPDATE_TIME, TURN_ON)
+        values (#{staffSurvey}, #{createTime}, #{updateTime}, #{turnOn})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionarySurvey">
+        insert into hjy_cloud.T_DICTIONARY_SURVEY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkSurveyId != null and pkSurveyId != ''">
+                PK_SURVEY_ID,
+            </if>
+            <if test="staffSurvey != null and staffSurvey != ''">
+                STAFF_SURVEY,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkSurveyId != null and pkSurveyId != ''">
+                #{pkSurveyId},
+            </if>
+            <if test="staffSurvey != null and staffSurvey != ''">
+                #{staffSurvey},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_SURVEY
+        <set>
+            <if test="staffSurvey != null and staffSurvey != ''">
+                STAFF_SURVEY = #{staffSurvey},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn},
+            </if>
+        </set>
+        where PK_SURVEY_ID = #{pkSurveyId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_SURVEY where PK_SURVEY_ID = #{pkSurveyId}
+    </delete>
+
+</mapper>
+

@@ -61,4 +61,6 @@ public interface TOutfitWorkaddressMapper {
      * @return 影响行数
      */
     int deleteById(TOutfitWorkaddress tOutfitWorkaddress);
+
+    List<TOutfitWorkaddress> selectAllId_Name();
 }

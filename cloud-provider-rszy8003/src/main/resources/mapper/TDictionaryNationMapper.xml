@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryNationMapper">
+
+    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryNation" id="TDictionaryNationMap">
+        <result property="pkNationId" column="PK_NATION_ID" jdbcType="VARCHAR"/>
+        <result property="nationName" column="NATION_NAME" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionaryNationMap">
+        select * from hjy_cloud.T_DICTIONARY_NATION
+        where PK_NATION_ID = #{pkNationId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_DICTIONARY_NATION
+        where 1 = 1
+        <if test="pkNationId != null and pkNationId != ''">
+            and PK_NATION_ID = #{pkNationId}
+        </if>
+        <if test="nationName != null and nationName != ''">
+            and NATION_NAME = #{nationName}
+        </if>
+        <if test="turnOn != null">
+            and TURN_ON = #{turnOn}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionaryNationMap">
+        select
+        PK_NATION_ID, NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME
+        from hjy_cloud.T_DICTIONARY_NATION
+        <where>
+            <if test="pkNationId != null and pkNationId != ''">
+                and PK_NATION_ID = #{pkNationId}
+            </if>
+            <if test="nationName != null and nationName != ''">
+                and NATION_NAME = #{nationName}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryNation">
+        select PK_NATION_ID,NATION_NAME from T_DICTIONARY_NATION where TURN_ON = 1
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkNationId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_DICTIONARY_NATION(NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        values (#{nationName}, #{turnOn}, #{createTime}, #{updateTime})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryNation">
+        insert into hjy_cloud.T_DICTIONARY_NATION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkNationId != null and pkNationId != ''">
+                PK_NATION_ID,
+            </if>
+            <if test="nationName != null and nationName != ''">
+                NATION_NAME,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkNationId != null and pkNationId != ''">
+                #{pkNationId},
+            </if>
+            <if test="nationName != null and nationName != ''">
+                #{nationName},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+        </trim>
+    </insert>
+    <!--批量添加    -->
+    <insert id="insertBatch" parameterType="list">
+        insert  INTO
+        T_DICTIONARY_NATION(PK_NATION_ID,NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        values
+        <foreach collection="nameList" item="item" index="index" separator=",">
+            (
+            #{item.pkNationId, jdbcType=VARCHAR},
+            #{item.nationName, jdbcType=VARCHAR},
+            #{item.turnOn, jdbcType=INTEGER},
+            #{item.createTime, jdbcType=TIMESTAMP},
+            #{item.updateTime, jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_NATION
+        <set>
+            <if test="nationName != null and nationName != ''">
+                NATION_NAME = #{nationName},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+        </set>
+        where PK_NATION_ID = #{pkNationId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_NATION where PK_NATION_ID = #{pkNationId}
+    </delete>
+
+</mapper>
+

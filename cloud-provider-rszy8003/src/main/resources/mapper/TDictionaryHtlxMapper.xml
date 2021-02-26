@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryHtlxMapper">
+
+    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryHtlx" id="TDictionaryHtlxMap">
+        <result property="pkHtlxId" column="PK_HTLX_ID" jdbcType="VARCHAR"/>
+        <result property="contracType" column="CONTRAC_TYPE" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionaryHtlxMap">
+        select * from hjy_cloud.T_DICTIONARY_HTLX
+        where PK_HTLX_ID = #{pkHtlxId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_DICTIONARY_HTLX
+        where 1 = 1
+        <if test="pkHtlxId != null and pkHtlxId != ''">
+            and PK_HTLX_ID = #{pkHtlxId}
+        </if>
+        <if test="contracType != null and contracType != ''">
+            and CONTRAC_TYPE = #{contracType}
+        </if>
+        <if test="turnOn != null">
+            and TURN_ON = #{turnOn}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionaryHtlxMap">
+        select
+        PK_HTLX_ID, CONTRAC_TYPE, TURN_ON, CREATE_TIME, UPDATE_TIME
+        from hjy_cloud.T_DICTIONARY_HTLX
+        <where>
+            <if test="pkHtlxId != null and pkHtlxId != ''">
+                and PK_HTLX_ID = #{pkHtlxId}
+            </if>
+            <if test="contracType != null and contracType != ''">
+                and CONTRAC_TYPE = #{contracType}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryHtlx">
+        select PK_HTLX_ID,CONTRAC_TYPE from T_DICTIONARY_HTLX where TURN_ON = 1
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkHtlxId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_DICTIONARY_HTLX(CONTRAC_TYPE, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        values (#{contracType}, #{turnOn}, #{createTime}, #{updateTime})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryHtlx">
+        insert into hjy_cloud.T_DICTIONARY_HTLX
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkHtlxId != null and pkHtlxId != ''">
+                PK_HTLX_ID,
+            </if>
+            <if test="contracType != null and contracType != ''">
+                CONTRAC_TYPE,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkHtlxId != null and pkHtlxId != ''">
+                #{pkHtlxId},
+            </if>
+            <if test="contracType != null and contracType != ''">
+                #{contracType},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_HTLX
+        <set>
+            <if test="contracType != null and contracType != ''">
+                CONTRAC_TYPE = #{contracType},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+        </set>
+        where PK_HTLX_ID = #{pkHtlxId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_HTLX where PK_HTLX_ID = #{pkHtlxId}
+    </delete>
+
+</mapper>
+

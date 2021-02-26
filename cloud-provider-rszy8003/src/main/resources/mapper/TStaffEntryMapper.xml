@@ -1,0 +1,343 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffEntryMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffEntry" id="TStaffEntryMap">
+        <result property="pkEntryId" column="PK_ENTRY_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
+        <result property="staffSex" column="STAFF_SEX" jdbcType="INTEGER"/>
+        <result property="staffAge" column="STAFF_AGE" jdbcType="INTEGER"/>
+        <result property="staffDept" column="STAFF_DEPT" jdbcType="VARCHAR"/>
+        <result property="staffPosition" column="STAFF_POSITION" jdbcType="VARCHAR"/>
+        <result property="staffTel" column="STAFF_TEL" jdbcType="VARCHAR"/>
+        <result property="workAddress" column="WORK_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="recruitWay" column="RECRUIT_WAY" jdbcType="VARCHAR"/>
+        <result property="idType" column="ID_TYPE" jdbcType="VARCHAR"/>
+        <result property="idCard" column="ID_CARD" jdbcType="VARCHAR"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="email" column="EMAIL" jdbcType="VARCHAR"/>
+        <result property="operatedPeople" column="OPERATED_PEOPLE" jdbcType="VARCHAR"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+        <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
+        <result property="isAbandon" column="IS_ABANDON" jdbcType="INTEGER"/>
+        <result property="abandonTime" column="ABANDON_TIME" jdbcType="TIMESTAMP"/>
+        <result property="abandonReason" column="ABANDON_REASON" jdbcType="VARCHAR"/>
+        <result property="entryDesc" column="ENTRY_DESC" jdbcType="VARCHAR"/>
+        <result property="apvId" column="APV_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffEntryMap">
+        select * from hjy_cloud.T_STAFF_ENTRY
+        where PK_ENTRY_ID = #{pkEntryId}
+    </select>
+
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
+        SELECT
+        T_STAFF_ENTRY.PK_ENTRY_ID,
+        T_STAFF_ENTRY.STAFF_NAME,
+        T_STAFF_ENTRY.STAFF_SEX,
+        T_STAFF_ENTRY.STAFF_AGE,
+        T_OUTFIT_DEPT.DEPT_NAME as STAFF_DEPT,
+        T_DICTIONARY_POSITION.POSITION_NAME as STAFF_POSITION,
+        T_STAFF_ENTRY.STAFF_TEL,
+        T_OUTFIT_WORKADDRESS.WORKADRESS_NAME as WORK_ADDRESS,
+        T_STAFF_ENTRY.RECRUIT_WAY,
+        T_STAFF_ENTRY.ID_TYPE,
+        T_STAFF_ENTRY.ID_CARD,
+        T_STAFF_ENTRY.ENTRY_TIME,
+        T_STAFF_ENTRY.EMAIL,
+        T_STAFF_ENTRY.OPERATED_PEOPLE,
+        T_STAFF_ENTRY.`STATUS`,
+        T_STAFF_ENTRY.REMARKS,
+        T_STAFF_ENTRY.IS_ABANDON,
+        T_STAFF_ENTRY.ABANDON_TIME,
+        T_STAFF_ENTRY.ABANDON_REASON,
+        T_STAFF_ENTRY.ENTRY_DESC,
+        T_STAFF_ENTRY.APV_ID
+        FROM
+        T_STAFF_ENTRY
+        INNER JOIN
+        T_OUTFIT_DEPT
+        ON
+        T_STAFF_ENTRY.STAFF_DEPT = T_OUTFIT_DEPT.PK_DEPT_ID
+        INNER JOIN
+        T_DICTIONARY_POSITION
+        ON
+        T_STAFF_ENTRY.STAFF_POSITION = T_DICTIONARY_POSITION.PK_POSITION_ID
+        INNER JOIN
+        T_OUTFIT_WORKADDRESS
+        ON
+        T_STAFF_ENTRY.WORK_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
+        <where>
+            <if test="pkEntryId != null and pkEntryId != ''">
+                and PK_ENTRY_ID = #{pkEntryId}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName}
+            </if>
+            <if test="staffSex != null">
+                and STAFF_SEX = #{staffSex}
+            </if>
+            <if test="staffAge != null">
+                and STAFF_AGE = #{staffAge}
+            </if>
+            <if test="staffDept != null and staffDept != ''">
+                and STAFF_DEPT = #{staffDept}
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                and STAFF_POSITION = #{staffPosition}
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                and STAFF_TEL = #{staffTel}
+            </if>
+            <if test="workAddress != null and workAddress != ''">
+                and WORK_ADDRESS = #{workAddress}
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                and RECRUIT_WAY = #{recruitWay}
+            </if>
+            <if test="idType != null and idType != ''">
+                and ID_TYPE = #{idType}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and ID_CARD = #{idCard}
+            </if>
+            <if test="entryTime != null">
+                and ENTRY_TIME = #{entryTime}
+            </if>
+            <if test="email != null and email != ''">
+                and EMAIL = #{email}
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                and OPERATED_PEOPLE = #{operatedPeople}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and REMARKS = #{remarks}
+            </if>
+            <if test="isAbandon != null">
+                and IS_ABANDON = #{isAbandon}
+            </if>
+            <if test="abandonTime != null">
+                and ABANDON_TIME = #{abandonTime}
+            </if>
+            <if test="abandonReason != null and abandonReason != ''">
+                and ABANDON_REASON = #{abandonReason}
+            </if>
+            <if test="entryDesc != null and entryDesc != ''">
+                and ENTRY_DESC = #{entryDesc}
+            </if>
+            <if test="apvId != null and apvId != ''">
+                and APV_ID = #{apvId}
+            </if>
+        </where>
+    </select>
+
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffEntry">
+        insert into hjy_cloud.T_STAFF_ENTRY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkEntryId != null and pkEntryId != ''">
+                PK_ENTRY_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
+            </if>
+            <if test="staffSex != null">
+                STAFF_SEX,
+            </if>
+            <if test="staffAge != null">
+                STAFF_AGE,
+            </if>
+            <if test="staffDept != null and staffDept != ''">
+                STAFF_DEPT,
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                STAFF_POSITION,
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                STAFF_TEL,
+            </if>
+            <if test="workAddress != null and workAddress != ''">
+                WORK_ADDRESS,
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                RECRUIT_WAY,
+            </if>
+            <if test="idType != null and idType != ''">
+                ID_TYPE,
+            </if>
+            <if test="idCard != null and idCard != ''">
+                ID_CARD,
+            </if>
+            <if test="entryTime != null">
+                ENTRY_TIME,
+            </if>
+            <if test="email != null and email != ''">
+                EMAIL,
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                OPERATED_PEOPLE,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS,
+            </if>
+            <if test="isAbandon != null">
+                IS_ABANDON,
+            </if>
+            <if test="abandonTime != null">
+                ABANDON_TIME,
+            </if>
+            <if test="abandonReason != null and abandonReason != ''">
+                ABANDON_REASON,
+            </if>
+            <if test="entryDesc != null and entryDesc != ''">
+                ENTRY_DESC,
+            </if>
+            <if test="apvId != null and apvId != ''">
+                APV_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkEntryId != null and pkEntryId != ''">
+                #{pkEntryId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="staffSex != null">
+                #{staffSex,jdbcType=INTEGER},
+            </if>
+            <if test="staffAge != null">
+                #{staffAge,jdbcType=INTEGER},
+            </if>
+            <if test="staffDept != null and staffDept != ''">
+                #{staffDept,jdbcType=VARCHAR},
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                #{staffPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                #{staffTel,jdbcType=VARCHAR},
+            </if>
+            <if test="workAddress != null and workAddress != ''">
+                #{workAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                #{recruitWay,jdbcType=VARCHAR},
+            </if>
+            <if test="idType != null and idType != ''">
+                #{idType,jdbcType=VARCHAR},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                #{idCard,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                #{entryTime,jdbcType=DATE},
+            </if>
+            <if test="email != null and email != ''">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                #{operatedPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="isAbandon != null">
+                #{isAbandon,jdbcType=INTEGER},
+            </if>
+            <if test="abandonTime != null">
+                #{abandonTime,jdbcType=DATE},
+            </if>
+            <if test="abandonReason != null and abandonReason != ''">
+                #{abandonReason,jdbcType=VARCHAR},
+            </if>
+            <if test="entryDesc != null and entryDesc != ''">
+                #{entryDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="apvId != null and apvId != ''">
+                #{apvId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_ENTRY
+        <set>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME = #{staffName},
+            </if>
+            <if test="staffSex != null">
+                STAFF_SEX = #{staffSex},
+            </if>
+            <if test="staffAge != null">
+                STAFF_AGE = #{staffAge},
+            </if>
+            <if test="staffDept != null and staffDept != ''">
+                STAFF_DEPT = #{staffDept},
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                STAFF_POSITION = #{staffPosition},
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                STAFF_TEL = #{staffTel},
+            </if>
+            <if test="workAddress != null and workAddress != ''">
+                WORK_ADDRESS = #{workAddress},
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                RECRUIT_WAY = #{recruitWay},
+            </if>
+            <if test="idType != null and idType != ''">
+                ID_TYPE = #{idType},
+            </if>
+            <if test="idCard != null and idCard != ''">
+                ID_CARD = #{idCard},
+            </if>
+            <if test="email != null and email != ''">
+                EMAIL = #{email},
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                OPERATED_PEOPLE = #{operatedPeople},
+            </if>
+            <if test="status != null">
+                STATUS = #{status},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS = #{remarks},
+            </if>
+            <if test="isAbandon != null">
+                IS_ABANDON = #{isAbandon},
+            </if>
+            <if test="abandonTime != null">
+                ABANDON_TIME = #{abandonTime},
+            </if>
+            <if test="abandonReason != null and abandonReason != ''">
+                ABANDON_REASON = #{abandonReason},
+            </if>
+            <if test="entryDesc != null and entryDesc != ''">
+                ENTRY_DESC = #{entryDesc},
+            </if>
+        </set>
+        where PK_ENTRY_ID = #{pkEntryId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_ENTRY where PK_ENTRY_ID = #{pkEntryId}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryAreaMapper">
+
+    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryArea" id="TDictionaryAreaMap">
+        <result property="pkAreaId" column="PK_AREA_ID" jdbcType="VARCHAR"/>
+        <result property="areaName" column="AREA_NAME" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="fkCityId" column="FK_CITY_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionaryAreaMap">
+        select * from hjy_cloud.T_DICTIONARY_AREA
+        where PK_AREA_ID = #{pkAreaId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_DICTIONARY_AREA
+        where 1 = 1
+        <if test="pkAreaId != null and pkAreaId != ''">
+            and PK_AREA_ID = #{pkAreaId}
+        </if>
+        <if test="areaName != null and areaName != ''">
+            and AREA_NAME = #{areaName}
+        </if>
+        <if test="turnOn != null">
+            and TURN_ON = #{turnOn}
+        </if>
+        <if test="createTime != null">
+            and CREATE_TIME = #{createTime}
+        </if>
+        <if test="updateTime != null">
+            and UPDATE_TIME = #{updateTime}
+        </if>
+        <if test="fkCityId != null and fkCityId != ''">
+            and FK_CITY_ID = #{fkCityId}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionaryAreaMap">
+        select * from hjy_cloud.T_DICTIONARY_AREA
+        <where>
+            <if test="pkAreaId != null and pkAreaId != ''">
+                and PK_AREA_ID = #{pkAreaId}
+            </if>
+            <if test="areaName != null and areaName != ''">
+                and AREA_NAME = #{areaName}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime}
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                and FK_CITY_ID = #{fkCityId}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryArea">
+        select PK_AREA_ID,AREA_NAME from T_DICTIONARY_AREA where TURN_ON = 1
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkAreaId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_DICTIONARY_AREA(AREA_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, FK_CITY_ID)
+        values (#{areaName}, #{turnOn}, #{createTime}, #{updateTime}, #{fkCityId})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryArea">
+        insert into hjy_cloud.T_DICTIONARY_AREA
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkAreaId != null and pkAreaId != ''">
+                PK_AREA_ID,
+            </if>
+            <if test="areaName != null and areaName != ''">
+                AREA_NAME,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                FK_CITY_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkAreaId != null and pkAreaId != ''">
+                #{pkAreaId},
+            </if>
+            <if test="areaName != null and areaName != ''">
+                #{areaName},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                #{fkCityId},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_AREA
+        <set>
+            <if test="areaName != null and areaName != ''">
+                AREA_NAME = #{areaName},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime},
+            </if>
+            <if test="fkCityId != null and fkCityId != ''">
+                FK_CITY_ID = #{fkCityId},
+            </if>
+        </set>
+        where PK_AREA_ID = #{pkAreaId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_AREA where PK_AREA_ID = #{pkAreaId}
+    </delete>
+
+</mapper>
+
