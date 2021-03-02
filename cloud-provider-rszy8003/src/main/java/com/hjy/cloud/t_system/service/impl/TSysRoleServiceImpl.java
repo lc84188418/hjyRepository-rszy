@@ -273,23 +273,30 @@ public class TSysRoleServiceImpl implements TSysRoleService {
 
     @Transactional()
     @Override
-    public CommonResult systemRoleAddUser(String parm) {
-        JSONObject jsonObject = JSON.parseObject(parm);
+    public CommonResult systemRoleAddUser(String param) {
+        JSONObject jsonObject = JSON.parseObject(param);
         String pkRoleId=String.valueOf(jsonObject.get("pkRoleId"));
         //删除原有的用户角色
         int i = tSysRoleMapper.deleteUserRoleByRoleId(pkRoleId);
+        int code = 200;
+        String msg = "该角色已成功添加0个用户!";
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
-        if(jsonArray != null){
-            String userIdsStr = jsonArray.toString();
+        String userIdsStr = jsonArray.toString();
+        if(!userIdsStr.equals("[]")){
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
             //添加用户角色
             int j = this.addUserRoleByList(pkRoleId,idList);
+            msg = msg.replace("0",String.valueOf(idList.size()));
+        }else {
+            code = 201;
+            msg = "未选择用户，请选择后添加！";
         }
         if(i>0){
-            return new CommonResult(200,"success","角色添加用户成功!",null);
+            code = 200;
         }else {
-            return new CommonResult(444,"error","角色添加用户失败!",null);
+            code = 203;
         }
+        return new CommonResult(code,"success",msg,null);
     }
 
     @Transactional()
@@ -330,6 +337,7 @@ public class TSysRoleServiceImpl implements TSysRoleService {
 
     @Override
     public CommonResult tSysRoleUpdate(TSysRole tSysRole) {
+        tSysRole.setModifyTime(new Date());
         int i = tSysRoleMapper.updateById(tSysRole);
         if(i > 0){
             JSONObject resultJson = this.getListInfo();

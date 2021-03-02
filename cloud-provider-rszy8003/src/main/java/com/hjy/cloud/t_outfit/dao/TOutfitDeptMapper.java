@@ -89,27 +89,27 @@ public interface TOutfitDeptMapper {
      * 通过用户ID删除原有部门信息
      * @return
      */
-    int deleteDeptUserByUserId(String pkUserId);
+    int deleteDeptUserByUserId(@Param("pkUserId")String pkUserId);
     /**
      * 添加用户部门
      * @return
      */
     int addDeptUserByDeptUser(ReDeptUser deptUser);
 
-    String selectDeptIdByUserId(String idStr);
+    String selectDeptIdByUserId(@Param("fkUserId")String idStr);
     /**
      * 查询该部门是否含有上级部门
      * @return
      */
-    String selectSuperiorDeptId(String pkDeptId);
+    String selectSuperiorDeptId(@Param("pkDeptId")String pkDeptId);
     /**
      * 合并部门前获取所有部门数据，除开当前部门
      */
-    List<TOutfitDept> selectAllIdAndName_BBKDQBM(String pkDeptId);
+    List<TOutfitDept> selectAllIdAndName_BBKDQBM(@Param("pkDeptId")String pkDeptId);
     /**
      * 通过部门ID删除公司部门信息
      */
-    void deleteCompanyDeptByDeptId(@Param("fkDeptId")String fkDeptId);
+    int deleteCompanyDeptByDeptId(@Param("fkDeptId")String fkDeptId);
 
     /**
      * 移动该部门的人到目标部门

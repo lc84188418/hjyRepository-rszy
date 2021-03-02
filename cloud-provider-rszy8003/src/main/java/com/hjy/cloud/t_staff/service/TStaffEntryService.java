@@ -56,4 +56,11 @@ public interface TStaffEntryService {
      * @return
      */
     CommonResult selectById(TStaffEntry tStaffEntry);
+    /**
+     * 弃职
+     *
+     * @param tStaffEntry 实体对象
+     * @return 修改结果
+     */
+    CommonResult giveUp(TStaffEntry tStaffEntry);
 }

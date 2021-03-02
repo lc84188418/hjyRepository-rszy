@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffQuitMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffQuit" id="TStaffQuitMap">
+        <result property="pkQuitId" column="PK_QUIT_ID" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="position" column="POSITION" jdbcType="VARCHAR"/>
+        <result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="quitType" column="QUIT_TYPE" jdbcType="VARCHAR"/>
+        <result property="quitTime" column="QUIT_TIME" jdbcType="TIMESTAMP"/>
+        <result property="apvPeople" column="APV_PEOPLE" jdbcType="VARCHAR"/>
+        <result property="quitStatus" column="QUIT_STATUS" jdbcType="INTEGER"/>
+        <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
+        <result property="apvTime" column="APV_TIME" jdbcType="TIMESTAMP"/>
+        <result property="operatedPeople" column="OPERATED_PEOPLE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffQuitMap">
+        select * from hjy_cloud.T_STAFF_QUIT
+        where PK_QUIT_ID = #{pkQuitId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffQuitMap">
+        select
+        PK_QUIT_ID, FK_STAFF_ID, FK_DEPT_ID, POSITION, APPLY_TIME, QUIT_TYPE, QUIT_TIME, APV_PEOPLE, QUIT_STATUS,
+        REMARKS, APV_TIME, OPERATED_PEOPLE
+        from hjy_cloud.T_STAFF_QUIT
+        <where>
+            <if test="pkQuitId != null and pkQuitId != ''">
+                and PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="position != null and position != ''">
+                and POSITION = #{position,jdbcType=VARCHAR}
+            </if>
+            <if test="applyTime != null">
+                and APPLY_TIME = #{applyTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="quitType != null and quitType != ''">
+                and QUIT_TYPE = #{quitType,jdbcType=VARCHAR}
+            </if>
+            <if test="quitTime != null">
+                and QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="apvPeople != null and apvPeople != ''">
+                and APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR}
+            </if>
+            <if test="quitStatus != null">
+                and QUIT_STATUS = #{quitStatus,jdbcType=INTEGER}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and REMARKS = #{remarks,jdbcType=VARCHAR}
+            </if>
+            <if test="apvTime != null">
+                and APV_TIME = #{apvTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                and OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffQuit">
+        insert into hjy_cloud.T_STAFF_QUIT
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkQuitId != null and pkQuitId != ''">
+                PK_QUIT_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID,
+            </if>
+            <if test="position != null and position != ''">
+                POSITION,
+            </if>
+            <if test="applyTime != null">
+                APPLY_TIME,
+            </if>
+            <if test="quitType != null and quitType != ''">
+                QUIT_TYPE,
+            </if>
+            <if test="quitTime != null">
+                QUIT_TIME,
+            </if>
+            <if test="apvPeople != null and apvPeople != ''">
+                APV_PEOPLE,
+            </if>
+            <if test="quitStatus != null">
+                QUIT_STATUS,
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS,
+            </if>
+            <if test="apvTime != null">
+                APV_TIME,
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                OPERATED_PEOPLE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkQuitId != null and pkQuitId != ''">
+                #{pkQuitId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                #{fkDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="position != null and position != ''">
+                #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="applyTime != null">
+                #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quitType != null and quitType != ''">
+                #{quitType,jdbcType=VARCHAR},
+            </if>
+            <if test="quitTime != null">
+                #{quitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="apvPeople != null and apvPeople != ''">
+                #{apvPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="quitStatus != null">
+                #{quitStatus,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="apvTime != null">
+                #{apvTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                #{operatedPeople,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_QUIT
+        <set>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="position != null and position != ''">
+                POSITION = #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="applyTime != null">
+                APPLY_TIME = #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quitType != null and quitType != ''">
+                QUIT_TYPE = #{quitType,jdbcType=VARCHAR},
+            </if>
+            <if test="quitTime != null">
+                QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="apvPeople != null and apvPeople != ''">
+                APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="quitStatus != null">
+                QUIT_STATUS = #{quitStatus,jdbcType=INTEGER},
+            </if>
+            <if test="remarks != null and remarks != ''">
+                REMARKS = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="apvTime != null">
+                APV_TIME = #{apvTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_QUIT where PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

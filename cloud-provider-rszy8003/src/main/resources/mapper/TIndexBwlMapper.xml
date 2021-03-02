@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_index.dao.TIndexBwlMapper">
+
+    <resultMap type="com.hjy.cloud.t_index.entity.TIndexBwl" id="TIndexBwlMap">
+        <result property="pkBwlId" column="PK_BWL_ID" jdbcType="VARCHAR"/>
+        <result property="bwlName" column="BWL_NAME" jdbcType="VARCHAR"/>
+        <result property="bwlContent" column="BWL_CONTENT" jdbcType="VARCHAR"/>
+        <result property="remindTime" column="REMIND_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TIndexBwlMap">
+        select * from hjy_cloud.T_INDEX_BWL
+        where PK_BWL_ID = #{pkBwlId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TIndexBwlMap">
+        select
+        PK_BWL_ID, BWL_NAME, BWL_CONTENT, REMIND_TIME
+        from hjy_cloud.T_INDEX_BWL
+        <where>
+            <if test="pkBwlId != null and pkBwlId != ''">
+                and PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
+            </if>
+            <if test="bwlName != null and bwlName != ''">
+                and BWL_NAME = #{bwlName,jdbcType=VARCHAR}
+            </if>
+            <if test="bwlContent != null and bwlContent != ''">
+                and BWL_CONTENT = #{bwlContent,jdbcType=VARCHAR}
+            </if>
+            <if test="remindTime != null">
+                and REMIND_TIME = #{remindTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_index.entity.TIndexBwl">
+        insert into hjy_cloud.T_INDEX_BWL
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkBwlId != null and pkBwlId != ''">
+                PK_BWL_ID,
+            </if>
+            <if test="bwlName != null and bwlName != ''">
+                BWL_NAME,
+            </if>
+            <if test="bwlContent != null and bwlContent != ''">
+                BWL_CONTENT,
+            </if>
+            <if test="remindTime != null">
+                REMIND_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkBwlId != null and pkBwlId != ''">
+                #{pkBwlId,jdbcType=VARCHAR},
+            </if>
+            <if test="bwlName != null and bwlName != ''">
+                #{bwlName,jdbcType=VARCHAR},
+            </if>
+            <if test="bwlContent != null and bwlContent != ''">
+                #{bwlContent,jdbcType=VARCHAR},
+            </if>
+            <if test="remindTime != null">
+                #{remindTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_INDEX_BWL
+        <set>
+            <if test="bwlName != null and bwlName != ''">
+                BWL_NAME = #{bwlName,jdbcType=VARCHAR},
+            </if>
+            <if test="bwlContent != null and bwlContent != ''">
+                BWL_CONTENT = #{bwlContent,jdbcType=VARCHAR},
+            </if>
+            <if test="remindTime != null">
+                REMIND_TIME = #{remindTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_INDEX_BWL where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

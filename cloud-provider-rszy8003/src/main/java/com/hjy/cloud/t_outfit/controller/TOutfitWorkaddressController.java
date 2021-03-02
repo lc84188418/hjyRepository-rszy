@@ -27,7 +27,7 @@ public class TOutfitWorkaddressController {
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/outfit/workaddres/addPage")
+    @GetMapping(value = "/outfit/workaddress/addPage")
     public CommonResult insertPage() throws FebsException {
         try {
             return tOutfitWorkaddressService.insertPage();
@@ -43,8 +43,8 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 新增结果
      */
-    @RequiresPermissions({"workaddres:add"})
-    @PostMapping(value = "/outfit/workaddres/add")
+    @RequiresPermissions({"workaddress:add"})
+    @PostMapping(value = "/outfit/workaddress/add")
     public CommonResult insert(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {
             return tOutfitWorkaddressService.insert(tOutfitWorkaddress);
@@ -60,8 +60,8 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 删除结果
      */
-    @RequiresPermissions({"workaddres:del"})
-    @DeleteMapping(value = "/outfit/workaddres/del")
+    @RequiresPermissions({"workaddress:del"})
+    @DeleteMapping(value = "/outfit/workaddress/del")
     public CommonResult delete(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {
             return tOutfitWorkaddressService.delete(tOutfitWorkaddress);
@@ -77,8 +77,8 @@ public class TOutfitWorkaddressController {
      * @param param json参数
      * @return 所有数据
      */
-    @RequiresPermissions({"workaddres:view"})
-    @PostMapping(value = "/outfit/workaddres/list")
+    @RequiresPermissions({"workaddress:view"})
+    @PostMapping(value = "/outfit/workaddress/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tOutfitWorkaddressService.selectAll(param);
@@ -93,8 +93,8 @@ public class TOutfitWorkaddressController {
      *
      * @param tOutfitWorkaddress 实体对象
      */
-    @RequiresPermissions({"workaddres:view"})
-    @PostMapping(value = "/outfit/workaddres/get")
+    @RequiresPermissions({"workaddress:view"})
+    @PostMapping(value = "/outfit/workaddress/get")
     public CommonResult selectOne(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {
             return tOutfitWorkaddressService.selectById(tOutfitWorkaddress);
@@ -110,7 +110,7 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 修改结果
      */
-    @PutMapping(value = "/outfit/workaddres/update")
+    @PutMapping(value = "/outfit/workaddress/update")
     public CommonResult update(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {
             return tOutfitWorkaddressService.updateByPkId(tOutfitWorkaddress);

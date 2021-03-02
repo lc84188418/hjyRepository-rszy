@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_log.dao.TLogExceptionMapper">
+
+    <resultMap type="com.hjy.cloud.t_log.entity.TLogException" id="TLogExceptionMap">
+        <result property="pkExcId" column="PK_EXC_ID" jdbcType="VARCHAR"/>
+        <result property="excRequParam" column="EXC_REQU_PARAM" jdbcType="VARCHAR"/>
+        <result property="excName" column="EXC_NAME" jdbcType="VARCHAR"/>
+        <result property="excMsg" column="EXC_MSG" jdbcType="VARCHAR"/>
+        <result property="operUserId" column="OPER_USER_ID" jdbcType="VARCHAR"/>
+        <result property="operUserName" column="OPER_USER_NAME" jdbcType="VARCHAR"/>
+        <result property="operMethod" column="OPER_METHOD" jdbcType="VARCHAR"/>
+        <result property="operUrl" column="OPER_URL" jdbcType="VARCHAR"/>
+        <result property="operIp" column="OPER_IP" jdbcType="VARCHAR"/>
+        <result property="operVersion" column="OPER_VERSION" jdbcType="VARCHAR"/>
+        <result property="excTime" column="EXC_TIME" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TLogExceptionMap">
+        select * from hjy_cloud.T_LOG_EXCEPTION
+        where PK_EXC_ID = #{pkExcId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TLogExceptionMap">
+        select
+        PK_EXC_ID, EXC_REQU_PARAM, EXC_NAME, EXC_MSG, OPER_USER_ID, OPER_USER_NAME, OPER_METHOD, OPER_URL, OPER_IP,
+        OPER_VERSION, EXC_TIME
+        from hjy_cloud.T_LOG_EXCEPTION
+        <where>
+            <if test="pkExcId != null and pkExcId != ''">
+                and PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
+            </if>
+            <if test="excRequParam != null and excRequParam != ''">
+                and EXC_REQU_PARAM = #{excRequParam,jdbcType=VARCHAR}
+            </if>
+            <if test="excName != null and excName != ''">
+                and EXC_NAME = #{excName,jdbcType=VARCHAR}
+            </if>
+            <if test="excMsg != null and excMsg != ''">
+                and EXC_MSG = #{excMsg,jdbcType=VARCHAR}
+            </if>
+            <if test="operUserId != null and operUserId != ''">
+                and OPER_USER_ID = #{operUserId,jdbcType=VARCHAR}
+            </if>
+            <if test="operUserName != null and operUserName != ''">
+                and OPER_USER_NAME = #{operUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="operMethod != null and operMethod != ''">
+                and OPER_METHOD = #{operMethod,jdbcType=VARCHAR}
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                and OPER_URL = #{operUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="operIp != null and operIp != ''">
+                and OPER_IP = #{operIp,jdbcType=VARCHAR}
+            </if>
+            <if test="operVersion != null and operVersion != ''">
+                and OPER_VERSION = #{operVersion,jdbcType=VARCHAR}
+            </if>
+            <if test="excTime != null">
+                and EXC_TIME = #{excTime,jdbcType=TIMESTAMP}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_log.entity.TLogException">
+        insert into hjy_cloud.T_LOG_EXCEPTION
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkExcId != null and pkExcId != ''">
+                PK_EXC_ID,
+            </if>
+            <if test="excRequParam != null and excRequParam != ''">
+                EXC_REQU_PARAM,
+            </if>
+            <if test="excName != null and excName != ''">
+                EXC_NAME,
+            </if>
+            <if test="excMsg != null and excMsg != ''">
+                EXC_MSG,
+            </if>
+            <if test="operUserId != null and operUserId != ''">
+                OPER_USER_ID,
+            </if>
+            <if test="operUserName != null and operUserName != ''">
+                OPER_USER_NAME,
+            </if>
+            <if test="operMethod != null and operMethod != ''">
+                OPER_METHOD,
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                OPER_URL,
+            </if>
+            <if test="operIp != null and operIp != ''">
+                OPER_IP,
+            </if>
+            <if test="operVersion != null and operVersion != ''">
+                OPER_VERSION,
+            </if>
+            <if test="excTime != null">
+                EXC_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkExcId != null and pkExcId != ''">
+                #{pkExcId,jdbcType=VARCHAR},
+            </if>
+            <if test="excRequParam != null and excRequParam != ''">
+                #{excRequParam,jdbcType=VARCHAR},
+            </if>
+            <if test="excName != null and excName != ''">
+                #{excName,jdbcType=VARCHAR},
+            </if>
+            <if test="excMsg != null and excMsg != ''">
+                #{excMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="operUserId != null and operUserId != ''">
+                #{operUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="operUserName != null and operUserName != ''">
+                #{operUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="operMethod != null and operMethod != ''">
+                #{operMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                #{operUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="operIp != null and operIp != ''">
+                #{operIp,jdbcType=VARCHAR},
+            </if>
+            <if test="operVersion != null and operVersion != ''">
+                #{operVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="excTime != null">
+                #{excTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_LOG_EXCEPTION
+        <set>
+            <if test="excRequParam != null and excRequParam != ''">
+                EXC_REQU_PARAM = #{excRequParam,jdbcType=VARCHAR},
+            </if>
+            <if test="excName != null and excName != ''">
+                EXC_NAME = #{excName,jdbcType=VARCHAR},
+            </if>
+            <if test="excMsg != null and excMsg != ''">
+                EXC_MSG = #{excMsg,jdbcType=VARCHAR},
+            </if>
+            <if test="operUserId != null and operUserId != ''">
+                OPER_USER_ID = #{operUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="operUserName != null and operUserName != ''">
+                OPER_USER_NAME = #{operUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="operMethod != null and operMethod != ''">
+                OPER_METHOD = #{operMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="operUrl != null and operUrl != ''">
+                OPER_URL = #{operUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="operIp != null and operIp != ''">
+                OPER_IP = #{operIp,jdbcType=VARCHAR},
+            </if>
+            <if test="operVersion != null and operVersion != ''">
+                OPER_VERSION = #{operVersion,jdbcType=VARCHAR},
+            </if>
+            <if test="excTime != null">
+                EXC_TIME = #{excTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_LOG_EXCEPTION where PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffContractMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffContract" id="TStaffContractMap">
+        <result property="pkContrctId" column="PK_CONTRCT_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
+        <result property="idcard" column="IDCARD" jdbcType="VARCHAR"/>
+        <result property="contrctStatus" column="CONTRCT_STATUS" jdbcType="INTEGER"/>
+        <result property="fkContractType" column="FK_CONTRACT_TYPE" jdbcType="VARCHAR"/>
+        <result property="contractAttribute" column="CONTRACT_ATTRIBUTE" jdbcType="VARCHAR"/>
+        <result property="contractQx" column="CONTRACT_QX" jdbcType="VARCHAR"/>
+        <result property="fkContractCompany" column="FK_CONTRACT_COMPANY" jdbcType="VARCHAR"/>
+        <result property="startTime" column="START_TIME" jdbcType="TIMESTAMP"/>
+        <result property="signTime" column="SIGN_TIME" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="END_TIME" jdbcType="TIMESTAMP"/>
+        <result property="signNum" column="SIGN_NUM" jdbcType="INTEGER"/>
+        <result property="approvalStatus" column="APPROVAL_STATUS" jdbcType="INTEGER"/>
+        <result property="annex" column="ANNEX" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffContractMap">
+        select * from hjy_cloud.T_STAFF_CONTRACT
+        where PK_CONTRCT_ID = #{pkContrctId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffContractMap">
+        select
+        PK_CONTRCT_ID, STAFF_NAME, IDCARD, CONTRCT_STATUS, FK_CONTRACT_TYPE, CONTRACT_ATTRIBUTE, CONTRACT_QX,
+        FK_CONTRACT_COMPANY, START_TIME, SIGN_TIME, END_TIME, SIGN_NUM, APPROVAL_STATUS, ANNEX
+        from hjy_cloud.T_STAFF_CONTRACT
+        <where>
+            <if test="pkContrctId != null">
+                and PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and IDCARD = #{idcard,jdbcType=VARCHAR}
+            </if>
+            <if test="contrctStatus != null">
+                and CONTRCT_STATUS = #{contrctStatus,jdbcType=INTEGER}
+            </if>
+            <if test="fkContractType != null and fkContractType != ''">
+                and FK_CONTRACT_TYPE = #{fkContractType,jdbcType=VARCHAR}
+            </if>
+            <if test="contractAttribute != null and contractAttribute != ''">
+                and CONTRACT_ATTRIBUTE = #{contractAttribute,jdbcType=VARCHAR}
+            </if>
+            <if test="contractQx != null and contractQx != ''">
+                and CONTRACT_QX = #{contractQx,jdbcType=VARCHAR}
+            </if>
+            <if test="fkContractCompany != null and fkContractCompany != ''">
+                and FK_CONTRACT_COMPANY = #{fkContractCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                and START_TIME = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="signTime != null">
+                and SIGN_TIME = #{signTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and END_TIME = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="signNum != null">
+                and SIGN_NUM = #{signNum,jdbcType=INTEGER}
+            </if>
+            <if test="approvalStatus != null">
+                and APPROVAL_STATUS = #{approvalStatus,jdbcType=INTEGER}
+            </if>
+            <if test="annex != null and annex != ''">
+                and ANNEX = #{annex,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffContract">
+        insert into hjy_cloud.T_STAFF_CONTRACT
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkContrctId != null">
+                PK_CONTRCT_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
+            </if>
+            <if test="idcard != null and idcard != ''">
+                IDCARD,
+            </if>
+            <if test="contrctStatus != null">
+                CONTRCT_STATUS,
+            </if>
+            <if test="fkContractType != null and fkContractType != ''">
+                FK_CONTRACT_TYPE,
+            </if>
+            <if test="contractAttribute != null and contractAttribute != ''">
+                CONTRACT_ATTRIBUTE,
+            </if>
+            <if test="contractQx != null and contractQx != ''">
+                CONTRACT_QX,
+            </if>
+            <if test="fkContractCompany != null and fkContractCompany != ''">
+                FK_CONTRACT_COMPANY,
+            </if>
+            <if test="startTime != null">
+                START_TIME,
+            </if>
+            <if test="signTime != null">
+                SIGN_TIME,
+            </if>
+            <if test="endTime != null">
+                END_TIME,
+            </if>
+            <if test="signNum != null">
+                SIGN_NUM,
+            </if>
+            <if test="approvalStatus != null">
+                APPROVAL_STATUS,
+            </if>
+            <if test="annex != null and annex != ''">
+                ANNEX,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkContrctId != null">
+                #{pkContrctId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="contrctStatus != null">
+                #{contrctStatus,jdbcType=INTEGER},
+            </if>
+            <if test="fkContractType != null and fkContractType != ''">
+                #{fkContractType,jdbcType=VARCHAR},
+            </if>
+            <if test="contractAttribute != null and contractAttribute != ''">
+                #{contractAttribute,jdbcType=VARCHAR},
+            </if>
+            <if test="contractQx != null and contractQx != ''">
+                #{contractQx,jdbcType=VARCHAR},
+            </if>
+            <if test="fkContractCompany != null and fkContractCompany != ''">
+                #{fkContractCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="signTime != null">
+                #{signTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="signNum != null">
+                #{signNum,jdbcType=INTEGER},
+            </if>
+            <if test="approvalStatus != null">
+                #{approvalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="annex != null and annex != ''">
+                #{annex,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_CONTRACT
+        <set>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="idcard != null and idcard != ''">
+                IDCARD = #{idcard,jdbcType=VARCHAR},
+            </if>
+            <if test="contrctStatus != null">
+                CONTRCT_STATUS = #{contrctStatus,jdbcType=INTEGER},
+            </if>
+            <if test="fkContractType != null and fkContractType != ''">
+                FK_CONTRACT_TYPE = #{fkContractType,jdbcType=VARCHAR},
+            </if>
+            <if test="contractAttribute != null and contractAttribute != ''">
+                CONTRACT_ATTRIBUTE = #{contractAttribute,jdbcType=VARCHAR},
+            </if>
+            <if test="contractQx != null and contractQx != ''">
+                CONTRACT_QX = #{contractQx,jdbcType=VARCHAR},
+            </if>
+            <if test="fkContractCompany != null and fkContractCompany != ''">
+                FK_CONTRACT_COMPANY = #{fkContractCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="signTime != null">
+                SIGN_TIME = #{signTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="signNum != null">
+                SIGN_NUM = #{signNum,jdbcType=INTEGER},
+            </if>
+            <if test="approvalStatus != null">
+                APPROVAL_STATUS = #{approvalStatus,jdbcType=INTEGER},
+            </if>
+            <if test="annex != null and annex != ''">
+                ANNEX = #{annex,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_CONTRACT where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

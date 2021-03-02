@@ -50,7 +50,7 @@
         T_STAFF_ENTRY.ENTRY_TIME,
         T_STAFF_ENTRY.EMAIL,
         T_STAFF_ENTRY.OPERATED_PEOPLE,
-        T_STAFF_ENTRY.`STATUS`,
+        T_STAFF_ENTRY.STATUS,
         T_STAFF_ENTRY.REMARKS,
         T_STAFF_ENTRY.IS_ABANDON,
         T_STAFF_ENTRY.ABANDON_TIME,
@@ -330,8 +330,11 @@
             <if test="entryDesc != null and entryDesc != ''">
                 ENTRY_DESC = #{entryDesc},
             </if>
+            <if test="apvId != null and apvId != ''">
+                APV_ID = #{apvId},
+            </if>
         </set>
-        where PK_ENTRY_ID = #{pkEntryId}
+        where PK_ENTRY_ID = #{pkEntryId,jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->

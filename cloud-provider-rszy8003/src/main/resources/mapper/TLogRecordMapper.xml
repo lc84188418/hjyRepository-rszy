@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_log.dao.TLogRecordMapper">
+
+    <resultMap type="com.hjy.cloud.t_log.entity.TLogRecord" id="TLogRecordMap">
+        <result property="pkRecordId" column="PK_RECORD_ID" jdbcType="VARCHAR"/>
+        <result property="recordModule" column="RECORD_MODULE" jdbcType="VARCHAR"/>
+        <result property="recordType" column="RECORD_TYPE" jdbcType="VARCHAR"/>
+        <result property="recordDesc" column="RECORD_DESC" jdbcType="VARCHAR"/>
+        <result property="recordRequParam" column="RECORD_REQU_PARAM" jdbcType="VARCHAR"/>
+        <result property="recordRespParam" column="RECORD_RESP_PARAM" jdbcType="VARCHAR"/>
+        <result property="recordUserId" column="RECORD_USER_ID" jdbcType="VARCHAR"/>
+        <result property="recordUserName" column="RECORD_USER_NAME" jdbcType="VARCHAR"/>
+        <result property="recordFullName" column="RECORD_FULL_NAME" jdbcType="VARCHAR"/>
+        <result property="recordMethod" column="RECORD_METHOD" jdbcType="VARCHAR"/>
+        <result property="recordUrl" column="RECORD_URL" jdbcType="VARCHAR"/>
+        <result property="recordIp" column="RECORD_IP" jdbcType="VARCHAR"/>
+        <result property="recordTime" column="RECORD_TIME" jdbcType="TIMESTAMP"/>
+        <result property="recordVersion" column="RECORD_VERSION" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TLogRecordMap">
+        select * from hjy_cloud.T_LOG_RECORD
+        where PK_RECORD_ID = #{pkRecordId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TLogRecordMap">
+        select
+        PK_RECORD_ID, RECORD_MODULE, RECORD_TYPE, RECORD_DESC, RECORD_REQU_PARAM, RECORD_RESP_PARAM, RECORD_USER_ID,
+        RECORD_USER_NAME, RECORD_FULL_NAME, RECORD_METHOD, RECORD_URL, RECORD_IP, RECORD_TIME, RECORD_VERSION
+        from hjy_cloud.T_LOG_RECORD
+        <where>
+            <if test="pkRecordId != null and pkRecordId != ''">
+                and PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordModule != null and recordModule != ''">
+                and RECORD_MODULE = #{recordModule,jdbcType=VARCHAR}
+            </if>
+            <if test="recordType != null and recordType != ''">
+                and RECORD_TYPE = #{recordType,jdbcType=VARCHAR}
+            </if>
+            <if test="recordDesc != null and recordDesc != ''">
+                and RECORD_DESC = #{recordDesc,jdbcType=VARCHAR}
+            </if>
+            <if test="recordRequParam != null and recordRequParam != ''">
+                and RECORD_REQU_PARAM = #{recordRequParam,jdbcType=VARCHAR}
+            </if>
+            <if test="recordRespParam != null and recordRespParam != ''">
+                and RECORD_RESP_PARAM = #{recordRespParam,jdbcType=VARCHAR}
+            </if>
+            <if test="recordUserId != null and recordUserId != ''">
+                and RECORD_USER_ID = #{recordUserId,jdbcType=VARCHAR}
+            </if>
+            <if test="recordUserName != null and recordUserName != ''">
+                and RECORD_USER_NAME = #{recordUserName,jdbcType=VARCHAR}
+            </if>
+            <if test="recordFullName != null and recordFullName != ''">
+                and RECORD_FULL_NAME = #{recordFullName,jdbcType=VARCHAR}
+            </if>
+            <if test="recordMethod != null and recordMethod != ''">
+                and RECORD_METHOD = #{recordMethod,jdbcType=VARCHAR}
+            </if>
+            <if test="recordUrl != null and recordUrl != ''">
+                and RECORD_URL = #{recordUrl,jdbcType=VARCHAR}
+            </if>
+            <if test="recordIp != null and recordIp != ''">
+                and RECORD_IP = #{recordIp,jdbcType=VARCHAR}
+            </if>
+            <if test="recordTime != null">
+                and RECORD_TIME = #{recordTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="recordVersion != null and recordVersion != ''">
+                and RECORD_VERSION = #{recordVersion,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_log.entity.TLogRecord">
+        insert into hjy_cloud.T_LOG_RECORD
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkRecordId != null and pkRecordId != ''">
+                PK_RECORD_ID,
+            </if>
+            <if test="recordModule != null and recordModule != ''">
+                RECORD_MODULE,
+            </if>
+            <if test="recordType != null and recordType != ''">
+                RECORD_TYPE,
+            </if>
+            <if test="recordDesc != null and recordDesc != ''">
+                RECORD_DESC,
+            </if>
+            <if test="recordRequParam != null and recordRequParam != ''">
+                RECORD_REQU_PARAM,
+            </if>
+            <if test="recordRespParam != null and recordRespParam != ''">
+                RECORD_RESP_PARAM,
+            </if>
+            <if test="recordUserId != null and recordUserId != ''">
+                RECORD_USER_ID,
+            </if>
+            <if test="recordUserName != null and recordUserName != ''">
+                RECORD_USER_NAME,
+            </if>
+            <if test="recordFullName != null and recordFullName != ''">
+                RECORD_FULL_NAME,
+            </if>
+            <if test="recordMethod != null and recordMethod != ''">
+                RECORD_METHOD,
+            </if>
+            <if test="recordUrl != null and recordUrl != ''">
+                RECORD_URL,
+            </if>
+            <if test="recordIp != null and recordIp != ''">
+                RECORD_IP,
+            </if>
+            <if test="recordTime != null">
+                RECORD_TIME,
+            </if>
+            <if test="recordVersion != null and recordVersion != ''">
+                RECORD_VERSION,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkRecordId != null and pkRecordId != ''">
+                #{pkRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordModule != null and recordModule != ''">
+                #{recordModule,jdbcType=VARCHAR},
+            </if>
+            <if test="recordType != null and recordType != ''">
+                #{recordType,jdbcType=VARCHAR},
+            </if>
+            <if test="recordDesc != null and recordDesc != ''">
+                #{recordDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="recordRequParam != null and recordRequParam != ''">
+                #{recordRequParam,jdbcType=VARCHAR},
+            </if>
+            <if test="recordRespParam != null and recordRespParam != ''">
+                #{recordRespParam,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUserId != null and recordUserId != ''">
+                #{recordUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUserName != null and recordUserName != ''">
+                #{recordUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="recordFullName != null and recordFullName != ''">
+                #{recordFullName,jdbcType=VARCHAR},
+            </if>
+            <if test="recordMethod != null and recordMethod != ''">
+                #{recordMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUrl != null and recordUrl != ''">
+                #{recordUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="recordIp != null and recordIp != ''">
+                #{recordIp,jdbcType=VARCHAR},
+            </if>
+            <if test="recordTime != null">
+                #{recordTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="recordVersion != null and recordVersion != ''">
+                #{recordVersion,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_LOG_RECORD
+        <set>
+            <if test="recordModule != null and recordModule != ''">
+                RECORD_MODULE = #{recordModule,jdbcType=VARCHAR},
+            </if>
+            <if test="recordType != null and recordType != ''">
+                RECORD_TYPE = #{recordType,jdbcType=VARCHAR},
+            </if>
+            <if test="recordDesc != null and recordDesc != ''">
+                RECORD_DESC = #{recordDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="recordRequParam != null and recordRequParam != ''">
+                RECORD_REQU_PARAM = #{recordRequParam,jdbcType=VARCHAR},
+            </if>
+            <if test="recordRespParam != null and recordRespParam != ''">
+                RECORD_RESP_PARAM = #{recordRespParam,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUserId != null and recordUserId != ''">
+                RECORD_USER_ID = #{recordUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUserName != null and recordUserName != ''">
+                RECORD_USER_NAME = #{recordUserName,jdbcType=VARCHAR},
+            </if>
+            <if test="recordFullName != null and recordFullName != ''">
+                RECORD_FULL_NAME = #{recordFullName,jdbcType=VARCHAR},
+            </if>
+            <if test="recordMethod != null and recordMethod != ''">
+                RECORD_METHOD = #{recordMethod,jdbcType=VARCHAR},
+            </if>
+            <if test="recordUrl != null and recordUrl != ''">
+                RECORD_URL = #{recordUrl,jdbcType=VARCHAR},
+            </if>
+            <if test="recordIp != null and recordIp != ''">
+                RECORD_IP = #{recordIp,jdbcType=VARCHAR},
+            </if>
+            <if test="recordTime != null">
+                RECORD_TIME = #{recordTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="recordVersion != null and recordVersion != ''">
+                RECORD_VERSION = #{recordVersion,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_LOG_RECORD where PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

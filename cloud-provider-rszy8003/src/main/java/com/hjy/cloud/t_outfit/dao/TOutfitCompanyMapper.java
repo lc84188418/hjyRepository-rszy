@@ -3,6 +3,7 @@ package com.hjy.cloud.t_outfit.dao;
 import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -76,17 +77,17 @@ public interface TOutfitCompanyMapper {
      */
     List<String> selectFPDeptId(String pkCompanyId);
     /**
-     * 删除原有的公司及部门
+     * 通过公司id，删除关系表中数据
      *
      * @return 公司ID
      */
-    void deleteCompanyByCompanyId(String fkCompanyId);
+    int deleteCompanyDeptByCompanyId(@Param("fkCompanyId")String fkCompanyId);
     /**
      * 批量添加公司部门信息
      *
      * @return 添加数据条数
      */
-    int addCompanyDeptByList(List<ReCompanyDept> companyDepts);
+    int addCompanyDeptByList(@Param("idList")List<ReCompanyDept> companyDepts);
     /**
      * 组织架构
      *

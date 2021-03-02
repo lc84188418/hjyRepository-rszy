@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryAreaMapper">
+<mapper namespace="com.hjy.cloud.t_dictionary.dao.TDictionaryAreaMapper">
 
-    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryArea" id="TDictionaryAreaMap">
+    <resultMap type="com.hjy.cloud.t_dictionary.entity.TDictionaryArea" id="TDictionaryAreaMap">
         <result property="pkAreaId" column="PK_AREA_ID" jdbcType="VARCHAR"/>
         <result property="areaName" column="AREA_NAME" jdbcType="VARCHAR"/>
         <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
@@ -65,7 +65,7 @@
             </if>
         </where>
     </select>
-    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryArea">
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryArea">
         select PK_AREA_ID,AREA_NAME from T_DICTIONARY_AREA where TURN_ON = 1
     </select>
     <!--新增所有列-->
@@ -74,7 +74,7 @@
         values (#{areaName}, #{turnOn}, #{createTime}, #{updateTime}, #{fkCityId})
     </insert>
     <!--新增-->
-    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryArea">
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryArea">
         insert into hjy_cloud.T_DICTIONARY_AREA
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkAreaId != null and pkAreaId != ''">

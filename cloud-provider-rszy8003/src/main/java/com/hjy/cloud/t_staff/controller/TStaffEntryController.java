@@ -116,5 +116,20 @@ public class TStaffEntryController {
         }
     }
 
+    /**
+     * 弃职
+     *
+     * @param tStaffEntry 实体对象
+     * @return 修改结果
+     */
+    @PutMapping(value = "/staff/entry/giveUp")
+    public CommonResult giveUp(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
+        try {
+            return tStaffEntryService.giveUp(tStaffEntry);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 
 }

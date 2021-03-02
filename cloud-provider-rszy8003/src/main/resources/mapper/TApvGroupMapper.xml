@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_apv.dao.TApvGroupMapper">
+
+    <resultMap type="com.hjy.cloud.t_apv.entity.TApvGroup" id="TApvGroupMap">
+        <result property="pkGroupId" column="PK_GROUP_ID" jdbcType="VARCHAR"/>
+        <result property="groupName" column="GROUP_NAME" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="operatePeople" column="OPERATE_PEOPLE" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TApvGroupMap">
+        select * from hjy_cloud.T_APV_GROUP
+        where PK_GROUP_ID = #{pkGroupId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TApvGroupMap">
+        select * from hjy_cloud.T_APV_GROUP
+        <where>
+            <if test="groupName != null and groupName != ''">
+                and GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+            </if>
+            <if test="operatePeople != null and operatePeople != ''">
+                and OPERATE_PEOPLE = #{operatePeople,jdbcType=VARCHAR}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.TApvGroup">
+        insert into hjy_cloud.T_APV_GROUP
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkGroupId != null and pkGroupId != ''">
+                PK_GROUP_ID,
+            </if>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="operatePeople != null and operatePeople != ''">
+                OPERATE_PEOPLE,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkGroupId != null and pkGroupId != ''">
+                #{pkGroupId,jdbcType=VARCHAR},
+            </if>
+            <if test="groupName != null and groupName != ''">
+                #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="operatePeople != null and operatePeople != ''">
+                #{operatePeople,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_APV_GROUP
+        <set>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=DATE},
+            </if>
+            <if test="operatePeople != null and operatePeople != ''">
+                OPERATE_PEOPLE = #{operatePeople,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_APV_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffReassignMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffReassign" id="TStaffReassignMap">
+        <result property="pkReassignId" column="PK_REASSIGN_ID" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="apvRecordId" column="APV_RECORD_ID" jdbcType="VARCHAR"/>
+        <result property="startTime" column="START_TIME" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="END_TIME" jdbcType="TIMESTAMP"/>
+        <result property="reassignTime" column="REASSIGN_TIME" jdbcType="TIMESTAMP"/>
+        <result property="reassignType" column="REASSIGN_TYPE" jdbcType="VARCHAR"/>
+        <result property="oldDeptId" column="OLD_DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="reassignDeptId" column="REASSIGN_DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="oldPosition" column="OLD_POSITION" jdbcType="VARCHAR"/>
+        <result property="reassignPosition" column="REASSIGN_POSITION" jdbcType="VARCHAR"/>
+        <result property="oldAddress" column="OLD_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="reassignAddress" column="REASSIGN_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="oldCompany" column="OLD_COMPANY" jdbcType="VARCHAR"/>
+        <result property="reassignCompany" column="REASSIGN_COMPANY" jdbcType="VARCHAR"/>
+        <result property="oldLeader" column="OLD_LEADER" jdbcType="VARCHAR"/>
+        <result property="reassignLeader" column="REASSIGN_LEADER" jdbcType="VARCHAR"/>
+        <result property="reassignReason" column="REASSIGN_REASON" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffReassignMap">
+        select * from hjy_cloud.T_STAFF_REASSIGN
+        where PK_REASSIGN_ID = #{pkReassignId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffReassignMap">
+        select
+        PK_REASSIGN_ID, FK_STAFF_ID, APV_RECORD_ID, START_TIME, END_TIME, REASSIGN_TIME, REASSIGN_TYPE, OLD_DEPT_ID,
+        REASSIGN_DEPT_ID, OLD_POSITION, REASSIGN_POSITION, OLD_ADDRESS, REASSIGN_ADDRESS, OLD_COMPANY, REASSIGN_COMPANY,
+        OLD_LEADER, REASSIGN_LEADER, REASSIGN_REASON
+        from hjy_cloud.T_STAFF_REASSIGN
+        <where>
+            <if test="pkReassignId != null and pkReassignId != ''">
+                and PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="apvRecordId != null and apvRecordId != ''">
+                and APV_RECORD_ID = #{apvRecordId,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                and START_TIME = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and END_TIME = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="reassignTime != null">
+                and REASSIGN_TIME = #{reassignTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                and REASSIGN_TYPE = #{reassignType,jdbcType=VARCHAR}
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                and OLD_DEPT_ID = #{oldDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                and REASSIGN_DEPT_ID = #{reassignDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                and OLD_POSITION = #{oldPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                and REASSIGN_POSITION = #{reassignPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                and OLD_ADDRESS = #{oldAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                and REASSIGN_ADDRESS = #{reassignAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                and OLD_COMPANY = #{oldCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                and REASSIGN_COMPANY = #{reassignCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                and OLD_LEADER = #{oldLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                and REASSIGN_LEADER = #{reassignLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                and REASSIGN_REASON = #{reassignReason,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffReassign">
+        insert into hjy_cloud.T_STAFF_REASSIGN
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkReassignId != null and pkReassignId != ''">
+                PK_REASSIGN_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="apvRecordId != null and apvRecordId != ''">
+                APV_RECORD_ID,
+            </if>
+            <if test="startTime != null">
+                START_TIME,
+            </if>
+            <if test="endTime != null">
+                END_TIME,
+            </if>
+            <if test="reassignTime != null">
+                REASSIGN_TIME,
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                REASSIGN_TYPE,
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                OLD_DEPT_ID,
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                REASSIGN_DEPT_ID,
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                OLD_POSITION,
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                REASSIGN_POSITION,
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                OLD_ADDRESS,
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                REASSIGN_ADDRESS,
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                OLD_COMPANY,
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                REASSIGN_COMPANY,
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                OLD_LEADER,
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                REASSIGN_LEADER,
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                REASSIGN_REASON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkReassignId != null and pkReassignId != ''">
+                #{pkReassignId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="apvRecordId != null and apvRecordId != ''">
+                #{apvRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reassignTime != null">
+                #{reassignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                #{reassignType,jdbcType=VARCHAR},
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                #{oldDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                #{reassignDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                #{oldPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                #{reassignPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                #{oldAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                #{reassignAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                #{oldCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                #{reassignCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                #{oldLeader,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                #{reassignLeader,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                #{reassignReason,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_REASSIGN
+        <set>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="apvRecordId != null and apvRecordId != ''">
+                APV_RECORD_ID = #{apvRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reassignTime != null">
+                REASSIGN_TIME = #{reassignTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                REASSIGN_TYPE = #{reassignType,jdbcType=VARCHAR},
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                OLD_DEPT_ID = #{oldDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                REASSIGN_DEPT_ID = #{reassignDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                OLD_POSITION = #{oldPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                REASSIGN_POSITION = #{reassignPosition,jdbcType=VARCHAR},
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                OLD_ADDRESS = #{oldAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                REASSIGN_ADDRESS = #{reassignAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                OLD_COMPANY = #{oldCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                REASSIGN_COMPANY = #{reassignCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                OLD_LEADER = #{oldLeader,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                REASSIGN_LEADER = #{reassignLeader,jdbcType=VARCHAR},
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                REASSIGN_REASON = #{reassignReason,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

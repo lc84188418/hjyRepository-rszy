@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffExperienceGzMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffExperienceGz" id="TStaffExperienceGzMap">
+        <result property="pkExperienceId" column="PK_EXPERIENCE_ID" jdbcType="VARCHAR"/>
+        <result property="companyName" column="COMPANY_NAME" jdbcType="VARCHAR"/>
+        <result property="position" column="POSITION" jdbcType="VARCHAR"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="quitTime" column="QUIT_TIME" jdbcType="TIMESTAMP"/>
+        <result property="positionDesc" column="POSITION_DESC" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffExperienceGzMap">
+        select * from hjy_cloud.T_STAFF_EXPERIENCE_GZ
+        where PK_EXPERIENCE_ID = #{pkExperienceId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffExperienceGzMap">
+        select
+        PK_EXPERIENCE_ID, COMPANY_NAME, POSITION, ENTRY_TIME, QUIT_TIME, POSITION_DESC, FK_STAFF_ID
+        from hjy_cloud.T_STAFF_EXPERIENCE_GZ
+        <where>
+            <if test="pkExperienceId != null and pkExperienceId != ''">
+                and PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
+            </if>
+            <if test="companyName != null and companyName != ''">
+                and COMPANY_NAME = #{companyName,jdbcType=VARCHAR}
+            </if>
+            <if test="position != null and position != ''">
+                and POSITION = #{position,jdbcType=VARCHAR}
+            </if>
+            <if test="entryTime != null">
+                and ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="quitTime != null">
+                and QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="positionDesc != null and positionDesc != ''">
+                and POSITION_DESC = #{positionDesc,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffExperienceGz">
+        insert into hjy_cloud.T_STAFF_EXPERIENCE_GZ
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkExperienceId != null and pkExperienceId != ''">
+                PK_EXPERIENCE_ID,
+            </if>
+            <if test="companyName != null and companyName != ''">
+                COMPANY_NAME,
+            </if>
+            <if test="position != null and position != ''">
+                POSITION,
+            </if>
+            <if test="entryTime != null">
+                ENTRY_TIME,
+            </if>
+            <if test="quitTime != null">
+                QUIT_TIME,
+            </if>
+            <if test="positionDesc != null and positionDesc != ''">
+                POSITION_DESC,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkExperienceId != null and pkExperienceId != ''">
+                #{pkExperienceId,jdbcType=VARCHAR},
+            </if>
+            <if test="companyName != null and companyName != ''">
+                #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="position != null and position != ''">
+                #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quitTime != null">
+                #{quitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="positionDesc != null and positionDesc != ''">
+                #{positionDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_EXPERIENCE_GZ
+        <set>
+            <if test="companyName != null and companyName != ''">
+                COMPANY_NAME = #{companyName,jdbcType=VARCHAR},
+            </if>
+            <if test="position != null and position != ''">
+                POSITION = #{position,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="quitTime != null">
+                QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="positionDesc != null and positionDesc != ''">
+                POSITION_DESC = #{positionDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_EXPERIENCE_GZ where PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

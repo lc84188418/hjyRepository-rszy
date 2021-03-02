@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_train.dao.TTrainInfoMapper">
+
+    <resultMap type="com.hjy.cloud.t_train.entity.TTrainInfo" id="TTrainInfoMap">
+        <result property="pkInfoId" column="PK_INFO_ID" jdbcType="VARCHAR"/>
+        <result property="trainName" column="TRAIN_NAME" jdbcType="VARCHAR"/>
+        <result property="trainContent" column="TRAIN_CONTENT" jdbcType="VARCHAR"/>
+        <result property="startTime" column="START_TIME" jdbcType="TIMESTAMP"/>
+        <result property="endTime" column="END_TIME" jdbcType="TIMESTAMP"/>
+        <result property="trainAddress" column="TRAIN_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="trainOrganization" column="TRAIN_ORGANIZATION" jdbcType="VARCHAR"/>
+        <result property="trainPeople" column="TRAIN_PEOPLE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TTrainInfoMap">
+        select * from hjy_cloud.T_TRAIN_INFO
+        where PK_INFO_ID = #{pkInfoId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TTrainInfoMap">
+        select
+        PK_INFO_ID, TRAIN_NAME, TRAIN_CONTENT, START_TIME, END_TIME, TRAIN_ADDRESS, TRAIN_ORGANIZATION, TRAIN_PEOPLE
+        from hjy_cloud.T_TRAIN_INFO
+        <where>
+            <if test="pkInfoId != null and pkInfoId != ''">
+                and PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
+            </if>
+            <if test="trainName != null and trainName != ''">
+                and TRAIN_NAME = #{trainName,jdbcType=VARCHAR}
+            </if>
+            <if test="trainContent != null and trainContent != ''">
+                and TRAIN_CONTENT = #{trainContent,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                and START_TIME = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and END_TIME = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="trainAddress != null and trainAddress != ''">
+                and TRAIN_ADDRESS = #{trainAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="trainOrganization != null and trainOrganization != ''">
+                and TRAIN_ORGANIZATION = #{trainOrganization,jdbcType=VARCHAR}
+            </if>
+            <if test="trainPeople != null and trainPeople != ''">
+                and TRAIN_PEOPLE = #{trainPeople,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_train.entity.TTrainInfo">
+        insert into hjy_cloud.T_TRAIN_INFO
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkInfoId != null and pkInfoId != ''">
+                PK_INFO_ID,
+            </if>
+            <if test="trainName != null and trainName != ''">
+                TRAIN_NAME,
+            </if>
+            <if test="trainContent != null and trainContent != ''">
+                TRAIN_CONTENT,
+            </if>
+            <if test="startTime != null">
+                START_TIME,
+            </if>
+            <if test="endTime != null">
+                END_TIME,
+            </if>
+            <if test="trainAddress != null and trainAddress != ''">
+                TRAIN_ADDRESS,
+            </if>
+            <if test="trainOrganization != null and trainOrganization != ''">
+                TRAIN_ORGANIZATION,
+            </if>
+            <if test="trainPeople != null and trainPeople != ''">
+                TRAIN_PEOPLE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkInfoId != null and pkInfoId != ''">
+                #{pkInfoId,jdbcType=VARCHAR},
+            </if>
+            <if test="trainName != null and trainName != ''">
+                #{trainName,jdbcType=VARCHAR},
+            </if>
+            <if test="trainContent != null and trainContent != ''">
+                #{trainContent,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="trainAddress != null and trainAddress != ''">
+                #{trainAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="trainOrganization != null and trainOrganization != ''">
+                #{trainOrganization,jdbcType=VARCHAR},
+            </if>
+            <if test="trainPeople != null and trainPeople != ''">
+                #{trainPeople,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_TRAIN_INFO
+        <set>
+            <if test="trainName != null and trainName != ''">
+                TRAIN_NAME = #{trainName,jdbcType=VARCHAR},
+            </if>
+            <if test="trainContent != null and trainContent != ''">
+                TRAIN_CONTENT = #{trainContent,jdbcType=VARCHAR},
+            </if>
+            <if test="startTime != null">
+                START_TIME = #{startTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endTime != null">
+                END_TIME = #{endTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="trainAddress != null and trainAddress != ''">
+                TRAIN_ADDRESS = #{trainAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="trainOrganization != null and trainOrganization != ''">
+                TRAIN_ORGANIZATION = #{trainOrganization,jdbcType=VARCHAR},
+            </if>
+            <if test="trainPeople != null and trainPeople != ''">
+                TRAIN_PEOPLE = #{trainPeople,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_TRAIN_INFO where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

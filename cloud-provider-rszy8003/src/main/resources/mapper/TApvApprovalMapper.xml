@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_apv.dao.TApvApprovalMapper">
+
+    <resultMap type="com.hjy.cloud.t_apv.entity.TApvApproval" id="TApvApprovalMap">
+        <result property="pkApprovalId" column="PK_APPROVAL_ID" jdbcType="VARCHAR"/>
+        <result property="approvalType" column="APPROVAL_TYPE" jdbcType="VARCHAR"/>
+        <result property="approvalPeople" column="APPROVAL_PEOPLE" jdbcType="VARCHAR"/>
+        <result property="nextApproval" column="NEXT_APPROVAL" jdbcType="VARCHAR"/>
+        <result property="dataType" column="DATA_TYPE" jdbcType="INTEGER"/>
+        <result property="apvStation" column="APV_STATION" jdbcType="VARCHAR"/>
+        <result property="isEnding" column="IS_ENDING" jdbcType="INTEGER"/>
+        <result property="isStart" column="IS_START" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TApvApprovalMap">
+        select * from hjy_cloud.T_APV_APPROVAL
+        where PK_APPROVAL_ID = #{pkApprovalId}
+    </select>
+
+    <!--No problem 分页时查询总记录条数-->
+    <select id="selectSize" resultType="java.lang.Integer">
+        select count(*) from hjy_cloud.T_APV_APPROVAL
+        where 1 = 1
+        <if test="pkApprovalId != null and pkApprovalId != ''">
+            and PK_APPROVAL_ID = #{pkApprovalId}
+        </if>
+        <if test="approvalType != null and approvalType != ''">
+            and APPROVAL_TYPE = #{approvalType}
+        </if>
+        <if test="approvalPeople != null and approvalPeople != ''">
+            and APPROVAL_PEOPLE = #{approvalPeople}
+        </if>
+        <if test="nextApproval != null and nextApproval != ''">
+            and NEXT_APPROVAL = #{nextApproval}
+        </if>
+        <if test="dataType != null">
+            and DATA_TYPE = #{dataType}
+        </if>
+        <if test="apvStation != null and apvStation != ''">
+            and APV_STATION = #{apvStation}
+        </if>
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TApvApprovalMap">
+        select * from hjy_cloud.T_APV_APPROVAL
+        <where>
+            <if test="pkApprovalId != null and pkApprovalId != ''">
+                and PK_APPROVAL_ID = #{pkApprovalId}
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                and APPROVAL_TYPE = #{approvalType}
+            </if>
+            <if test="approvalPeople != null and approvalPeople != ''">
+                and APPROVAL_PEOPLE = #{approvalPeople}
+            </if>
+            <if test="nextApproval != null and nextApproval != ''">
+                and NEXT_APPROVAL = #{nextApproval}
+            </if>
+            <if test="dataType != null">
+                and DATA_TYPE = #{dataType}
+            </if>
+            <if test="apvStation != null and apvStation != ''">
+                and APV_STATION = #{apvStation}
+            </if>
+            <if test="isEnding != null">
+                and IS_ENDING = #{isEnding}
+            </if>
+            <if test="isStart != null">
+                and IS_START = #{isStart}
+            </if>
+        </where>
+    </select>
+    <select id="selectAllEnding" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+SELECT
+	T_APV_APPROVAL.PK_APPROVAL_ID,
+	T_APV_APPROVAL.NEXT_APPROVAL,
+	T_APV_APPROVAL.DATA_TYPE,
+	T_APV_APPROVAL.APV_STATION,
+	T_APV_APPROVAL.IS_ENDING,
+	T_APV_APPROVAL.IS_START,
+	T_APV_APVTYPE.APVTYPE_NAME as APPROVAL_TYPE,
+	T_STAFF_INFO.STAFF_NAME as APPROVAL_PEOPLE
+FROM
+	T_APV_APPROVAL
+	INNER JOIN
+	T_APV_APVTYPE
+	ON
+		T_APV_APPROVAL.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
+	INNER JOIN
+	T_STAFF_INFO
+	ON
+		T_APV_APPROVAL.APPROVAL_PEOPLE = T_STAFF_INFO.PK_STAFF_ID
+WHERE
+	T_APV_APPROVAL.IS_ENDING = 1
+    </select>
+<!--    查询该审批类型是否已添加过数据-->
+    <select id="selectByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+        SELECT * FROM T_APV_APPROVAL
+        where APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR}
+        and IS_ENDING = 1
+        and DATA_TYPE = (select MAX(DATA_TYPE) from T_APV_APPROVAL where  APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR})
+    </select>
+    <select id="selectAllByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+        SELECT * FROM T_APV_APPROVAL
+        where APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR}
+        and DATA_TYPE = 1
+    </select>
+    <select id="selectApvSet" resultMap="TApvApprovalMap">
+        select * from hjy_cloud.T_APV_APPROVAL
+        <where>
+            <if test="pkApprovalId != null and pkApprovalId != ''">
+                and PK_APPROVAL_ID = #{pkApprovalId}
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                and APPROVAL_TYPE = #{approvalType}
+            </if>
+            <if test="isStart != null">
+                and IS_START = #{isStart}
+            </if>
+        </where>
+    </select>
+    <select id="selectApvRecordById" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        SELECT SOURCE_ID from D_APV_RECORD where PK_RECORD_ID = #{pkRecordId}
+    </select>
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">
+        insert into hjy_cloud.T_APV_APPROVAL(APPROVAL_TYPE, APPROVAL_PEOPLE, NEXT_APPROVAL, DATA_TYPE, APV_STATION)
+        values (#{approvalType}, #{approvalPeople}, #{nextApproval}, #{dataType}, #{apvStation})
+    </insert>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.TApvApproval">
+        insert into hjy_cloud.T_APV_APPROVAL
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkApprovalId != null and pkApprovalId != ''">
+                PK_APPROVAL_ID,
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                APPROVAL_TYPE,
+            </if>
+            <if test="approvalPeople != null and approvalPeople != ''">
+                APPROVAL_PEOPLE,
+            </if>
+            <if test="nextApproval != null and nextApproval != ''">
+                NEXT_APPROVAL,
+            </if>
+            <if test="dataType != null">
+                DATA_TYPE,
+            </if>
+            <if test="apvStation != null and apvStation != ''">
+                APV_STATION,
+            </if>
+            <if test="isEnding != null">
+                IS_ENDING,
+            </if>
+            <if test="isStart != null">
+                IS_START,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkApprovalId != null and pkApprovalId != ''">
+                #{pkApprovalId,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                #{approvalType,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalPeople != null and approvalPeople != ''">
+                #{approvalPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="nextApproval != null and nextApproval != ''">
+                #{nextApproval,jdbcType=VARCHAR},
+            </if>
+            <if test="dataType != null">
+                #{dataType,jdbcType=INTEGER},
+            </if>
+            <if test="apvStation != null and apvStation != ''">
+                #{apvStation,jdbcType=VARCHAR},
+            </if>
+            <if test="isEnding != null">
+                #{isEnding,jdbcType=INTEGER},
+            </if>
+            <if test="isStart != null">
+                #{isStart,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertApvRecordBatch" parameterType="list">
+        insert into D_APV_RECORD
+        (PK_RECORD_ID,APPROVAL_TYPE,SPONSOR,START_TIME,APV_APPROVAL,NEXT_APPROVAL,SOURCE_ID)
+        values
+        <foreach collection="apvRecords" item="item" index="index" separator=",">
+            (
+            #{item.pkRecordId, jdbcType=VARCHAR},
+            #{item.approvalType, jdbcType=VARCHAR},
+            #{item.sponsor, jdbcType=VARCHAR},
+            #{item.startTime, jdbcType=TIMESTAMP},
+            #{item.apvApproval, jdbcType=VARCHAR},
+            #{item.nextApproval, jdbcType=VARCHAR},
+            #{item.sourceId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <insert id="insertApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
+        insert into hjy_cloud.D_APV_RECORD
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkRecordId != null and pkRecordId != ''">
+                PK_RECORD_ID,
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                APPROVAL_TYPE,
+            </if>
+
+            <if test="nextApproval != null and nextApproval != ''">
+                NEXT_APPROVAL,
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                SOURCE_ID
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkRecordId != null and pkRecordId != ''">
+                #{pkRecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                #{approvalType,jdbcType=VARCHAR},
+            </if>
+
+            <if test="nextApproval != null and nextApproval != ''">
+                #{nextApproval,jdbcType=VARCHAR},
+            </if>
+            <if test="sourceId != null and sourceId != ''">
+                #{sourceId,jdbcType=VARCHAR}
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_APV_APPROVAL
+        <set>
+            <if test="approvalType != null and approvalType != ''">
+                APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR},
+            </if>
+            <if test="approvalPeople != null and approvalPeople != ''">
+                APPROVAL_PEOPLE = #{approvalPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="nextApproval != null and nextApproval != ''">
+                NEXT_APPROVAL = #{nextApproval,jdbcType=VARCHAR},
+            </if>
+            <if test="dataType != null">
+                DATA_TYPE = #{dataType,jdbcType=INTEGER},
+            </if>
+            <if test="apvStation != null and apvStation != ''">
+                APV_STATION = #{apvStation,jdbcType=VARCHAR},
+            </if>
+            <if test="isEnding != null">
+                IS_ENDING = #{isEnding,jdbcType=INTEGER},
+            </if>
+            <if test="isStart != null">
+                IS_START = #{isStart,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_APPROVAL_ID = #{pkApprovalId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_APV_APPROVAL where PK_APPROVAL_ID = #{pkApprovalId}
+    </delete>
+    <delete id="deleteApvRecordBySourceId">
+        delete from hjy_cloud.D_APV_RECORD where SOURCE_ID = #{sourceId}
+    </delete>
+
+
+</mapper>
+

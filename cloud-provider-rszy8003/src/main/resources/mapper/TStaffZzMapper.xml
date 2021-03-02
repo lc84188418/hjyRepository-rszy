@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffZzMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffZz" id="TStaffZzMap">
+        <result property="pkZzId" column="PK_ZZ_ID" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="fkWordaddressId" column="FK_WORDADDRESS_ID" jdbcType="VARCHAR"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="syqdqTime" column="SYQDQ_TIME" jdbcType="TIMESTAMP"/>
+        <result property="zzTime" column="ZZ_TIME" jdbcType="TIMESTAMP"/>
+        <result property="apvStatus" column="APV_STATUS" jdbcType="INTEGER"/>
+        <result property="status" column="STATUS" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffZzMap">
+        select * from hjy_cloud.T_STAFF_ZZ
+        where PK_ZZ_ID = #{pkZzId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffZzMap">
+        select
+        PK_ZZ_ID, FK_STAFF_ID, FK_WORDADDRESS_ID, ENTRY_TIME, SYQDQ_TIME, ZZ_TIME, APV_STATUS, STATUS
+        from hjy_cloud.T_STAFF_ZZ
+        <where>
+            <if test="pkZzId != null and pkZzId != ''">
+                and PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkWordaddressId != null and fkWordaddressId != ''">
+                and FK_WORDADDRESS_ID = #{fkWordaddressId,jdbcType=VARCHAR}
+            </if>
+            <if test="entryTime != null">
+                and ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="syqdqTime != null">
+                and SYQDQ_TIME = #{syqdqTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="zzTime != null">
+                and ZZ_TIME = #{zzTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffZz">
+        insert into hjy_cloud.T_STAFF_ZZ
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkZzId != null and pkZzId != ''">
+                PK_ZZ_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="fkWordaddressId != null and fkWordaddressId != ''">
+                FK_WORDADDRESS_ID,
+            </if>
+            <if test="entryTime != null">
+                ENTRY_TIME,
+            </if>
+            <if test="syqdqTime != null">
+                SYQDQ_TIME,
+            </if>
+            <if test="zzTime != null">
+                ZZ_TIME,
+            </if>
+            <if test="apvStatus != null">
+                APV_STATUS,
+            </if>
+            <if test="status != null">
+                STATUS,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkZzId != null and pkZzId != ''">
+                #{pkZzId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkWordaddressId != null and fkWordaddressId != ''">
+                #{fkWordaddressId,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="syqdqTime != null">
+                #{syqdqTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="zzTime != null">
+                #{zzTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="apvStatus != null">
+                #{apvStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_ZZ
+        <set>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkWordaddressId != null and fkWordaddressId != ''">
+                FK_WORDADDRESS_ID = #{fkWordaddressId,jdbcType=VARCHAR},
+            </if>
+            <if test="entryTime != null">
+                ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="syqdqTime != null">
+                SYQDQ_TIME = #{syqdqTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="zzTime != null">
+                ZZ_TIME = #{zzTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="apvStatus != null">
+                APV_STATUS = #{apvStatus,jdbcType=INTEGER},
+            </if>
+            <if test="status != null">
+                STATUS = #{status,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_ZZ where PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

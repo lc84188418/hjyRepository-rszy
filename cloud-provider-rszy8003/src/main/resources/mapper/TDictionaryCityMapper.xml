@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryCityMapper">
+<mapper namespace="com.hjy.cloud.t_dictionary.dao.TDictionaryCityMapper">
 
-    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryCity" id="TDictionaryCityMap">
+    <resultMap type="com.hjy.cloud.t_dictionary.entity.TDictionaryCity" id="TDictionaryCityMap">
         <result property="pkCityId" column="PK_CITY_ID" jdbcType="VARCHAR"/>
         <result property="cityName" column="CITY_NAME" jdbcType="VARCHAR"/>
         <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
@@ -65,7 +65,7 @@
             </if>
         </where>
     </select>
-    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryCity">
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryCity">
         select PK_CITY_ID,CITY_NAME from T_DICTIONARY_CITY where TURN_ON = 1
     </select>
 
@@ -75,7 +75,7 @@
         values (#{cityName}, #{turnOn}, #{createTime}, #{updateTime}, #{fkProvinceId})
     </insert>
     <!--新增-->
-    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryCity">
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryCity">
         insert into hjy_cloud.T_DICTIONARY_CITY
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkCityId != null and pkCityId != ''">

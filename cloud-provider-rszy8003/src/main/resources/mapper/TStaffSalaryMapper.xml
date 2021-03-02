@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_staff.dao.TStaffSalaryMapper">
+
+    <resultMap type="com.hjy.cloud.t_staff.entity.TStaffSalary" id="TStaffSalaryMap">
+        <result property="pkSalaryId" column="PK_SALARY_ID" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="jbXz" column="JB_XZ" jdbcType="REAL"/>
+        <result property="gwXz" column="GW_XZ" jdbcType="REAL"/>
+        <result property="jxXz" column="JX_XZ" jdbcType="REAL"/>
+        <result property="qqBt" column="QQ_BT" jdbcType="REAL"/>
+        <result property="jtBt" column="JT_BT" jdbcType="REAL"/>
+        <result property="csBt" column="CS_BT" jdbcType="REAL"/>
+        <result property="cdZtKq" column="CD_ZT_KQ" jdbcType="REAL"/>
+        <result property="qkBKq" column="QK_B_KQ" jdbcType="REAL"/>
+        <result property="sjBjKq" column="SJ_BJ_KQ" jdbcType="REAL"/>
+        <result property="qtKq" column="QT_KQ" jdbcType="REAL"/>
+        <result property="sbKq" column="SB_KQ" jdbcType="REAL"/>
+        <result property="gjjKq" column="GJJ_KQ" jdbcType="REAL"/>
+        <result property="grsdsKq" column="GRSDS_KQ" jdbcType="REAL"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TStaffSalaryMap">
+        select * from hjy_cloud.T_STAFF_SALARY
+        where PK_SALARY_ID = #{pkSalaryId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TStaffSalaryMap">
+        select
+        PK_SALARY_ID, FK_STAFF_ID, JB_XZ, GW_XZ, JX_XZ, QQ_BT, JT_BT, CS_BT, CD_ZT_KQ, QK_B_KQ, SJ_BJ_KQ, QT_KQ, SB_KQ,
+        GJJ_KQ, GRSDS_KQ
+        from hjy_cloud.T_STAFF_SALARY
+        <where>
+            <if test="pkSalaryId != null and pkSalaryId != ''">
+                and PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="jbXz != null">
+                and JB_XZ = #{jbXz,jdbcType=OTHER}
+            </if>
+            <if test="gwXz != null">
+                and GW_XZ = #{gwXz,jdbcType=OTHER}
+            </if>
+            <if test="jxXz != null">
+                and JX_XZ = #{jxXz,jdbcType=OTHER}
+            </if>
+            <if test="qqBt != null">
+                and QQ_BT = #{qqBt,jdbcType=OTHER}
+            </if>
+            <if test="jtBt != null">
+                and JT_BT = #{jtBt,jdbcType=OTHER}
+            </if>
+            <if test="csBt != null">
+                and CS_BT = #{csBt,jdbcType=OTHER}
+            </if>
+            <if test="cdZtKq != null">
+                and CD_ZT_KQ = #{cdZtKq,jdbcType=OTHER}
+            </if>
+            <if test="qkBKq != null">
+                and QK_B_KQ = #{qkBKq,jdbcType=OTHER}
+            </if>
+            <if test="sjBjKq != null">
+                and SJ_BJ_KQ = #{sjBjKq,jdbcType=OTHER}
+            </if>
+            <if test="qtKq != null">
+                and QT_KQ = #{qtKq,jdbcType=OTHER}
+            </if>
+            <if test="sbKq != null">
+                and SB_KQ = #{sbKq,jdbcType=OTHER}
+            </if>
+            <if test="gjjKq != null">
+                and GJJ_KQ = #{gjjKq,jdbcType=OTHER}
+            </if>
+            <if test="grsdsKq != null">
+                and GRSDS_KQ = #{grsdsKq,jdbcType=OTHER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffSalary">
+        insert into hjy_cloud.T_STAFF_SALARY
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkSalaryId != null and pkSalaryId != ''">
+                PK_SALARY_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="jbXz != null">
+                JB_XZ,
+            </if>
+            <if test="gwXz != null">
+                GW_XZ,
+            </if>
+            <if test="jxXz != null">
+                JX_XZ,
+            </if>
+            <if test="qqBt != null">
+                QQ_BT,
+            </if>
+            <if test="jtBt != null">
+                JT_BT,
+            </if>
+            <if test="csBt != null">
+                CS_BT,
+            </if>
+            <if test="cdZtKq != null">
+                CD_ZT_KQ,
+            </if>
+            <if test="qkBKq != null">
+                QK_B_KQ,
+            </if>
+            <if test="sjBjKq != null">
+                SJ_BJ_KQ,
+            </if>
+            <if test="qtKq != null">
+                QT_KQ,
+            </if>
+            <if test="sbKq != null">
+                SB_KQ,
+            </if>
+            <if test="gjjKq != null">
+                GJJ_KQ,
+            </if>
+            <if test="grsdsKq != null">
+                GRSDS_KQ,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkSalaryId != null and pkSalaryId != ''">
+                #{pkSalaryId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="jbXz != null">
+                #{jbXz,jdbcType=OTHER},
+            </if>
+            <if test="gwXz != null">
+                #{gwXz,jdbcType=OTHER},
+            </if>
+            <if test="jxXz != null">
+                #{jxXz,jdbcType=OTHER},
+            </if>
+            <if test="qqBt != null">
+                #{qqBt,jdbcType=OTHER},
+            </if>
+            <if test="jtBt != null">
+                #{jtBt,jdbcType=OTHER},
+            </if>
+            <if test="csBt != null">
+                #{csBt,jdbcType=OTHER},
+            </if>
+            <if test="cdZtKq != null">
+                #{cdZtKq,jdbcType=OTHER},
+            </if>
+            <if test="qkBKq != null">
+                #{qkBKq,jdbcType=OTHER},
+            </if>
+            <if test="sjBjKq != null">
+                #{sjBjKq,jdbcType=OTHER},
+            </if>
+            <if test="qtKq != null">
+                #{qtKq,jdbcType=OTHER},
+            </if>
+            <if test="sbKq != null">
+                #{sbKq,jdbcType=OTHER},
+            </if>
+            <if test="gjjKq != null">
+                #{gjjKq,jdbcType=OTHER},
+            </if>
+            <if test="grsdsKq != null">
+                #{grsdsKq,jdbcType=OTHER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_STAFF_SALARY
+        <set>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="jbXz != null">
+                JB_XZ = #{jbXz,jdbcType=OTHER},
+            </if>
+            <if test="gwXz != null">
+                GW_XZ = #{gwXz,jdbcType=OTHER},
+            </if>
+            <if test="jxXz != null">
+                JX_XZ = #{jxXz,jdbcType=OTHER},
+            </if>
+            <if test="qqBt != null">
+                QQ_BT = #{qqBt,jdbcType=OTHER},
+            </if>
+            <if test="jtBt != null">
+                JT_BT = #{jtBt,jdbcType=OTHER},
+            </if>
+            <if test="csBt != null">
+                CS_BT = #{csBt,jdbcType=OTHER},
+            </if>
+            <if test="cdZtKq != null">
+                CD_ZT_KQ = #{cdZtKq,jdbcType=OTHER},
+            </if>
+            <if test="qkBKq != null">
+                QK_B_KQ = #{qkBKq,jdbcType=OTHER},
+            </if>
+            <if test="sjBjKq != null">
+                SJ_BJ_KQ = #{sjBjKq,jdbcType=OTHER},
+            </if>
+            <if test="qtKq != null">
+                QT_KQ = #{qtKq,jdbcType=OTHER},
+            </if>
+            <if test="sbKq != null">
+                SB_KQ = #{sbKq,jdbcType=OTHER},
+            </if>
+            <if test="gjjKq != null">
+                GJJ_KQ = #{gjjKq,jdbcType=OTHER},
+            </if>
+            <if test="grsdsKq != null">
+                GRSDS_KQ = #{grsdsKq,jdbcType=OTHER},
+            </if>
+        </set>
+        where PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_STAFF_SALARY where PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

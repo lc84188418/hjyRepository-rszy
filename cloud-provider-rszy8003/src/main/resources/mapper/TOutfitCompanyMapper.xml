@@ -395,7 +395,7 @@ FROM
     <delete id="deleteById">
         delete from hjy_cloud.T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
     </delete>
-    <delete id="deleteCompanyByCompanyId">
+    <delete id="deleteCompanyDeptByCompanyId">
         delete from RE_COMPANY_DEPT where FK_COMPANY_ID =#{fkCompanyId,jdbcType=VARCHAR}
     </delete>
 

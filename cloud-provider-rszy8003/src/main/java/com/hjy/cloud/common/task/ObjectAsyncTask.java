@@ -1,5 +1,8 @@
 package com.hjy.cloud.common.task;
 
+import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
@@ -28,6 +31,8 @@ public class ObjectAsyncTask {
     private TSysRoleService tSysRoleService;
     @Autowired
     private TOutfitDeptService tOutfitDeptService;
+    @Autowired
+    private TApvApprovalService tApvApprovalService;
 
     private static ObjectAsyncTask ntClient;
 
@@ -73,6 +78,31 @@ public class ObjectAsyncTask {
         deptUser.setFk_dept_id(deptId);
         ntClient.tOutfitDeptService.addDeptUserByDeptUser(deptUser);
     }
+    /**
+     * 将末尾的审批流程isEnding改为0
+     * @param pkApprovalId 用户ID
+     */
+    public static int updateAPV_isending(String pkApprovalId) {
+        TApvApproval entity = new TApvApproval();
+        entity.setPkApprovalId(pkApprovalId);
+        entity.setIsEnding(0);
+        return ntClient.tApvApprovalService.updateAPV_isending(entity);
+    }
+    /**
+     * 删除与一级审批相关联的审批数据
+     * @param pkRecordId 一级审批记录的ID
+     * @return
+     */
+    public static String deleteApprovalRecord(String pkRecordId) {
+        DApvRecord entity = ntClient.tApvApprovalService.selectApvRecordById(pkRecordId);
+        int i = ntClient.tApvApprovalService.deleteApvRecordBySourceId(entity.getSourceId());
+        if(i > 0){
+            return "该入职审批数据删除成功！";
+        }else {
+            return "该入职审批数据删除失败！";
+
+        }
+    }
 
     //初始化所有服务
     @PostConstruct
@@ -82,5 +112,6 @@ public class ObjectAsyncTask {
         ntClient.tSysUserService = this.tSysUserService;
         ntClient.tSysRoleService = this.tSysRoleService;
         ntClient.tOutfitDeptService = this.tOutfitDeptService;
+        ntClient.tApvApprovalService = this.tApvApprovalService;
     }
 }

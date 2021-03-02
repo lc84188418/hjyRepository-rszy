@@ -109,6 +109,10 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
     public CommonResult delete(TOutfitCompany tOutfitCompany) {
         int i = this.tOutfitCompanyMapper.deleteById(tOutfitCompany);
         if (i > 0) {
+            /**
+             * 再删除公司-部门信息
+             */
+            int j = tOutfitCompanyMapper.deleteCompanyDeptByCompanyId(tOutfitCompany.getPkCompanyId());
             return new CommonResult(200, "success", "删除数据成功", null);
         } else {
             return new CommonResult(444, "error", "删除数据失败", null);
@@ -200,7 +204,7 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
         JSONObject jsonObject = JSON.parseObject(param);
         String fkCompanyId=String.valueOf(jsonObject.get("fkCompanyId"));
         //删除原有的公司及部门
-        tOutfitCompanyMapper.deleteCompanyByCompanyId(fkCompanyId);
+        tOutfitCompanyMapper.deleteCompanyDeptByCompanyId(fkCompanyId);
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
         if(jsonArray != null){
             String deptIdsStr = jsonArray.toString();

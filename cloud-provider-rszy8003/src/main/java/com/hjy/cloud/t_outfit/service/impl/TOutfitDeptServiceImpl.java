@@ -104,6 +104,10 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     public CommonResult delete(TOutfitDept tOutfitDept) {
         int i = this.tOutfitDeptMapper.deleteById(tOutfitDept);
         if (i > 0) {
+            /**
+             * 再删除公司-部门关联表中数据
+             */
+            int j = tOutfitDeptMapper.deleteCompanyDeptByDeptId(tOutfitDept.getPkDeptId());
             JSONObject resultJson = this.getListInfo();
             return new CommonResult(200, "success", "删除数据成功", resultJson);
         } else {

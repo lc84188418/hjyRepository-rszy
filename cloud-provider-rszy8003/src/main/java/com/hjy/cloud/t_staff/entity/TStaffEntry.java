@@ -52,7 +52,7 @@ public class TStaffEntry {
     private String abandonReason;
     //入职说明
     private String entryDesc;
-    //审批ID
+    //第一级审批ID
     private String apvId;
 
 }

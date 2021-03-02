@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.hjy.cloud.dictionary.dao.TDictionaryEducationMapper">
+<mapper namespace="com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper">
 
-    <resultMap type="com.hjy.cloud.dictionary.entity.TDictionaryEducation" id="TDictionaryEducationMap">
+    <resultMap type="com.hjy.cloud.t_dictionary.entity.TDictionaryEducation" id="TDictionaryEducationMap">
         <result property="pkEducationId" column="PK_EDUCATION_ID" jdbcType="VARCHAR"/>
         <result property="educationName" column="EDUCATION_NAME" jdbcType="VARCHAR"/>
         <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
@@ -58,7 +58,7 @@
             </if>
         </where>
     </select>
-    <select id="selectAllId_Name" resultType="com.hjy.cloud.dictionary.entity.TDictionaryEducation">
+    <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryEducation">
         select PK_EDUCATION_ID,EDUCATION_NAME from T_DICTIONARY_EDUCATION where TURN_ON = 1
     </select>
     <!--新增所有列-->
@@ -67,7 +67,7 @@
         values (#{educationName}, #{turnOn}, #{createTime}, #{updateTime})
     </insert>
     <!--新增-->
-    <insert id="insertSelective" parameterType="com.hjy.cloud.dictionary.entity.TDictionaryEducation">
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryEducation">
         insert into hjy_cloud.T_DICTIONARY_EDUCATION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkEducationId != null and pkEducationId != ''">
