@@ -5,10 +5,14 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.config.rabbitmq.Sender;
 import com.hjy.cloud.t_index.dao.TIndexBwlMapper;
 import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.t_index.service.TIndexBwlService;
+import com.hjy.cloud.t_system.entity.ActiveUser;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -16,7 +20,11 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * (TIndexBwl)表服务实现类
@@ -29,7 +37,8 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
 
     @Resource
     private TIndexBwlMapper tIndexBwlMapper;
-
+    @Resource
+    private Sender sender;
     /**
      * 添加前获取数据
      *
@@ -50,9 +59,24 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
      */
     @Transactional()
     @Override
-    public CommonResult insert(TIndexBwl tIndexBwl) {
+    public CommonResult insert(HttpSession session, TIndexBwl tIndexBwl) {
+        tIndexBwl.setPkBwlId(IDUtils.getUUID());
+        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        /**
+         * 提醒日期不可早与当前日期
+         * 做判断
+         */
+        tIndexBwl.setRemindTime(new Date());
+        tIndexBwl.setIsSend(0);
+        tIndexBwl.setFkUserId(activeUser.getUserId());
         int i = this.tIndexBwlMapper.insertSelective(tIndexBwl);
         if (i > 0) {
+            /**
+             * 发送消息
+             */
+            Map<String,Object> rabbitMap = new HashMap<>();
+            rabbitMap.put("data",tIndexBwl);
+//            sender.send("liuchun",rabbitMap);
             return new CommonResult(200, "success", "添加数据成功", null);
         } else {
             return new CommonResult(444, "error", "添加数据失败", null);

@@ -35,6 +35,9 @@
             </if>
         </where>
     </select>
+    <select id="selectAllEffective" resultType="com.hjy.cloud.t_index.entity.TIndexBwl">
+        SELECT * FROM T_INDEX_BWL WHERE TO_DAYS(REMIND_TIME) = TO_DAYS(NOW()) AND IS_SEND = 0
+    </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_index.entity.TIndexBwl">
         insert into hjy_cloud.T_INDEX_BWL
@@ -51,6 +54,12 @@
             <if test="remindTime != null">
                 REMIND_TIME,
             </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                FK_USER_ID,
+            </if>
+            <if test="isSend != null">
+                IS_SEND,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkBwlId != null and pkBwlId != ''">
@@ -64,6 +73,12 @@
             </if>
             <if test="remindTime != null">
                 #{remindTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                #{fkUserId,jdbcType=VARCHAR},
+            </if>
+            <if test="isSend != null">
+                #{isSend,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -80,8 +95,20 @@
             <if test="remindTime != null">
                 REMIND_TIME = #{remindTime,jdbcType=TIMESTAMP},
             </if>
+            <if test="isSend != null">
+                IS_SEND = #{isSend,jdbcType=INTEGER},
+            </if>
         </set>
         where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateSendStatusBatch">
+       update hjy_cloud.T_INDEX_BWL set IS_SEND = 1
+       where PK_BWL_ID in(
+        <foreach collection="bwls" item="item" index="index" separator=",">
+            #{item.pkBwlId, jdbcType=VARCHAR}
+        </foreach>
+        )
+
     </update>
 
     <!--通过主键删除-->

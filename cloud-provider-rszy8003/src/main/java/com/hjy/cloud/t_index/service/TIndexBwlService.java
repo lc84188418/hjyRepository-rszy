@@ -3,6 +3,8 @@ package com.hjy.cloud.t_index.service;
 import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.domin.CommonResult;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * (TIndexBwl)表服务接口
  *
@@ -23,7 +25,7 @@ public interface TIndexBwlService {
      * @param tIndexBwl
      * @return
      */
-    CommonResult insert(TIndexBwl tIndexBwl);
+    CommonResult insert(HttpSession session, TIndexBwl tIndexBwl);
 
     /**
      * 修改数据

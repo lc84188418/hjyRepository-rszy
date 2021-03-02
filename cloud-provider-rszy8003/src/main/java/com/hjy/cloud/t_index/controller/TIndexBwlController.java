@@ -8,6 +8,7 @@ import com.hjy.cloud.t_index.service.TIndexBwlService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -44,9 +45,9 @@ public class TIndexBwlController {
      * @return 新增结果
      */
     @PostMapping(value = "/index/bwl/add")
-    public CommonResult insert(@RequestBody TIndexBwl tIndexBwl) throws FebsException {
+    public CommonResult insert(HttpSession session, @RequestBody TIndexBwl tIndexBwl) throws FebsException {
         try {
-            return tIndexBwlService.insert(tIndexBwl);
+            return tIndexBwlService.insert(session,tIndexBwl);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_index.dao;
 
 import com.hjy.cloud.t_index.entity.TIndexBwl;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -51,4 +52,16 @@ public interface TIndexBwlMapper {
      * @return 影响行数
      */
     int deleteById(TIndexBwl tIndexBwl);
+    /**
+     * 查询还有效的备忘录
+     *
+     * @return 影响行数
+     */
+    List<TIndexBwl> selectAllEffective();
+    /**
+     * 发送完成后修改备忘录发送状态
+     *
+     * @return 影响行数
+     */
+    int updateSendStatusBatch(@Param("bwls")List<TIndexBwl> bwls);
 }

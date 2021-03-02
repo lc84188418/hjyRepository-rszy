@@ -20,5 +20,9 @@ public class TIndexBwl {
     private String bwlContent;
     //提醒日期
     private Date remindTime;
+    //添加此备忘录的用户员工ID
+    private String fkUserId;
+    //是否已发送
+    private int isSend;
 
 }
