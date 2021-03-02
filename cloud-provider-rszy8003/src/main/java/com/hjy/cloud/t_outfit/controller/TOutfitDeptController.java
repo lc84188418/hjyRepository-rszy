@@ -76,14 +76,13 @@ public class TOutfitDeptController {
     /**
      * 分页查询所有数据
      *
-     * @param param json参数
      * @return 所有数据
      */
     @RequiresPermissions({"dept:view"})
     @PostMapping(value = "/outfit/dept/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    public CommonResult selectAll() throws FebsException {
         try {
-            return tOutfitDeptService.selectAll(param);
+            return tOutfitDeptService.selectAll();
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

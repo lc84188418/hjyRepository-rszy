@@ -28,5 +28,6 @@ public class TApvApvtype {
     private String processDesc;
     //所属分组ID
     private String fkGroupId;
-
+    //图标路径
+    private String iconPath;
 }

@@ -125,6 +125,10 @@ WHERE
     <select id="selectApvRecordById" resultType="com.hjy.cloud.common.entity.DApvRecord">
         SELECT SOURCE_ID from D_APV_RECORD where PK_RECORD_ID = #{pkRecordId}
     </select>
+<!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
+    <select id="waitApv" resultType="com.hjy.cloud.common.entity.DApvRecord">
+
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">
         insert into hjy_cloud.T_APV_APPROVAL(APPROVAL_TYPE, APPROVAL_PEOPLE, NEXT_APPROVAL, DATA_TYPE, APV_STATION)
@@ -188,7 +192,7 @@ WHERE
     </insert>
     <insert id="insertApvRecordBatch" parameterType="list">
         insert into D_APV_RECORD
-        (PK_RECORD_ID,APPROVAL_TYPE,SPONSOR,START_TIME,APV_APPROVAL,NEXT_APPROVAL,SOURCE_ID)
+        (PK_RECORD_ID,APPROVAL_TYPE,SPONSOR,START_TIME,APV_APPROVAL,NEXT_APPROVAL,SOURCE_ID,IS_START)
         values
         <foreach collection="apvRecords" item="item" index="index" separator=",">
             (
@@ -198,7 +202,8 @@ WHERE
             #{item.startTime, jdbcType=TIMESTAMP},
             #{item.apvApproval, jdbcType=VARCHAR},
             #{item.nextApproval, jdbcType=VARCHAR},
-            #{item.sourceId, jdbcType=VARCHAR}
+            #{item.sourceId, jdbcType=VARCHAR},
+            #{item.isStart, jdbcType=INTEGER}
             )
         </foreach>
     </insert>

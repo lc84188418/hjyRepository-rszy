@@ -11,6 +11,7 @@
         <result property="operatePeople" column="OPERATE_PEOPLE" jdbcType="VARCHAR"/>
         <result property="processDesc" column="PROCESS_DESC" jdbcType="VARCHAR"/>
         <result property="fkGroupId" column="FK_GROUP_ID" jdbcType="VARCHAR"/>
+        <result property="iconPath" column="ICON_PATH" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -110,6 +111,9 @@
             <if test="fkGroupId != null and fkGroupId != ''">
                 FK_GROUP_ID,
             </if>
+            <if test="iconPath != null and iconPath != ''">
+                ICON_PATH,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkApvtypeId != null and pkApvtypeId != ''">
@@ -135,6 +139,9 @@
             </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 #{fkGroupId},
+            </if>
+            <if test="iconPath != null and iconPath != ''">
+                #{iconPath},
             </if>
         </trim>
     </insert>
@@ -162,6 +169,9 @@
             </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 FK_GROUP_ID = #{fkGroupId},
+            </if>
+            <if test="iconPath != null and iconPath != ''">
+                ICON_PATH = #{iconPath},
             </if>
         </set>
         where PK_APVTYPE_ID = #{pkApvtypeId}

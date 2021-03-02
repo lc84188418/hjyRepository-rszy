@@ -4,12 +4,12 @@ package com.hjy.cloud.t_system.service.impl;
 import com.hjy.cloud.common.auth.TokenGenerator;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.DateUtil;
-import com.hjy.cloud.utils.file.MyFileUtil;
 import com.hjy.cloud.t_system.dao.TSysRoleMapper;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.*;
 import com.hjy.cloud.t_system.service.ShiroService;
+import com.hjy.cloud.utils.file.FileUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -80,7 +80,7 @@ public class ShiroServiceImpl implements ShiroService {
     @Override
     public CommonResult insertFile(String username, MultipartFile[] files) {
         if(files != null){
-            String [] strings = MyFileUtil.FileUtil(username,files);
+            String [] strings = FileUtil.FileUtil(username,files);
         }
         return null;
     }

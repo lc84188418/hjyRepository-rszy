@@ -2,7 +2,7 @@ package com.hjy.cloud.t_system.service.impl;
 
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.TokenUtil;
-import com.hjy.cloud.utils.file.FileUtils;
+import com.hjy.cloud.utils.file.FileUtil;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.service.ShiroService;
 import com.hjy.cloud.t_system.service.fileUpLoadService;
@@ -29,33 +29,33 @@ public class FileUpLoadServiceImpl implements fileUpLoadService {
     @Override
     public CommonResult singleVideoUpLoad(MultipartFile file, HttpServletRequest httpRequest) {
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        if (!FileUtils.isVideoFile(file)) {
+        if (!FileUtil.isVideoFile(file)) {
             return new CommonResult(201, "success", "非视频格式文件，不能上传", null);
         }
         Map<String, Object> pathMap = new HashMap<String, Object>();
-        pathMap.put("path", FileUtils.fileUpload(file, sysToken.getUsername()));
+        pathMap.put("path", FileUtil.fileUpload(file, sysToken.getUsername()));
         return new CommonResult(200, "success", "上传成功!", pathMap);
     }
 
     @Override
     public CommonResult singlePicUpLoad(MultipartFile file, HttpServletRequest httpRequest) {
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        if (!FileUtils.isPicFile(file)) {
+        if (!FileUtil.isPicFile(file)) {
             return new CommonResult(201, "success", "非图片格式文件，不能上传", null);
         }
         Map<String, Object> pathMap = new HashMap<String, Object>();
-        pathMap.put("path", FileUtils.fileUpload(file, sysToken.getUsername()));
+        pathMap.put("path", FileUtil.fileUpload(file, sysToken.getUsername()));
         return new CommonResult(200, "success", "上传成功!", pathMap);
     }
 
     @Override
     public CommonResult singleDocUpLoad(MultipartFile file, HttpServletRequest httpRequest) {
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        if (!FileUtils.isDocFile(file)) {
+        if (!FileUtil.isDocFile(file)) {
             return new CommonResult(201, "success", "非文档格式文件，不能上传", null);
         }
         Map<String, Object> pathMap = new HashMap<String, Object>();
-        pathMap.put("path", FileUtils.fileUpload(file, sysToken.getUsername()));
+        pathMap.put("path", FileUtil.fileUpload(file, sysToken.getUsername()));
         return new CommonResult(200, "success", "上传成功!", pathMap);
     }
 
@@ -69,7 +69,7 @@ public class FileUpLoadServiceImpl implements fileUpLoadService {
     @Override
     public CommonResult batchVideoUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) {
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        return new CommonResult(200, "success", "上传成功!", FileUtils.fileBatchUpload(file, sysToken.getUsername(), ""));
+        return new CommonResult(200, "success", "上传成功!", FileUtil.fileBatchUpload(file, sysToken.getUsername(), ""));
     }
 
     /**
@@ -82,7 +82,7 @@ public class FileUpLoadServiceImpl implements fileUpLoadService {
     @Override
     public CommonResult batchPicUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) {
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        return new CommonResult(200, "success", "上传成功!", FileUtils.fileBatchUpload(file, sysToken.getUsername(), ""));
+        return new CommonResult(200, "success", "上传成功!", FileUtil.fileBatchUpload(file, sysToken.getUsername(), ""));
     }
 
     /**
@@ -96,6 +96,6 @@ public class FileUpLoadServiceImpl implements fileUpLoadService {
     public CommonResult batchDocUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) {
 //        String url = "http://" + httpRequest.getServerName() + ":" + httpRequest.getServerPort();
         SysToken sysToken = shiroService.findByToken(TokenUtil.getRequestToken(httpRequest));
-        return new CommonResult(200, "success", "上传成功!", FileUtils.fileBatchUpload(file, sysToken.getUsername(), ""));
+        return new CommonResult(200, "success", "上传成功!", FileUtil.fileBatchUpload(file, sysToken.getUsername(), ""));
     }
 }

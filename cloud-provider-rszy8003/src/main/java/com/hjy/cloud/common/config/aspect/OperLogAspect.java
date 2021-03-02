@@ -48,7 +48,7 @@ public class OperLogAspect {
     /**
      * 操作版本号
      */
-    @Value("${spring.boot.application}")
+    @Value("${spring.cloud.application.version}")
     private String operVer;
 
     @Resource

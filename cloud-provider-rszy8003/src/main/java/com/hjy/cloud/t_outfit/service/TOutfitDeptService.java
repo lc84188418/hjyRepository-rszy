@@ -47,10 +47,9 @@ public interface TOutfitDeptService {
     /**
      * 查询所有数据
      *
-     * @param param
      * @return
      */
-    CommonResult selectAll(String param);
+    CommonResult selectAll();
 
     /**
      * 获取单个数据

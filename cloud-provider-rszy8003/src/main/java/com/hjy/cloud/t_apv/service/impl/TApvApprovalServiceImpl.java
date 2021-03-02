@@ -218,12 +218,15 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
 
     }
     /**
-     * 待审批
+     * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      *
-     * @return 修改结果
      */
     @Override
     public CommonResult waitApv() {
+        /**
+         *
+         */
+        List<DApvRecord> waitApvRecords = tApvApprovalMapper.waitApv();
         return null;
     }
     /**

@@ -32,5 +32,7 @@ public class DApvRecord {
     private String nextApproval;
     //审批来源ID
     private String sourceId;
+    //是否为一级审批
+    private int isStart;
 
 }

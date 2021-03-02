@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_outfit.dao;
 
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import org.apache.ibatis.annotations.Param;
 
@@ -116,4 +117,6 @@ public interface TOutfitDeptMapper {
      * @param hbdDeptId
      */
     void updateByDeptId(@Param("hbDeptId")String hbDeptId,@Param("hbdDeptId")String hbdDeptId);
+
+    List<TOutfitStructure> selectStructure();
 }

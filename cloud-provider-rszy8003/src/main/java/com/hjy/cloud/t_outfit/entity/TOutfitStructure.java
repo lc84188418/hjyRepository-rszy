@@ -38,4 +38,9 @@ public class TOutfitStructure {
      * 负责人
      */
     private String fzr;
+    private String staffId;
+    /**
+     * 员工名称
+     */
+    private String staffName;
 }

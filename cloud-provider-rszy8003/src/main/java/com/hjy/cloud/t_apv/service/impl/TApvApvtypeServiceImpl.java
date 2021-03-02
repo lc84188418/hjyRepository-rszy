@@ -8,8 +8,11 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
+import com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper;
+import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -17,6 +20,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -30,7 +34,12 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
 
     @Resource
     private TApvApvtypeMapper tApvApvtypeMapper;
-
+    @Resource
+    private TDictionaryFileMapper tDictionaryFileMapper;
+    @Value("${server.port}")
+    private String serverPort;
+    @Value("${spring.cloud.application.ip}")
+    private String webIp;
     /**
      * 添加前获取数据
      *
@@ -39,7 +48,18 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Override
     public CommonResult insertPage() {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("entity", null);
+        List<TDictionaryFile> list = this.tDictionaryFileMapper.selectAll();
+        /**
+         * 处理文件路径
+         */
+        Iterator<TDictionaryFile> it = list.iterator();
+        while(it.hasNext()){
+            StringBuffer filePath = new StringBuffer();
+            TDictionaryFile obj = it.next();
+            filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getFilePath());
+            obj.setFilePath(filePath.toString());
+        }
+        jsonObject.put("iconList", list);
         return new CommonResult(200, "success", "获取数据成功", jsonObject);
     }
 
@@ -69,6 +89,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Transactional()
     @Override
     public CommonResult updateByPkId(TApvApvtype tApvApvtype) {
+
         int i = this.tApvApvtypeMapper.updateByPkId(tApvApvtype);
         if (i > 0) {
             return new CommonResult(200, "success", "修改数据成功", null);
@@ -86,7 +107,8 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Transactional()
     @Override
     public CommonResult delete(TApvApvtype tApvApvtype) {
-        int i = this.tApvApvtypeMapper.deleteById(tApvApvtype);
+//        int i = this.tApvApvtypeMapper.deleteById(tApvApvtype);
+        int i = 0;
         if (i > 0) {
             return new CommonResult(200, "success", "删除数据成功", null);
         } else {
@@ -138,6 +160,11 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         TApvApvtype entity = this.tApvApvtypeMapper.selectByPkId(pkId);
         JSONObject resultJson = new JSONObject();
         resultJson.put("entity", entity);
+        /**
+         *
+         */
+        List<TDictionaryFile> list = this.tDictionaryFileMapper.selectAll();
+        resultJson.put("iconList", list);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
     private JSONObject getListInfo() {

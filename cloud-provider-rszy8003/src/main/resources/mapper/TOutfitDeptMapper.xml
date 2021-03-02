@@ -72,7 +72,7 @@
     </select>
     <!--No problem 查询所有部门单位数据-->
     <select id="selectAllDeptName" resultType="java.lang.String">
-        select DEPT_NAME from T_SYS_DEPT
+        select DEPT_NAME from T_OUTFIT_DEPT
     </select>
     <select id="selectDeptIdByUserId" resultType="java.lang.String">
         select FK_DEPT_ID from RE_DEPT_USER where FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
@@ -82,6 +82,39 @@
     </select>
     <select id="selectAllIdAndName_BBKDQBM" resultType="com.hjy.cloud.t_outfit.entity.TOutfitDept">
         select PK_DEPT_ID,DEPT_NAME FROM T_OUTFIT_DEPT where PK_DEPT_ID != #{pkDeptId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectStructure" resultType="com.hjy.cloud.t_outfit.entity.TOutfitStructure">
+        SELECT
+	T_OUTFIT_COMPANY.PK_COMPANY_ID as companyId,
+	T_OUTFIT_COMPANY.COMPANY_NAME,
+	RE_COMPANY_DEPT.FK_DEPT_ID as deptId,
+	T_OUTFIT_DEPT.DEPT_NAME,
+	T_OUTFIT_DEPT.DEPT_LEADER as fzr,
+	RE_DEPT_USER.FK_USER_ID as staffId,
+	T_STAFF_INFO.STAFF_NAME,
+	a.num as zzNum
+FROM
+	T_OUTFIT_COMPANY
+	LEFT JOIN
+	RE_COMPANY_DEPT
+	ON
+		T_OUTFIT_COMPANY.PK_COMPANY_ID = RE_COMPANY_DEPT.FK_COMPANY_ID
+	LEFT JOIN
+	T_OUTFIT_DEPT
+	ON
+		RE_COMPANY_DEPT.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+	LEFT JOIN
+	RE_DEPT_USER
+	ON
+		T_OUTFIT_DEPT.PK_DEPT_ID = RE_DEPT_USER.FK_DEPT_ID
+		and T_OUTFIT_COMPANY.PK_COMPANY_ID = RE_DEPT_USER.FK_COMPANY_ID
+	LEFT JOIN
+	T_STAFF_INFO
+	ON RE_DEPT_USER.FK_USER_ID = T_STAFF_INFO.PK_STAFF_ID
+	LEFT JOIN
+	(SELECT FK_COMPANY_ID,FK_DEPT_ID,count(*) as num FROM RE_DEPT_USER where FK_COMPANY_ID !='' GROUP BY FK_DEPT_ID,FK_COMPANY_ID) as a
+	on a.FK_COMPANY_ID = T_OUTFIT_COMPANY.PK_COMPANY_ID
+	and T_OUTFIT_DEPT.PK_DEPT_ID = a.FK_DEPT_ID
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkDeptId" useGeneratedKeys="true">

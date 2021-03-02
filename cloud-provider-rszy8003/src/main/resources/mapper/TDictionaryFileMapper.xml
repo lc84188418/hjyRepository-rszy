@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper">
+
+    <resultMap type="com.hjy.cloud.t_dictionary.entity.TDictionaryFile" id="TDictionaryFileMap">
+        <result property="pkFileId" column="PK_FILE_ID" jdbcType="VARCHAR"/>
+        <result property="fileName" column="FILE_NAME" jdbcType="VARCHAR"/>
+        <result property="filePath" column="FILE_PATH" jdbcType="VARCHAR"/>
+        <result property="createTime" column="CREATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="UPDATE_TIME" jdbcType="TIMESTAMP"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="fileType" column="FILE_TYPE" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TDictionaryFileMap">
+        select * from hjy_cloud.T_DICTIONARY_FILE
+        where PK_FILE_ID = #{pkFileId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TDictionaryFileMap">
+        select
+        PK_FILE_ID, FILE_NAME, FILE_PATH, CREATE_TIME, UPDATE_TIME, TURN_ON, FILE_TYPE
+        from hjy_cloud.T_DICTIONARY_FILE
+        <where>
+            <if test="pkFileId != null and pkFileId != ''">
+                and PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
+            </if>
+            <if test="fileName != null and fileName != ''">
+                and FILE_NAME = #{fileName,jdbcType=VARCHAR}
+            </if>
+            <if test="filePath != null and filePath != ''">
+                and FILE_PATH = #{filePath,jdbcType=VARCHAR}
+            </if>
+            <if test="createTime != null">
+                and CREATE_TIME = #{createTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="updateTime != null">
+                and UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+            <if test="fileType != null">
+                and FILE_TYPE = #{fileType,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <select id="selectAll" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryFile">
+        select PK_FILE_ID, FILE_NAME, FILE_PATH,FILE_TYPE from hjy_cloud.T_DICTIONARY_FILE where TURN_ON = 1
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryFile">
+        insert into hjy_cloud.T_DICTIONARY_FILE
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkFileId != null and pkFileId != ''">
+                PK_FILE_ID,
+            </if>
+            <if test="fileName != null and fileName != ''">
+                FILE_NAME,
+            </if>
+            <if test="filePath != null and filePath != ''">
+                FILE_PATH,
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME,
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+            <if test="fileType != null">
+                FILE_TYPE,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkFileId != null and pkFileId != ''">
+                #{pkFileId,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null and fileName != ''">
+                #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null and filePath != ''">
+                #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="fileType != null">
+                #{fileType,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_DICTIONARY_FILE
+        <set>
+            <if test="fileName != null and fileName != ''">
+                FILE_NAME = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null and filePath != ''">
+                FILE_PATH = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                UPDATE_TIME = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="fileType != null">
+                FILE_TYPE = #{fileType,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_DICTIONARY_FILE where PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

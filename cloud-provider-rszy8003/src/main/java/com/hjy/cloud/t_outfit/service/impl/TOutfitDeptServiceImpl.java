@@ -6,10 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.TSysUser;
@@ -17,6 +21,7 @@ import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -37,6 +42,10 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
 
     @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
+    @Resource
+    private TOutfitCompanyMapper tOutfitCompanyMapper;
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TSysUserMapper tSysUserMapper;
     /**
@@ -60,6 +69,14 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     @Transactional()
     @Override
     public CommonResult insert(TOutfitDept tOutfitDept) {
+        /**
+         * 先查询已有部门列表
+         */
+        List<String> names = tOutfitDeptMapper.selectAllDeptName();
+        String deptName = tOutfitDept.getDeptName();
+        if(names.contains(deptName)){
+            return new CommonResult(445, "error", "该部门名称已存在，请重命名", null);
+        }
         tOutfitDept.setPkDeptId(IDUtils.getUUID());
         tOutfitDept.setCreateTime(new Date());
         tOutfitDept.setModifyTime(new Date());
@@ -118,16 +135,37 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     /**
      * 查询所有数据
      *
-     * @param param
      * @return
      */
     @Override
-    public CommonResult selectAll(String param) {
-//        JSONObject json = JSON.parseObject(param);
-        //查询条件
-//        String pkId = JsonUtil.getStringParam(json, "pk_id");
-        JSONObject resultJson = this.getListInfo();
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    public CommonResult selectAll() {
+//        JSONObject resultJson = new JSONObject();
+//        /**
+//         * 公司信息
+//         */
+//        List<TOutfitCompany> companyList = tOutfitCompanyMapper.select_PkId_name();
+//        resultJson.put("companyList", companyList);
+//        /**
+//         * 所有部门信息
+//         */
+//        List<TOutfitDept> deptList = new ArrayList<>();
+//        if(companyList != null){
+//            for(TOutfitCompany entity:companyList){
+//                List<TOutfitDept> list = tOutfitDeptMapper.selectAllDeptByCompanyId(entity.getPkCompanyId());
+//            }
+//        }
+//
+//        resultJson.put("deptList", deptList);
+//        /**
+//         * 部门下用户
+//         */
+//        TStaffInfo tStaffInfo = new TStaffInfo();
+//        List<TStaffInfo> tStaffInfos = tStaffInfoMapper.selectAllPage(tStaffInfo);
+//        resultJson.put("staffList", tStaffInfos);
+        List<TOutfitStructure> structures = tOutfitDeptMapper.selectStructure();
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("structure", structures);
+        return new CommonResult(200,"success","获取组织架构数据成功!",resultJson);
     }
 
     /**
@@ -179,8 +217,8 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
         TOutfitDept tOutfitDept = tOutfitDeptMapper.selectByPkId(fkDeptId);
         jsonObject.put("dept",tOutfitDept);
         //查找所有用户
-        List<TSysUser> tSysUserList = tSysUserMapper.selectAll();
-        jsonObject.put("userList",tSysUserList);
+        List<TStaffInfo> tStaffInfos = tStaffInfoMapper.selectAllId_Name();
+        jsonObject.put("tStaffInfos",tStaffInfos);
         //查询已分配的用户部门并进行回显
         List<String> deptUserList = tOutfitDeptMapper.selectDeptUser_userIded(fkCompanyId);
         jsonObject.put("ids",deptUserList);

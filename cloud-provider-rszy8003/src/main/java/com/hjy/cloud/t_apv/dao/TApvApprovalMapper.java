@@ -95,4 +95,8 @@ public interface TApvApprovalMapper {
     DApvRecord selectApvRecordById(@Param("pkRecordId")String pkRecordId);
 
     int deleteApvRecordBySourceId(@Param("sourceId")String sourceId);
+    /**
+     * 待审批,是指所有没有审批完成的记录，非操作用户自己的
+     */
+    List<DApvRecord> waitApv();
 }

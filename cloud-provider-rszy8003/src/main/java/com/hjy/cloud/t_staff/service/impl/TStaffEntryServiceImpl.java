@@ -144,7 +144,6 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                 TApvApproval apv = tApvApprovalMapper.selectApvSet(pk_apv_id, approvalType, isStart);
                 if (apv != null) {
                     String nextPkId = IDUtils.getUUID();
-                    isStart = 0;
                     DApvRecord apvRecord = new DApvRecord();
                     apvRecord.setPkRecordId(newPkId);
                     apvRecord.setApprovalType(approvalType);
@@ -152,6 +151,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                     apvRecord.setStartTime(new Date());
                     apvRecord.setApvApproval(apv.getApprovalPeople());
                     apvRecord.setSourceId(tStaffEntry.getPkEntryId());
+                    apvRecord.setIsStart(isStart);
                     if (!apv.getNextApproval().equals("0")) {
                         /**
                          * 说明还有下级审批
@@ -160,16 +160,16 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                         //添加审批记录
                         apvRecord.setNextApproval(nextPkId);
                         newPkId = nextPkId;
-                        apvRecords.add(apvRecord);
                     } else {
                         /**
                          * 该审批只有一个流程
                          */
                         //添加审批记录
                         apvRecord.setNextApproval("0");
-                        apvRecords.add(apvRecord);
                         flag = false;
                     }
+                    apvRecords.add(apvRecord);
+                    isStart = 0;
                 } else {
                     map.put("msg", "入职申请未设置审批人，直接通过！");
                     map.put("firstApvId", null);
