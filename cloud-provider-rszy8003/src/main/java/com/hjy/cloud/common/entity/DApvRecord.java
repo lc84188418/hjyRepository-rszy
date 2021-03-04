@@ -34,5 +34,6 @@ public class DApvRecord {
     private String sourceId;
     //是否为一级审批
     private int isStart;
-
+    //是否处于正在处理的审批流程中
+    private int isIng;
 }

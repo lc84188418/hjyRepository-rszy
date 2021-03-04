@@ -10,12 +10,6 @@ import com.hjy.cloud.domin.CommonResult;
  * @since 2021-03-02 10:02:01
  */
 public interface TLogRecordService {
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    CommonResult insertPage();
 
     /**
      * 添加数据
@@ -25,13 +19,6 @@ public interface TLogRecordService {
      */
     CommonResult insert(TLogRecord tLogRecord);
 
-    /**
-     * 修改数据
-     *
-     * @param tLogRecord
-     * @return
-     */
-    CommonResult updateByPkId(TLogRecord tLogRecord);
 
     /**
      * 删除数据

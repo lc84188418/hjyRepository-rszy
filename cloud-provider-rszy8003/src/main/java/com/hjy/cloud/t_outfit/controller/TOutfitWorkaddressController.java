@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_outfit.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
@@ -43,6 +44,7 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 新增结果
      */
+    @OperLog(operModul = "机构管理-工作地管理",operType = "添加",operDesc = "新增工作地")
     @RequiresPermissions({"workaddress:add"})
     @PostMapping(value = "/outfit/workaddress/add")
     public CommonResult insert(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
@@ -60,6 +62,7 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "机构管理-工作地管理",operType = "删除",operDesc = "删除工作地信息")
     @RequiresPermissions({"workaddress:del"})
     @DeleteMapping(value = "/outfit/workaddress/del")
     public CommonResult delete(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
@@ -77,6 +80,7 @@ public class TOutfitWorkaddressController {
      * @param param json参数
      * @return 所有数据
      */
+    @OperLog(operModul = "机构管理-工作地管理",operType = "查看",operDesc = "查看工作地信息列表")
     @RequiresPermissions({"workaddress:view"})
     @PostMapping(value = "/outfit/workaddress/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
@@ -93,7 +97,8 @@ public class TOutfitWorkaddressController {
      *
      * @param tOutfitWorkaddress 实体对象
      */
-    @RequiresPermissions({"workaddress:view"})
+    @OperLog(operModul = "机构管理-工作地管理",operType = "查看",operDesc = "查看单个工作地信息")
+    @RequiresPermissions({"workaddress:get"})
     @PostMapping(value = "/outfit/workaddress/get")
     public CommonResult selectOne(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {
@@ -110,6 +115,7 @@ public class TOutfitWorkaddressController {
      * @param tOutfitWorkaddress 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "机构管理-工作地管理",operType = "修改",operDesc = "修改工作地信息")
     @PutMapping(value = "/outfit/workaddress/update")
     public CommonResult update(@RequestBody TOutfitWorkaddress tOutfitWorkaddress) throws FebsException {
         try {

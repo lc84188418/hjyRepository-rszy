@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_outfit.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
@@ -44,6 +45,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 新增结果
      */
+    @OperLog(operModul = "机构管理-公司管理",operType = "添加",operDesc = "添加公司基本信息")
     @RequiresPermissions({"company:add"})
     @PostMapping(value = "/outfit/company/add")
     public CommonResult insert(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
@@ -61,6 +63,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "机构管理-公司管理",operType = "删除",operDesc = "删除公司基本信息")
     @RequiresPermissions({"company:del"})
     @DeleteMapping(value = "/outfit/company/del")
     public CommonResult delete(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
@@ -78,6 +81,7 @@ public class TOutfitCompanyController {
      * @param param json参数
      * @return 所有数据
      */
+    @OperLog(operModul = "机构管理-公司管理",operType = "查看",operDesc = "查看公司信息列表")
     @RequiresPermissions({"company:view"})
     @PostMapping(value = "/outfit/company/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
@@ -94,6 +98,7 @@ public class TOutfitCompanyController {
      *
      * @param tOutfitCompany
      */
+    @OperLog(operModul = "机构管理-公司管理",operType = "查看",operDesc = "查看单个公司信息")
     @RequiresPermissions({"company:get"})
     @PostMapping(value = "/outfit/company/get")
     public CommonResult selectOne(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
@@ -111,6 +116,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "机构管理-公司管理",operType = "修改",operDesc = "修改公司基本信息")
     @RequiresPermissions({"company:update"})
     @PutMapping(value = "/outfit/company/update")
     public CommonResult update(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
@@ -122,35 +128,36 @@ public class TOutfitCompanyController {
         }
     }
 
-    /**
-     * 分配部门UI
-     * @param tOutfitCompany 实体对象
-     * @return 修改结果
-     */
-    @PostMapping("/outfit/company/distributeDeptUI")
-    public CommonResult distributeDeptUI(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException{
-        try {
-            return tOutfitCompanyService.distributeDeptUI(tOutfitCompany);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-    /**
-     * 分配部门
-     * @param param json参数
-     * @return 修改结果
-     */
-    @RequiresPermissions({"company:distributeDept"})
-    @PostMapping("/outfit/company/distributeDept")
-    public CommonResult distributeDeptUI(@RequestBody String param) throws FebsException{
-        try {
-            return tOutfitCompanyService.distributeDept(param);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
+//    /**
+//     * 分配部门UI
+//     * @param tOutfitCompany 实体对象
+//     * @return 修改结果
+//     */
+//    @PostMapping("/outfit/company/distributeDeptUI")
+//    public CommonResult distributeDeptUI(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException{
+//        try {
+//            return tOutfitCompanyService.distributeDeptUI(tOutfitCompany);
+//        } catch (Exception e) {
+//            String message = "失败";
+//            throw new FebsException(message);
+//        }
+//    }
+//    /**
+//     * 分配部门
+//     * @param param json参数
+//     * @return 修改结果
+//     */
+//    @OperLog(operModul = "机构管理-公司管理",operType = "添加部门",operDesc = "为该公司新分配部门")
+//    @RequiresPermissions({"company:distributeDept"})
+//    @PostMapping("/outfit/company/distributeDept")
+//    public CommonResult distributeDeptUI(@RequestBody String param) throws FebsException{
+//        try {
+//            return tOutfitCompanyService.distributeDept(param);
+//        } catch (Exception e) {
+//            String message = "失败";
+//            throw new FebsException(message);
+//        }
+//    }
     /**
      * 组织架构
      * 分公司、分部门来查询

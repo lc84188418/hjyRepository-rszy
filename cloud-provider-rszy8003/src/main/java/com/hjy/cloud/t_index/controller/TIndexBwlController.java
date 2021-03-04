@@ -1,10 +1,12 @@
 package com.hjy.cloud.t_index.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.t_index.service.TIndexBwlService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -44,6 +46,8 @@ public class TIndexBwlController {
      * @param tIndexBwl 实体对象
      * @return 新增结果
      */
+    @OperLog(operModul = "首页-备忘录管理",operType = "添加",operDesc = "新增备忘录信息")
+    @RequiresPermissions({"bwl:add"})
     @PostMapping(value = "/index/bwl/add")
     public CommonResult insert(HttpSession session, @RequestBody TIndexBwl tIndexBwl) throws FebsException {
         try {
@@ -60,6 +64,8 @@ public class TIndexBwlController {
      * @param tIndexBwl 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "首页-备忘录管理",operType = "删除",operDesc = "删除备忘录信息")
+    @RequiresPermissions({"bwl:del"})
     @DeleteMapping(value = "/index/bwl/del")
     public CommonResult delete(@RequestBody TIndexBwl tIndexBwl) throws FebsException {
         try {
@@ -76,10 +82,29 @@ public class TIndexBwlController {
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/index/bwl/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    @OperLog(operModul = "首页-备忘录管理",operType = "查看",operDesc = "查看备忘录信息列表")
+    @RequiresPermissions({"bwl:adminView"})
+    @PostMapping(value = "/index/bwl/admin/list")
+    public CommonResult selectAllAdmin(@RequestBody String param) throws FebsException {
         try {
             return tIndexBwlService.selectAll(param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 分页查询所有数据
+     *
+     * @param param json参数
+     * @return 所有数据
+     */
+    @OperLog(operModul = "首页-备忘录管理",operType = "查看",operDesc = "查看备忘录信息列表")
+    @RequiresPermissions({"bwl:view"})
+    @PostMapping(value = "/index/bwl/list")
+    public CommonResult selectAll(HttpSession session,@RequestBody String param) throws FebsException {
+        try {
+            return tIndexBwlService.selectAll(session,param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -91,6 +116,8 @@ public class TIndexBwlController {
      *
      * @param tIndexBwl 实体对象
      */
+    @OperLog(operModul = "首页-备忘录管理",operType = "查看",operDesc = "查看单个备忘录信息")
+    @RequiresPermissions({"bwl:get"})
     @PostMapping(value = "/index/bwl/get")
     public CommonResult selectOne(@RequestBody TIndexBwl tIndexBwl) throws FebsException {
         try {
@@ -107,6 +134,8 @@ public class TIndexBwlController {
      * @param tIndexBwl 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "首页-备忘录管理",operType = "修改",operDesc = "修改备忘录信息")
+    @RequiresPermissions({"bwl:update"})
     @PutMapping(value = "/index/bwl/update")
     public CommonResult update(@RequestBody TIndexBwl tIndexBwl) throws FebsException {
         try {

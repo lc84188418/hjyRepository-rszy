@@ -299,6 +299,9 @@
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         select PK_STAFF_ID,STAFF_NAME from T_STAFF_INFO
     </select>
+    <select id="selectAll" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+        select * from T_STAFF_INFO
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">

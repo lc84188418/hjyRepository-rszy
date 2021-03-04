@@ -3,6 +3,8 @@ package com.hjy.cloud.t_staff.service;
 import com.hjy.cloud.t_staff.entity.TStaffContract;
 import com.hjy.cloud.domin.CommonResult;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * (TStaffContract)表服务接口
  *
@@ -47,7 +49,8 @@ public interface TStaffContractService {
      * @param param
      * @return
      */
-    CommonResult selectAll(String param);
+    CommonResult adminList(String param);
+    CommonResult userList(HttpSession session, String param);
 
     /**
      * 获取单个数据

@@ -1,10 +1,12 @@
 package com.hjy.cloud.t_staff.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -43,6 +45,8 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象
      * @return 新增结果
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "添加",operDesc = "新增入职基本信息")
+    @RequiresPermissions({"entry:add"})
     @PostMapping(value = "/staff/entry/add")
     public CommonResult insert(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {
@@ -59,6 +63,8 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "删除",operDesc = "删除入职基本信息")
+    @RequiresPermissions({"entry:del"})
     @DeleteMapping(value = "/staff/entry/del")
     public CommonResult delete(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {
@@ -75,6 +81,8 @@ public class TStaffEntryController {
      * @param param json参数
      * @return 所有数据
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "查看",operDesc = "查看入职信息列表")
+    @RequiresPermissions({"entry:view"})
     @PostMapping(value = "/staff/entry/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -90,6 +98,8 @@ public class TStaffEntryController {
      *
      * @param tStaffEntry 实体对象
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "查看",operDesc = "查看单条入职信息")
+    @RequiresPermissions({"entry:get"})
     @PostMapping(value = "/staff/entry/get")
     public CommonResult selectOne(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {
@@ -106,6 +116,8 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "修改",operDesc = "修改单条入职信息")
+    @RequiresPermissions({"entry:update"})
     @PutMapping(value = "/staff/entry/update")
     public CommonResult update(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {
@@ -122,6 +134,8 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "人员管理-入职管理",operType = "弃职",operDesc = "员工弃职")
+    @RequiresPermissions({"entry:giveUp"})
     @PutMapping(value = "/staff/entry/giveUp")
     public CommonResult giveUp(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {

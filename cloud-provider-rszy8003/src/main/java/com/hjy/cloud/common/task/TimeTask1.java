@@ -26,9 +26,9 @@ public class TimeTask1 {
      * 执行定时任务1
      * 0 0 0 * * ?
      */
-    @Scheduled(cron = "0 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void task(){
-        System.err.println("正在执行定时任务1：");
+        System.err.println("正在执行定时任务1：每小时执行");
         List<TIndexBwl> bwls = tIndexBwlMapper.selectAllEffective();
         if(bwls.size() > 0){
             for(TIndexBwl obj:bwls){

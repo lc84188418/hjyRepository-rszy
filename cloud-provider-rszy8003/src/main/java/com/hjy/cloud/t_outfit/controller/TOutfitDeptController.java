@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_outfit.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
@@ -45,6 +46,7 @@ public class TOutfitDeptController {
      * @param tOutfitDept 实体对象
      * @return 新增结果
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "添加",operDesc = "新增部门基本信息")
     @RequiresPermissions({"dept:add"})
     @PostMapping(value = "/outfit/dept/add")
     public CommonResult insert(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
@@ -62,6 +64,7 @@ public class TOutfitDeptController {
      * @param tOutfitDept 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "删除",operDesc = "删除部门基本信息")
     @RequiresPermissions({"dept:del"})
     @DeleteMapping(value = "/outfit/dept/del")
     public CommonResult delete(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
@@ -78,6 +81,7 @@ public class TOutfitDeptController {
      *
      * @return 所有数据
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "查看",operDesc = "查看部门信息列表")
     @RequiresPermissions({"dept:view"})
     @PostMapping(value = "/outfit/dept/list")
     public CommonResult selectAll() throws FebsException {
@@ -94,6 +98,7 @@ public class TOutfitDeptController {
      *
      * @param tOutfitDept 实体对象
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "查看",operDesc = "查看单个部门信息")
     @PostMapping(value = "/outfit/dept/get")
     public CommonResult selectOne(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
         try {
@@ -110,6 +115,7 @@ public class TOutfitDeptController {
      * @param tOutfitDept 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "修改",operDesc = "修改部门基本信息")
     @RequiresPermissions({"dept:update"})
     @PutMapping(value = "/outfit/dept/update")
     public CommonResult update(@RequestBody TOutfitDept tOutfitDept) throws FebsException {
@@ -142,6 +148,7 @@ public class TOutfitDeptController {
      * @param param json参数
      * @return 修改结果
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "添加员工",operDesc = "为该部门添加员工")
     @RequiresPermissions({"dept:addUser"})
     @PostMapping("/outfit/dept/addUser")
     public CommonResult deptAddUser(@RequestBody String param) throws FebsException{
@@ -176,6 +183,7 @@ public class TOutfitDeptController {
      * @param param json参数
      * @return 修改结果
      */
+    @OperLog(operModul = "机构管理-部门管理",operType = "合并部门",operDesc = "将两部门合并为一个部门")
     @RequiresPermissions({"dept:merge"})
     @PostMapping("/outfit/dept/merge")
     public CommonResult deptMerge(@RequestBody String param) throws FebsException{

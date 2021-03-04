@@ -63,4 +63,5 @@ public interface TStaffInfoMapper {
      */
     int deleteById(TStaffInfo tStaffInfo);
 
+    List<TStaffInfo> selectAll();
 }

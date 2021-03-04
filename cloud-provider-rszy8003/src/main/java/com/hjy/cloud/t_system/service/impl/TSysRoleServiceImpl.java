@@ -282,14 +282,14 @@ public class TSysRoleServiceImpl implements TSysRoleService {
         String msg = "该角色已成功添加0个用户!";
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
         String userIdsStr = jsonArray.toString();
-        if(!userIdsStr.equals("[]")){
+        if(userIdsStr.equals("[]")){
+            code = 201;
+            msg = "未选择用户，请选择后添加！";
+        }else {
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
             //添加用户角色
             int j = this.addUserRoleByList(pkRoleId,idList);
             msg = msg.replace("0",String.valueOf(idList.size()));
-        }else {
-            code = 201;
-            msg = "未选择用户，请选择后添加！";
         }
         if(i>0){
             code = 200;

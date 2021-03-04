@@ -16,12 +16,6 @@ import java.util.List;
 public interface TOutfitDeptMapper {
 
     /**
-     * 分页记录条数
-     * @return 记录条数
-     */
-    int selectSize(TOutfitDept tOutfitDept);
-
-    /**
      * 通过ID查询单条数据
      * @return 实例对象
      */
@@ -62,30 +56,37 @@ public interface TOutfitDeptMapper {
     List<TOutfitDept> selectAllIdAndName();
 
     /**
-     * 查询已分配的用户部门并进行回显
+     * 查询可进行分配的用户ID
      * @return
      */
-    List<String> selectDeptUser_userIded(@Param("fkCompanyId")String fkCompanyId);
+//    List<String> selectDeptUser_userIded(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
+    List<String> selectDeptUser_userIded(@Param("fkDeptId")String fkDeptId);
     /**
      * 查询已分配的用户部门并进行回显
      * @return
      */
-    List<String> selectDeptUserByDept(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
+    List<String> selectDeptUserByDept2(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
+    List<String> selectDeptUserByDept(@Param("fkDeptId")String fkDeptId);
     /**
      * 查询所有部门名称
      * @return
      */
     List<String> selectAllDeptName();
+    List<String> selectAllDeptNameNoIncludeOtherCompany(@Param("superiorDept")String superiorDept);
     /**
      * 删除原有的部门及用户
      * @return
      */
-    int deleteDeptUserByDeptId(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
+    int deleteDeptUserByDeptId_CompanyId2(@Param("fkDeptId")String fkDeptId,@Param("fkCompanyId")String fkCompanyId);
+    int deleteDeptUserByDeptId_CompanyId(@Param("fkDeptId")String fkDeptId);
+    int deleteDeptUserByDeptId(@Param("fkDeptId")String fkDeptId);
+
     /**
      * 批量添加部门用户
      * @return
      */
     int addDeptUserByList(@Param("idList") List<ReDeptUser> idList);
+    int addDeptUserByList2(@Param("idList") List<ReDeptUser> idList);
     /**
      * 通过用户ID删除原有部门信息
      * @return
@@ -119,4 +120,5 @@ public interface TOutfitDeptMapper {
     void updateByDeptId(@Param("hbDeptId")String hbDeptId,@Param("hbdDeptId")String hbdDeptId);
 
     List<TOutfitStructure> selectStructure();
+
 }

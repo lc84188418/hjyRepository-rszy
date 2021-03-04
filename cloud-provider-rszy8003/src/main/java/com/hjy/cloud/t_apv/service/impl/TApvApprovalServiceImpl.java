@@ -13,12 +13,16 @@ import com.hjy.cloud.t_apv.dao.TApvGroupMapper;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.entity.TApvGroup;
+import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
+import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -26,6 +30,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,6 +51,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private TApvGroupMapper tApvGroupMapper;
     @Resource
     private TStaffInfoMapper tStaffInfoMapper;
+    @Value("${server.port}")
+    private String serverPort;
+    @Value("${spring.cloud.application.ip}")
+    private String webIp;
     /**
      * 添加前获取数据
      *
@@ -59,63 +69,75 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         //员工ID
         List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
         jsonObject.put("staffInfos", staffInfos);
-        //所有末尾的审批流程,
-        List<TApvApproval> approvals = tApvApprovalMapper.selectAllEnding();
-        jsonObject.put("approvals", approvals);
+//        //所有末尾的审批流程,
+//        List<TApvApproval> approvals = tApvApprovalMapper.selectAllEnding();
+//        jsonObject.put("approvals", approvals);
         return new CommonResult(200, "success", "获取数据成功", jsonObject);
     }
 
     /**
      * 添加数据
      *
-     * @param tApvApproval
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult insert(TApvApproval tApvApproval) {
-        String newPkId = IDUtils.getUUID();
-        //判断是否为添加末尾审批流程
-        String nextApproval = tApvApproval.getNextApproval();
-        int isEnding = tApvApproval.getIsEnding();
-        int i = 0;
-        int j = 0;
-        if(isEnding == 1){
-            //先将末尾的审批流程isEnding改为0
-            j = ObjectAsyncTask.updateAPV_isending(tApvApproval.getPkApprovalId());
-            //再添加末尾审批流程
-            TApvApproval lastTypeData = tApvApprovalMapper.selectByPkId(tApvApproval.getPkApprovalId());
-            tApvApproval.setPkApprovalId(newPkId);
-            tApvApproval.setApprovalType(lastTypeData.getApprovalType());
-            tApvApproval.setNextApproval("0");
-            tApvApproval.setDataType(lastTypeData.getDataType());
-            tApvApproval.setIsEnding(1);
-            tApvApproval.setIsStart(0);
-            i = tApvApprovalMapper.insertSelective(tApvApproval);
-        }else {
-            //添加新的审批流程
-            //审批类型
-            String apvType = tApvApproval.getApprovalType();
-            //查询该审批类型是否已添加过数据
-            TApvApproval lastTypeData = tApvApprovalMapper.selectByType(apvType);
-            tApvApproval.setIsStart(1);
-            tApvApproval.setIsEnding(1);
-            tApvApproval.setNextApproval("0");
-            if(lastTypeData != null){
-                //说明之前已经添加过该数据，则添加新的该审批流程
-                tApvApproval.setDataType(lastTypeData.getDataType()+1);
-            }else {
-                tApvApproval.setDataType(1);
-            }
-            i = this.tApvApprovalMapper.insertSelective(tApvApproval);
+    public CommonResult insert(String param) {
+        JSONObject jsonObject = JSON.parseObject(param);
+        //审批类型
+        String approvalType = String.valueOf(jsonObject.get("approvalType"));
+        int dataType = 1;
+        int isStart = 1;
+        //查询该审批类型是否已添加过数据
+        TApvApproval lastTypeData = tApvApprovalMapper.selectByType(approvalType);
+        if(lastTypeData != null){
+            //说明之前已经添加过该数据，则添加新的该审批流程
+            dataType = lastTypeData.getDataType()+1;
         }
-        if (i > 0 && j > 0) {
-            return new CommonResult(200, "success", "该审批流程已增加新审批人！", null);
-        } else if(i > 0){
-            return new CommonResult(201, "success", "新审批流程添加成功！", null);
+        String newPkId = IDUtils.getUUID();
+        List<String> idList = new ArrayList<>();
+        //审批人主键
+        JSONArray jsonArray = jsonObject.getJSONArray("ids");
+        String userIdsStr = jsonArray.toString();
+        if(userIdsStr.equals("[]")){
+            return new CommonResult(444,"error","未选择员工!",null);
         }else {
+            idList = JSONArray.parseArray(userIdsStr,String.class);
+        }
+        //保存该审批流程设置记录
+        List<TApvApproval> approvals = new ArrayList<>();
+        if(idList.size() > 0){
+            for(String s : idList){
+                TApvApproval apvApproval = new TApvApproval();
+                String nextPkId = IDUtils.getUUID();
+                apvApproval.setPkApprovalId(newPkId);
+                apvApproval.setApprovalType(approvalType);
+                apvApproval.setApprovalPeople(s);
+                apvApproval.setNextApproval(nextPkId);
+                apvApproval.setDataType(dataType);
+                //岗位-暂时不要
+                apvApproval.setIsStart(isStart);
+                //先设置为0，最后末尾时改为1
+                apvApproval.setIsEnding(0);
+                approvals.add(apvApproval);
+                //改变相关字段值
+                isStart = 0;
+                newPkId = nextPkId;
+            }
+        }
+        approvals.get(idList.size()-1).setIsEnding(1);
+        approvals.get(idList.size()-1).setNextApproval("0");
+        int i = this.tApvApprovalMapper.insertBatch(approvals);
+        if (i > 0) {
+            if(dataType > 1){
+                return new CommonResult(201, "success", "该审批另一流程已新增成功！", null);
+            }else {
+                return new CommonResult(200, "success", "新审批流程添加成功！", null);
+            }
+        } else {
             return new CommonResult(444, "error", "添加数据失败", null);
         }
+
     }
 
     /**
@@ -246,6 +268,18 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
          */
         TApvApvtype tApvApvtype = new TApvApvtype();
         List<TApvApvtype> tApvTypeList = tApvApvtypeMapper.selectAllPage(tApvApvtype);
+        if(tApvTypeList.size() > 0){
+            /**
+             * 处理文件路径
+             */
+            Iterator<TApvApvtype> it = tApvTypeList.iterator();
+            while(it.hasNext()){
+                StringBuffer filePath = new StringBuffer();
+                TApvApvtype obj = it.next();
+                filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getIconPath());
+                obj.setIconPath(filePath.toString());
+            }
+        }
         JSONObject resultJson = new JSONObject();
         resultJson.put("groupList", groupList);
         resultJson.put("typeList", tApvTypeList);
@@ -261,5 +295,58 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         resultJson.put("PageResult", result);
         return resultJson;
     }
+
+    /**
+     * 添加数据
+     *
+     * @param tApvApproval
+     * @return
+     */
+//    @Transactional()
+//    @Override
+//    public CommonResult insert(TApvApproval tApvApproval) {
+//        String newPkId = IDUtils.getUUID();
+//        //判断是否为添加末尾审批流程
+//        int i = 0;
+//        int j = 0;
+//        String pkApprovalId = tApvApproval.getPkApprovalId();
+//        if(!StringUtils.isEmpty(pkApprovalId)){
+//            //先将末尾的审批流程isEnding改为0
+//            j = ObjectAsyncTask.updateAPV_isending(pkApprovalId);
+//            //再添加末尾审批流程
+//            TApvApproval lastTypeData = tApvApprovalMapper.selectByPkId(pkApprovalId);
+//            tApvApproval.setPkApprovalId(newPkId);
+//            tApvApproval.setApprovalType(lastTypeData.getApprovalType());
+//            tApvApproval.setNextApproval("0");
+//            tApvApproval.setDataType(lastTypeData.getDataType());
+//            tApvApproval.setIsEnding(1);
+//            tApvApproval.setIsStart(0);
+//            i = tApvApprovalMapper.insertSelective(tApvApproval);
+//        }else {
+//            //添加新的审批流程
+//            //审批类型
+//            String apvType = tApvApproval.getApprovalType();
+//            //查询该审批类型是否已添加过数据
+//            TApvApproval lastTypeData = tApvApprovalMapper.selectByType(apvType);
+//            tApvApproval.setIsStart(1);
+//            tApvApproval.setIsEnding(1);
+//            tApvApproval.setNextApproval("0");
+//            tApvApproval.setPkApprovalId(newPkId);
+//            if(lastTypeData != null){
+//                //说明之前已经添加过该数据，则添加新的该审批流程
+//                tApvApproval.setDataType(lastTypeData.getDataType()+1);
+//            }else {
+//                tApvApproval.setDataType(1);
+//            }
+//            i = this.tApvApprovalMapper.insertSelective(tApvApproval);
+//        }
+//        if (i > 0 && j > 0) {
+//            return new CommonResult(200, "success", "该审批流程已增加新审批人！", null);
+//        } else if(i > 0){
+//            return new CommonResult(201, "success", "新审批流程添加成功！", null);
+//        }else {
+//            return new CommonResult(444, "error", "添加数据失败", null);
+//        }
+//    }
 }
     

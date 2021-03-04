@@ -22,7 +22,7 @@ public class TOutfitDept {
     private Date createTime;
     //部门级别
     private Integer deptLevel;
-    //上级部门ID
+    //上级部门ID-现改为所属公司ID
     private String superiorDept;
     //部门领导
     private String deptLeader;

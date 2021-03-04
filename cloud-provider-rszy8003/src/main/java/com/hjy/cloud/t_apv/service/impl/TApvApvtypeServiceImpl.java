@@ -11,7 +11,9 @@ import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +91,13 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Transactional()
     @Override
     public CommonResult updateByPkId(TApvApvtype tApvApvtype) {
-
+        /**
+         * 图标路径去掉ip地址
+         */
+        if(!StringUtils.isEmpty(tApvApvtype.getIconPath())){
+            String iconPath = tApvApvtype.getIconPath().replace("http://"+webIp+":"+serverPort+"/img/","");
+            tApvApvtype.setIconPath(iconPath);
+        }
         int i = this.tApvApvtypeMapper.updateByPkId(tApvApvtype);
         if (i > 0) {
             return new CommonResult(200, "success", "修改数据成功", null);
@@ -126,7 +134,6 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TApvApvtype entity = new TApvApvtype();
@@ -158,12 +165,28 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     public CommonResult selectById(TApvApvtype tApvApvtype) {
         String pkId = tApvApvtype.getPkApvtypeId();
         TApvApvtype entity = this.tApvApvtypeMapper.selectByPkId(pkId);
+        /**
+         * 处理文件路径
+         */
+        entity.setIconPath("http://"+webIp+":"+serverPort+"/img/"+entity.getIconPath());
         JSONObject resultJson = new JSONObject();
         resultJson.put("entity", entity);
         /**
          *
          */
         List<TDictionaryFile> list = this.tDictionaryFileMapper.selectAll();
+        if(list.size() > 0){
+            /**
+             * 处理文件路径
+             */
+            Iterator<TDictionaryFile> it = list.iterator();
+            while(it.hasNext()){
+                StringBuffer filePath = new StringBuffer();
+                TDictionaryFile obj = it.next();
+                filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getFilePath());
+                obj.setFilePath(filePath.toString());
+            }
+        }
         resultJson.put("iconList", list);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }

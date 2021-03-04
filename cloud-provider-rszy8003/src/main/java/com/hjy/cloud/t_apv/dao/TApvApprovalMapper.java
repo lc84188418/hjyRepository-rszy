@@ -47,6 +47,8 @@ public interface TApvApprovalMapper {
     int insertSelective(TApvApproval tApvApproval);
 
     int insert(TApvApproval tApvApproval);
+    int insertBatch(@Param("approvals")List<TApvApproval> approvals);
+
 
     /**
      * 修改数据

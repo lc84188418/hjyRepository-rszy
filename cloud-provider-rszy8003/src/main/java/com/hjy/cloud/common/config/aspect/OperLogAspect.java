@@ -41,8 +41,8 @@ import java.util.Map;
  * @author liuchun
  * @date 2019/03/21
  */
-@Aspect
-@Component
+//@Aspect
+//@Component
 public class OperLogAspect {
 
     /**

@@ -5,6 +5,7 @@ import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
@@ -42,13 +43,12 @@ public class TApvApprovalController {
     /**
      * 新增数据
      *
-     * @param tApvApproval 实体对象
      * @return 新增结果
      */
     @PostMapping(value = "/apv/approval/add")
-    public CommonResult insert(@RequestBody TApvApproval tApvApproval) throws FebsException {
+    public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
-            return tApvApprovalService.insert(tApvApproval);
+            return tApvApprovalService.insert(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

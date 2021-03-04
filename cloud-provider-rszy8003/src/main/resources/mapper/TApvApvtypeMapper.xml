@@ -152,9 +152,6 @@
             <if test="apvtypeName != null and apvtypeName != ''">
                 APVTYPE_NAME = #{apvtypeName},
             </if>
-            <if test="createTime != null">
-                CREATE_TIME = #{createTime},
-            </if>
             <if test="updateTime != null">
                 UPDATE_TIME = #{updateTime},
             </if>

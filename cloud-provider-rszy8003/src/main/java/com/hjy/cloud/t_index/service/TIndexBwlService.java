@@ -50,6 +50,7 @@ public interface TIndexBwlService {
      * @return
      */
     CommonResult selectAll(String param);
+    CommonResult selectAll(HttpSession session,String param);
 
     /**
      * 获取单个数据

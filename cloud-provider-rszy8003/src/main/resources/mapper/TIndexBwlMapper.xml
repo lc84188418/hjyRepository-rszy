@@ -33,6 +33,9 @@
             <if test="remindTime != null">
                 and REMIND_TIME = #{remindTime,jdbcType=TIMESTAMP}
             </if>
+            <if test="fkUserId != null and fkUserId != ''">
+                and FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
+            </if>
         </where>
     </select>
     <select id="selectAllEffective" resultType="com.hjy.cloud.t_index.entity.TIndexBwl">

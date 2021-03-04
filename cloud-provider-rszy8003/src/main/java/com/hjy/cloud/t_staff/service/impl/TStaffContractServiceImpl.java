@@ -8,6 +8,7 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.t_staff.dao.TStaffContractMapper;
 import com.hjy.cloud.t_staff.entity.TStaffContract;
 import com.hjy.cloud.t_staff.service.TStaffContractService;
+import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -100,14 +102,12 @@ public class TStaffContractServiceImpl implements TStaffContractService {
      * @return
      */
     @Override
-    public CommonResult selectAll(String param) {
+    public CommonResult adminList(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TStaffContract entity = new TStaffContract();
-
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -125,6 +125,37 @@ public class TStaffContractServiceImpl implements TStaffContractService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
+    /**
+     * 查询所有数据
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public CommonResult userList(HttpSession session,String param) {
+        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        TStaffContract entity = new TStaffContract();
+        entity.setIdcard(activeUser.getIDcard());
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<TStaffContract> list = this.tStaffContractMapper.selectAllPage(entity);
+        PageResult result = PageUtil.getPageResult(new PageInfo<TStaffContract>(list));
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("PageResult", result);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
     /**
      * 获取单个数据
      *

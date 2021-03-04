@@ -1,10 +1,12 @@
 package com.hjy.cloud.t_log.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_log.entity.TLogRecord;
 import com.hjy.cloud.t_log.service.TLogRecordService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,40 +27,13 @@ public class TLogRecordController {
     private TLogRecordService tLogRecordService;
 
     /**
-     * 1 跳转到新增页面
-     */
-    @GetMapping(value = "/log/record/addPage")
-    public CommonResult insertPage() throws FebsException {
-        try {
-            return tLogRecordService.insertPage();
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param tLogRecord 实体对象
-     * @return 新增结果
-     */
-    @PostMapping(value = "/log/record/add")
-    public CommonResult insert(@RequestBody TLogRecord tLogRecord) throws FebsException {
-        try {
-            return tLogRecordService.insert(tLogRecord);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
      * 删除数据
      *
      * @param tLogRecord 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "日志管理-操作日志",operType = "删除",operDesc = "删除日志信息")
+    @RequiresPermissions({"logRecord:del"})
     @DeleteMapping(value = "/log/record/del")
     public CommonResult delete(@RequestBody TLogRecord tLogRecord) throws FebsException {
         try {
@@ -75,6 +50,8 @@ public class TLogRecordController {
      * @param param json参数
      * @return 所有数据
      */
+    @OperLog(operModul = "日志管理-操作日志",operType = "查看",operDesc = "查看日志信息列表")
+    @RequiresPermissions({"logRecord:view"})
     @PostMapping(value = "/log/record/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -90,6 +67,8 @@ public class TLogRecordController {
      *
      * @param tLogRecord 实体对象
      */
+    @OperLog(operModul = "日志管理-操作日志",operType = "查看",operDesc = "查看单个日志信息")
+    @RequiresPermissions({"logRecord:get"})
     @PostMapping(value = "/log/record/get")
     public CommonResult selectOne(@RequestBody TLogRecord tLogRecord) throws FebsException {
         try {
@@ -99,22 +78,5 @@ public class TLogRecordController {
             throw new FebsException(message);
         }
     }
-
-    /**
-     * 修改数据
-     *
-     * @param tLogRecord 实体对象
-     * @return 修改结果
-     */
-    @PutMapping(value = "/log/record/update")
-    public CommonResult update(@RequestBody TLogRecord tLogRecord) throws FebsException {
-        try {
-            return tLogRecordService.updateByPkId(tLogRecord);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
 
 }

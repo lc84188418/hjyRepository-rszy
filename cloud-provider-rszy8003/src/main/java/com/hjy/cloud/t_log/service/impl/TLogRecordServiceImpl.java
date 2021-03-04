@@ -30,17 +30,6 @@ public class TLogRecordServiceImpl implements TLogRecordService {
     @Resource
     private TLogRecordMapper tLogRecordMapper;
 
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    @Override
-    public CommonResult insertPage() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("entity", null);
-        return new CommonResult(200, "success", "获取数据成功", jsonObject);
-    }
 
     /**
      * 添加数据
@@ -56,23 +45,6 @@ public class TLogRecordServiceImpl implements TLogRecordService {
             return new CommonResult(200, "success", "添加数据成功", null);
         } else {
             return new CommonResult(444, "error", "添加数据失败", null);
-        }
-    }
-
-    /**
-     * 修改数据
-     *
-     * @param tLogRecord
-     * @return
-     */
-    @Transactional()
-    @Override
-    public CommonResult updateByPkId(TLogRecord tLogRecord) {
-        int i = this.tLogRecordMapper.updateByPkId(tLogRecord);
-        if (i > 0) {
-            return new CommonResult(200, "success", "修改数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "修改数据失败", null);
         }
     }
 

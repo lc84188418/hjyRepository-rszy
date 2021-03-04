@@ -1,10 +1,12 @@
 package com.hjy.cloud.t_staff.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -38,27 +40,13 @@ public class TStaffInfoController {
     }
 
     /**
-     * 新增数据
-     *
-     * @param tStaffInfo 实体对象
-     * @return 新增结果
-     */
-    @PostMapping(value = "/staff/info/add")
-    public CommonResult insert(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
-        try {
-            return tStaffInfoService.insert(tStaffInfo);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
      * 删除数据
      *
      * @param tStaffInfo 实体对象
      * @return 删除结果
      */
+    @OperLog(operModul = "人员管理-名单管理",operType = "删除",operDesc = "删除入职信息记录")
+    @RequiresPermissions({"staffInfo:del"})
     @DeleteMapping(value = "/staff/info/del")
     public CommonResult delete(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {
@@ -75,6 +63,8 @@ public class TStaffInfoController {
      * @param param json参数
      * @return 所有数据
      */
+    @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看入职信息列表")
+    @RequiresPermissions({"staffInfo:view"})
     @PostMapping(value = "/staff/info/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -90,6 +80,8 @@ public class TStaffInfoController {
      *
      * @param tStaffInfo 实体对象
      */
+    @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看单个入职信息详情")
+    @RequiresPermissions({"staffInfo:get"})
     @PostMapping(value = "/staff/info/get")
     public CommonResult selectOne(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {
@@ -106,6 +98,8 @@ public class TStaffInfoController {
      * @param tStaffInfo 实体对象
      * @return 修改结果
      */
+    @OperLog(operModul = "人员管理-名单管理",operType = "修改",operDesc = "修改入职信息")
+    @RequiresPermissions({"staffInfo:update"})
     @PutMapping(value = "/staff/info/update")
     public CommonResult update(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {

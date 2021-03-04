@@ -152,6 +152,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                     apvRecord.setApvApproval(apv.getApprovalPeople());
                     apvRecord.setSourceId(tStaffEntry.getPkEntryId());
                     apvRecord.setIsStart(isStart);
+                    apvRecord.setIsIng(1);
                     if (!apv.getNextApproval().equals("0")) {
                         /**
                          * 说明还有下级审批

@@ -148,7 +148,38 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
         resultJson.put("PageResult", result);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
-
+    /**
+     * 查询所有数据,用户个人
+     *
+     * @param param
+     * @return
+     */
+    @Override
+    public CommonResult selectAll(HttpSession session,String param) {
+        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String pkId = JsonUtil.getStringParam(json, "pk_id");
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        TIndexBwl entity = new TIndexBwl();
+        entity.setFkUserId(activeUser.getUserId());
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<TIndexBwl> list = this.tIndexBwlMapper.selectAllPage(entity);
+        PageResult result = PageUtil.getPageResult(new PageInfo<TIndexBwl>(list));
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("PageResult", result);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
     /**
      * 获取单个数据
      *
