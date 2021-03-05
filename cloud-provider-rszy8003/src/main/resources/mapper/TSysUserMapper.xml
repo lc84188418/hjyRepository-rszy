@@ -82,7 +82,7 @@
                 ADDRESS,
             </if>
             <if test="workPosition != null and workPosition != ''">
-                WOKE_POSITION,
+                WORK_POSITION,
             </if>
             <if test="workContent != null and workContent != ''">
                 WORK_CONTENT,

@@ -3,6 +3,8 @@ package com.hjy.cloud.t_system.service;
 import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.t_system.entity.TSysPerms;
+
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ public interface TSysPermsService {
      * @param tSysPerms 实例对象
      * @return 实例对象
      */
-    int insert(TSysPerms tSysPerms);
+    int insert(HttpSession session,TSysPerms tSysPerms);
 
     /**
      * 修改数据

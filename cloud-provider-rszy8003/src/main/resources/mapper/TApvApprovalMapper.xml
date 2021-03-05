@@ -127,7 +127,48 @@ WHERE
     </select>
 <!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
     <select id="waitApv" resultType="com.hjy.cloud.common.entity.DApvRecord">
-        SELECT * from D_APV_RECORD where IS_ING = 1
+        SELECT
+	PK_RECORD_ID,
+	APPROVAL_TYPE,
+	SPONSOR,
+	START_TIME,
+	APV_APPROVAL,
+	APV_DATE,
+	APV_RESULT,
+	APV_REASON,
+	NEXT_APPROVAL,
+	SOURCE_ID,
+	IS_START,
+	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
+FROM
+	D_APV_RECORD
+	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
+WHERE
+	D_APV_RECORD.IS_ING = 1
+    </select>
+    <select id="waitApvUser" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        SELECT
+	PK_RECORD_ID,
+	APPROVAL_TYPE,
+	SPONSOR,
+	START_TIME,
+	APV_APPROVAL,
+	APV_DATE,
+	APV_RESULT,
+	APV_REASON,
+	NEXT_APPROVAL,
+	SOURCE_ID,
+	IS_START,
+	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
+FROM
+	D_APV_RECORD
+	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
+WHERE
+	D_APV_RECORD.IS_ING = 1 and SOURCE_ID in
+        (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
+    </select>
+    <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND IS_ING = 1
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">
@@ -284,6 +325,25 @@ WHERE
             </if>
         </set>
         where PK_APPROVAL_ID = #{pkApprovalId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateIsIngBySourceId">
+        update hjy_cloud.D_APV_RECORD set IS_ING = 0
+        where SOURCE_ID = #{sourceId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
+        update D_APV_RECORD
+        <set>
+            <if test="apvDate != null">
+                APV_DATE = #{apvDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="apvResult != null">
+                APV_RESULT = #{apvResult,jdbcType=INTEGER},
+            </if>
+            <if test="apvReason != null">
+                APV_REASON = #{apvReason,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where  PK_RECORD_ID= #{pkRecordId,jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->

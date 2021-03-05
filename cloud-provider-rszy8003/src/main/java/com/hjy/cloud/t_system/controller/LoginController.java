@@ -65,7 +65,7 @@ public class LoginController {
      */
     @RequiresPermissions({"index"})
     @PostMapping("/index")
-    public CommonResult index(HttpSession session,HttpServletRequest request,HttpServletResponse resp) throws FebsException, IOException {
+    public CommonResult index(HttpSession session,HttpServletRequest request) throws FebsException, IOException {
         try {
             //获取当前登录用户
             ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");

@@ -49,53 +49,53 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     private TDictionaryNationMapper tDictionaryNationMapper;
     @Resource
     private TDictionaryEducationMapper tDictionaryEducationMapper;
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    @Override
-    public CommonResult insertPage() {
-        JSONObject jsonObject = new JSONObject();
-        //部门
-        List<TOutfitDept> depts = tOutfitDeptMapper.selectAllIdAndName();
-        //职位
-        List<TDictionaryPosition> positions = tDictionaryPositionMapper.selectAllId_Name();
-        //合同类型
-        List<TDictionaryHtlx> htlxes = tDictionaryHtlxMapper.selectAllId_Name();
-        //民族
-        List<TDictionaryNation> nations = tDictionaryNationMapper.selectAllId_Name();
-        //学历
-        List<TDictionaryEducation> educations = tDictionaryEducationMapper.selectAllId_Name();
-        //员工
-        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
-        jsonObject.put("depts", depts);
-        jsonObject.put("positions", positions);
-        jsonObject.put("htlxes", htlxes);
-        jsonObject.put("nations", nations);
-        jsonObject.put("educations", educations);
-        jsonObject.put("staffInfos", staffInfos);
-        return new CommonResult(200, "success", "获取数据成功", jsonObject);
-    }
+//    /**
+//     * 添加前获取数据
+//     *
+//     * @return
+//     */
+//    @Override
+//    public CommonResult insertPage() {
+//        JSONObject jsonObject = new JSONObject();
+//        //部门
+//        List<TOutfitDept> depts = tOutfitDeptMapper.selectAllIdAndName();
+//        //职位
+//        List<TDictionaryPosition> positions = tDictionaryPositionMapper.selectAllId_Name();
+//        //合同类型
+//        List<TDictionaryHtlx> htlxes = tDictionaryHtlxMapper.selectAllId_Name();
+//        //民族
+//        List<TDictionaryNation> nations = tDictionaryNationMapper.selectAllId_Name();
+//        //学历
+//        List<TDictionaryEducation> educations = tDictionaryEducationMapper.selectAllId_Name();
+//        //员工
+//        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
+//        jsonObject.put("depts", depts);
+//        jsonObject.put("positions", positions);
+//        jsonObject.put("htlxes", htlxes);
+//        jsonObject.put("nations", nations);
+//        jsonObject.put("educations", educations);
+//        jsonObject.put("staffInfos", staffInfos);
+//        return new CommonResult(200, "success", "获取数据成功", jsonObject);
+//    }
 
-    /**
-     * 添加数据
-     *
-     * @param tStaffInfo
-     * @return
-     */
-    @Transactional()
-    @Override
-    public CommonResult insert(TStaffInfo tStaffInfo) {
-        tStaffInfo.setPkStaffId(IDUtils.getUUID());
-        int i = this.tStaffInfoMapper.insertSelective(tStaffInfo);
-        if (i > 0) {
-            JSONObject jsonObject = this.getListInfo();
-            return new CommonResult(200, "success", "添加数据成功", jsonObject);
-        } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
-        }
-    }
+//    /**
+//     * 添加数据
+//     *
+//     * @param tStaffInfo
+//     * @return
+//     */
+//    @Transactional()
+//    @Override
+//    public CommonResult insert(TStaffInfo tStaffInfo) {
+//        tStaffInfo.setPkStaffId(IDUtils.getUUID());
+//        int i = this.tStaffInfoMapper.insertSelective(tStaffInfo);
+//        if (i > 0) {
+//            JSONObject jsonObject = this.getListInfo();
+//            return new CommonResult(200, "success", "添加数据成功", jsonObject);
+//        } else {
+//            return new CommonResult(444, "error", "添加数据失败", null);
+//        }
+//    }
 
 
 
@@ -174,15 +174,24 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     @Override
     public CommonResult selectById(TStaffInfo tStaffInfo) {
         String pkId = tStaffInfo.getPkStaffId();
-        TStaffInfo entity = this.tStaffInfoMapper.selectByPkId(pkId);
+        TStaffInfo entity = this.tStaffInfoMapper.selectByPkId2(pkId);
         JSONObject resultJson = new JSONObject();
-        resultJson.put("entity", entity);
+        resultJson.put("staffInfo", entity);
+        //合同类型
+        List<TDictionaryHtlx> htlxList = tDictionaryHtlxMapper.selectAllId_Name();
+        resultJson.put("htlxList", htlxList);
+        //民族
+        List<TDictionaryNation> nationList = tDictionaryNationMapper.selectAllId_Name();
+        resultJson.put("nationList", nationList);
+        //学历
+        List<TDictionaryEducation> educationList = tDictionaryEducationMapper.selectAllId_Name();
+        resultJson.put("educationList", educationList);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
     private JSONObject getListInfo() {
         TStaffInfo entity = new TStaffInfo();
 
-        PageHelper.startPage(1, 1);
+        PageHelper.startPage(1, 10);
         List<TStaffInfo> list = this.tStaffInfoMapper.selectAllPage(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffInfo>(list));
         JSONObject resultJson = new JSONObject();

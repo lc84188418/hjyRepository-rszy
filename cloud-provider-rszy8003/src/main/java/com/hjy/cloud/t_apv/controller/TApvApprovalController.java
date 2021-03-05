@@ -11,6 +11,8 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -138,9 +140,51 @@ public class TApvApprovalController {
      * @return 修改结果
      */
     @GetMapping(value = "/apv/approval/waitApv")
-    public CommonResult waitApv() throws FebsException {
+    public CommonResult adminWaitApv() throws FebsException {
         try {
             return tApvApprovalService.waitApv();
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 待审批,是指操作用户自己的,其中prompt等于1  则该自己审批
+     *
+     * @return 修改结果
+     */
+    @GetMapping(value = "/apv/approval/waitApvUser")
+    public CommonResult waitApv(HttpSession session, HttpServletRequest request) throws FebsException {
+        try {
+            return tApvApprovalService.waitApvUser(session,request);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 审批,审批
+     *
+     * @return 修改结果
+     */
+    @PostMapping(value = "/apv/approval/approvalUser")
+    public CommonResult approval(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
+        try {
+            return tApvApprovalService.approval(session,request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 该审批流程的详情
+     *
+     * @return 修改结果
+     */
+    @PostMapping(value = "/apv/approval/waitApvDetail")
+    public CommonResult waitApvDetail(@RequestBody String param) throws FebsException {
+        try {
+            return tApvApprovalService.waitApvDetail(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

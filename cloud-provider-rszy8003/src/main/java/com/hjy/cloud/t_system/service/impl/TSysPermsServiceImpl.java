@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,7 @@ import java.util.List;
  */
 @Service
 public class TSysPermsServiceImpl implements TSysPermsService {
-    @Autowired
+    @Resource
     private TSysPermsMapper tSysPermsMapper;
 
     /**
@@ -49,7 +51,10 @@ public class TSysPermsServiceImpl implements TSysPermsService {
      */
     @Transactional()
     @Override
-    public int insert(TSysPerms tSysPerms) {
+    public int insert(HttpSession session,TSysPerms tSysPerms) {
+        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        tSysPerms.setModifyUsername(activeUser.getFullName());
+        tSysPerms.setFkUserId(activeUser.getUserId());
         tSysPerms.setPkPermsId(IDUtils.getUUID());
         tSysPerms.setCreateTime(new Date());
         tSysPerms.setModifyTime(new Date());
@@ -93,7 +98,12 @@ public class TSysPermsServiceImpl implements TSysPermsService {
     }
     @Override
     public List<TSysPerms> selectAllIdAndName() {
-        return this.tSysPermsMapper.selectAllIdAndName();
+        List<TSysPerms> sysPermsList = tSysPermsMapper.selectAllIdAndName();
+        TSysPerms perms = new TSysPerms();
+        perms.setPkPermsId("1");
+        perms.setMenuName("根级节点");
+        sysPermsList.add(perms);
+        return sysPermsList;
     }
     /**
      * 通过实体查询多条数据

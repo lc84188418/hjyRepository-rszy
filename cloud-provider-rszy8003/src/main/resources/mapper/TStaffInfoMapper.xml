@@ -49,145 +49,112 @@
         select * from hjy_cloud.T_STAFF_INFO
         where PK_STAFF_ID = #{pkStaffId}
     </select>
-
-    <!--No problem 分页时查询总记录条数-->
-    <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_STAFF_INFO
-        where 1 = 1
-        <if test="pkStaffId != null and pkStaffId != ''">
-            and PK_STAFF_ID = #{pkStaffId}
-        </if>
-        <if test="staffName != null and staffName != ''">
-            and STAFF_NAME = #{staffName}
-        </if>
-        <if test="staffSex != null">
-            and STAFF_SEX = #{staffSex}
-        </if>
-        <if test="staffAge != null">
-            and STAFF_AGE = #{staffAge}
-        </if>
-        <if test="fkDeptId != null and fkDeptId != ''">
-            and FK_DEPT_ID = #{fkDeptId}
-        </if>
-        <if test="fkPositionId != null and fkPositionId != ''">
-            and FK_POSITION_ID = #{fkPositionId}
-        </if>
-        <if test="entryTime != null">
-            and ENTRY_TIME = #{entryTime}
-        </if>
-        <if test="fkHtlxId != null and fkHtlxId != ''">
-            and FK_HTLX_ID = #{fkHtlxId}
-        </if>
-        <if test="recruitWay != null and recruitWay != ''">
-            and RECRUIT_WAY = #{recruitWay}
-        </if>
-        <if test="syqdqTime != null">
-            and SYQDQ_TIME = #{syqdqTime}
-        </if>
-        <if test="idType != null and idType != ''">
-            and ID_TYPE = #{idType}
-        </if>
-        <if test="idCard != null and idCard != ''">
-            and ID_CARD = #{idCard}
-        </if>
-        <if test="nativePlace != null and nativePlace != ''">
-            and NATIVE_PLACE = #{nativePlace}
-        </if>
-        <if test="birthday != null and birthday != ''">
-            and BIRTHDAY = #{birthday}
-        </if>
-        <if test="fkNationId != null and fkNationId != ''">
-            and FK_NATION_ID = #{fkNationId}
-        </if>
-        <if test="hkszd != null and hkszd != ''">
-            and HKSZD = #{hkszd}
-        </if>
-        <if test="politivalOutlook != null and politivalOutlook != ''">
-            and POLITIVAL_OUTLOOK = #{politivalOutlook}
-        </if>
-        <if test="currentAddress != null and currentAddress != ''">
-            and CURRENT_ADDRESS = #{currentAddress}
-        </if>
-        <if test="isMarry != null">
-            and IS_MARRY = #{isMarry}
-        </if>
-        <if test="fkEducationId != null and fkEducationId != ''">
-            and FK_EDUCATION_ID = #{fkEducationId}
-        </if>
-        <if test="zgxlbyyx != null and zgxlbyyx != ''">
-            and ZGXLBYYX = #{zgxlbyyx}
-        </if>
-        <if test="wyDj != null and wyDj != ''">
-            and WY_DJ = #{wyDj}
-        </if>
-        <if test="jsjDj != null and jsjDj != ''">
-            and JSJ_DJ = #{jsjDj}
-        </if>
-        <if test="major != null and major != ''">
-            and MAJOR = #{major}
-        </if>
-        <if test="bankName != null and bankName != ''">
-            and BANK_NAME = #{bankName}
-        </if>
-        <if test="bankId != null and bankId != ''">
-            and BANK_ID = #{bankId}
-        </if>
-        <if test="branchBank != null and branchBank != ''">
-            and BRANCH_BANK = #{branchBank}
-        </if>
-        <if test="syr != null and syr != ''">
-            and SYR = #{syr}
-        </if>
-        <if test="picturePath != null and picturePath != ''">
-            and PICTURE_PATH = #{picturePath}
-        </if>
-        <if test="hblxName1 != null and hblxName1 != ''">
-            and HBLX_NAME1 = #{hblxName1}
-        </if>
-        <if test="object1 != null and object1 != ''">
-            and OBJECT1 = #{object1}
-        </if>
-        <if test="hblxName2 != null and hblxName2 != ''">
-            and HBLX_NAME2 = #{hblxName2}
-        </if>
-        <if test="object2 != null and object2 != ''">
-            and OBJECT2 = #{object2}
-        </if>
-        <if test="hblxName3 != null and hblxName3 != ''">
-            and HBLX_NAME3 = #{hblxName3}
-        </if>
-        <if test="object3 != null and object3 != ''">
-            and OBJECT3 = #{object3}
-        </if>
-        <if test="hblxName4 != null and hblxName4 != ''">
-            and HBLX_NAME4 = #{hblxName4}
-        </if>
-        <if test="object4 != null and object4 != ''">
-            and OBJECT4 = #{object4}
-        </if>
-        <if test="hblxName5 != null and hblxName5 != ''">
-            and HBLX_NAME5 = #{hblxName5}
-        </if>
-        <if test="object5 != null and object5 != ''">
-            and OBJECT5 = #{object5}
-        </if>
+    <select id="selectByPkId2" resultMap="TStaffInfoMap">
+        SELECT
+        PK_STAFF_ID,
+        STAFF_NAME,
+        STAFF_SEX,
+        STAFF_AGE,
+        T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
+        T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
+        ENTRY_TIME,
+        T_DICTIONARY_HTLX.CONTRAC_TYPE AS FK_HTLX_ID,
+        RECRUIT_WAY,
+        SYQDQ_TIME,
+        ID_TYPE,
+        ID_CARD,
+        NATIVE_PLACE,
+        BIRTHDAY,
+        T_DICTIONARY_NATION.NATION_NAME AS FK_NATION_ID,
+        HKSZD,
+        POLITIVAL_OUTLOOK,
+        CURRENT_ADDRESS,
+        IS_MARRY,
+        T_DICTIONARY_EDUCATION.EDUCATION_NAME AS FK_EDUCATION_ID,
+        T_STAFF_INFO.ZGXLBYYX,
+        T_STAFF_INFO.WY_DJ,
+        T_STAFF_INFO.JSJ_DJ,
+        T_STAFF_INFO.MAJOR,
+        T_STAFF_INFO.BANK_NAME,
+        T_STAFF_INFO.BANK_ID,
+        T_STAFF_INFO.BRANCH_BANK,
+        T_STAFF_INFO.SYR,
+        T_STAFF_INFO.PICTURE_PATH,
+        T_STAFF_INFO.HBLX_NAME1,
+        T_STAFF_INFO.OBJECT1,
+        T_STAFF_INFO.HBLX_NAME2,
+        T_STAFF_INFO.OBJECT2,
+        T_STAFF_INFO.HBLX_NAME3,
+        T_STAFF_INFO.OBJECT3,
+        T_STAFF_INFO.HBLX_NAME4,
+        T_STAFF_INFO.OBJECT4,
+        T_STAFF_INFO.HBLX_NAME5,
+        T_STAFF_INFO.OBJECT5
+        FROM
+        T_STAFF_INFO
+        LEFT JOIN T_OUTFIT_DEPT ON T_STAFF_INFO.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_STAFF_INFO.FK_POSITION_ID = T_DICTIONARY_POSITION.PK_POSITION_ID
+        LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_INFO.FK_HTLX_ID
+        LEFT JOIN T_DICTIONARY_NATION ON T_STAFF_INFO.FK_NATION_ID = T_DICTIONARY_NATION.PK_NATION_ID
+        LEFT JOIN T_DICTIONARY_EDUCATION ON T_STAFF_INFO.FK_EDUCATION_ID = T_DICTIONARY_EDUCATION.PK_EDUCATION_ID
+        where PK_STAFF_ID = #{pkStaffId}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TStaffInfoMap">
-        select * from hjy_cloud.T_STAFF_INFO
+        SELECT
+        PK_STAFF_ID,
+        STAFF_NAME,
+        STAFF_SEX,
+        STAFF_AGE,
+        T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
+        T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
+        ENTRY_TIME,
+        T_DICTIONARY_HTLX.CONTRAC_TYPE AS FK_HTLX_ID,
+        RECRUIT_WAY,
+        SYQDQ_TIME,
+        ID_TYPE,
+        ID_CARD,
+        NATIVE_PLACE,
+        BIRTHDAY,
+        T_DICTIONARY_NATION.NATION_NAME AS FK_NATION_ID,
+        HKSZD,
+        POLITIVAL_OUTLOOK,
+        CURRENT_ADDRESS,
+        IS_MARRY,
+        T_DICTIONARY_EDUCATION.EDUCATION_NAME AS FK_EDUCATION_ID,
+        T_STAFF_INFO.ZGXLBYYX,
+        T_STAFF_INFO.WY_DJ,
+        T_STAFF_INFO.JSJ_DJ,
+        T_STAFF_INFO.MAJOR,
+        T_STAFF_INFO.BANK_NAME,
+        T_STAFF_INFO.BANK_ID,
+        T_STAFF_INFO.BRANCH_BANK,
+        T_STAFF_INFO.SYR,
+        T_STAFF_INFO.PICTURE_PATH,
+        T_STAFF_INFO.HBLX_NAME1,
+        T_STAFF_INFO.OBJECT1,
+        T_STAFF_INFO.HBLX_NAME2,
+        T_STAFF_INFO.OBJECT2,
+        T_STAFF_INFO.HBLX_NAME3,
+        T_STAFF_INFO.OBJECT3,
+        T_STAFF_INFO.HBLX_NAME4,
+        T_STAFF_INFO.OBJECT4,
+        T_STAFF_INFO.HBLX_NAME5,
+        T_STAFF_INFO.OBJECT5
+        FROM
+        T_STAFF_INFO
+        LEFT JOIN T_OUTFIT_DEPT ON T_STAFF_INFO.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_STAFF_INFO.FK_POSITION_ID = T_DICTIONARY_POSITION.PK_POSITION_ID
+        LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_INFO.FK_HTLX_ID
+        LEFT JOIN T_DICTIONARY_NATION ON T_STAFF_INFO.FK_NATION_ID = T_DICTIONARY_NATION.PK_NATION_ID
+        LEFT JOIN T_DICTIONARY_EDUCATION ON T_STAFF_INFO.FK_EDUCATION_ID = T_DICTIONARY_EDUCATION.PK_EDUCATION_ID
         <where>
-            <if test="pkStaffId != null and pkStaffId != ''">
-                and PK_STAFF_ID = #{pkStaffId}
-            </if>
             <if test="staffName != null and staffName != ''">
                 and STAFF_NAME = #{staffName}
             </if>
             <if test="staffSex != null">
                 and STAFF_SEX = #{staffSex}
-            </if>
-            <if test="staffAge != null">
-                and STAFF_AGE = #{staffAge}
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 and FK_DEPT_ID = #{fkDeptId}
@@ -195,104 +162,8 @@
             <if test="fkPositionId != null and fkPositionId != ''">
                 and FK_POSITION_ID = #{fkPositionId}
             </if>
-            <if test="entryTime != null">
-                and ENTRY_TIME = #{entryTime}
-            </if>
-            <if test="fkHtlxId != null and fkHtlxId != ''">
-                and FK_HTLX_ID = #{fkHtlxId}
-            </if>
-            <if test="recruitWay != null and recruitWay != ''">
-                and RECRUIT_WAY = #{recruitWay}
-            </if>
-            <if test="syqdqTime != null">
-                and SYQDQ_TIME = #{syqdqTime}
-            </if>
-            <if test="idType != null and idType != ''">
-                and ID_TYPE = #{idType}
-            </if>
             <if test="idCard != null and idCard != ''">
                 and ID_CARD = #{idCard}
-            </if>
-            <if test="nativePlace != null and nativePlace != ''">
-                and NATIVE_PLACE = #{nativePlace}
-            </if>
-            <if test="birthday != null and birthday != ''">
-                and BIRTHDAY = #{birthday}
-            </if>
-            <if test="fkNationId != null and fkNationId != ''">
-                and FK_NATION_ID = #{fkNationId}
-            </if>
-            <if test="hkszd != null and hkszd != ''">
-                and HKSZD = #{hkszd}
-            </if>
-            <if test="politivalOutlook != null and politivalOutlook != ''">
-                and POLITIVAL_OUTLOOK = #{politivalOutlook}
-            </if>
-            <if test="currentAddress != null and currentAddress != ''">
-                and CURRENT_ADDRESS = #{currentAddress}
-            </if>
-            <if test="isMarry != null">
-                and IS_MARRY = #{isMarry}
-            </if>
-            <if test="fkEducationId != null and fkEducationId != ''">
-                and FK_EDUCATION_ID = #{fkEducationId}
-            </if>
-            <if test="zgxlbyyx != null and zgxlbyyx != ''">
-                and ZGXLBYYX = #{zgxlbyyx}
-            </if>
-            <if test="wyDj != null and wyDj != ''">
-                and WY_DJ = #{wyDj}
-            </if>
-            <if test="jsjDj != null and jsjDj != ''">
-                and JSJ_DJ = #{jsjDj}
-            </if>
-            <if test="major != null and major != ''">
-                and MAJOR = #{major}
-            </if>
-            <if test="bankName != null and bankName != ''">
-                and BANK_NAME = #{bankName}
-            </if>
-            <if test="bankId != null and bankId != ''">
-                and BANK_ID = #{bankId}
-            </if>
-            <if test="branchBank != null and branchBank != ''">
-                and BRANCH_BANK = #{branchBank}
-            </if>
-            <if test="syr != null and syr != ''">
-                and SYR = #{syr}
-            </if>
-            <if test="picturePath != null and picturePath != ''">
-                and PICTURE_PATH = #{picturePath}
-            </if>
-            <if test="hblxName1 != null and hblxName1 != ''">
-                and HBLX_NAME1 = #{hblxName1}
-            </if>
-            <if test="object1 != null and object1 != ''">
-                and OBJECT1 = #{object1}
-            </if>
-            <if test="hblxName2 != null and hblxName2 != ''">
-                and HBLX_NAME2 = #{hblxName2}
-            </if>
-            <if test="object2 != null and object2 != ''">
-                and OBJECT2 = #{object2}
-            </if>
-            <if test="hblxName3 != null and hblxName3 != ''">
-                and HBLX_NAME3 = #{hblxName3}
-            </if>
-            <if test="object3 != null and object3 != ''">
-                and OBJECT3 = #{object3}
-            </if>
-            <if test="hblxName4 != null and hblxName4 != ''">
-                and HBLX_NAME4 = #{hblxName4}
-            </if>
-            <if test="object4 != null and object4 != ''">
-                and OBJECT4 = #{object4}
-            </if>
-            <if test="hblxName5 != null and hblxName5 != ''">
-                and HBLX_NAME5 = #{hblxName5}
-            </if>
-            <if test="object5 != null and object5 != ''">
-                and OBJECT5 = #{object5}
             </if>
         </where>
     </select>
@@ -562,12 +433,6 @@
             </if>
             <if test="staffAge != null">
                 STAFF_AGE = #{staffAge},
-            </if>
-            <if test="fkDeptId != null and fkDeptId != ''">
-                FK_DEPT_ID = #{fkDeptId},
-            </if>
-            <if test="fkPositionId != null and fkPositionId != ''">
-                FK_POSITION_ID = #{fkPositionId},
             </if>
             <if test="entryTime != null">
                 ENTRY_TIME = #{entryTime},

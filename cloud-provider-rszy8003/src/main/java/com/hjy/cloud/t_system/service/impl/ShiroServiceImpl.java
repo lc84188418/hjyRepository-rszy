@@ -134,32 +134,21 @@ public class ShiroServiceImpl implements ShiroService {
         tokenEntity.setFullName(tSysUser.getFullName());
         tokenEntity.setIdcard(tSysUser.getIdcard());
         tSysTokenMapper.insertToken(tokenEntity);
-
-//        //判断是否生成过token
-//        SysToken tokenEntity = tSysTokenMapper.selectByUserId(tSysUser.getPkUserId());
-//        if (tokenEntity == null) {
-//            tokenEntity = new SysToken();
-//            tokenEntity.setFkUserId(tSysUser.getPkUserId());
-//            //保存token
-//            tokenEntity.setPkTokenId(token);
-//            tokenEntity.setUpdateTime(now);
-//            tokenEntity.setExpireTime(expireTime);
-//            tokenEntity.setUsername(tSysUser.getUsername());
-//            tokenEntity.setPassword(tSysUser.getPassword());
-//            tokenEntity.setIp(tSysUser.getIp());
-//            tokenEntity.setFullName(tSysUser.getFullName());
-//            tokenEntity.setIdcard(tSysUser.getIdcard());
-//            tSysTokenMapper.insertToken(tokenEntity);
-//        } else {
-//            //更新token
-//            tokenEntity.setPkTokenId(token);
-//            tokenEntity.setUpdateTime(now);
-//            tokenEntity.setExpireTime(expireTime);
-//            tokenEntity.setIp(tSysUser.getIp());
-//            tSysTokenMapper.updateToken(tokenEntity);
-//        }
         result.put("token", token);
         result.put("expire", expireTime);
+        /**
+         * 暂时手动添加ActiveUser信息
+         */
+        ActiveUser activeUser = new ActiveUser();
+        activeUser.setUserId(tSysUser.getPkUserId());
+        activeUser.setTokenId(token);
+        activeUser.setUsername(tSysUser.getUsername());
+        activeUser.setPassword(tSysUser.getPassword());
+        activeUser.setTel(tSysUser.getTel());
+        activeUser.setIDcard(tSysUser.getIdcard());
+        activeUser.setFullName(tSysUser.getFullName());
+        session.setAttribute("activeUser",activeUser);
+        result.put("data",tSysUser);
         return result;
     }
 

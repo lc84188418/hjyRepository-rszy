@@ -15,7 +15,7 @@ public class PasswordEncryptUtils {
         //加密方式
         String algorithmName = "MD5";
         //盐
-        Object salt = ByteSource.Util.bytes(username);
+        Object salt = ByteSource.Util.bytes("username");
         //hash次数
         int hashIterations = 1;
         SimpleHash simpleHash = new SimpleHash(algorithmName, password, salt, hashIterations);

@@ -10,20 +10,6 @@ import com.hjy.cloud.domin.CommonResult;
  * @since 2021-02-25 17:06:47
  */
 public interface TStaffInfoService {
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    CommonResult insertPage();
-
-    /**
-     * 添加数据
-     *
-     * @param tStaffInfo
-     * @return
-     */
-    CommonResult insert(TStaffInfo tStaffInfo);
 
     /**
      * 修改数据

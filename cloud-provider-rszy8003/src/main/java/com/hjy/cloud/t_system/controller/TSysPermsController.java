@@ -54,12 +54,10 @@ public class TSysPermsController {
     @RequiresPermissions({"perms:add"})
     @PostMapping("/system/perms/add")
     public CommonResult tSysPermsAdd(@RequestBody TSysPerms tSysPerms, HttpSession session) throws FebsException{
-        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
-        tSysPerms.setModifyUsername(activeUser.getFullName());
-        tSysPerms.setFkUserId(activeUser.getUserId());
+
         try {
             //
-            tSysPermsService.insert(tSysPerms);
+            tSysPermsService.insert(session,tSysPerms);
             return new CommonResult(200,"success","数据添加成功!",null);
         } catch (Exception e) {
             String message = "数据添加失败";

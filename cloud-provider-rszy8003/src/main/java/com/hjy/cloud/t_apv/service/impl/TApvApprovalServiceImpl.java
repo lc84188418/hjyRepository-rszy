@@ -17,20 +17,30 @@ import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
+import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
-import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
+import com.hjy.cloud.t_system.dao.TSysUserMapper;
+import com.hjy.cloud.t_system.entity.ActiveUser;
+import com.hjy.cloud.t_system.entity.SysToken;
+import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.utils.*;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -51,6 +61,12 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private TApvGroupMapper tApvGroupMapper;
     @Resource
     private TStaffInfoMapper tStaffInfoMapper;
+    @Resource
+    private TStaffEntryMapper tStaffEntryMapper;
+    @Resource
+    private TSysUserMapper tSysUserMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     @Value("${server.port}")
     private String serverPort;
     @Value("${spring.cloud.application.ip}")
@@ -184,7 +200,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TApvApproval entity = new TApvApproval();
@@ -224,6 +239,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     public DApvRecord selectApvRecordById(String pkRecordId) {
         return this.tApvApprovalMapper.selectApvRecordById(pkRecordId);
     }
+    @Transactional()
     @Override
     public int updateAPV_isending(TApvApproval entity) {
         return tApvApprovalMapper.updateByPkId(entity);
@@ -234,6 +250,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
      * @param sourceId
      * @return
      */
+    @Transactional()
     @Override
     public int deleteApvRecordBySourceId(String sourceId) {
         return tApvApprovalMapper.deleteApvRecordBySourceId(sourceId);
@@ -249,8 +266,168 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
          *
          */
         List<DApvRecord> waitApvRecords = tApvApprovalMapper.waitApv();
-        return null;
+        //将待审批数据进行处理
+        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("waitApvRecords", apvRecords);
+        return new CommonResult(200, "success", "获取待审批列表数据成功！", resultJson);
+
     }
+    /**
+     * 待审批,操作用户自己的
+     *
+     */
+    @Override
+    public CommonResult waitApvUser(HttpSession session,HttpServletRequest request) {
+        String token = TokenUtil.getRequestToken(request);
+        if(StringUtils.isEmpty(token)){
+            return new CommonResult(444, "error", "请在请求头传入token", null);
+        }
+        SysToken tokenEntity = tSysTokenMapper.findByToken(token);
+        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        /**
+         *
+         */
+        List<DApvRecord> waitApvRecords = tApvApprovalMapper.waitApvUser(tokenEntity.getFkUserId());
+        //将待审批数据进行处理
+        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,tokenEntity.getFkUserId());
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("waitApvRecords", apvRecords);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+
+    }
+    //将待审批数据进行处理
+    private List<TempApvEntity> optimizeApvRecord(List<DApvRecord> dApvRecords,String userId) {
+        if(dApvRecords == null && dApvRecords.size() == 0){
+            return null;
+        }
+        List<TempApvEntity> apvRecords = new ArrayList<>();
+        Iterator<DApvRecord> iterator = dApvRecords.iterator();
+        while (iterator.hasNext()){
+            DApvRecord first = iterator.next();
+            if(first.getIsStart() == 1){
+                //第一级审批人
+                TempApvEntity tempApvEntity = new TempApvEntity();
+                tempApvEntity.setPkApprovalId(first.getPkRecordId());
+                tempApvEntity.setApprovalType(first.getApprovalType());
+                tempApvEntity.setApvtypeName(first.getApvtypeName());
+                tempApvEntity.setSponsor(first.getSponsor());
+                tempApvEntity.setStartTime(first.getStartTime());
+                tempApvEntity.setApprovalPeople1(first.getApvApproval());
+                tempApvEntity.setApvDate1(first.getApvDate());
+                tempApvEntity.setApvResult1(first.getApvResult());
+                tempApvEntity.setApvReason1(first.getApvReason());
+                //来源ID
+                tempApvEntity.setSourceId(first.getSourceId());
+                tempApvEntity.setApprovalPeople2(first.getNextApproval());
+                //将该审批记录移除
+                iterator.remove();
+                apvRecords.add(tempApvEntity);
+            }
+        }
+        //二级审批人
+        Iterator<TempApvEntity> resultIterator = apvRecords.iterator();
+        while (resultIterator.hasNext()){
+            TempApvEntity tempApvEntity = resultIterator.next();
+            if(tempApvEntity.getApprovalPeople2().equals("0")){
+                //说明没有下级审批了
+                continue;
+            }
+            Iterator<DApvRecord> secondIterator = dApvRecords.iterator();
+            while (secondIterator.hasNext()){
+                DApvRecord second = secondIterator.next();
+                if(tempApvEntity.getApprovalPeople2().equals(second.getPkRecordId())){
+                    tempApvEntity.setApprovalPeople2(second.getApvApproval());
+                    tempApvEntity.setApvDate2(second.getApvDate());
+                    tempApvEntity.setApvResult2(second.getApvResult());
+                    tempApvEntity.setApvReason2(second.getApvReason());
+                    tempApvEntity.setApprovalPeople3(second.getNextApproval());
+                    //将该审批记录移除
+                    secondIterator.remove();
+                }
+            }
+            if(tempApvEntity.getApprovalPeople3().equals("0")){
+                //说明没有下级审批了
+                continue;
+            }
+            Iterator<DApvRecord> thirdIterator = dApvRecords.iterator();
+            while (thirdIterator.hasNext()){
+                DApvRecord third = thirdIterator.next();
+                if(tempApvEntity.getApprovalPeople3().equals(third.getPkRecordId())){
+                    tempApvEntity.setApprovalPeople3(third.getApvApproval());
+                    tempApvEntity.setApvDate3(third.getApvDate());
+                    tempApvEntity.setApvResult3(third.getApvResult());
+                    tempApvEntity.setApvReason3(third.getApvReason());
+                    tempApvEntity.setApprovalPeople4(third.getNextApproval());
+                    //将该审批记录移除
+                    thirdIterator.remove();
+                }
+            }
+            if(tempApvEntity.getApprovalPeople4().equals("0")){
+                //说明没有下级审批了
+                continue;
+            }
+            Iterator<DApvRecord> fourthIterator = dApvRecords.iterator();
+            while (fourthIterator.hasNext()){
+                DApvRecord fourth = fourthIterator.next();
+                if(tempApvEntity.getApprovalPeople4().equals(fourth.getPkRecordId())){
+                    tempApvEntity.setApprovalPeople4(fourth.getApvApproval());
+                    tempApvEntity.setApvDate4(fourth.getApvDate());
+                    tempApvEntity.setApvResult4(fourth.getApvResult());
+                    tempApvEntity.setApvReason4(fourth.getApvReason());
+                    tempApvEntity.setApprovalPeople5(fourth.getNextApproval());
+                    //将该审批记录移除
+                    fourthIterator.remove();
+                }
+            }
+            if(tempApvEntity.getApprovalPeople5().equals("0")){
+                //说明没有下级审批了
+                continue;
+            }
+            Iterator<DApvRecord> fifthIterator = dApvRecords.iterator();
+            while (fifthIterator.hasNext()){
+                DApvRecord fifth = fifthIterator.next();
+                if(tempApvEntity.getApprovalPeople5().equals(fifth.getPkRecordId())){
+                    tempApvEntity.setApprovalPeople5(fifth.getApvApproval());
+                    tempApvEntity.setApvDate5(fifth.getApvDate());
+                    tempApvEntity.setApvResult5(fifth.getApvResult());
+                    tempApvEntity.setApvReason5(fifth.getApvReason());
+                    //将该审批记录移除
+                    fifthIterator.remove();
+                }
+            }
+        }
+        Iterator<TempApvEntity> lastIterator = apvRecords.iterator();
+        while (lastIterator.hasNext()){
+            TempApvEntity last = lastIterator.next();
+            int prompt = 0;
+            //判断该流程审批是否到操作用户
+            if(userId.equals(last.getApprovalPeople1())
+                    && last.getApvDate1() == null){
+                prompt = 1;
+            }else if(userId.equals(last.getApprovalPeople2())
+                    && last.getApvDate2() == null
+                    && last.getApvDate1() != null){
+                prompt = 1;
+            }else if(userId.equals(last.getApprovalPeople3())
+                    && last.getApvDate3() == null
+                    && last.getApvDate2() != null){
+                prompt = 1;
+            }else if(userId.equals(last.getApprovalPeople4())
+                    && last.getApvDate4() == null
+                    && last.getApvDate3() != null){
+                prompt = 1;
+            }else if(userId.equals(last.getApprovalPeople5())
+                    && last.getApvDate5() == null
+                    && last.getApvDate4() != null){
+                prompt = 1;
+
+            }
+            last.setPrompt(prompt);
+        }
+        return apvRecords;
+    }
+
     /**
      * 审批设置
      *
@@ -284,6 +461,150 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         resultJson.put("groupList", groupList);
         resultJson.put("typeList", tApvTypeList);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+    /**
+     * 该审批流程的详情
+     *
+     * @return 修改结果
+     */
+    @Override
+    public CommonResult waitApvDetail(String param) {
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String approvalType = JsonUtil.getStringParam(json, "approvalType");
+        String sourceId = JsonUtil.getStringParam(json, "sourceId");
+        JSONObject resultJson = new JSONObject();
+        if("1".equals(approvalType)){
+            //请假申请
+        }else if("2".equals(approvalType)){
+            //补卡申请
+        }else if("3".equals(approvalType)){
+            //外出申请
+        }else if("4".equals(approvalType)){
+            //加班申请
+        }else if("5".equals(approvalType)){
+            //调班申请
+        }else if("6".equals(approvalType)){
+            //报销申请
+        }else if("7".equals(approvalType)){
+            //采购申请
+        }else if("8".equals(approvalType)){
+            //调动申请
+        }else if("9".equals(approvalType)){
+            //招聘申请
+        }else if("10".equals(approvalType)){
+            //调薪申请
+        }else if("11".equals(approvalType)){
+            //离职申请
+        }else if("12".equals(approvalType)){
+            //入职申请
+            TStaffEntry tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
+            resultJson.put("source", tStaffEntry);
+        }else if("13".equals(approvalType)){
+            //转正申请
+        }else if("14".equals(approvalType)){
+            //印章申请
+        }else if("15".equals(approvalType)){
+            //证照申请
+        }
+        return new CommonResult(200, "success", "获取审批流程来源详情成功", resultJson);
+
+    }
+    /**
+     * 审批
+     *
+     * @return 修改结果
+     */
+    @Transactional()
+    @Override
+    public CommonResult approval(HttpSession session,HttpServletRequest request,String param) {
+        String token = TokenUtil.getRequestToken(request);
+        if(StringUtils.isEmpty(token)){
+            return new CommonResult(444, "error", "请在请求头传入token", null);
+        }
+        SysToken tokenEntity = tSysTokenMapper.findByToken(token);
+//        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String sourceId = JsonUtil.getStringParam(json, "sourceId");
+        String apvResult = JsonUtil.getStringParam(json, "apvResult");
+        String apvReason = JsonUtil.getStringParam(json, "apvReason");
+        String approvalType = JsonUtil.getStringParam(json, "approvalType");
+        DApvRecord apvRecord = tApvApprovalMapper.selectApvRecordBySourceId_UserId(sourceId,tokenEntity.getFkUserId());
+        apvRecord.setApvDate(new Date());
+        int resultInt = Integer.parseInt(apvResult);
+        apvRecord.setApvResult(resultInt);
+        apvRecord.setApvReason(apvReason);
+        int j = tApvApprovalMapper.updateApvRecord(apvRecord);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(j > 0){
+            stringBuffer.append("审批成功!");
+        }else {
+            stringBuffer.append("审批失败!");
+            return new CommonResult(444, "error", stringBuffer.toString(), null);
+        }
+        if(resultInt == 0){
+            //审批驳回，后续审批就不用进行了
+            //将该审批流程的所有审批记录的is_ing该为0
+            int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
+        }
+        if("0".equals(apvRecord.getNextApproval()) && resultInt == 1){
+            //将该审批流程的所有审批记录的is_ing该为0
+            int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
+            stringBuffer = this.complateAPV(approvalType,sourceId);
+        }
+        return new CommonResult(200, "success", stringBuffer.toString(), null);
+    }
+
+    private StringBuffer complateAPV(String approvalType,String sourceId) {
+        StringBuffer stringBuffer = new StringBuffer();
+        //如果该审批已完成最后流程并通过，且为入职审批即approvalType=12
+        if("12".equals(approvalType)){
+            TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
+            /**
+             * 添加员工信息
+             */
+            TStaffInfo tStaffInfo = new TStaffInfo();
+            String pkId = IDUtils.getUUID();
+            tStaffInfo.setPkStaffId(pkId);
+            tStaffInfo.setStaffName(tStaffEntry.getStaffName());
+            tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
+            tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
+            tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
+            tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
+            tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
+            tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
+            tStaffInfo.setIdType(tStaffEntry.getIdType());
+            tStaffInfo.setIdCard(tStaffEntry.getIdCard());
+            //其他信息需要后期添加
+            int i = tStaffInfoMapper.insertSelective(tStaffInfo);
+            if(i > 0){
+                stringBuffer.append("审批通过，已录入员工信息！");
+            }
+            /**
+             * 添加系统用户
+             */
+            TSysUser tSysUser = new TSysUser();
+            tSysUser.setPkUserId(pkId);
+            tSysUser.setUsername(tStaffEntry.getStaffName());
+            String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
+            tSysUser.setPassword(password);
+            tSysUser.setEmail(tStaffEntry.getEmail());
+            tSysUser.setTel(tStaffEntry.getStaffTel());
+            tSysUser.setIdcard(tStaffEntry.getIdCard());
+            tSysUser.setFullName(tStaffEntry.getStaffName());
+            tSysUser.setWorkPosition(tStaffEntry.getStaffPosition());
+            tSysUser.setEnableStatus("1");
+            tSysUser.setCreateTime(new Date());
+            tSysUser.setModifyTime(new Date());
+            int j = tSysUserMapper.insertSelective(tSysUser);
+            if(j > 0){
+                stringBuffer.append("已创建系统账户！");
+            }
+        }else if ("1".equals(approvalType)){
+
+        }
+        return stringBuffer;
     }
 
     private JSONObject getListInfo() {

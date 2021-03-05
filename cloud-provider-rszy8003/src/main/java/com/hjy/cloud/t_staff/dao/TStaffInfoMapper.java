@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -13,20 +14,13 @@ import java.util.List;
 public interface TStaffInfoMapper {
 
     /**
-     * 分页记录条数
-     *
-     * @param tStaffInfo 实例对象
-     * @return 记录条数
-     */
-    int selectSize(TStaffInfo tStaffInfo);
-
-    /**
      * 通过ID查询单条数据
      *
-     * @param pk_id 主键
+     * @param pkStaffId 主键
      * @return 实例对象
      */
-    TStaffInfo selectByPkId(String pk_id);
+    TStaffInfo selectByPkId(@Param("pkStaffId")String pkStaffId);
+    TStaffInfo selectByPkId2(@Param("pkStaffId")String pkStaffId);
 
     /**
      * 通过实体作为筛选条件查询

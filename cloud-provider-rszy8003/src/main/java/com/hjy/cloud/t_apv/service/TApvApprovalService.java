@@ -6,6 +6,9 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import org.apache.ibatis.annotations.Param;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * (TApvApproval)表服务接口
  *
@@ -78,9 +81,27 @@ public interface TApvApprovalService {
      */
     CommonResult waitApv();
     /**
+     * 待审批,操作用户自己的
+     *
+     * @return 修改结果
+     */
+    CommonResult waitApvUser(HttpSession session,HttpServletRequest request);
+    /**
      * 审批设置
      *
      * @return 修改结果
      */
     CommonResult approvalSet();
+    /**
+     * 该审批流程的详情
+     *
+     * @return 修改结果
+     */
+    CommonResult waitApvDetail(String param);
+    /**
+     * 审批
+     *
+     * @return 修改结果
+     */
+    CommonResult approval(HttpSession session, HttpServletRequest request,String param);
 }
