@@ -56,4 +56,6 @@ public interface TApvApvtypeService {
      * @return
      */
     CommonResult selectById(TApvApvtype tApvApvtype);
+    //通过审批类型名称查询该审批类型基本信息
+    TApvApvtype selectByName(String apvName);
 }

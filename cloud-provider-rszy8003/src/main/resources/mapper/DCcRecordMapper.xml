@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_apv.dao.DCcRecordMapper">
+
+    <resultMap type="com.hjy.cloud.t_apv.entity.DCcRecord" id="DCcRecordMap">
+        <result property="pkCcId" column="PK_CC_ID" jdbcType="VARCHAR"/>
+        <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
+        <result property="firstApvrecordId" column="FIRST_APVRECORD_ID" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="DCcRecordMap">
+        select * from hjy_cloud.D_CC_RECORD
+        where PK_CC_ID = #{pkCcId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="DCcRecordMap">
+        select
+        PK_CC_ID, FK_STAFF_ID, STAFF_NAME, FIRST_APVRECORD_ID
+        from hjy_cloud.D_CC_RECORD
+        <where>
+            <if test="pkCcId != null and pkCcId != ''">
+                and PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                and FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.DCcRecord">
+        insert into hjy_cloud.D_CC_RECORD
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkCcId != null and pkCcId != ''">
+                PK_CC_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                FIRST_APVRECORD_ID,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkCcId != null and pkCcId != ''">
+                #{pkCcId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                #{firstApvrecordId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertCCRecordBatch">
+        insert into D_CC_RECORD
+        (PK_CC_ID,FK_STAFF_ID,STAFF_NAME,FIRST_APVRECORD_ID)
+        values
+        <foreach collection="ccRecords" item="item" index="index" separator=",">
+            (
+            #{item.pkCcId, jdbcType=VARCHAR},
+            #{item.fkStaffId, jdbcType=VARCHAR},
+            #{item.staffName, jdbcType=VARCHAR},
+            #{item.firstApvrecordId, jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.D_CC_RECORD
+        <set>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.D_CC_RECORD where PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

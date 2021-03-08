@@ -95,4 +95,6 @@ public interface TOutfitDeptService {
      * 合并部门
      */
     CommonResult deptMerge(String param);
+
+    TOutfitDept selectByPkId(String fkDeptId);
 }

@@ -58,4 +58,10 @@ public interface TStaffInfoMapper {
     int deleteById(TStaffInfo tStaffInfo);
 
     List<TStaffInfo> selectAll();
+
+    String selectDeptIdByPkId(@Param("pkStaffId")String pkStaffId);
+
+    TStaffInfo selectDeptLeader(@Param("pkStaffId")String pkStaffId);
+
+    TStaffInfo selectLeaderByPosition(@Param("fkPositionId")String fkPositionId);
 }

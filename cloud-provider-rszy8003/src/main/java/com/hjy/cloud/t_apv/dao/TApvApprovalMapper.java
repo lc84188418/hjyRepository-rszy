@@ -80,7 +80,7 @@ public interface TApvApprovalMapper {
 
     List<TApvApproval> selectAllByType(@Param("apvType")String pk_apv_type);
 
-    TApvApproval selectApvSet(@Param("pkApprovalId")String pkApprovalId,@Param("approvalType")String approvalType,@Param("isStart")int isStart);
+    TApvApproval selectApvSet(@Param("pkApprovalId")String pkApprovalId,@Param("approvalType")String approvalType,@Param("dataType")int dataType,@Param("isStart")int isStart);
     TApvApproval selectApvSet(TApvApproval tApvApproval);
     /**
      * 批量添加审批记录
@@ -111,4 +111,8 @@ public interface TApvApprovalMapper {
     int updateIsIngBySourceId(@Param("sourceId")String sourceId);
 
     int updateApvRecord(DApvRecord apvRecord);
+    /**
+     * 查询某审批类型的默认抄送人
+     */
+    List<TApvApproval> selectCsr(@Param("approvalType")String approvalType,@Param("dataType") int dataType);
 }

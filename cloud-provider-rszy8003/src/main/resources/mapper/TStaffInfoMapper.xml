@@ -168,10 +168,47 @@
         </where>
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
-        select PK_STAFF_ID,STAFF_NAME from T_STAFF_INFO
+SELECT
+	PK_STAFF_ID,
+	STAFF_NAME,
+	FK_DEPT_ID,
+	FK_POSITION_ID,
+	T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
+	T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID
+FROM
+	T_STAFF_INFO
+	LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
+	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
     </select>
     <select id="selectAll" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         select * from T_STAFF_INFO
+    </select>
+    <select id="selectDeptIdByPkId" resultType="java.lang.String">
+        select FK_DEPT_ID from T_STAFF_INFO where PK_STAFF_ID = #{pkStaffId}
+    </select>
+    <select id="selectDeptLeader" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+        SELECT
+	T_STAFF_INFO.PK_STAFF_ID,
+	T_STAFF_INFO.STAFF_NAME
+FROM
+	T_STAFF_INFO
+WHERE
+	T_STAFF_INFO.PK_STAFF_ID = (
+	SELECT
+		DEPT_LEADER
+	FROM
+		T_OUTFIT_DEPT
+WHERE
+	PK_DEPT_ID = ( SELECT FK_DEPT_ID FROM T_STAFF_INFO WHERE PK_STAFF_ID = #{pkStaffId}))
+    </select>
+    <select id="selectLeaderByPosition" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+SELECT
+	T_STAFF_INFO.PK_STAFF_ID,
+	T_STAFF_INFO.STAFF_NAME
+FROM
+	T_STAFF_INFO
+WHERE
+	T_STAFF_INFO.FK_POSITION_ID = #{fkPositionId}
     </select>
 
     <!--新增所有列-->

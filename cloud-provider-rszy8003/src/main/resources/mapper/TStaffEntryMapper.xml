@@ -31,7 +31,45 @@
         select * from hjy_cloud.T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
-
+    <select id="selectByPkId2" resultMap="TStaffEntryMap">
+        SELECT
+        T_STAFF_ENTRY.PK_ENTRY_ID,
+        T_STAFF_ENTRY.STAFF_NAME,
+        T_STAFF_ENTRY.STAFF_SEX,
+        T_STAFF_ENTRY.STAFF_AGE,
+        T_OUTFIT_DEPT.DEPT_NAME as STAFF_DEPT,
+        T_DICTIONARY_POSITION.POSITION_NAME as STAFF_POSITION,
+        T_STAFF_ENTRY.STAFF_TEL,
+        T_OUTFIT_WORKADDRESS.WORKADRESS_NAME as WORK_ADDRESS,
+        T_STAFF_ENTRY.RECRUIT_WAY,
+        T_STAFF_ENTRY.ID_TYPE,
+        T_STAFF_ENTRY.ID_CARD,
+        T_STAFF_ENTRY.ENTRY_TIME,
+        T_STAFF_ENTRY.EMAIL,
+        T_STAFF_ENTRY.OPERATED_PEOPLE,
+        T_STAFF_ENTRY.STATUS,
+        T_STAFF_ENTRY.REMARKS,
+        T_STAFF_ENTRY.IS_ABANDON,
+        T_STAFF_ENTRY.ABANDON_TIME,
+        T_STAFF_ENTRY.ABANDON_REASON,
+        T_STAFF_ENTRY.ENTRY_DESC,
+        T_STAFF_ENTRY.APV_ID
+        FROM
+        T_STAFF_ENTRY
+        INNER JOIN
+        T_OUTFIT_DEPT
+        ON
+        T_STAFF_ENTRY.STAFF_DEPT = T_OUTFIT_DEPT.PK_DEPT_ID
+        INNER JOIN
+        T_DICTIONARY_POSITION
+        ON
+        T_STAFF_ENTRY.STAFF_POSITION = T_DICTIONARY_POSITION.PK_POSITION_ID
+        INNER JOIN
+        T_OUTFIT_WORKADDRESS
+        ON
+        T_STAFF_ENTRY.WORK_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
+        where PK_ENTRY_ID = #{pkEntryId}
+    </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">

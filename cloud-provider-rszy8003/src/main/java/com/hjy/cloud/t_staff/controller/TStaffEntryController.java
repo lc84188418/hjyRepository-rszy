@@ -10,6 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -145,5 +146,34 @@ public class TStaffEntryController {
             throw new FebsException(message);
         }
     }
-
+    /**
+     * 发起入职审批页面
+     *
+     * @param tStaffEntry 实体对象
+     * @return 修改结果
+     */
+    @PostMapping(value = "/staff/entry/approvalPage")
+    public CommonResult approvalPage(HttpServletRequest request,@RequestBody TStaffEntry tStaffEntry) throws FebsException {
+        try {
+            return tStaffEntryService.approvalPage(request,tStaffEntry);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 发起入职审批
+     *
+     * @return 修改结果
+     */
+    @OperLog(operModul = "人员管理-入职管理",operType = "入职审批",operDesc = "员工入职审批")
+    @PostMapping(value = "/staff/entry/approval")
+    public CommonResult approval(HttpServletRequest request,@RequestBody String param) throws FebsException {
+        try {
+            return tStaffEntryService.approval(request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }

@@ -109,7 +109,21 @@ WHERE
         and DATA_TYPE = 1
     </select>
     <select id="selectApvSet" resultMap="TApvApprovalMap">
-        select * from hjy_cloud.T_APV_APPROVAL
+        SELECT
+        T_APV_APPROVAL.PK_APPROVAL_ID,
+        T_APV_APVTYPE.APVTYPE_NAME as APPROVAL_TYPE,
+        T_APV_APPROVAL.APPROVAL_PEOPLE,
+        T_APV_APPROVAL.NEXT_APPROVAL,
+        T_APV_APPROVAL.DATA_TYPE,
+        T_APV_APPROVAL.APV_STATION,
+        T_APV_APPROVAL.IS_ENDING,
+        T_APV_APPROVAL.IS_START
+        FROM
+        T_APV_APPROVAL
+        INNER JOIN
+        T_APV_APVTYPE
+        ON
+        T_APV_APPROVAL.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
         <where>
             <if test="pkApprovalId != null and pkApprovalId != ''">
                 and PK_APPROVAL_ID = #{pkApprovalId}
@@ -119,6 +133,9 @@ WHERE
             </if>
             <if test="isStart != null">
                 and IS_START = #{isStart}
+            </if>
+            <if test="dataType != null">
+                and DATA_TYPE = #{dataType}
             </if>
         </where>
     </select>
@@ -169,6 +186,9 @@ WHERE
     </select>
     <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
         select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND IS_ING = 1
+    </select>
+    <select id="selectCsr" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+        select * from T_APV_APPROVAL where APV_STATION = 'csr' and APPROVAL_TYPE = #{approvalType} and DATA_TYPE = #{dataType}
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">
@@ -284,7 +304,7 @@ WHERE
     </insert>
     <insert id="insertBatch" parameterType="list">
         insert into T_APV_APPROVAL
-        (PK_APPROVAL_ID,APPROVAL_TYPE,APPROVAL_PEOPLE,NEXT_APPROVAL,DATA_TYPE,IS_ENDING,IS_START)
+        (PK_APPROVAL_ID,APPROVAL_TYPE,APPROVAL_PEOPLE,NEXT_APPROVAL,DATA_TYPE,APV_STATION,IS_ENDING,IS_START)
         values
         <foreach collection="approvals" item="item" index="index" separator=",">
             (
@@ -293,6 +313,7 @@ WHERE
             #{item.approvalPeople, jdbcType=VARCHAR},
             #{item.nextApproval, jdbcType=VARCHAR},
             #{item.dataType, jdbcType=INTEGER},
+            #{item.apvStation, jdbcType=VARCHAR},
             #{item.isEnding, jdbcType=INTEGER},
             #{item.isStart, jdbcType=INTEGER}
             )

@@ -19,7 +19,7 @@ public interface TOutfitDeptMapper {
      * 通过ID查询单条数据
      * @return 实例对象
      */
-    TOutfitDept selectByPkId(String pk_id);
+    TOutfitDept selectByPkId(@Param("pkDeptId")String pkDeptId);
 
     /**
      * 通过实体作为筛选条件查询

@@ -1,11 +1,14 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
+import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryNationMapper;
@@ -25,8 +28,12 @@ import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
+import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -34,6 +41,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -48,6 +56,8 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Resource
     private TStaffEntryMapper tStaffEntryMapper;
     @Resource
+    private TSysTokenMapper tSysTokenMapper;
+    @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
     @Resource
     private TDictionaryPositionMapper tDictionaryPositionMapper;
@@ -60,7 +70,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Resource
     private TDictionaryEducationMapper tDictionaryEducationMapper;
     @Resource
-    private TApvApvtypeMapper tApvApvtypeMapper;
+    private DCcRecordMapper dCcRecordMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
     /**
@@ -109,87 +119,13 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         //操作人
         int i = this.tStaffEntryMapper.insertSelective(tStaffEntry);
         if (i > 0) {
-            sb.append("入职申请添加成功！");
-            //再添加审批记录
-            Map<String,Object> resultMap = this.addApvRecord("入职申请",tStaffEntry);
-            String apvId = (String) resultMap.get("firstApvId");
-            String msg = (String) resultMap.get("msg");
-            sb.append(msg);
-            //修改数据
-            TStaffEntry updateEntity = new TStaffEntry();
-            updateEntity.setPkEntryId(tStaffEntry.getPkEntryId());
-            updateEntity.setApvId(apvId);
-            int j = tStaffEntryMapper.updateByPkId(updateEntity);
             JSONObject resultJson = this.getListInfo();
-            return new CommonResult(200, "success", sb.toString(), resultJson);
+            return new CommonResult(200, "success", "入职信息添加成功！", resultJson);
         } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
+            return new CommonResult(444, "error", "添加数据失败！", null);
         }
     }
 
-    private Map<String,Object> addApvRecord(String param,TStaffEntry tStaffEntry) {
-        Map<String, Object> map = new HashMap<>();
-        List<DApvRecord> apvRecords = new ArrayList<>();
-        //先查询入职申请的PK_ID
-        TApvApvtype entity = tApvApvtypeMapper.selectByName(param);
-        if (entity != null) {
-            //12
-            String pk_apv_id = null;
-            String approvalType = entity.getPkApvtypeId();
-            int isStart = 1;
-            boolean flag = true;
-            String newPkId = IDUtils.getUUID();
-            map.put("firstApvId", newPkId);
-            while (flag) {
-                TApvApproval apv = tApvApprovalMapper.selectApvSet(pk_apv_id, approvalType, isStart);
-                if (apv != null) {
-                    String nextPkId = IDUtils.getUUID();
-                    DApvRecord apvRecord = new DApvRecord();
-                    apvRecord.setPkRecordId(newPkId);
-                    apvRecord.setApprovalType(approvalType);
-                    apvRecord.setSponsor(tStaffEntry.getStaffName());
-                    apvRecord.setStartTime(new Date());
-                    apvRecord.setApvApproval(apv.getApprovalPeople());
-                    apvRecord.setSourceId(tStaffEntry.getPkEntryId());
-                    apvRecord.setIsStart(isStart);
-                    apvRecord.setIsIng(1);
-                    if (!apv.getNextApproval().equals("0")) {
-                        /**
-                         * 说明还有下级审批
-                         */
-                        pk_apv_id = apv.getNextApproval();
-                        //添加审批记录
-                        apvRecord.setNextApproval(nextPkId);
-                        newPkId = nextPkId;
-                    } else {
-                        /**
-                         * 该审批只有一个流程
-                         */
-                        //添加审批记录
-                        apvRecord.setNextApproval("0");
-                        flag = false;
-                    }
-                    apvRecords.add(apvRecord);
-                    isStart = 0;
-                } else {
-                    map.put("msg", "入职申请未设置审批人，直接通过！");
-                    map.put("firstApvId", null);
-                }
-            }
-            //批量添加审批记录
-            int i = tApvApprovalMapper.insertApvRecordBatch(apvRecords);
-            if(i > 0){
-                map.put("msg", "入职审批流程记录添加成功！");
-            }else {
-
-            }
-        } else {
-            map.put("msg", "未有入职申请审批流程，直接通过！");
-            map.put("firstApvId", null);
-        }
-        return map;
-
-    }
 
     /**
      * 修改数据
@@ -302,7 +238,132 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
+    /**
+     * 发起入职审批页面
+     *
+     * pkEntryId,操作用户的ID
+     *
+     * @return 修改结果
+     */
+    @Override
+    public CommonResult approvalPage(HttpServletRequest request,TStaffEntry tStaffEntry) {
+        String pkEntryId = tStaffEntry.getPkEntryId();
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"入职申请",1,pkEntryId);
+        String msg = (String) resultJson.get("msg");
+        return new CommonResult(200, "success", msg, resultJson);
 
+    }
+    /**
+     * 发起入职审批
+     *
+     * @return 修改结果
+     */
+    @Transactional()
+    @Override
+    public CommonResult approval(HttpServletRequest request,String param) {
+        String token = TokenUtil.getRequestToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        JSONObject jsonObject = JSON.parseObject(param);
+        //入职申请信息主键
+        String pkEntryId = JsonUtil.getStringParam(jsonObject, "pkEntryId");
+        //审批类型
+        String approvalType = JsonUtil.getStringParam(jsonObject, "approvalType");
+        /**
+         * 抄送人
+         */
+        List<DCcRecord> csrList = new ArrayList<>();
+        JSONArray csrArray = jsonObject.getJSONArray("csrList");
+        String csrIdsStr = csrArray.toString();
+        if(csrIdsStr.equals("[]")){
+            //说明未选择抄送人
+        }else {
+            csrList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
+        }
+        String newPkId = IDUtils.getUUID();
+        List<DCcRecord> ccRecordList = new ArrayList<>();
+        //添加抄送记录
+        if(csrList != null && csrList.size() > 0){
+            for (DCcRecord ccRecord:csrList) {
+                DCcRecord dCcRecord = new DCcRecord();
+                dCcRecord.setPkCcId(IDUtils.getUUID());
+                dCcRecord.setFkStaffId(ccRecord.getFkStaffId());
+                dCcRecord.setStaffName(ccRecord.getStaffName());
+                dCcRecord.setFirstApvrecordId(newPkId);
+                ccRecordList.add(dCcRecord);
+            }
+        }
+        //批量添加抄送记录
+        int i = dCcRecordMapper.insertCCRecordBatch(ccRecordList);
+        /**
+         * 审批人
+         */
+        List<TApvApproval> apvList = new ArrayList<>();
+        JSONArray apvArray = jsonObject.getJSONArray("apvList");
+        String apvIdsStr = apvArray.toString();
+        if(apvIdsStr.equals("[]")){
+            //说明未选择审批人
+        }else {
+            apvList = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
+        }
+
+        /**
+         * 开始添加审批记录
+         */
+        List<DApvRecord> apvRecordList = new ArrayList<>();
+        int isStart = 1;
+        int num = 1;
+        Date startDate = new Date();
+        for (TApvApproval approval: apvList) {
+            String nextPkId = IDUtils.getUUID();
+            DApvRecord dApvRecord = new DApvRecord();
+            dApvRecord.setPkRecordId(newPkId);
+            dApvRecord.setApprovalType(approvalType);
+            dApvRecord.setSponsor(sysToken.getFullName());
+            dApvRecord.setStartTime(startDate);
+            dApvRecord.setApvApproval(approval.getApprovalPeople());
+            if(num == apvList.size()){
+                dApvRecord.setNextApproval("0");
+            }else {
+                dApvRecord.setNextApproval(nextPkId);
+            }
+            dApvRecord.setSourceId(pkEntryId);
+            dApvRecord.setIsStart(isStart);
+            dApvRecord.setIsIng(1);
+            apvRecordList.add(dApvRecord);
+            //改变newPkId、isStart的值
+            newPkId = nextPkId;
+            isStart = 0;
+            num ++;
+        }
+        //批量添加审批记录
+        int j = tApvApprovalMapper.insertApvRecordBatch(apvRecordList);
+        if(j > 0){
+            /**
+             * 修改入职信息表中的apvId
+             */
+            TStaffEntry entry = new TStaffEntry();
+            entry.setPkEntryId(pkEntryId);
+            entry.setApvId(newPkId);
+            //状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1代表审批完成
+            entry.setStatus(2);
+            int k = tStaffEntryMapper.updateByPkId(entry);
+            return new CommonResult(200, "success","入职审批流程记录添加成功！", null);
+        }else {
+            return new CommonResult(444, "error","入职审批流程记录添加失败！", null);
+        }
+    }
+
+    @Override
+    public TStaffEntry selectByPkId(String pkEntryId) {
+        return tStaffEntryMapper.selectByPkId(pkEntryId);
+    }
+    @Override
+    public TStaffEntry selectByPkId2(String pkEntryId) {
+        TStaffEntry entry = new TStaffEntry();
+        entry.setPkEntryId(pkEntryId);
+        List<TStaffEntry> tStaffEntryList = tStaffEntryMapper.selectAllPage(entry);
+        return tStaffEntryList.get(0);
+    }
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         TStaffEntry entity = new TStaffEntry();

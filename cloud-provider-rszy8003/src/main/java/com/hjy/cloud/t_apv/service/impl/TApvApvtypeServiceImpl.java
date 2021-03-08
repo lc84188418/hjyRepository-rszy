@@ -190,6 +190,12 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         resultJson.put("iconList", list);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
+
+    @Override
+    public TApvApvtype selectByName(String apvName) {
+        return tApvApvtypeMapper.selectByName(apvName);
+    }
+
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         TApvApvtype entity = new TApvApvtype();

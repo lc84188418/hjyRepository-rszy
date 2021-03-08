@@ -165,6 +165,11 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
+    @Override
+    public List<TStaffInfo> selectAll() {
+        return tStaffInfoMapper.selectAll();
+    }
+
     /**
      * 获取单个数据
      *
@@ -188,6 +193,22 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         resultJson.put("educationList", educationList);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
+
+    @Override
+    public String selectDeptIdByPkId(String pkStaffId) {
+        return tStaffInfoMapper.selectDeptIdByPkId(pkStaffId);
+    }
+
+    @Override
+    public TStaffInfo selectDeptLeader(String fkUserId) {
+        return tStaffInfoMapper.selectDeptLeader(fkUserId);
+    }
+
+    @Override
+    public TStaffInfo selectLeaderByPosition(String s) {
+        return tStaffInfoMapper.selectLeaderByPosition(s);
+    }
+
     private JSONObject getListInfo() {
         TStaffInfo entity = new TStaffInfo();
 

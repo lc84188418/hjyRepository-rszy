@@ -267,6 +267,11 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     }
 
     @Override
+    public TOutfitDept selectByPkId(String fkDeptId) {
+        return tOutfitDeptMapper.selectByPkId(fkDeptId);
+    }
+
+    @Override
     public void addDeptUserByDeptUser(ReDeptUser deptUser) {
         tOutfitDeptMapper.addDeptUserByDeptUser(deptUser);
     }

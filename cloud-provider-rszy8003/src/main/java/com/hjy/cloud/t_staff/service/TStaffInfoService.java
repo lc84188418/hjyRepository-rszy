@@ -3,6 +3,8 @@ package com.hjy.cloud.t_staff.service;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.domin.CommonResult;
 
+import java.util.List;
+
 /**
  * (TStaffInfo)表服务接口
  *
@@ -34,6 +36,7 @@ public interface TStaffInfoService {
      * @return
      */
     CommonResult selectAll(String param);
+    List<TStaffInfo> selectAll();
 
     /**
      * 获取单个数据
@@ -42,4 +45,10 @@ public interface TStaffInfoService {
      * @return
      */
     CommonResult selectById(TStaffInfo tStaffInfo);
+
+    String selectDeptIdByPkId(String fkUserId);
+
+    TStaffInfo selectDeptLeader(String fkUserId);
+
+    TStaffInfo selectLeaderByPosition(String s);
 }

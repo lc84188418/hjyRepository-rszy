@@ -23,7 +23,7 @@ public class SysToken implements Serializable {
      */
     private String fkUserId;
     /**
-     * tokenID
+     * 用户名
      */
     private String username;
     /**

@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,10 +24,11 @@ public interface TStaffEntryMapper {
     /**
      * 通过ID查询单条数据
      *
-     * @param pk_id 主键
+     * @param pkEntryId 主键
      * @return 实例对象
      */
-    TStaffEntry selectByPkId(String pk_id);
+    TStaffEntry selectByPkId(@Param("pkEntryId")String pkEntryId);
+    TStaffEntry selectByPkId2(@Param("pkEntryId")String pkEntryId);
 
     /**
      * 通过实体作为筛选条件查询

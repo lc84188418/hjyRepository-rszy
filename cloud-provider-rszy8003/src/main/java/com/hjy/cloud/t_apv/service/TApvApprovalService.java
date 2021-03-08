@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Param;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 /**
  * (TApvApproval)表服务接口
@@ -104,4 +105,10 @@ public interface TApvApprovalService {
      * @return 修改结果
      */
     CommonResult approval(HttpSession session, HttpServletRequest request,String param);
+
+    TApvApproval selectApvSet(String pk_apv_id, String approvalType,int dataType, int isStart);
+    /**
+     * 查询某审批类型的默认抄送人
+     */
+    List<TApvApproval> selectCsr(String approvalType, int dataType);
 }
