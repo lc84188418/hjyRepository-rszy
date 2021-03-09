@@ -7,6 +7,7 @@
         <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
         <result property="staffSex" column="STAFF_SEX" jdbcType="INTEGER"/>
         <result property="staffAge" column="STAFF_AGE" jdbcType="INTEGER"/>
+        <result property="staffStatus" column="STAFF_STATUS" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="fkPositionId" column="FK_POSITION_ID" jdbcType="VARCHAR"/>
         <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
@@ -15,6 +16,8 @@
         <result property="syqdqTime" column="SYQDQ_TIME" jdbcType="TIMESTAMP"/>
         <result property="idType" column="ID_TYPE" jdbcType="VARCHAR"/>
         <result property="idCard" column="ID_CARD" jdbcType="VARCHAR"/>
+        <result property="staffEmail" column="STAFF_EMAIL" jdbcType="VARCHAR"/>
+        <result property="staffTel" column="STAFF_TEL" jdbcType="VARCHAR"/>
         <result property="nativePlace" column="NATIVE_PLACE" jdbcType="VARCHAR"/>
         <result property="birthday" column="BIRTHDAY" jdbcType="VARCHAR"/>
         <result property="fkNationId" column="FK_NATION_ID" jdbcType="VARCHAR"/>
@@ -55,6 +58,7 @@
         STAFF_NAME,
         STAFF_SEX,
         STAFF_AGE,
+        STAFF_STATUS,
         T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
         T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
         ENTRY_TIME,
@@ -63,6 +67,8 @@
         SYQDQ_TIME,
         ID_TYPE,
         ID_CARD,
+        STAFF_EMAIL,
+        STAFF_TEL,
         NATIVE_PLACE,
         BIRTHDAY,
         T_DICTIONARY_NATION.NATION_NAME AS FK_NATION_ID,
@@ -107,6 +113,7 @@
         STAFF_NAME,
         STAFF_SEX,
         STAFF_AGE,
+        STAFF_STATUS,
         T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
         T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
         ENTRY_TIME,
@@ -115,6 +122,8 @@
         SYQDQ_TIME,
         ID_TYPE,
         ID_CARD,
+        STAFF_EMAIL,
+        STAFF_TEL,
         NATIVE_PLACE,
         BIRTHDAY,
         T_DICTIONARY_NATION.NATION_NAME AS FK_NATION_ID,
@@ -210,6 +219,23 @@ FROM
 WHERE
 	T_STAFF_INFO.FK_POSITION_ID = #{fkPositionId}
     </select>
+    <select id="selectByIdCard" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+SELECT
+	STAFF_NAME,
+	STAFF_SEX,
+	STAFF_AGE,
+	T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
+	T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
+	ID_CARD,
+	ENTRY_TIME
+FROM
+	T_STAFF_INFO
+	LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
+	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
+WHERE
+	T_STAFF_INFO.ID_CARD = #{idcard}
+
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">
@@ -231,6 +257,9 @@ WHERE
             </if>
             <if test="staffAge != null">
                 STAFF_AGE,
+            </if>
+            <if test="staffStatus != null">
+                STAFF_STATUS,
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID,
@@ -255,6 +284,12 @@ WHERE
             </if>
             <if test="idCard != null and idCard != ''">
                 ID_CARD,
+            </if>
+            <if test="staffEmail != null and staffEmail != ''">
+                STAFF_EMAIL,
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                STAFF_TEL,
             </if>
             <if test="nativePlace != null and nativePlace != ''">
                 NATIVE_PLACE,
@@ -351,6 +386,9 @@ WHERE
             <if test="staffAge != null">
                 #{staffAge},
             </if>
+            <if test="staffStatus != null">
+                #{staffStatus},
+            </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 #{fkDeptId},
             </if>
@@ -374,6 +412,12 @@ WHERE
             </if>
             <if test="idCard != null and idCard != ''">
                 #{idCard},
+            </if>
+            <if test="staffEmail != null and staffEmail != ''">
+                #{staffEmail},
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                #{staffTel},
             </if>
             <if test="nativePlace != null and nativePlace != ''">
                 #{nativePlace},
@@ -471,6 +515,9 @@ WHERE
             <if test="staffAge != null">
                 STAFF_AGE = #{staffAge},
             </if>
+            <if test="staffStatus != null">
+                STAFF_STATUS = #{staffStatus},
+            </if>
             <if test="entryTime != null">
                 ENTRY_TIME = #{entryTime},
             </if>
@@ -488,6 +535,12 @@ WHERE
             </if>
             <if test="idCard != null and idCard != ''">
                 ID_CARD = #{idCard},
+            </if>
+            <if test="staffEmail != null and staffEmail != ''">
+                STAFF_EMAIL = #{staffEmail},
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                STAFF_TEL = #{staffTel},
             </if>
             <if test="nativePlace != null and nativePlace != ''">
                 NATIVE_PLACE = #{nativePlace},

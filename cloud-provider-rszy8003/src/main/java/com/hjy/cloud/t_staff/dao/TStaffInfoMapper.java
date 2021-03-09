@@ -64,4 +64,8 @@ public interface TStaffInfoMapper {
     TStaffInfo selectDeptLeader(@Param("pkStaffId")String pkStaffId);
 
     TStaffInfo selectLeaderByPosition(@Param("fkPositionId")String fkPositionId);
+    /**
+     * 通过证件号查询员工基本信息
+     */
+    TStaffInfo selectByIdCard(@Param("idcard")String idcard);
 }

@@ -5,6 +5,7 @@
     <resultMap type="com.hjy.cloud.t_staff.entity.TStaffContract" id="TStaffContractMap">
         <result property="pkContrctId" column="PK_CONTRCT_ID" jdbcType="VARCHAR"/>
         <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
+        <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="idcard" column="IDCARD" jdbcType="VARCHAR"/>
         <result property="contrctStatus" column="CONTRCT_STATUS" jdbcType="INTEGER"/>
         <result property="fkContractType" column="FK_CONTRACT_TYPE" jdbcType="VARCHAR"/>
@@ -22,13 +23,13 @@
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffContractMap">
         select * from hjy_cloud.T_STAFF_CONTRACT
-        where PK_CONTRCT_ID = #{pkContrctId}
+        where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TStaffContractMap">
         select
-        PK_CONTRCT_ID, STAFF_NAME, IDCARD, CONTRCT_STATUS, FK_CONTRACT_TYPE, CONTRACT_ATTRIBUTE, CONTRACT_QX,
+        PK_CONTRCT_ID,STAFF_NAME,FK_DEPT_ID,IDCARD, CONTRCT_STATUS, FK_CONTRACT_TYPE, CONTRACT_ATTRIBUTE, CONTRACT_QX,
         FK_CONTRACT_COMPANY, START_TIME, SIGN_TIME, END_TIME, SIGN_NUM, APPROVAL_STATUS, ANNEX
         from hjy_cloud.T_STAFF_CONTRACT
         <where>
@@ -36,13 +37,19 @@
                 and PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
             </if>
             <if test="staffName != null and staffName != ''">
-                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+                and STAFF_NAME like '%${staffName}%'
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
             </if>
             <if test="idcard != null and idcard != ''">
-                and IDCARD = #{idcard,jdbcType=VARCHAR}
+                and IDCARD like '%${idcard}%'
             </if>
             <if test="contrctStatus != null">
                 and CONTRCT_STATUS = #{contrctStatus,jdbcType=INTEGER}
+            </if>
+            <if test="signStatus != null">
+                and SIGN_STATUS = #{signStatus,jdbcType=INTEGER}
             </if>
             <if test="fkContractType != null and fkContractType != ''">
                 and FK_CONTRACT_TYPE = #{fkContractType,jdbcType=VARCHAR}
@@ -76,6 +83,7 @@
             </if>
         </where>
     </select>
+    <select id="selectAllHandlePage" resultType="com.hjy.cloud.t_staff.entity.TStaffContract"></select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffContract">
         insert into hjy_cloud.T_STAFF_CONTRACT
@@ -86,11 +94,17 @@
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME,
             </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID,
+            </if>
             <if test="idcard != null and idcard != ''">
                 IDCARD,
             </if>
             <if test="contrctStatus != null">
                 CONTRCT_STATUS,
+            </if>
+            <if test="signStatus != null">
+                SIGN_STATUS,
             </if>
             <if test="fkContractType != null and fkContractType != ''">
                 FK_CONTRACT_TYPE,
@@ -130,11 +144,17 @@
             <if test="staffName != null and staffName != ''">
                 #{staffName,jdbcType=VARCHAR},
             </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                #{fkDeptId,jdbcType=VARCHAR},
+            </if>
             <if test="idcard != null and idcard != ''">
                 #{idcard,jdbcType=VARCHAR},
             </if>
             <if test="contrctStatus != null">
                 #{contrctStatus,jdbcType=INTEGER},
+            </if>
+            <if test="signStatus != null">
+                #{signStatus,jdbcType=INTEGER},
             </if>
             <if test="fkContractType != null and fkContractType != ''">
                 #{fkContractType,jdbcType=VARCHAR},
@@ -174,6 +194,9 @@
         <set>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME = #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},
             </if>
             <if test="idcard != null and idcard != ''">
                 IDCARD = #{idcard,jdbcType=VARCHAR},

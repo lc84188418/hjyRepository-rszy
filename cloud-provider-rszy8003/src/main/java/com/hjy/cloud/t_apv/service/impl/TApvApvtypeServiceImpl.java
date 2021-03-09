@@ -5,12 +5,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
 import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +26,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -36,6 +41,10 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
 
     @Resource
     private TApvApvtypeMapper tApvApvtypeMapper;
+    @Resource
+    private TApvApprovalMapper tApvApprovalMapper;
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TDictionaryFileMapper tDictionaryFileMapper;
     @Value("${server.port}")
@@ -194,6 +203,116 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Override
     public TApvApvtype selectByName(String apvName) {
         return tApvApvtypeMapper.selectByName(apvName);
+    }
+    /**
+     * 查询审批流程详情
+     *
+     * @param tApvApvtype 实体对象
+     * @return 修改结果
+     */
+    @Override
+    public CommonResult apvProcessDetail(TApvApvtype tApvApvtype) {
+        JSONObject resultJson = new JSONObject();
+        /**
+         *所有员工
+         */
+        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
+        resultJson.put("staffInfos",staffInfos);
+        /**
+         * 所有审批类型
+         */
+        List<TApvApvtype> apvtypes = tApvApvtypeMapper.selectAllId_Name();
+        resultJson.put("apvtypes",apvtypes);
+
+        /**
+         * 抄送人
+         */
+        TApvApproval selectEntity = new TApvApproval();
+        selectEntity.setApvStation("csr");
+        selectEntity.setApprovalType(tApvApvtype.getPkApvtypeId());
+        List<TApvApproval> csrList = tApvApprovalMapper.selectAllHandle(selectEntity);
+        resultJson.put("csrList",csrList);
+        /**
+         * 审批人
+         */
+        List<TApvApproval> approvals = tApvApprovalMapper.selectApvByType(tApvApvtype.getPkApvtypeId());
+        //处理审批流程数据
+        List<TApvApproval> apvList = this.handleData(approvals);
+        resultJson.put("apvList",apvList);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+
+    }
+
+    private List<TApvApproval> handleData(List<TApvApproval> approvals) {
+        if(approvals != null && approvals.size() > 0){
+            List<TApvApproval> resultList = new ArrayList<>();
+            String nextApproval = null;
+            Iterator<TApvApproval> first = approvals.iterator();
+            while (first.hasNext()){
+                TApvApproval firstNext = first.next();
+                if(firstNext.getIsStart() == 1){
+                    resultList.add(firstNext);
+                    nextApproval = firstNext.getNextApproval();
+                    first.remove();
+                    break;
+                }
+            }
+            if(approvals != null && approvals.size() > 0){
+                Iterator<TApvApproval> second = approvals.iterator();
+                while (second.hasNext()){
+                    TApvApproval secondNext = second.next();
+                    if(secondNext.getPkApprovalId().equals(nextApproval)){
+                        secondNext.setIsStart(2);
+                        resultList.add(secondNext);
+                        nextApproval = secondNext.getNextApproval();
+                        second.remove();
+                        break;
+                    }
+                }
+            }
+            if(approvals != null && approvals.size() > 0){
+                Iterator<TApvApproval> third = approvals.iterator();
+                while (third.hasNext()){
+                    TApvApproval thirdNext = third.next();
+                    if(thirdNext.getPkApprovalId().equals(nextApproval)){
+                        thirdNext.setIsStart(3);
+                        resultList.add(thirdNext);
+                        nextApproval = thirdNext.getNextApproval();
+                        third.remove();
+                        break;
+                    }
+                }
+            }
+            if(approvals != null && approvals.size() > 0){
+                Iterator<TApvApproval> fourth = approvals.iterator();
+                while (fourth.hasNext()){
+                    TApvApproval fourthNext = fourth.next();
+                    if(fourthNext.getPkApprovalId().equals(nextApproval)){
+                        fourthNext.setIsStart(4);
+                        resultList.add(fourthNext);
+                        nextApproval = fourthNext.getNextApproval();
+                        fourth.remove();
+                        break;
+                    }
+                }
+            }
+            if(approvals != null && approvals.size() > 0){
+                Iterator<TApvApproval> fifth = approvals.iterator();
+                while (fifth.hasNext()){
+                    TApvApproval fifthNext = fifth.next();
+                    if(fifthNext.getPkApprovalId().equals(nextApproval)){
+                        fifthNext.setIsStart(5);
+                        resultList.add(fifthNext);
+                        nextApproval = fifthNext.getNextApproval();
+                        fifth.remove();
+                        break;
+                    }
+                }
+            }
+            return resultList;
+        }else {
+            return null;
+        }
     }
 
     private JSONObject getListInfo() {

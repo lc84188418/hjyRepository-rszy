@@ -128,5 +128,20 @@ public class TApvApvtypeController {
         }
     }
 
-
+    /**
+     * 查询审批流程详情
+     *
+     * @param tApvApvtype 实体对象
+     * @return 修改结果
+     */
+    @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "查询",operDesc = "查询审批流程详情")
+    @PostMapping(value = "/apv/apvType/apvProcessDetail")
+    public CommonResult apvProcessDetail(@RequestBody TApvApvtype tApvApvtype) throws FebsException {
+        try {
+            return tApvApvtypeService.apvProcessDetail(tApvApvtype);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }

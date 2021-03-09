@@ -3,6 +3,7 @@ package com.hjy.cloud.t_staff.service;
 import com.hjy.cloud.t_staff.entity.TStaffContract;
 import com.hjy.cloud.domin.CommonResult;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -50,7 +51,7 @@ public interface TStaffContractService {
      * @return
      */
     CommonResult adminList(String param);
-    CommonResult userList(HttpSession session, String param);
+    CommonResult userList(HttpSession session, HttpServletRequest request, String param);
 
     /**
      * 获取单个数据
@@ -59,4 +60,14 @@ public interface TStaffContractService {
      * @return
      */
     CommonResult selectById(TStaffContract tStaffContract);
+    /**
+     * 发起续签合同页面
+     *
+     */
+    CommonResult renewalPage(TStaffContract tStaffContract);
+    /**
+     * 续签合同
+     *
+     */
+    CommonResult renewal(TStaffContract tStaffContract);
 }

@@ -3,7 +3,6 @@ package com.hjy.cloud.t_apv.service;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import org.apache.ibatis.annotations.Param;
 
 import javax.servlet.http.HttpServletRequest;
@@ -47,14 +46,6 @@ public interface TApvApprovalService {
      * @return
      */
     CommonResult delete(TApvApproval tApvApproval);
-
-    /**
-     * 查询所有数据
-     *
-     * @param param
-     * @return
-     */
-    CommonResult selectAll(String param);
 
     /**
      * 获取单个数据
@@ -110,5 +101,11 @@ public interface TApvApprovalService {
     /**
      * 查询某审批类型的默认抄送人
      */
-    List<TApvApproval> selectCsr(String approvalType, int dataType);
+    List<TApvApproval> selectAllPage(TApvApproval tApvApproval);
+    /**
+     * 审批流程的详情
+     *
+     * @return 修改结果
+     */
+    CommonResult apvProcessDetail(String param);
 }

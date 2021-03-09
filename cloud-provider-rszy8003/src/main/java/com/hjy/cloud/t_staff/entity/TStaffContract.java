@@ -16,10 +16,14 @@ public class TStaffContract {
     private String pkContrctId;
     //姓名
     private String staffName;
-    //证件号
+    //部门
+    private String fkDeptId;
+    //证件号,不可为空
     private String idcard;
     //合同状态
     private Integer contrctStatus;
+    //合同签订类型，1代表正签，0代表续签
+    private Integer signStatus;
     //合同类型ID，在字典中
     private String fkContractType;
     //合同属性
@@ -36,7 +40,7 @@ public class TStaffContract {
     private Date endTime;
     //合同签订次数
     private Integer signNum;
-    //审批状态
+    //审批状态,0代表未发起审批，2代表审批中，1代表审批完成
     private Integer approvalStatus;
     //附件
     private String annex;

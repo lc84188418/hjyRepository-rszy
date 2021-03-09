@@ -20,10 +20,13 @@ public class TStaffInfo {
     private Integer staffSex;
     //年龄
     private Integer staffAge;
+    //员工状态,1代表在职，0代表离职
+    private Integer staffStatus;
     //部门
     private String fkDeptId;
     //职位
     private String fkPositionId;
+
     //入职时间
     private Date entryTime;
     //合同类型,在字典中有
@@ -36,6 +39,10 @@ public class TStaffInfo {
     private String idType;
     //证件号
     private String idCard;
+    //个人邮箱
+    private String staffEmail;
+    //电话
+    private String staffTel;
     //籍贯
     private String nativePlace;
     //出生日期

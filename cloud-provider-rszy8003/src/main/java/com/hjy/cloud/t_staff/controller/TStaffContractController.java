@@ -10,6 +10,7 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
@@ -95,16 +96,16 @@ public class TStaffContractController {
     }
     /**
      * 用户查询个人合同信息
-     *
+     * 暂时不要该功能
      * @param param json参数
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "查看",operDesc = "个人查看自己合同信息")
     @RequiresPermissions({"contract:userView"})
     @PostMapping(value = "/staff/contract/user/list")
-    public CommonResult userList(HttpSession session, @RequestBody String param) throws FebsException {
+    public CommonResult userList(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
         try {
-            return tStaffContractService.userList(session,param);
+            return tStaffContractService.userList(session,request,param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -146,5 +147,32 @@ public class TStaffContractController {
         }
     }
 
-
+    /**
+     * 发起续签合同页面
+     *
+     * @param tStaffContract 实体对象
+     */
+    @PostMapping(value = "/staff/contract/renewalPage")
+    public CommonResult renewalPage(@RequestBody TStaffContract tStaffContract) throws FebsException {
+        try {
+            return tStaffContractService.renewalPage(tStaffContract);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 发起续签合同页面
+     *
+     * @param tStaffContract 实体对象
+     */
+    @PostMapping(value = "/staff/contract/renewal")
+    public CommonResult renewal(@RequestBody TStaffContract tStaffContract) throws FebsException {
+        try {
+            return tStaffContractService.renewal(tStaffContract);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }

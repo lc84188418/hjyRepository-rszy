@@ -73,6 +73,49 @@
             </if>
         </where>
     </select>
+    <!--通过实体作为筛选条件查询2-->
+    <select id="selectAllHandle" resultMap="TApvApprovalMap">
+        select
+        PK_APPROVAL_ID,
+        APPROVAL_TYPE,
+        NEXT_APPROVAL,
+        DATA_TYPE,
+        APV_STATION,
+        IS_ENDING,
+        IS_START,
+        T_STAFF_INFO.STAFF_NAME as APPROVAL_PEOPLE
+        from T_APV_APPROVAL
+        LEFT JOIN
+        T_STAFF_INFO
+        on
+        T_STAFF_INFO.PK_STAFF_ID = T_APV_APPROVAL.APPROVAL_PEOPLE
+        <where>
+            <if test="pkApprovalId != null and pkApprovalId != ''">
+                and PK_APPROVAL_ID = #{pkApprovalId}
+            </if>
+            <if test="approvalType != null and approvalType != ''">
+                and APPROVAL_TYPE = #{approvalType}
+            </if>
+            <if test="approvalPeople != null and approvalPeople != ''">
+                and APPROVAL_PEOPLE = #{approvalPeople}
+            </if>
+            <if test="nextApproval != null and nextApproval != ''">
+                and NEXT_APPROVAL = #{nextApproval}
+            </if>
+            <if test="dataType != null">
+                and DATA_TYPE = #{dataType}
+            </if>
+            <if test="apvStation != null and apvStation != ''">
+                and APV_STATION = #{apvStation}
+            </if>
+            <if test="isEnding != null">
+                and IS_ENDING = #{isEnding}
+            </if>
+            <if test="isStart != null">
+                and IS_START = #{isStart}
+            </if>
+        </where>
+    </select>
     <select id="selectAllEnding" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
 SELECT
 	T_APV_APPROVAL.PK_APPROVAL_ID,
@@ -103,10 +146,11 @@ WHERE
         and IS_ENDING = 1
         and DATA_TYPE = (select MAX(DATA_TYPE) from T_APV_APPROVAL where  APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR})
     </select>
-    <select id="selectAllByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+    <select id="selectApvByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
         SELECT * FROM T_APV_APPROVAL
         where APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR}
         and DATA_TYPE = 1
+        and APV_STATION != 'csr'
     </select>
     <select id="selectApvSet" resultMap="TApvApprovalMap">
         SELECT
@@ -187,8 +231,20 @@ WHERE
     <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
         select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND IS_ING = 1
     </select>
-    <select id="selectCsr" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
-        select * from T_APV_APPROVAL where APV_STATION = 'csr' and APPROVAL_TYPE = #{approvalType} and DATA_TYPE = #{dataType}
+<!--    通过第一审批记录的ID查询整个审批流程记录信息-->
+    <select id="selectByFirstApvRecordId" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        SELECT
+        PK_RECORD_ID,SPONSOR,START_TIME,APV_DATE,APV_RESULT,APV_REASON,NEXT_APPROVAL,SOURCE_ID,
+        IS_START,IS_ING,T_STAFF_INFO.STAFF_NAME AS apvApproval,APPROVAL_TYPE,T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
+        FROM
+	        D_APV_RECORD
+        LEFT JOIN
+            T_STAFF_INFO
+        ON  T_STAFF_INFO.PK_STAFF_ID = D_APV_RECORD.APV_APPROVAL
+        LEFT JOIN
+            T_APV_APVTYPE
+        ON T_APV_APVTYPE.PK_APVTYPE_ID = D_APV_RECORD.APPROVAL_TYPE
+        WHERE SOURCE_ID = ( SELECT SOURCE_ID FROM D_APV_RECORD WHERE PK_RECORD_ID = #{firstApvRecordId} )
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">

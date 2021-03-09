@@ -1,19 +1,15 @@
 package com.hjy.cloud.t_apv.controller;
 
 
-import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
-import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * (TApvApproval)表控制层
@@ -67,22 +63,6 @@ public class TApvApprovalController {
     public CommonResult delete(@RequestBody TApvApproval tApvApproval) throws FebsException {
         try {
             return tApvApprovalService.delete(tApvApproval);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
-     * 分页查询所有数据
-     *
-     * @param param json参数
-     * @return 所有数据
-     */
-    @PostMapping(value = "/apv/approval/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
-        try {
-            return tApvApprovalService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -177,7 +157,7 @@ public class TApvApprovalController {
         }
     }
     /**
-     * 该审批流程的详情
+     * 该审批来源的详情
      *
      * @return 修改结果
      */
@@ -185,6 +165,20 @@ public class TApvApprovalController {
     public CommonResult waitApvDetail(@RequestBody String param) throws FebsException {
         try {
             return tApvApprovalService.waitApvDetail(param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 审批流程的详情
+     *
+     * @return 修改结果
+     */
+    @PostMapping(value = "/apv/approval/apvProcessDetail")
+    public CommonResult apvProcessDetail(@RequestBody String param) throws FebsException {
+        try {
+            return tApvApprovalService.apvProcessDetail(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

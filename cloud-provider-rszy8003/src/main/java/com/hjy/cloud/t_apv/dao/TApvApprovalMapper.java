@@ -37,6 +37,7 @@ public interface TApvApprovalMapper {
      * @return 对象列表
      */
     List<TApvApproval> selectAllPage(TApvApproval tApvApproval);
+    List<TApvApproval> selectAllHandle(TApvApproval selectEntity);
 
     /**
      * 新增数据
@@ -78,7 +79,7 @@ public interface TApvApprovalMapper {
      */
     TApvApproval selectByType(@Param("apvType") String apvType);
 
-    List<TApvApproval> selectAllByType(@Param("apvType")String pk_apv_type);
+    List<TApvApproval> selectApvByType(@Param("apvType")String pk_apv_type);
 
     TApvApproval selectApvSet(@Param("pkApprovalId")String pkApprovalId,@Param("approvalType")String approvalType,@Param("dataType")int dataType,@Param("isStart")int isStart);
     TApvApproval selectApvSet(TApvApproval tApvApproval);
@@ -111,8 +112,12 @@ public interface TApvApprovalMapper {
     int updateIsIngBySourceId(@Param("sourceId")String sourceId);
 
     int updateApvRecord(DApvRecord apvRecord);
+
     /**
-     * 查询某审批类型的默认抄送人
+     * 通过第一审批记录的ID查询整个审批流程记录信息
+     * @param firstApvRecordId
+     * @return
      */
-    List<TApvApproval> selectCsr(@Param("approvalType")String approvalType,@Param("dataType") int dataType);
+    List<DApvRecord> selectByFirstApvRecordId(@Param("firstApvRecordId")String firstApvRecordId);
+
 }

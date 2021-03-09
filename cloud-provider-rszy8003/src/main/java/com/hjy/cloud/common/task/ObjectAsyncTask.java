@@ -252,7 +252,11 @@ public class ObjectAsyncTask {
             /**
              * 抄送人
              */
-            List<TApvApproval> csrList = ntClient.tApvApprovalService.selectCsr(approvalType,dataType);
+            TApvApproval selectEntity = new TApvApproval();
+            selectEntity.setDataType(dataType);
+            selectEntity.setApvStation("csr");
+            selectEntity.setApprovalType(approvalType);
+            List<TApvApproval> csrList = ntClient.tApvApprovalService.selectAllPage(selectEntity);
             resultJson.put("csrList",csrList);
 
         }else {

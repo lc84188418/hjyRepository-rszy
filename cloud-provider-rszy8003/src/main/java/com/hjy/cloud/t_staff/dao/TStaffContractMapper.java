@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffContract;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,10 +16,10 @@ public interface TStaffContractMapper {
     /**
      * 通过ID查询单条数据
      *
-     * @param pk_id 主键
+     * @param pkContrctId 主键
      * @return 实例对象
      */
-    TStaffContract selectByPkId(String pk_id);
+    TStaffContract selectByPkId(@Param("pkContrctId")String pkContrctId);
 
     /**
      * 通过实体作为筛选条件查询
@@ -51,4 +52,6 @@ public interface TStaffContractMapper {
      * @return 影响行数
      */
     int deleteById(TStaffContract tStaffContract);
+
+    List<TStaffContract> selectAllHandlePage(TStaffContract entity);
 }
