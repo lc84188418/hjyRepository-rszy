@@ -5,10 +5,20 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffQuitMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
+import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
+import com.hjy.cloud.t_system.entity.SysToken;
+import com.hjy.cloud.utils.DateUtil;
+import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -16,6 +26,9 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -29,34 +42,74 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
 
     @Resource
     private TStaffQuitMapper tStaffQuitMapper;
-
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     /**
      * 添加前获取数据
      *
      * @return
      */
     @Override
-    public CommonResult insertPage() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("entity", null);
-        return new CommonResult(200, "success", "获取数据成功", jsonObject);
+    public CommonResult insertPage(HttpServletRequest request) {
+        //离职审批流程信息
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"离职申请",1);
+        String msg = (String) resultJson.get("msg");
+        return new CommonResult(200, "success", msg, resultJson);
     }
 
     /**
      * 添加数据
      *
-     * @param tStaffQuit
+     * @param request param
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult insert(TStaffQuit tStaffQuit) {
-        int i = this.tStaffQuitMapper.insertSelective(tStaffQuit);
-        if (i > 0) {
-            return new CommonResult(200, "success", "添加数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
+    public CommonResult insert(HttpServletRequest request,String param) throws ParseException {
+        String token = TokenUtil.getRequestToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        //离职人基本信息
+        TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId(sysToken.getFkUserId());
+        //查询是否已添加过离职申请
+        TStaffQuit selectEntity = new TStaffQuit();
+        selectEntity.setFkStaffId(staffInfo.getPkStaffId());
+        List<TStaffQuit> tStaffQuits = tStaffQuitMapper.selectAllPage(selectEntity);
+        if(tStaffQuits != null && tStaffQuits.size() > 0){
+            return new CommonResult(445, "error", "已提交过离职申请，不可再次提交", null);
         }
+        TStaffQuit staffQuit = new TStaffQuit();
+        String pkQuitId = IDUtils.getUUID();
+        staffQuit.setPkQuitId(pkQuitId);
+        staffQuit.setFkStaffId(staffInfo.getPkStaffId());
+        staffQuit.setFkDeptId(staffInfo.getFkDeptId());
+        staffQuit.setPosition(staffInfo.getFkPositionId());
+        staffQuit.setOperatedPeople(sysToken.getFullName());
+        staffQuit.setApplyTime(new Date());
+        staffQuit.setQuitStatus(0);
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String quitType = JsonUtil.getStringParam(json, "quitType");
+        String quitTime = JsonUtil.getStringParam(json, "quitTime");
+        String remarks = JsonUtil.getStringParam(json, "remarks");
+        staffQuit.setQuitType(quitType);
+        staffQuit.setQuitTime(DateUtil.formatTime(quitTime));
+        staffQuit.setRemarks(remarks);
+        //离职类型/离职日期/备注  需要前端传
+        int i = this.tStaffQuitMapper.insertSelective(staffQuit);
+        StringBuffer stringBuffer = new StringBuffer();
+        if (i > 0) {
+            stringBuffer.append("离职数据添加成功！");
+        } else {
+            stringBuffer.append("离职数据添加失败！");
+            return new CommonResult(445, "error", stringBuffer.toString(), null);
+        }
+        //审批类型
+        String approvalType = "11";
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId);
+
+        return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 
     /**

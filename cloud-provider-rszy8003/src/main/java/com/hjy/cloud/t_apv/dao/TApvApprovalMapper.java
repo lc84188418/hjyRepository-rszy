@@ -107,7 +107,7 @@ public interface TApvApprovalMapper {
      */
     List<DApvRecord> waitApvUser(@Param("apvApproval")String userId);
 
-    DApvRecord selectApvRecordBySourceId_UserId(@Param("sourceId")String sourceId, @Param("userId")String userId);
+    List<DApvRecord> selectApvRecordBySourceId_UserId(@Param("approvalType")String approvalType,@Param("sourceId")String sourceId, @Param("userId")String userId);
 
     int updateIsIngBySourceId(@Param("sourceId")String sourceId);
 
@@ -120,4 +120,7 @@ public interface TApvApprovalMapper {
      */
     List<DApvRecord> selectByFirstApvRecordId(@Param("firstApvRecordId")String firstApvRecordId);
 
+    int deleteByType(@Param("approvalType")String approvalType);
+
+    int updateBatchApvRecord(@Param("apvRecordList")List<DApvRecord> updateList);
 }

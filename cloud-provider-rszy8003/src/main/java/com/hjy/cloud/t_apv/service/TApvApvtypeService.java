@@ -62,7 +62,6 @@ public interface TApvApvtypeService {
      * 查询审批流程详情
      *
      * @param tApvApvtype 实体对象
-     * @return 修改结果
      */
     CommonResult apvProcessDetail(TApvApvtype tApvApvtype);
 }

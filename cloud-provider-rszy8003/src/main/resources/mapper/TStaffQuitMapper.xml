@@ -9,7 +9,7 @@
         <result property="position" column="POSITION" jdbcType="VARCHAR"/>
         <result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
         <result property="quitType" column="QUIT_TYPE" jdbcType="VARCHAR"/>
-        <result property="quitTime" column="QUIT_TIME" jdbcType="TIMESTAMP"/>
+        <result property="quitTime" column="QUIT_TIME" jdbcType="DATE"/>
         <result property="apvPeople" column="APV_PEOPLE" jdbcType="VARCHAR"/>
         <result property="quitStatus" column="QUIT_STATUS" jdbcType="INTEGER"/>
         <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
@@ -49,7 +49,7 @@
                 and QUIT_TYPE = #{quitType,jdbcType=VARCHAR}
             </if>
             <if test="quitTime != null">
-                and QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP}
+                and QUIT_TIME = #{quitTime,jdbcType=DATE}
             </if>
             <if test="apvPeople != null and apvPeople != ''">
                 and APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR}
@@ -129,7 +129,7 @@
                 #{quitType,jdbcType=VARCHAR},
             </if>
             <if test="quitTime != null">
-                #{quitTime,jdbcType=TIMESTAMP},
+                #{quitTime,jdbcType=DATE},
             </if>
             <if test="apvPeople != null and apvPeople != ''">
                 #{apvPeople,jdbcType=VARCHAR},
@@ -168,7 +168,7 @@
                 QUIT_TYPE = #{quitType,jdbcType=VARCHAR},
             </if>
             <if test="quitTime != null">
-                QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP},
+                QUIT_TIME = #{quitTime,jdbcType=DATE},
             </if>
             <if test="apvPeople != null and apvPeople != ''">
                 APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR},

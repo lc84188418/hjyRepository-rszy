@@ -45,7 +45,14 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TApvApprovalMap">
-        select * from hjy_cloud.T_APV_APPROVAL
+        select
+        PK_APPROVAL_ID,
+        APPROVAL_TYPE,
+        APPROVAL_PEOPLE,
+        APV_STATION,
+        T_STAFF_INFO.STAFF_NAME AS PEOPLE_NAME
+        from hjy_cloud.T_APV_APPROVAL
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_APV_APPROVAL.APPROVAL_PEOPLE
         <where>
             <if test="pkApprovalId != null and pkApprovalId != ''">
                 and PK_APPROVAL_ID = #{pkApprovalId}
@@ -83,7 +90,8 @@
         APV_STATION,
         IS_ENDING,
         IS_START,
-        T_STAFF_INFO.STAFF_NAME as APPROVAL_PEOPLE
+        APPROVAL_PEOPLE,
+        T_STAFF_INFO.STAFF_NAME as peopleName
         from T_APV_APPROVAL
         LEFT JOIN
         T_STAFF_INFO
@@ -147,7 +155,17 @@ WHERE
         and DATA_TYPE = (select MAX(DATA_TYPE) from T_APV_APPROVAL where  APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR})
     </select>
     <select id="selectApvByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
-        SELECT * FROM T_APV_APPROVAL
+        SELECT
+        PK_APPROVAL_ID,APPROVAL_TYPE,NEXT_APPROVAL,DATA_TYPE,APV_STATION,IS_ENDING,IS_START,APPROVAL_PEOPLE,
+        T_STAFF_INFO.STAFF_NAME AS peopleName,
+        T_DICTIONARY_POSITION.POSITION_NAME AS stationName
+FROM T_APV_APPROVAL
+LEFT JOIN
+T_STAFF_INFO
+ON T_STAFF_INFO.PK_STAFF_ID = T_APV_APPROVAL.APPROVAL_PEOPLE
+LEFT JOIN
+T_DICTIONARY_POSITION
+ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
         where APPROVAL_TYPE = #{apvType,jdbcType=VARCHAR}
         and DATA_TYPE = 1
         and APV_STATION != 'csr'
@@ -155,7 +173,7 @@ WHERE
     <select id="selectApvSet" resultMap="TApvApprovalMap">
         SELECT
         T_APV_APPROVAL.PK_APPROVAL_ID,
-        T_APV_APVTYPE.APVTYPE_NAME as APPROVAL_TYPE,
+        T_APV_APVTYPE.APVTYPE_NAME AS APPROVAL_TYPE,
         T_APV_APPROVAL.APPROVAL_PEOPLE,
         T_APV_APPROVAL.NEXT_APPROVAL,
         T_APV_APPROVAL.DATA_TYPE,
@@ -164,10 +182,7 @@ WHERE
         T_APV_APPROVAL.IS_START
         FROM
         T_APV_APPROVAL
-        INNER JOIN
-        T_APV_APVTYPE
-        ON
-        T_APV_APPROVAL.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
+        INNER JOIN T_APV_APVTYPE ON T_APV_APPROVAL.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
         <where>
             <if test="pkApprovalId != null and pkApprovalId != ''">
                 and PK_APPROVAL_ID = #{pkApprovalId}
@@ -229,7 +244,7 @@ WHERE
         (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
     </select>
     <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
-        select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND IS_ING = 1
+        select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND APPROVAL_TYPE = #{approvalType} AND IS_ING = 1
     </select>
 <!--    通过第一审批记录的ID查询整个审批流程记录信息-->
     <select id="selectByFirstApvRecordId" resultType="com.hjy.cloud.common.entity.DApvRecord">
@@ -422,10 +437,16 @@ WHERE
         </set>
         where  PK_RECORD_ID= #{pkRecordId,jdbcType=VARCHAR}
     </update>
+    <update id="updateBatchApvRecord">
+
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from hjy_cloud.T_APV_APPROVAL where PK_APPROVAL_ID = #{pkApprovalId}
+    </delete>
+    <delete id="deleteByType">
+        delete from hjy_cloud.T_APV_APPROVAL where APPROVAL_TYPE = #{approvalType}
     </delete>
     <delete id="deleteApvRecordBySourceId">
         delete from hjy_cloud.D_APV_RECORD where SOURCE_ID = #{sourceId}

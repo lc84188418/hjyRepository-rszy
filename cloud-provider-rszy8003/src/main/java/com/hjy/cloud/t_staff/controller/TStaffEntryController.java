@@ -77,17 +77,32 @@ public class TStaffEntryController {
     }
 
     /**
-     * 分页查询所有数据
+     * 管理员-分页查询所有数据
      *
      * @param param json参数
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-入职管理",operType = "查看",operDesc = "查看入职信息列表")
-    @RequiresPermissions({"entry:view"})
-    @PostMapping(value = "/staff/entry/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    @RequiresPermissions({"entry:adminView"})
+    @PostMapping(value = "/staff/entry/adminList")
+    public CommonResult adminList(@RequestBody String param) throws FebsException {
         try {
-            return tStaffEntryService.selectAll(param);
+            return tStaffEntryService.adminList(param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 员工-查询个人入职信息
+     * @param servletRequest json参数
+     * @return 所有数据
+     */
+    @OperLog(operModul = "人员管理-入职管理",operType = "查看",operDesc = "查看个人入职信息列表")
+    @PostMapping(value = "/staff/entry/userGet")
+    public CommonResult userGet(HttpServletRequest servletRequest) throws FebsException {
+        try {
+            return tStaffEntryService.userGet(servletRequest);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -176,4 +191,5 @@ public class TStaffEntryController {
             throw new FebsException(message);
         }
     }
+
 }

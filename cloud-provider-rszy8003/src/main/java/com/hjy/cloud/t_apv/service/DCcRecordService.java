@@ -3,6 +3,8 @@ package com.hjy.cloud.t_apv.service;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.domin.CommonResult;
 
+import java.util.List;
+
 /**
  * (DCcRecord)表服务接口
  *
@@ -56,4 +58,10 @@ public interface DCcRecordService {
      * @return
      */
     CommonResult selectById(DCcRecord dCcRecord);
+    /**
+     * 批量添加抄送记录
+     *
+     * @return
+     */
+    int insertCCRecordBatch(List<DCcRecord> ccRecordList);
 }

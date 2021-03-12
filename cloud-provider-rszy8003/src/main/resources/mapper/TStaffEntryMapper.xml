@@ -14,13 +14,13 @@
         <result property="recruitWay" column="RECRUIT_WAY" jdbcType="VARCHAR"/>
         <result property="idType" column="ID_TYPE" jdbcType="VARCHAR"/>
         <result property="idCard" column="ID_CARD" jdbcType="VARCHAR"/>
-        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="DATE"/>
         <result property="email" column="EMAIL" jdbcType="VARCHAR"/>
         <result property="operatedPeople" column="OPERATED_PEOPLE" jdbcType="VARCHAR"/>
         <result property="status" column="STATUS" jdbcType="INTEGER"/>
         <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
         <result property="isAbandon" column="IS_ABANDON" jdbcType="INTEGER"/>
-        <result property="abandonTime" column="ABANDON_TIME" jdbcType="TIMESTAMP"/>
+        <result property="abandonTime" column="ABANDON_TIME" jdbcType="DATE"/>
         <result property="abandonReason" column="ABANDON_REASON" jdbcType="VARCHAR"/>
         <result property="entryDesc" column="ENTRY_DESC" jdbcType="VARCHAR"/>
         <result property="apvId" column="APV_ID" jdbcType="VARCHAR"/>

@@ -175,7 +175,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
      * @return
      */
     @Override
-    public CommonResult selectAll(String param) {
+    public CommonResult adminList(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
@@ -196,6 +196,17 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffEntry>(list));
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+
+    @Override
+    public CommonResult userGet(HttpServletRequest servletRequest) {
+        String token = TokenUtil.getRequestToken(servletRequest);
+        SysToken byToken = tSysTokenMapper.findByToken(token);
+        String pkId = byToken.getFkUserId();
+        TStaffEntry entity = this.tStaffEntryMapper.selectByPkId(pkId);
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("entity", entity);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
@@ -247,8 +258,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
      */
     @Override
     public CommonResult approvalPage(HttpServletRequest request,TStaffEntry tStaffEntry) {
-        String pkEntryId = tStaffEntry.getPkEntryId();
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"入职申请",1,pkEntryId);
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"入职申请",1);
         String msg = (String) resultJson.get("msg");
         return new CommonResult(200, "success", msg, resultJson);
 
@@ -273,11 +283,15 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
          */
         List<DCcRecord> csrList = new ArrayList<>();
         JSONArray csrArray = jsonObject.getJSONArray("csrList");
-        String csrIdsStr = csrArray.toString();
-        if(csrIdsStr.equals("[]")){
+        if(csrArray == null){
             //说明未选择抄送人
         }else {
-            csrList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
+            String csrIdsStr = csrArray.toString();
+            if(csrIdsStr.equals("[]")){
+                //说明未选择抄送人
+            }else {
+                csrList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
+            }
         }
         String newPkId = IDUtils.getUUID();
         List<DCcRecord> ccRecordList = new ArrayList<>();
@@ -298,14 +312,42 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
          * 审批人
          */
         List<TApvApproval> apvList = new ArrayList<>();
+        List<TApvApproval> apvList1 = new ArrayList<>();
         JSONArray apvArray = jsonObject.getJSONArray("apvList");
-        String apvIdsStr = apvArray.toString();
-        if(apvIdsStr.equals("[]")){
+        if(apvArray == null){
             //说明未选择审批人
         }else {
-            apvList = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
+            String apvIdsStr = apvArray.toString();
+            if(apvIdsStr.equals("[]")){
+                //说明未选择审批人
+            }else {
+                apvList1 = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
+            }
         }
+        /**
+         * 先去重
+         */
+        List<TApvApproval> apvList2 = new ArrayList<>();
+        for (int m = 0; m < apvList1.size()-1; m++) {
+            for (int n = apvList1.size()-1; n > m; n--) {
+                if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
+                    apvList1.remove(n);
+                }
+            }
+        }
+        apvList2 = apvList1;
 
+        /**
+         * 再排序
+         */
+        Collections.sort(apvList2, new Comparator<TApvApproval>() {
+            @Override
+            public int compare(TApvApproval o1, TApvApproval o2) {
+                //升序
+                return String.valueOf(o1.getIsStart()).compareTo(String.valueOf(o2.getIsStart()));
+            }
+        });
+        apvList = apvList2;
         /**
          * 开始添加审批记录
          */
@@ -364,6 +406,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         List<TStaffEntry> tStaffEntryList = tStaffEntryMapper.selectAllPage(entry);
         return tStaffEntryList.get(0);
     }
+
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         TStaffEntry entity = new TStaffEntry();

@@ -10,10 +10,10 @@
         <result property="staffStatus" column="STAFF_STATUS" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="fkPositionId" column="FK_POSITION_ID" jdbcType="VARCHAR"/>
-        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="DATE"/>
         <result property="fkHtlxId" column="FK_HTLX_ID" jdbcType="VARCHAR"/>
         <result property="recruitWay" column="RECRUIT_WAY" jdbcType="VARCHAR"/>
-        <result property="syqdqTime" column="SYQDQ_TIME" jdbcType="TIMESTAMP"/>
+        <result property="syqdqTime" column="SYQDQ_TIME" jdbcType="DATE"/>
         <result property="idType" column="ID_TYPE" jdbcType="VARCHAR"/>
         <result property="idCard" column="ID_CARD" jdbcType="VARCHAR"/>
         <result property="staffEmail" column="STAFF_EMAIL" jdbcType="VARCHAR"/>
@@ -182,15 +182,26 @@ SELECT
 	STAFF_NAME,
 	FK_DEPT_ID,
 	FK_POSITION_ID,
-	T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
-	T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID
+	FK_DEPT_ID,
+	T_OUTFIT_DEPT.DEPT_NAME AS deptName,
+	T_DICTIONARY_POSITION.POSITION_NAME AS positionName
 FROM
 	T_STAFF_INFO
 	LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
 	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
     </select>
     <select id="selectAll" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
-        select * from T_STAFF_INFO
+SELECT
+	T_STAFF_INFO.PK_STAFF_ID,
+	T_STAFF_INFO.STAFF_NAME,
+	T_STAFF_INFO.FK_DEPT_ID,
+	T_OUTFIT_DEPT.DEPT_NAME,
+	T_STAFF_INFO.FK_POSITION_ID,
+	T_DICTIONARY_POSITION.POSITION_NAME
+FROM
+	T_STAFF_INFO
+	LEFT JOIN T_OUTFIT_DEPT on T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
+	LEFT JOIN T_DICTIONARY_POSITION on T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
     </select>
     <select id="selectDeptIdByPkId" resultType="java.lang.String">
         select FK_DEPT_ID from T_STAFF_INFO where PK_STAFF_ID = #{pkStaffId}

@@ -1,7 +1,11 @@
 package com.hjy.cloud.t_staff.service;
 
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.domin.CommonResult;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 /**
  * (TStaffQuit)表服务接口
@@ -15,15 +19,14 @@ public interface TStaffQuitService {
      *
      * @return
      */
-    CommonResult insertPage();
+    CommonResult insertPage(HttpServletRequest request);
 
     /**
      * 添加数据
      *
-     * @param tStaffQuit
      * @return
      */
-    CommonResult insert(TStaffQuit tStaffQuit);
+    CommonResult insert(HttpServletRequest request,String param) throws ParseException;
 
     /**
      * 修改数据

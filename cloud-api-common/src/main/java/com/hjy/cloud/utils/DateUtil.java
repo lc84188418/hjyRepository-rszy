@@ -16,6 +16,7 @@ public class DateUtil {
     public static final String FULL_TIME_PATTERN = "yyyyMMddHHmmss";
 
     public static final String FULL_TIME_SPLIT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String YEAR_MONTH_DATE_PATTERN = "yyyy-MM-dd";
     //有效期
     public static final Integer EXPIRE_TIME = 1;
 
@@ -38,6 +39,11 @@ public class DateUtil {
         Date d = sdf.parse(date);
         return DateUtil.getDateFormat(d, format);
     }
+    public static Date formatTime(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(YEAR_MONTH_DATE_PATTERN);
+        Date parse = sdf.parse(date);
+        return parse;
+    }
 
     /**
      * 时刻+时间段
@@ -49,6 +55,20 @@ public class DateUtil {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.DAY_OF_MONTH,num);
+        date = calendar.getTime();
+        return date;
+    }
+    /**
+     * 时刻+时间段
+     * @param date 时刻
+     * @return 时刻
+     * @throws ParseException
+     */
+    public static Date addSYQTime(Date date,String num){
+        int sc = Integer.parseInt(num);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MONTH,sc);
         date = calendar.getTime();
         return date;
     }

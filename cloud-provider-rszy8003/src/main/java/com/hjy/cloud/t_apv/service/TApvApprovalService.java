@@ -108,4 +108,10 @@ public interface TApvApprovalService {
      * @return 修改结果
      */
     CommonResult apvProcessDetail(String param);
+    /**
+     * 批量添加审批记录
+     *
+     * @return 修改结果
+     */
+    int insertApvRecordBatch(List<DApvRecord> apvRecordList);
 }

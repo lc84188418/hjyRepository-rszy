@@ -40,7 +40,7 @@ public class TStaffEntry {
     private String email;
     //操作人
     private String operatedPeople;
-    //状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1
+    //状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1审批完成
     private Integer status;
     //备用
     private String remarks;

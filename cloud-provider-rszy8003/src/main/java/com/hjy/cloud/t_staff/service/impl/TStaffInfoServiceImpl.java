@@ -209,6 +209,11 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         return tStaffInfoMapper.selectLeaderByPosition(s);
     }
 
+    @Override
+    public TStaffInfo selectByPkId2(String currentSourceId) {
+        return tStaffInfoMapper.selectByPkId2(currentSourceId);
+    }
+
     private JSONObject getListInfo() {
         TStaffInfo entity = new TStaffInfo();
 

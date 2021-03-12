@@ -12,9 +12,9 @@
         <result property="contractAttribute" column="CONTRACT_ATTRIBUTE" jdbcType="VARCHAR"/>
         <result property="contractQx" column="CONTRACT_QX" jdbcType="VARCHAR"/>
         <result property="fkContractCompany" column="FK_CONTRACT_COMPANY" jdbcType="VARCHAR"/>
-        <result property="startTime" column="START_TIME" jdbcType="TIMESTAMP"/>
-        <result property="signTime" column="SIGN_TIME" jdbcType="TIMESTAMP"/>
-        <result property="endTime" column="END_TIME" jdbcType="TIMESTAMP"/>
+        <result property="startTime" column="START_TIME" jdbcType="DATE"/>
+        <result property="signTime" column="SIGN_TIME" jdbcType="DATE"/>
+        <result property="endTime" column="END_TIME" jdbcType="DATE"/>
         <result property="signNum" column="SIGN_NUM" jdbcType="INTEGER"/>
         <result property="approvalStatus" column="APPROVAL_STATUS" jdbcType="INTEGER"/>
         <result property="annex" column="ANNEX" jdbcType="VARCHAR"/>
@@ -64,13 +64,13 @@
                 and FK_CONTRACT_COMPANY = #{fkContractCompany,jdbcType=VARCHAR}
             </if>
             <if test="startTime != null">
-                and START_TIME = #{startTime,jdbcType=TIMESTAMP}
+                and START_TIME = #{startTime,jdbcType=DATE}
             </if>
             <if test="signTime != null">
-                and SIGN_TIME = #{signTime,jdbcType=TIMESTAMP}
+                and SIGN_TIME = #{signTime,jdbcType=DATE}
             </if>
             <if test="endTime != null">
-                and END_TIME = #{endTime,jdbcType=TIMESTAMP}
+                and END_TIME = #{endTime,jdbcType=DATE}
             </if>
             <if test="signNum != null">
                 and SIGN_NUM = #{signNum,jdbcType=INTEGER}
@@ -169,13 +169,13 @@
                 #{fkContractCompany,jdbcType=VARCHAR},
             </if>
             <if test="startTime != null">
-                #{startTime,jdbcType=TIMESTAMP},
+                #{startTime,jdbcType=DATE},
             </if>
             <if test="signTime != null">
-                #{signTime,jdbcType=TIMESTAMP},
+                #{signTime,jdbcType=DATE},
             </if>
             <if test="endTime != null">
-                #{endTime,jdbcType=TIMESTAMP},
+                #{endTime,jdbcType=DATE},
             </if>
             <if test="signNum != null">
                 #{signNum,jdbcType=INTEGER},
@@ -217,13 +217,13 @@
                 FK_CONTRACT_COMPANY = #{fkContractCompany,jdbcType=VARCHAR},
             </if>
             <if test="startTime != null">
-                START_TIME = #{startTime,jdbcType=TIMESTAMP},
+                START_TIME = #{startTime,jdbcType=DATE},
             </if>
             <if test="signTime != null">
-                SIGN_TIME = #{signTime,jdbcType=TIMESTAMP},
+                SIGN_TIME = #{signTime,jdbcType=DATE},
             </if>
             <if test="endTime != null">
-                END_TIME = #{endTime,jdbcType=TIMESTAMP},
+                END_TIME = #{endTime,jdbcType=DATE},
             </if>
             <if test="signNum != null">
                 SIGN_NUM = #{signNum,jdbcType=INTEGER},

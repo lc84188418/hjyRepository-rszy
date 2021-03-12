@@ -51,4 +51,6 @@ public interface TStaffInfoService {
     TStaffInfo selectDeptLeader(String fkUserId);
 
     TStaffInfo selectLeaderByPosition(String s);
+
+    TStaffInfo selectByPkId2(String currentSourceId);
 }

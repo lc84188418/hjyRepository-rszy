@@ -162,7 +162,7 @@ public class TStaffContractController {
         }
     }
     /**
-     * 发起续签合同页面
+     * 发起续签合同
      *
      * @param tStaffContract 实体对象
      */

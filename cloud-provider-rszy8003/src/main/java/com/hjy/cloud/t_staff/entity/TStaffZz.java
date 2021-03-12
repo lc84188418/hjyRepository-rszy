@@ -1,14 +1,14 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffZz)表实体类
  *
  * @author makejava
- * @since 2021-03-01 15:53:18
+ * @since 2021-03-10 15:10:51
  */
 @Data
 public class TStaffZz {
@@ -24,9 +24,13 @@ public class TStaffZz {
     private Date syqdqTime;
     //转正日期
     private Date zzTime;
-    //转正审批状态
-    private Integer apvStatus;
+    //实际转正日期
+    private Date sjzzTime;
     //状态
     private Integer status;
+    //转正审批状态,0代表正在审批中，1通过
+    private Integer apvStatus;
+    //第一级审批id
+    private String firstApvrecordId;
 
 }

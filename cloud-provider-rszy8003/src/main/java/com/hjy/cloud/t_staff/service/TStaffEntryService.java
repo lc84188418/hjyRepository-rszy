@@ -50,7 +50,9 @@ public interface TStaffEntryService {
      * @param param
      * @return
      */
-    CommonResult selectAll(String param);
+
+    CommonResult adminList(String param);
+    CommonResult userGet(HttpServletRequest servletRequest);
 
     /**
      * 获取单个数据
@@ -81,4 +83,5 @@ public interface TStaffEntryService {
 
     TStaffEntry selectByPkId(String currentSourceId);
     TStaffEntry selectByPkId2(String currentSourceId);
+
 }

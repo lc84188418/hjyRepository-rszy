@@ -5,10 +5,25 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
+import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.DCcRecord;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.dao.TStaffZzMapper;
+import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffZzService;
+import com.hjy.cloud.t_system.dao.TSysParamMapper;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
+import com.hjy.cloud.t_system.entity.SysToken;
+import com.hjy.cloud.utils.DateUtil;
+import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -16,7 +31,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * (TStaffZz)表服务实现类
@@ -29,7 +45,16 @@ public class TStaffZzServiceImpl implements TStaffZzService {
 
     @Resource
     private TStaffZzMapper tStaffZzMapper;
-
+    @Resource
+    private TStaffEntryMapper tStaffEntryMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
+    @Resource
+    private TSysParamMapper tSysParamMapper;
+    @Resource
+    private DCcRecordMapper dCcRecordMapper;
+    @Resource
+    private TApvApprovalMapper tApvApprovalMapper;
     /**
      * 添加前获取数据
      *
@@ -148,6 +173,191 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);
         return resultJson;
+    }
+    /**
+     * 发起转正审批页面
+     *
+     * @return 修改结果
+     */
+    @Override
+    public CommonResult initiateZzPage(HttpServletRequest request) {
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"转正申请",1);
+        String msg = (String) resultJson.get("msg");
+        return new CommonResult(200, "success", msg, resultJson);
+    }
+    /**
+     * 发起转正审批页面
+     *
+     * @return 修改结果
+     */
+    @Transactional()
+    @Override
+    public CommonResult initiateZz(HttpServletRequest request,String param)throws Exception {
+        String token = TokenUtil.getRequestToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        if(sysToken == null){
+            return new CommonResult(444, "error", "未传入token或已失效", null);
+        }
+        JSONObject jsonObject = JSON.parseObject(param);
+        //入职申请信息主键
+        String pkEntryId = sysToken.getFkUserId();
+        //查询是否已添加过转正申请
+        TStaffZz selectStaffZz = tStaffZzMapper.selectByPkId(pkEntryId);
+        if(selectStaffZz != null){
+            return new CommonResult(445, "error", "已提交过转正申请，不可再次提交", null);
+        }
+        //审批类型
+        String approvalType = "13";
+        /**
+         * 抄送人
+         */
+        List<DCcRecord> csrList = new ArrayList<>();
+        List<DCcRecord> csrpxqList = new ArrayList();
+        JSONArray csrArray = jsonObject.getJSONArray("csrList");
+        if(csrArray == null){
+            //说明未选择抄送人
+        }else {
+            String csrIdsStr = csrArray.toString();
+            if(csrIdsStr.equals("[]")){
+                //说明未选择抄送人
+            }else {
+                csrpxqList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
+            }
+        }
+        /**
+         * 抄送人去重
+         */
+        //创建新集合
+        //遍历旧集合，获得每一个元素
+        Iterator<DCcRecord> it = csrpxqList.iterator();
+        while(it.hasNext()) {
+            DCcRecord s = it.next();
+            //那这个集合去找新集合，看看有没有
+            if(!csrList.contains(s)) {
+                csrList.add(s);
+            }
+        }
+        String newPkId = IDUtils.getUUID();
+        String firstApvrecordId = newPkId;
+        List<DCcRecord> ccRecordList = new ArrayList<>();
+        //添加抄送记录
+        if(csrList != null && csrList.size() > 0){
+            for (DCcRecord ccRecord:csrList) {
+                DCcRecord dCcRecord = new DCcRecord();
+                dCcRecord.setPkCcId(IDUtils.getUUID());
+                dCcRecord.setFkStaffId(ccRecord.getFkStaffId());
+                dCcRecord.setStaffName(ccRecord.getStaffName());
+                dCcRecord.setFirstApvrecordId(firstApvrecordId);
+                ccRecordList.add(dCcRecord);
+            }
+        }
+        //批量添加抄送记录
+        int i = dCcRecordMapper.insertCCRecordBatch(ccRecordList);
+        /**
+         * 审批人
+         */
+        List<TApvApproval> apvList1 = new ArrayList<>();
+        JSONArray apvArray = jsonObject.getJSONArray("apvList");
+        if(apvArray == null){
+            //说明未选择审批人
+        }else {
+            String apvIdsStr = apvArray.toString();
+            if(apvIdsStr.equals("[]")){
+                //说明未选择审批人
+            }else {
+                apvList1 = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
+            }
+        }
+        /**
+         * 先去重
+         */
+        List<TApvApproval> apvList2 = new ArrayList<>();
+        for (int m = 0; m < apvList1.size()-1; m++) {
+            for (int n = apvList1.size()-1; n > m; n--) {
+                if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
+                    apvList1.remove(n);
+                }
+            }
+        }
+        apvList2 = apvList1;
+        /**
+         * 再排序
+         */
+        List<TApvApproval> apvList = new ArrayList<>();
+        Collections.sort(apvList2, new Comparator<TApvApproval>() {
+            @Override
+            public int compare(TApvApproval o1, TApvApproval o2) {
+                //升序
+                return String.valueOf(o1.getIsStart()).compareTo(String.valueOf(o2.getIsStart()));
+            }
+        });
+        apvList = apvList2;
+        /**
+         * 开始添加审批记录
+         */
+        List<DApvRecord> apvRecordList = new ArrayList<>();
+        int isStart = 1;
+        int num = 1;
+        for (TApvApproval approval: apvList) {
+            String nextPkId = IDUtils.getUUID();
+            DApvRecord dApvRecord = new DApvRecord();
+            dApvRecord.setPkRecordId(newPkId);
+            dApvRecord.setApprovalType(approvalType);
+            dApvRecord.setSponsor(sysToken.getFullName());
+            dApvRecord.setStartTime(new Date());
+            dApvRecord.setApvApproval(approval.getApprovalPeople());
+            if(num == apvList.size()){
+                dApvRecord.setNextApproval("0");
+            }else {
+                dApvRecord.setNextApproval(nextPkId);
+            }
+            dApvRecord.setSourceId(pkEntryId);
+            dApvRecord.setIsStart(isStart);
+            dApvRecord.setIsIng(1);
+            apvRecordList.add(dApvRecord);
+            //改变newPkId、isStart的值
+            newPkId = nextPkId;
+            isStart = 0;
+            num ++;
+        }
+        //批量添加审批记录
+        int j = tApvApprovalMapper.insertApvRecordBatch(apvRecordList);
+        if(j > 0){
+            /**
+             * 添加转正信息到数据库表中
+             */
+            TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
+            TStaffZz staffZz = new TStaffZz();
+            staffZz.setPkZzId(pkEntryId);
+            staffZz.setFkStaffId(pkEntryId);
+            staffZz.setFkWordaddressId(entry.getWorkAddress());
+            staffZz.setEntryTime(entry.getEntryTime());
+            //试用期到期日
+            String syqsj = "3";
+            String value = tSysParamMapper.selectParamById("SYQSJ");
+            if(!StringUtils.isEmpty(value)){
+                syqsj = value;
+            }
+            Date syqsjdate = DateUtil.addSYQTime(entry.getEntryTime(),syqsj);
+            staffZz.setSyqdqTime(syqsjdate);
+            //转正日期
+            String zzsj = "3";
+            String value2 = tSysParamMapper.selectParamById("ZZSJ");
+            if(!StringUtils.isEmpty(value2)){
+                zzsj = value2;
+            }
+            Date zzsjdate = DateUtil.addSYQTime(entry.getEntryTime(),zzsj);
+            staffZz.setZzTime(zzsjdate);
+            //实际转正日期在审批通过后进行修改
+            staffZz.setStatus(0);
+            //转正审批状态,0代表正在审批中，1通过
+            staffZz.setApvStatus(0);
+            staffZz.setFirstApvrecordId(firstApvrecordId);
+            int k = tStaffZzMapper.insertSelective(staffZz);
+            return new CommonResult(200, "success","转正申请已发起成功！", null);
+        }else {
+            return new CommonResult(444, "error","转正申请发起失败！", null);
+        }
     }
 }
     

@@ -6,8 +6,8 @@
         <result property="pkExperienceId" column="PK_EXPERIENCE_ID" jdbcType="VARCHAR"/>
         <result property="companyName" column="COMPANY_NAME" jdbcType="VARCHAR"/>
         <result property="position" column="POSITION" jdbcType="VARCHAR"/>
-        <result property="entryTime" column="ENTRY_TIME" jdbcType="TIMESTAMP"/>
-        <result property="quitTime" column="QUIT_TIME" jdbcType="TIMESTAMP"/>
+        <result property="entryTime" column="ENTRY_TIME" jdbcType="DATE"/>
+        <result property="quitTime" column="QUIT_TIME" jdbcType="DATE"/>
         <result property="positionDesc" column="POSITION_DESC" jdbcType="VARCHAR"/>
         <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
     </resultMap>
@@ -34,10 +34,10 @@
                 and POSITION = #{position,jdbcType=VARCHAR}
             </if>
             <if test="entryTime != null">
-                and ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP}
+                and ENTRY_TIME = #{entryTime,jdbcType=DATE}
             </if>
             <if test="quitTime != null">
-                and QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP}
+                and QUIT_TIME = #{quitTime,jdbcType=DATE}
             </if>
             <if test="positionDesc != null and positionDesc != ''">
                 and POSITION_DESC = #{positionDesc,jdbcType=VARCHAR}
@@ -84,10 +84,10 @@
                 #{position,jdbcType=VARCHAR},
             </if>
             <if test="entryTime != null">
-                #{entryTime,jdbcType=TIMESTAMP},
+                #{entryTime,jdbcType=DATE},
             </if>
             <if test="quitTime != null">
-                #{quitTime,jdbcType=TIMESTAMP},
+                #{quitTime,jdbcType=DATE},
             </if>
             <if test="positionDesc != null and positionDesc != ''">
                 #{positionDesc,jdbcType=VARCHAR},
@@ -108,10 +108,10 @@
                 POSITION = #{position,jdbcType=VARCHAR},
             </if>
             <if test="entryTime != null">
-                ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP},
+                ENTRY_TIME = #{entryTime,jdbcType=DATE},
             </if>
             <if test="quitTime != null">
-                QUIT_TIME = #{quitTime,jdbcType=TIMESTAMP},
+                QUIT_TIME = #{quitTime,jdbcType=DATE},
             </if>
             <if test="positionDesc != null and positionDesc != ''">
                 POSITION_DESC = #{positionDesc,jdbcType=VARCHAR},

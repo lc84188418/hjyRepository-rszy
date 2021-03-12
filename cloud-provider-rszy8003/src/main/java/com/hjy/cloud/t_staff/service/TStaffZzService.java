@@ -1,7 +1,9 @@
 package com.hjy.cloud.t_staff.service;
 
-import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_staff.entity.TStaffZz;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * (TStaffZz)表服务接口
@@ -56,4 +58,10 @@ public interface TStaffZzService {
      * @return
      */
     CommonResult selectById(TStaffZz tStaffZz);
+    /**
+     * 发起转正审批页面
+     *
+     */
+    CommonResult initiateZzPage(HttpServletRequest request);
+    CommonResult initiateZz(HttpServletRequest request,String param)throws Exception;
 }

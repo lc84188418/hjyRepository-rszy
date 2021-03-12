@@ -24,8 +24,10 @@ public class TStaffInfo {
     private Integer staffStatus;
     //部门
     private String fkDeptId;
+    private String deptName;
     //职位
     private String fkPositionId;
+    private String positionName;
 
     //入职时间
     private Date entryTime;

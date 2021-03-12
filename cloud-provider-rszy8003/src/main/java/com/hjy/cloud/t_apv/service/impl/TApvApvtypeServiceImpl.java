@@ -15,6 +15,7 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -26,9 +27,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * (TApvApvtype)表服务实现类
@@ -250,11 +249,21 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
             Iterator<TApvApproval> first = approvals.iterator();
             while (first.hasNext()){
                 TApvApproval firstNext = first.next();
+                if("zdy".equals(firstNext.getApvStation())){
+                    firstNext.setStationName("自定义");
+                }else if("deptLeader".equals(firstNext.getApvStation())){
+                    firstNext.setStationName("部门主管");
+                } else if("financeLeader".equals(firstNext.getApvStation())){
+                    firstNext.setStationName("财务主管");
+                }else if("humanResources".equals(firstNext.getApvStation())){
+                    firstNext.setStationName("人力资源主管");
+                }else if("generalManager".equals(firstNext.getApvStation())){
+                    firstNext.setStationName("总经理");
+                }
                 if(firstNext.getIsStart() == 1){
                     resultList.add(firstNext);
                     nextApproval = firstNext.getNextApproval();
                     first.remove();
-                    break;
                 }
             }
             if(approvals != null && approvals.size() > 0){

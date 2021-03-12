@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.controller;
 
 
+import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
@@ -8,7 +9,7 @@ import com.hjy.cloud.t_staff.service.TStaffZzService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * (TStaffZz)表控制层
@@ -115,6 +116,34 @@ public class TStaffZzController {
             throw new FebsException(message);
         }
     }
-
-
+    /**
+     * 发起转正审批页面
+     *
+     * @return 修改结果
+     */
+    @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
+    @GetMapping(value = "/staff/entry/initiateZzPage")
+    public CommonResult initiateZzPage(HttpServletRequest request) throws FebsException {
+        try {
+            return tStaffZzService.initiateZzPage(request);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 发起转正审批
+     *
+     * @return 修改结果
+     */
+    @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
+    @PostMapping(value = "/staff/entry/initiateZz")
+    public CommonResult initiateZz(HttpServletRequest request,@RequestBody String param) throws FebsException {
+        try {
+            return tStaffZzService.initiateZz(request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
 }

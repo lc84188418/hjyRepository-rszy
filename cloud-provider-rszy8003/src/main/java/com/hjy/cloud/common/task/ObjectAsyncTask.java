@@ -1,10 +1,13 @@
 package com.hjy.cloud.common.task;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
+import com.hjy.cloud.t_apv.service.DCcRecordService;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
@@ -23,11 +26,13 @@ import com.hjy.cloud.t_system.service.TSysRoleService;
 import com.hjy.cloud.t_system.service.TSysUserService;
 import com.hjy.cloud.utils.TokenUtil;
 import javafx.beans.binding.StringBinding;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -56,6 +61,8 @@ public class ObjectAsyncTask {
     private TStaffInfoService tStaffInfoService;
     @Autowired
     private TStaffEntryService tStaffEntryService;
+    @Resource
+    private DCcRecordService dCcRecordService;
 
     private static ObjectAsyncTask ntClient;
 
@@ -156,22 +163,29 @@ public class ObjectAsyncTask {
      *
      * @param request
      * @param apvName 审批类型名称，如：入职审批
-     * @param currentSourceId 当前来源，如该入职申请信息主键
      * @param dataType
      * @return
      */
-    public static JSONObject handleApproval(HttpServletRequest request, String apvName, int dataType, String currentSourceId) {
+    public static JSONObject handleApproval(HttpServletRequest request, String apvName, int dataType) {
         JSONObject resultJson = new JSONObject();
-        resultJson.put("msg","入职审批获取数据成功！");
+        resultJson.put("msg",apvName+"获取数据成功！");
         String token = TokenUtil.getRequestToken(request);
+        if (StringUtils.isEmpty(token)){
+            resultJson.put("msg","请在请求头中传入token");
+            return resultJson;
+        }
         SysToken sysToken = ntClient.tSysTokenService.selectPkId(token);
+        if(sysToken == null){
+            resultJson.put("msg","token已失效，请重新登录后再试");
+            return resultJson;
+        }
+        String currentSourceId = sysToken.getFkUserId();
         /**
-         * 查询入职审批流程
+         * 查询审批流程
          */
         //先查询入职申请的PK_ID
         TApvApvtype entityApv = ntClient.tApvApvtypeService.selectByName(apvName);
         if (entityApv != null) {
-            //12
             String approvalType = entityApv.getPkApvtypeId();
             List<TApvApproval> resultList = new ArrayList<>();
             String pk_apv_id = null;
@@ -184,7 +198,7 @@ public class ObjectAsyncTask {
             int num = 1;
             boolean flag = true;
             while (flag) {
-                TApvApproval apv = ntClient.tApvApprovalService.selectApvSet(pk_apv_id, approvalType,dataType,isStart);
+                TApvApproval apv = ntClient.tApvApprovalService.selectApvSet(pk_apv_id,approvalType,dataType,isStart);
                 if (apv != null) {
                     /**
                      * 一、先处理职位以及审批人
@@ -195,34 +209,47 @@ public class ObjectAsyncTask {
                             staffInfos = ntClient.tStaffInfoService.selectAll();
                         }
                         resultJson.put("staffInfos",staffInfos);
+                        apv.setStationName("自定义");
                     }else if(apv.getApvStation().equals("deptLeader")){
                         if(deptLeader == null){
                             //说明为部门主管审批人，需查询该操作用户所在部门，再查其领导
                             deptLeader = ntClient.tStaffInfoService.selectDeptLeader(sysToken.getFkUserId());
-                            resultJson.put("deptLeader",deptLeader);
                         }
-                        apv.setApprovalPeople(deptLeader.getPkStaffId());
+                        if(deptLeader != null){
+                            apv.setApprovalPeople(deptLeader.getPkStaffId());
+                            apv.setPeopleName(deptLeader.getStaffName());
+                        }
+                        apv.setStationName("部门主管");
                     }else if(apv.getApvStation().equals("financeLeader")){
                         if(financeLeader == null){
                             //说明为财务主管审批人，财务主管positionID = 671039a4d14d41918f086fac72a8cad6
                             financeLeader = ntClient.tStaffInfoService.selectLeaderByPosition("671039a4d14d41918f086fac72a8cad6");
-                            resultJson.put("financeLeader",financeLeader);
                         }
-                        apv.setApprovalPeople(financeLeader.getPkStaffId());
+                        if(financeLeader != null){
+                            apv.setApprovalPeople(financeLeader.getPkStaffId());
+                            apv.setPeopleName(financeLeader.getStaffName());
+                        }
+                        apv.setStationName("财务主管");
                     }else if(apv.getApvStation().equals("humanResources")){
                         if(humanResources == null){
                             //说明为人力资源主管审批人，人力资源主管positionID = 3d5857d429c640f896d5be97bdb45976
                             humanResources = ntClient.tStaffInfoService.selectLeaderByPosition("3d5857d429c640f896d5be97bdb45976");
-                            resultJson.put("humanResources",humanResources);
                         }
-                        apv.setApprovalPeople(humanResources.getPkStaffId());
+                        if(humanResources != null){
+                            apv.setApprovalPeople(humanResources.getPkStaffId());
+                            apv.setPeopleName(humanResources.getStaffName());
+                        }
+                        apv.setStationName("人力资源主管");
                     }else if(apv.getApvStation().equals("generalManager")){
                         if(generalManager == null){
                             //说明为总经理审批人，总经理positionID = 91c51aade3854305926095f7ab36b541
                             generalManager = ntClient.tStaffInfoService.selectLeaderByPosition("91c51aade3854305926095f7ab36b541");
-                            resultJson.put("generalManager",generalManager);
                         }
-                        apv.setApprovalPeople(generalManager.getPkStaffId());
+                        if(generalManager != null){
+                            apv.setApprovalPeople(generalManager.getPkStaffId());
+                            apv.setPeopleName(generalManager.getStaffName());
+                        }
+                        apv.setStationName("总经理");
                     }
                     apv.setIsStart(num);
                     //循环次数加1
@@ -245,7 +272,8 @@ public class ObjectAsyncTask {
                     }
                     resultList.add(apv);
                 }else {
-                    resultJson.put("msg","入职申请未设置审批人，确认后可直接通过！");
+                    resultJson.put("msg",apvName+"未设置审批人，确认后可直接通过！");
+                    flag = false;
                 }
             }
             resultJson.put("apvList",resultList);
@@ -258,17 +286,156 @@ public class ObjectAsyncTask {
             selectEntity.setApprovalType(approvalType);
             List<TApvApproval> csrList = ntClient.tApvApprovalService.selectAllPage(selectEntity);
             resultJson.put("csrList",csrList);
-
         }else {
-            resultJson.put("msg","未有入职申请审批流程，确认后可直接通过！");
+            resultJson.put("msg","未有"+apvName+"审批流程，确认后可直接通过！");
         }
         //当前来源的信息
         if("入职申请".equals(apvName)){
             TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(currentSourceId);
             Map<String,Object> currentSourceMap = ObjectAsyncTask.handleJsonData(tStaffEntry);
             resultJson.put("currentSource",currentSourceMap);
+        }else if("转正申请".equals(apvName)){
+            TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(currentSourceId);
+            Map<String,Object> currentSourceMap = ObjectAsyncTask.handleJsonData(tStaffEntry);
+            resultJson.put("currentSource",currentSourceMap);
+        }else if("离职申请".equals(apvName)){
+            //员工个人基本信息
+            TStaffInfo staffInfo = ntClient.tStaffInfoService.selectByPkId2(currentSourceId);
+            resultJson.put("currentSource",staffInfo);
         }
         return resultJson;
+    }
+
+    /**
+     * 添加审批记录
+     * @param stringBuffer
+     * @param json
+     * @param approvalType
+     * @return
+     */
+    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkQuitId) {
+        /**
+         * 抄送人
+         */
+
+        String newPkId = IDUtils.getUUID();
+        String firstApvrecordId = newPkId;
+        JSONArray csrArray = json.getJSONArray("csrList");
+        if(csrArray != null){
+            //说明选择了抄送人
+            String csrIdsStr = csrArray.toString();
+            if(!csrIdsStr.equals("[]")){
+                //说明选择了抄送人
+                List<DCcRecord> csrpxqList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
+                List<DCcRecord> csrList = new ArrayList<>();
+                /**
+                 * 抄送人去重
+                 */
+                //创建新集合
+                //遍历旧集合，获得每一个元素
+                Iterator<DCcRecord> it = csrpxqList.iterator();
+                while(it.hasNext()) {
+                    DCcRecord s = it.next();
+                    //那这个集合去找新集合，看看有没有
+                    if(!csrList.contains(s)) {
+                        csrList.add(s);
+                    }
+                }
+
+                List<DCcRecord> ccRecordList = new ArrayList<>();
+                //添加抄送记录
+                if(csrList != null && csrList.size() > 0){
+                    for (DCcRecord ccRecord:csrList) {
+                        DCcRecord dCcRecord = new DCcRecord();
+                        dCcRecord.setPkCcId(IDUtils.getUUID());
+                        dCcRecord.setFkStaffId(ccRecord.getFkStaffId());
+                        dCcRecord.setStaffName(ccRecord.getStaffName());
+                        dCcRecord.setFirstApvrecordId(firstApvrecordId);
+                        ccRecordList.add(dCcRecord);
+                    }
+                }
+                //批量添加抄送记录
+                int i = ntClient.dCcRecordService.insertCCRecordBatch(ccRecordList);
+                if(i > 0){
+                    stringBuffer.append("抄送记录添加成功！");
+                }else {
+                    stringBuffer.append("抄送记录添加成功！");
+                    return stringBuffer;
+                }
+            }
+        }
+
+        /**
+         * 审批人
+         */
+        JSONArray apvArray = json.getJSONArray("apvList");
+        if(apvArray != null){
+            String apvIdsStr = apvArray.toString();
+            if(!apvIdsStr.equals("[]")){
+                List<TApvApproval> apvList1 = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
+                /**
+                 * 先去重
+                 */
+                List<TApvApproval> apvList2 = new ArrayList<>();
+                for (int m = 0; m < apvList1.size()-1; m++) {
+                    for (int n = apvList1.size()-1; n > m; n--) {
+                        if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
+                            apvList1.remove(n);
+                        }
+                    }
+                }
+                apvList2 = apvList1;
+                /**
+                 * 再排序
+                 */
+                List<TApvApproval> apvList = new ArrayList<>();
+                Collections.sort(apvList2, new Comparator<TApvApproval>() {
+                    @Override
+                    public int compare(TApvApproval o1, TApvApproval o2) {
+                        //升序
+                        return String.valueOf(o1.getIsStart()).compareTo(String.valueOf(o2.getIsStart()));
+                    }
+                });
+                apvList = apvList2;
+                /**
+                 * 开始添加审批记录
+                 */
+                List<DApvRecord> apvRecordList = new ArrayList<>();
+                int isStart = 1;
+                int num = 1;
+                for (TApvApproval approval: apvList) {
+                    String nextPkId = IDUtils.getUUID();
+                    DApvRecord dApvRecord = new DApvRecord();
+                    dApvRecord.setPkRecordId(newPkId);
+                    dApvRecord.setApprovalType(approvalType);
+                    dApvRecord.setSponsor(sysToken.getFullName());
+                    dApvRecord.setStartTime(new Date());
+                    dApvRecord.setApvApproval(approval.getApprovalPeople());
+                    if(num == apvList.size()){
+                        dApvRecord.setNextApproval("0");
+                    }else {
+                        dApvRecord.setNextApproval(nextPkId);
+                    }
+                    dApvRecord.setSourceId(pkQuitId);
+                    dApvRecord.setIsStart(isStart);
+                    dApvRecord.setIsIng(1);
+                    apvRecordList.add(dApvRecord);
+                    //改变newPkId、isStart的值
+                    newPkId = nextPkId;
+                    isStart = 0;
+                    num ++;
+                }
+                //批量添加审批记录
+                int j = ntClient.tApvApprovalService.insertApvRecordBatch(apvRecordList);
+                if(j > 0){
+                    stringBuffer.append("审批记录添加成功！");
+                }else {
+                    stringBuffer.append("审批记录添加成功！");
+                    return stringBuffer;
+                }
+            }
+        }
+        return stringBuffer;
     }
 
     //初始化所有服务
@@ -281,5 +448,10 @@ public class ObjectAsyncTask {
         ntClient.tSysTokenService = this.tSysTokenService;
         ntClient.tOutfitDeptService = this.tOutfitDeptService;
         ntClient.tApvApprovalService = this.tApvApprovalService;
+        ntClient.tApvApvtypeService = this.tApvApvtypeService;
+        ntClient.tStaffInfoService = this.tStaffInfoService;
+        ntClient.tStaffEntryService = this.tStaffEntryService;
+        ntClient.dCcRecordService = this.dCcRecordService;
+        ntClient.dCcRecordService = this.dCcRecordService;
     }
 }

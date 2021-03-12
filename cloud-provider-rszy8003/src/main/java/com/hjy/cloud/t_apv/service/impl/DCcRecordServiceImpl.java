@@ -139,6 +139,15 @@ public class DCcRecordServiceImpl implements DCcRecordService {
         resultJson.put("entity", entity);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
+    /**
+     * 批量添加抄送记录
+     *
+     * @return
+     */
+    @Override
+    public int insertCCRecordBatch(List<DCcRecord> ccRecordList) {
+        return dCcRecordMapper.insertCCRecordBatch(ccRecordList);
+    }
 
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);

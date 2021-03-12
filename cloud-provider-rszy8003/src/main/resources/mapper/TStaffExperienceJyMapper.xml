@@ -6,8 +6,8 @@
         <result property="pkExperienceId" column="PK_EXPERIENCE_ID" jdbcType="VARCHAR"/>
         <result property="schoolName" column="SCHOOL_NAME" jdbcType="VARCHAR"/>
         <result property="majorName" column="MAJOR_NAME" jdbcType="VARCHAR"/>
-        <result property="admissionTime" column="ADMISSION_TIME" jdbcType="TIMESTAMP"/>
-        <result property="graduationTime" column="GRADUATION_TIME" jdbcType="TIMESTAMP"/>
+        <result property="admissionTime" column="ADMISSION_TIME" jdbcType="DATE"/>
+        <result property="graduationTime" column="GRADUATION_TIME" jdbcType="DATE"/>
         <result property="fkEducationId" column="FK_EDUCATION_ID" jdbcType="VARCHAR"/>
         <result property="isDegree" column="IS_DEGREE" jdbcType="INTEGER"/>
         <result property="card1Path" column="CARD1_PATH" jdbcType="VARCHAR"/>
@@ -38,10 +38,10 @@
                 and MAJOR_NAME = #{majorName,jdbcType=VARCHAR}
             </if>
             <if test="admissionTime != null">
-                and ADMISSION_TIME = #{admissionTime,jdbcType=TIMESTAMP}
+                and ADMISSION_TIME = #{admissionTime,jdbcType=DATE}
             </if>
             <if test="graduationTime != null">
-                and GRADUATION_TIME = #{graduationTime,jdbcType=TIMESTAMP}
+                and GRADUATION_TIME = #{graduationTime,jdbcType=DATE}
             </if>
             <if test="fkEducationId != null and fkEducationId != ''">
                 and FK_EDUCATION_ID = #{fkEducationId,jdbcType=VARCHAR}
@@ -106,10 +106,10 @@
                 #{majorName,jdbcType=VARCHAR},
             </if>
             <if test="admissionTime != null">
-                #{admissionTime,jdbcType=TIMESTAMP},
+                #{admissionTime,jdbcType=DATE},
             </if>
             <if test="graduationTime != null">
-                #{graduationTime,jdbcType=TIMESTAMP},
+                #{graduationTime,jdbcType=DATE},
             </if>
             <if test="fkEducationId != null and fkEducationId != ''">
                 #{fkEducationId,jdbcType=VARCHAR},
@@ -139,10 +139,10 @@
                 MAJOR_NAME = #{majorName,jdbcType=VARCHAR},
             </if>
             <if test="admissionTime != null">
-                ADMISSION_TIME = #{admissionTime,jdbcType=TIMESTAMP},
+                ADMISSION_TIME = #{admissionTime,jdbcType=DATE},
             </if>
             <if test="graduationTime != null">
-                GRADUATION_TIME = #{graduationTime,jdbcType=TIMESTAMP},
+                GRADUATION_TIME = #{graduationTime,jdbcType=DATE},
             </if>
             <if test="fkEducationId != null and fkEducationId != ''">
                 FK_EDUCATION_ID = #{fkEducationId,jdbcType=VARCHAR},

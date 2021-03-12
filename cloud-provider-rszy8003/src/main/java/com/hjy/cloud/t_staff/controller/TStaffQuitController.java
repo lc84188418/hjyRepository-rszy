@@ -3,11 +3,13 @@ package com.hjy.cloud.t_staff.controller;
 
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -28,9 +30,9 @@ public class TStaffQuitController {
      * 1 跳转到新增页面
      */
     @GetMapping(value = "/staff/quit/addPage")
-    public CommonResult insertPage() throws FebsException {
+    public CommonResult insertPage(HttpServletRequest request) throws FebsException {
         try {
-            return tStaffQuitService.insertPage();
+            return tStaffQuitService.insertPage(request);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -40,13 +42,12 @@ public class TStaffQuitController {
     /**
      * 新增数据
      *
-     * @param tStaffQuit 实体对象
      * @return 新增结果
      */
     @PostMapping(value = "/staff/quit/add")
-    public CommonResult insert(@RequestBody TStaffQuit tStaffQuit) throws FebsException {
+    public CommonResult insert(@RequestBody String param, HttpServletRequest request) throws FebsException {
         try {
-            return tStaffQuitService.insert(tStaffQuit);
+            return tStaffQuitService.insert(request,param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
