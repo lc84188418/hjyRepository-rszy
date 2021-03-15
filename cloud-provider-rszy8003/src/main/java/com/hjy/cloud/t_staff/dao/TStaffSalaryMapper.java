@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_staff.dao;
 
+import com.hjy.cloud.common.entity.DSalaryRecord;
 import com.hjy.cloud.t_staff.entity.TStaffSalary;
 
 import java.util.List;
@@ -27,6 +28,9 @@ public interface TStaffSalaryMapper {
      * @return 对象列表
      */
     List<TStaffSalary> selectAllPage(TStaffSalary tStaffSalary);
+//    List<TStaffSalary> selectAllPage2(TStaffSalary tStaffSalary);
+    List<DSalaryRecord> selectRecordAllPage(DSalaryRecord entity);
+
 
     /**
      * 新增数据
@@ -51,4 +55,7 @@ public interface TStaffSalaryMapper {
      * @return 影响行数
      */
     int deleteById(TStaffSalary tStaffSalary);
+
+    int insertSalaryRecord(DSalaryRecord tStaffSalary);
+
 }

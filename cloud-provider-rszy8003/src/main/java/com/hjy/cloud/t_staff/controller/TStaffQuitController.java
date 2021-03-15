@@ -72,12 +72,12 @@ public class TStaffQuitController {
 
     /**
      * 分页查询所有数据
-     *
+     * 管理员
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/staff/quit/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    @PostMapping(value = "/staff/quit/adminList")
+    public CommonResult adminList(@RequestBody String param) throws FebsException {
         try {
             return tStaffQuitService.selectAll(param);
         } catch (Exception e) {

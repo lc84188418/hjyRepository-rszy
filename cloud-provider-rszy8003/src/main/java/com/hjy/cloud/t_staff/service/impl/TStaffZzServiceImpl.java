@@ -128,11 +128,9 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TStaffZz entity = new TStaffZz();
-
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -181,7 +179,15 @@ public class TStaffZzServiceImpl implements TStaffZzService {
      */
     @Override
     public CommonResult initiateZzPage(HttpServletRequest request) {
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"转正申请",1);
+        String token = TokenUtil.getRequestToken(request);
+        if (StringUtils.isEmpty(token)){
+            return new CommonResult(444, "error", "请在请求头中传入token", null);
+        }
+        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        if(sysToken == null){
+            return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
+        }
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"转正申请",1);
         String msg = (String) resultJson.get("msg");
         return new CommonResult(200, "success", msg, resultJson);
     }
@@ -206,155 +212,46 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(selectStaffZz != null){
             return new CommonResult(445, "error", "已提交过转正申请，不可再次提交", null);
         }
-        //审批类型
-        String approvalType = "13";
-        /**
-         * 抄送人
-         */
-        List<DCcRecord> csrList = new ArrayList<>();
-        List<DCcRecord> csrpxqList = new ArrayList();
-        JSONArray csrArray = jsonObject.getJSONArray("csrList");
-        if(csrArray == null){
-            //说明未选择抄送人
-        }else {
-            String csrIdsStr = csrArray.toString();
-            if(csrIdsStr.equals("[]")){
-                //说明未选择抄送人
-            }else {
-                csrpxqList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
-            }
-        }
-        /**
-         * 抄送人去重
-         */
-        //创建新集合
-        //遍历旧集合，获得每一个元素
-        Iterator<DCcRecord> it = csrpxqList.iterator();
-        while(it.hasNext()) {
-            DCcRecord s = it.next();
-            //那这个集合去找新集合，看看有没有
-            if(!csrList.contains(s)) {
-                csrList.add(s);
-            }
-        }
         String newPkId = IDUtils.getUUID();
         String firstApvrecordId = newPkId;
-        List<DCcRecord> ccRecordList = new ArrayList<>();
-        //添加抄送记录
-        if(csrList != null && csrList.size() > 0){
-            for (DCcRecord ccRecord:csrList) {
-                DCcRecord dCcRecord = new DCcRecord();
-                dCcRecord.setPkCcId(IDUtils.getUUID());
-                dCcRecord.setFkStaffId(ccRecord.getFkStaffId());
-                dCcRecord.setStaffName(ccRecord.getStaffName());
-                dCcRecord.setFirstApvrecordId(firstApvrecordId);
-                ccRecordList.add(dCcRecord);
-            }
-        }
-        //批量添加抄送记录
-        int i = dCcRecordMapper.insertCCRecordBatch(ccRecordList);
         /**
-         * 审批人
+         * 添加转正信息到数据库表中
          */
-        List<TApvApproval> apvList1 = new ArrayList<>();
-        JSONArray apvArray = jsonObject.getJSONArray("apvList");
-        if(apvArray == null){
-            //说明未选择审批人
-        }else {
-            String apvIdsStr = apvArray.toString();
-            if(apvIdsStr.equals("[]")){
-                //说明未选择审批人
-            }else {
-                apvList1 = JSONObject.parseArray(apvIdsStr,TApvApproval.class);
-            }
+        TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
+        TStaffZz staffZz = new TStaffZz();
+        staffZz.setPkZzId(pkEntryId);
+        staffZz.setFkStaffId(pkEntryId);
+        staffZz.setFkWordaddressId(entry.getWorkAddress());
+        staffZz.setEntryTime(entry.getEntryTime());
+        //试用期到期日
+        String syqsj = "3";
+        String value = tSysParamMapper.selectParamById("SYQSJ");
+        if(!StringUtils.isEmpty(value)){
+            syqsj = value;
         }
-        /**
-         * 先去重
-         */
-        List<TApvApproval> apvList2 = new ArrayList<>();
-        for (int m = 0; m < apvList1.size()-1; m++) {
-            for (int n = apvList1.size()-1; n > m; n--) {
-                if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
-                    apvList1.remove(n);
-                }
-            }
+        Date syqsjdate = DateUtil.addSYQTime(entry.getEntryTime(),syqsj);
+        staffZz.setSyqdqTime(syqsjdate);
+        //转正日期
+        String zzsj = "3";
+        String value2 = tSysParamMapper.selectParamById("ZZSJ");
+        if(!StringUtils.isEmpty(value2)){
+            zzsj = value2;
         }
-        apvList2 = apvList1;
-        /**
-         * 再排序
-         */
-        List<TApvApproval> apvList = new ArrayList<>();
-        Collections.sort(apvList2, new Comparator<TApvApproval>() {
-            @Override
-            public int compare(TApvApproval o1, TApvApproval o2) {
-                //升序
-                return String.valueOf(o1.getIsStart()).compareTo(String.valueOf(o2.getIsStart()));
-            }
-        });
-        apvList = apvList2;
-        /**
-         * 开始添加审批记录
-         */
-        List<DApvRecord> apvRecordList = new ArrayList<>();
-        int isStart = 1;
-        int num = 1;
-        for (TApvApproval approval: apvList) {
-            String nextPkId = IDUtils.getUUID();
-            DApvRecord dApvRecord = new DApvRecord();
-            dApvRecord.setPkRecordId(newPkId);
-            dApvRecord.setApprovalType(approvalType);
-            dApvRecord.setSponsor(sysToken.getFullName());
-            dApvRecord.setStartTime(new Date());
-            dApvRecord.setApvApproval(approval.getApprovalPeople());
-            if(num == apvList.size()){
-                dApvRecord.setNextApproval("0");
-            }else {
-                dApvRecord.setNextApproval(nextPkId);
-            }
-            dApvRecord.setSourceId(pkEntryId);
-            dApvRecord.setIsStart(isStart);
-            dApvRecord.setIsIng(1);
-            apvRecordList.add(dApvRecord);
-            //改变newPkId、isStart的值
-            newPkId = nextPkId;
-            isStart = 0;
-            num ++;
-        }
-        //批量添加审批记录
-        int j = tApvApprovalMapper.insertApvRecordBatch(apvRecordList);
-        if(j > 0){
-            /**
-             * 添加转正信息到数据库表中
-             */
-            TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
-            TStaffZz staffZz = new TStaffZz();
-            staffZz.setPkZzId(pkEntryId);
-            staffZz.setFkStaffId(pkEntryId);
-            staffZz.setFkWordaddressId(entry.getWorkAddress());
-            staffZz.setEntryTime(entry.getEntryTime());
-            //试用期到期日
-            String syqsj = "3";
-            String value = tSysParamMapper.selectParamById("SYQSJ");
-            if(!StringUtils.isEmpty(value)){
-                syqsj = value;
-            }
-            Date syqsjdate = DateUtil.addSYQTime(entry.getEntryTime(),syqsj);
-            staffZz.setSyqdqTime(syqsjdate);
-            //转正日期
-            String zzsj = "3";
-            String value2 = tSysParamMapper.selectParamById("ZZSJ");
-            if(!StringUtils.isEmpty(value2)){
-                zzsj = value2;
-            }
-            Date zzsjdate = DateUtil.addSYQTime(entry.getEntryTime(),zzsj);
-            staffZz.setZzTime(zzsjdate);
-            //实际转正日期在审批通过后进行修改
-            staffZz.setStatus(0);
-            //转正审批状态,0代表正在审批中，1通过
-            staffZz.setApvStatus(0);
-            staffZz.setFirstApvrecordId(firstApvrecordId);
-            int k = tStaffZzMapper.insertSelective(staffZz);
-            return new CommonResult(200, "success","转正申请已发起成功！", null);
+        Date zzsjdate = DateUtil.addSYQTime(entry.getEntryTime(),zzsj);
+        staffZz.setZzTime(zzsjdate);
+        //实际转正日期在审批通过后进行修改
+        staffZz.setStatus(0);
+        //转正审批状态,0代表正在审批中，1通过
+        staffZz.setApvStatus(0);
+        staffZz.setFirstApvrecordId(firstApvrecordId);
+        int i = tStaffZzMapper.insertSelective(staffZz);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(i > 0){
+            stringBuffer.append("转正申请已发起成功！");
+            //审批类型
+            String approvalType = "13";
+            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId());
+            return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
             return new CommonResult(444, "error","转正申请发起失败！", null);
         }

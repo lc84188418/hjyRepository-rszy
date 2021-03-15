@@ -6,6 +6,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffZzService;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -72,11 +73,13 @@ public class TStaffZzController {
 
     /**
      * 分页查询所有数据
-     *
+     *管理员
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/staff/Zz/list")
+    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看员工转正信息列表")
+    @RequiresPermissions({"Zz:adminView"})
+    @PostMapping(value = "/staff/Zz/adminList")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tStaffZzService.selectAll(param);
@@ -118,7 +121,7 @@ public class TStaffZzController {
     }
     /**
      * 发起转正审批页面
-     *
+     * 员工
      * @return 修改结果
      */
     @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
@@ -131,6 +134,21 @@ public class TStaffZzController {
             throw new FebsException(message);
         }
     }
+//    /**
+//     * 发起转正审批页面
+//     * 管理员
+//     * @return 修改结果
+//     */
+//    @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
+//    @PostMapping(value = "/staff/entry/initiateZzPage2")
+//    public CommonResult initiateZzPage2(HttpServletRequest request) throws FebsException {
+//        try {
+//            return tStaffZzService.initiateZzPage(request);
+//        } catch (Exception e) {
+//            String message = "失败";
+//            throw new FebsException(message);
+//        }
+//    }
     /**
      * 发起转正审批
      *

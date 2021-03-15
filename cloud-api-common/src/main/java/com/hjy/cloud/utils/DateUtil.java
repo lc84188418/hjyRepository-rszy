@@ -17,6 +17,7 @@ public class DateUtil {
 
     public static final String FULL_TIME_SPLIT_PATTERN = "yyyy-MM-dd HH:mm:ss";
     public static final String YEAR_MONTH_DATE_PATTERN = "yyyy-MM-dd";
+    public static final String YEAR_MONTH_PATTERN = "yyyy-MM";
     //有效期
     public static final Integer EXPIRE_TIME = 1;
 
@@ -44,7 +45,11 @@ public class DateUtil {
         Date parse = sdf.parse(date);
         return parse;
     }
-
+    public static Date formatTime2(String date) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(YEAR_MONTH_PATTERN);
+        Date parse = sdf.parse(date);
+        return parse;
+    }
     /**
      * 时刻+时间段
      * @param date 时刻

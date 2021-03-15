@@ -16,10 +16,13 @@ public class TStaffQuit {
     private String pkQuitId;
     //离职人ID
     private String fkStaffId;
+    private String staffName;
     //部门ID
     private String fkDeptId;
-    //职位
+    private String deptName;
+    //职位ID
     private String position;
+    private String positionName;
     //申请日期
     private Date applyTime;
     //离职类型

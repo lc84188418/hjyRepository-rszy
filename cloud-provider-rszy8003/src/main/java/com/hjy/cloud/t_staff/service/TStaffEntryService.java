@@ -52,6 +52,7 @@ public interface TStaffEntryService {
      */
 
     CommonResult adminList(String param);
+
     CommonResult userGet(HttpServletRequest servletRequest);
 
     /**

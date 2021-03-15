@@ -17,7 +17,9 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TOutfitDeptMap">
-        select * from hjy_cloud.T_OUTFIT_DEPT
+        select PK_DEPT_ID,DEPT_NAME,DEPT_ADDRESS,CREATE_TIME,SUPERIOR_DEPT,DEPT_LEADER,REMARKS,MODIFY_TIME,LEADER_CARD,MAX_NUM,T_STAFF_INFO.STAFF_NAME AS leaderName
+        from hjy_cloud.T_OUTFIT_DEPT
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_OUTFIT_DEPT.DEPT_LEADER
         where PK_DEPT_ID = #{pkDeptId}
     </select>
 

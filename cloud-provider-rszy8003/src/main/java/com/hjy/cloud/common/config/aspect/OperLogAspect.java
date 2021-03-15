@@ -1,6 +1,7 @@
 package com.hjy.cloud.common.config.aspect;
 
 import com.hjy.cloud.common.annotation.OperLog;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.t_log.entity.TLogRecord;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
@@ -127,14 +128,13 @@ public class OperLogAspect {
                 // 请求用户姓名
                 logRecord.setRecordFullName(activeUser.getFullName());
             }else {
-                String tokenStr = TokenUtil.getRequestToken(request);
-                SysToken token = tSysTokenMapper.findByToken(tokenStr);
+                SysToken sysToken = ObjectAsyncTask.getSysToken(request);
                 // 请求用户ID
-                logRecord.setRecordUserId(token.getFkUserId());
+                logRecord.setRecordUserId(sysToken.getFkUserId());
                 // 请求用户账户名称
-                logRecord.setRecordUserName(token.getUsername());
+                logRecord.setRecordUserName(sysToken.getUsername());
                 // 请求用户姓名
-                logRecord.setRecordFullName(token.getFullName());
+                logRecord.setRecordFullName(sysToken.getFullName());
             }
             // 请求IP
             logRecord.setRecordIp(IPUtil.getIpAddress(request));
@@ -195,10 +195,9 @@ public class OperLogAspect {
                 // 请求用户姓名
 //                excepLog.setOperFullName(activeUser.getFullName());
             }else {
-                String tokenStr = TokenUtil.getRequestToken(request);
-                SysToken token = tSysTokenMapper.findByToken(tokenStr);
+                SysToken sysToken = ObjectAsyncTask.getSysToken(request);
                 // 操作员ID
-                excepLog.setOperUserId(token.getFkUserId());
+                excepLog.setOperUserId(sysToken.getFkUserId());
                 // 操作员账户名称
                 excepLog.setOperUserName(activeUser.getUsername());
                 // 请求用户姓名

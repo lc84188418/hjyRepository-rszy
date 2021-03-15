@@ -46,13 +46,14 @@ public class TStaffInfoController {
 
     /**
      * 分页查询所有数据
+     * 管理员
      *
      * @param param json参数
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看入职员工信息列表")
-    @RequiresPermissions({"staffInfo:view"})
-    @PostMapping(value = "/staff/info/list")
+    @RequiresPermissions({"staffInfo:adminView"})
+    @PostMapping(value = "/staff/info/adminList")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tStaffInfoService.selectAll(param);

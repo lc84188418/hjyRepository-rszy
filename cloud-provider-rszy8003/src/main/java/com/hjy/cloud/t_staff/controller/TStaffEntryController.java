@@ -164,7 +164,7 @@ public class TStaffEntryController {
     /**
      * 发起入职审批页面
      *
-     * @param tStaffEntry 实体对象
+     * @param tStaffEntry 实体对象中的pkEntryId
      * @return 修改结果
      */
     @PostMapping(value = "/staff/entry/approvalPage")

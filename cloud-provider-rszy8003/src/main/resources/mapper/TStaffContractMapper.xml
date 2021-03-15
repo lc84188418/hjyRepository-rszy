@@ -28,10 +28,28 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TStaffContractMap">
-        select
-        PK_CONTRCT_ID,STAFF_NAME,FK_DEPT_ID,IDCARD, CONTRCT_STATUS, FK_CONTRACT_TYPE, CONTRACT_ATTRIBUTE, CONTRACT_QX,
-        FK_CONTRACT_COMPANY, START_TIME, SIGN_TIME, END_TIME, SIGN_NUM, APPROVAL_STATUS, ANNEX
-        from hjy_cloud.T_STAFF_CONTRACT
+        SELECT
+        PK_CONTRCT_ID,
+        STAFF_NAME,
+        FK_DEPT_ID,
+        IDCARD,
+        CONTRCT_STATUS,
+        FK_CONTRACT_TYPE,
+        CONTRACT_ATTRIBUTE,
+        CONTRACT_QX,
+        FK_CONTRACT_COMPANY,
+        START_TIME,
+        SIGN_TIME,
+        END_TIME,
+        SIGN_NUM,
+        APPROVAL_STATUS,
+        ANNEX,
+        T_DICTIONARY_HTLX.CONTRAC_TYPE as typeName,
+        T_OUTFIT_COMPANY.COMPANY_NAME
+        FROM
+        hjy_cloud.T_STAFF_CONTRACT
+        LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_CONTRACT.FK_CONTRACT_TYPE
+        LEFT JOIN T_OUTFIT_COMPANY ON T_OUTFIT_COMPANY.PK_COMPANY_ID = T_STAFF_CONTRACT.FK_CONTRACT_COMPANY
         <where>
             <if test="pkContrctId != null">
                 and PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}

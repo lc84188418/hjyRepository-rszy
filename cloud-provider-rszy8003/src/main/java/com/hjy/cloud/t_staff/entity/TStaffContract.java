@@ -26,12 +26,14 @@ public class TStaffContract {
     private Integer signStatus;
     //合同类型ID，在字典中
     private String fkContractType;
+    private String typeName;
     //合同属性
     private String contractAttribute;
     //合同期限
     private String contractQx;
     //合同公司ID，
     private String fkContractCompany;
+    private String companyName;
     //合同开始日期
     private Date startTime;
     //合同签订日期

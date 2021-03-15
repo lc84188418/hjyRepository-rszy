@@ -53,8 +53,18 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
      */
     @Override
     public CommonResult insertPage(HttpServletRequest request) {
+        String token = TokenUtil.getRequestToken(request);
+        if (StringUtils.isEmpty(token)){
+            return new CommonResult(444, "error", "请在请求头中传入token", null);
+
+        }
+        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        if(sysToken == null){
+            return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
+
+        }
         //离职审批流程信息
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(request,"离职申请",1);
+        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"离职申请",1);
         String msg = (String) resultJson.get("msg");
         return new CommonResult(200, "success", msg, resultJson);
     }
@@ -68,8 +78,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     @Transactional()
     @Override
     public CommonResult insert(HttpServletRequest request,String param) throws ParseException {
-        String token = TokenUtil.getRequestToken(request);
-        SysToken sysToken = tSysTokenMapper.findByToken(token);
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         //离职人基本信息
         TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId(sysToken.getFkUserId());
         //查询是否已添加过离职申请
@@ -156,7 +165,6 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TStaffQuit entity = new TStaffQuit();

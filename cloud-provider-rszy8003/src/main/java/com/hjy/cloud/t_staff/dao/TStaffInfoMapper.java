@@ -68,4 +68,8 @@ public interface TStaffInfoMapper {
      * 通过证件号查询员工基本信息
      */
     TStaffInfo selectByIdCard(@Param("idcard")String idcard);
+    /**
+     * 查询还没添加工资条的员工列表，不包括已经添加过的员工
+     */
+    List<TStaffInfo> selectEnableAddSalary();
 }

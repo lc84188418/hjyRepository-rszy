@@ -247,6 +247,11 @@ WHERE
 	T_STAFF_INFO.ID_CARD = #{idcard}
 
     </select>
+<!--    查询还没添加工资条的员工列表，不包括已经添加过的员工-->
+    <select id="selectEnableAddSalary" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+SELECT T_STAFF_INFO.PK_STAFF_ID,T_STAFF_INFO.STAFF_NAME
+FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(T_STAFF_SALARY.FK_STAFF_ID) FROM T_STAFF_SALARY)
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">

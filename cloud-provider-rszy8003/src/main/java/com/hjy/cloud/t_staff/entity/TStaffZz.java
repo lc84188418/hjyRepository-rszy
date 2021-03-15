@@ -32,5 +32,11 @@ public class TStaffZz {
     private Integer apvStatus;
     //第一级审批id
     private String firstApvrecordId;
-
+    /**
+     *
+     */
+    private String staffName;
+    private String wordAddressName;
+    private String deptName;
+    private String positionName;
 }

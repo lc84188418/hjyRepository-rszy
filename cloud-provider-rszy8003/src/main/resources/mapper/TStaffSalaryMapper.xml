@@ -5,6 +5,7 @@
     <resultMap type="com.hjy.cloud.t_staff.entity.TStaffSalary" id="TStaffSalaryMap">
         <result property="pkSalaryId" column="PK_SALARY_ID" jdbcType="VARCHAR"/>
         <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
         <result property="jbXz" column="JB_XZ" jdbcType="REAL"/>
         <result property="gwXz" column="GW_XZ" jdbcType="REAL"/>
         <result property="jxXz" column="JX_XZ" jdbcType="REAL"/>
@@ -27,58 +28,48 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TStaffSalaryMap">
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffSalary">
         select
-        PK_SALARY_ID, FK_STAFF_ID, JB_XZ, GW_XZ, JX_XZ, QQ_BT, JT_BT, CS_BT, CD_ZT_KQ, QK_B_KQ, SJ_BJ_KQ, QT_KQ, SB_KQ,
-        GJJ_KQ, GRSDS_KQ
-        from hjy_cloud.T_STAFF_SALARY
-        <where>
-            <if test="pkSalaryId != null and pkSalaryId != ''">
-                and PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
-            </if>
-            <if test="fkStaffId != null and fkStaffId != ''">
-                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
-            </if>
-            <if test="jbXz != null">
-                and JB_XZ = #{jbXz,jdbcType=OTHER}
-            </if>
-            <if test="gwXz != null">
-                and GW_XZ = #{gwXz,jdbcType=OTHER}
-            </if>
-            <if test="jxXz != null">
-                and JX_XZ = #{jxXz,jdbcType=OTHER}
-            </if>
-            <if test="qqBt != null">
-                and QQ_BT = #{qqBt,jdbcType=OTHER}
-            </if>
-            <if test="jtBt != null">
-                and JT_BT = #{jtBt,jdbcType=OTHER}
-            </if>
-            <if test="csBt != null">
-                and CS_BT = #{csBt,jdbcType=OTHER}
-            </if>
-            <if test="cdZtKq != null">
-                and CD_ZT_KQ = #{cdZtKq,jdbcType=OTHER}
-            </if>
-            <if test="qkBKq != null">
-                and QK_B_KQ = #{qkBKq,jdbcType=OTHER}
-            </if>
-            <if test="sjBjKq != null">
-                and SJ_BJ_KQ = #{sjBjKq,jdbcType=OTHER}
-            </if>
-            <if test="qtKq != null">
-                and QT_KQ = #{qtKq,jdbcType=OTHER}
-            </if>
-            <if test="sbKq != null">
-                and SB_KQ = #{sbKq,jdbcType=OTHER}
-            </if>
-            <if test="gjjKq != null">
-                and GJJ_KQ = #{gjjKq,jdbcType=OTHER}
-            </if>
-            <if test="grsdsKq != null">
-                and GRSDS_KQ = #{grsdsKq,jdbcType=OTHER}
-            </if>
-        </where>
+        T_STAFF_SALARY.PK_SALARY_ID,
+        T_STAFF_SALARY.FK_STAFF_ID,
+        T_STAFF_SALARY.STAFF_NAME,
+        T_STAFF_SALARY.JB_XZ,
+        T_STAFF_SALARY.GW_XZ,
+        T_STAFF_SALARY.JX_XZ,
+        T_STAFF_SALARY.QQ_BT,
+        T_STAFF_SALARY.JT_BT,
+        T_STAFF_SALARY.CS_BT,
+        T_STAFF_SALARY.CD_ZT_KQ,
+        T_STAFF_SALARY.QK_B_KQ,
+        T_STAFF_SALARY.SJ_BJ_KQ,
+        T_STAFF_SALARY.QT_KQ,
+        T_STAFF_SALARY.SB_KQ,
+        T_STAFF_SALARY.GJJ_KQ,
+        T_STAFF_SALARY.GRSDS_KQ,
+        IF(D_SALARY_RECORD.FK_STAFF_ID IS NULL,0,1)as isSend
+        FROM T_STAFF_SALARY
+        LEFT JOIN D_SALARY_RECORD on D_SALARY_RECORD.FK_STAFF_ID = T_STAFF_SALARY.FK_STAFF_ID
+        and DATE_FORMAT(D_SALARY_RECORD.SEND_TIME,'%Y%m') = DATE_FORMAT(CURDATE(),'%Y%m')
+        where 1 =1
+        <if test="pkSalaryId != null and pkSalaryId != ''">
+            and T_STAFF_SALARY.PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+        </if>
+        <if test="fkStaffId != null and fkStaffId != ''">
+            and T_STAFF_SALARY.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        </if>
+        <if test="staffName != null and staffName != ''">
+            and T_STAFF_SALARY.STAFF_NAME like '%${staffName}%'
+        </if>
+    </select>
+    <select id="selectRecordAllPage" resultType="com.hjy.cloud.common.entity.DSalaryRecord">
+        select * FROM D_SALARY_RECORD
+        where 1 =1
+        <if test="staffName != null and staffName != ''">
+            and D_SALARY_RECORD.STAFF_NAME like '%${staffName}%'
+        </if>
+        <if test="sendTime != null">
+            and DATE_FORMAT(D_SALARY_RECORD.SEND_TIME,'%Y%m') = DATE_FORMAT(#{sendTime},'%Y%m')
+        </if>
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffSalary">
@@ -89,6 +80,9 @@
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
             </if>
             <if test="jbXz != null">
                 JB_XZ,
@@ -137,44 +131,192 @@
             <if test="fkStaffId != null and fkStaffId != ''">
                 #{fkStaffId,jdbcType=VARCHAR},
             </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
+            </if>
             <if test="jbXz != null">
-                #{jbXz,jdbcType=OTHER},
+                #{jbXz,jdbcType=REAL},
             </if>
             <if test="gwXz != null">
-                #{gwXz,jdbcType=OTHER},
+                #{gwXz,jdbcType=REAL},
             </if>
             <if test="jxXz != null">
-                #{jxXz,jdbcType=OTHER},
+                #{jxXz,jdbcType=REAL},
             </if>
             <if test="qqBt != null">
-                #{qqBt,jdbcType=OTHER},
+                #{qqBt,jdbcType=REAL},
             </if>
             <if test="jtBt != null">
-                #{jtBt,jdbcType=OTHER},
+                #{jtBt,jdbcType=REAL},
             </if>
             <if test="csBt != null">
-                #{csBt,jdbcType=OTHER},
+                #{csBt,jdbcType=REAL},
             </if>
             <if test="cdZtKq != null">
-                #{cdZtKq,jdbcType=OTHER},
+                #{cdZtKq,jdbcType=REAL},
             </if>
             <if test="qkBKq != null">
-                #{qkBKq,jdbcType=OTHER},
+                #{qkBKq,jdbcType=REAL},
             </if>
             <if test="sjBjKq != null">
-                #{sjBjKq,jdbcType=OTHER},
+                #{sjBjKq,jdbcType=REAL},
             </if>
             <if test="qtKq != null">
-                #{qtKq,jdbcType=OTHER},
+                #{qtKq,jdbcType=REAL},
             </if>
             <if test="sbKq != null">
-                #{sbKq,jdbcType=OTHER},
+                #{sbKq,jdbcType=REAL},
             </if>
             <if test="gjjKq != null">
-                #{gjjKq,jdbcType=OTHER},
+                #{gjjKq,jdbcType=REAL},
             </if>
             <if test="grsdsKq != null">
-                #{grsdsKq,jdbcType=OTHER},
+                #{grsdsKq,jdbcType=REAL},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertSalaryRecord">
+        insert into hjy_cloud.D_SALARY_RECORD
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkSalaryrecordId != null and pkSalaryrecordId != ''">
+                PK_SALARYRECORD_ID,
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
+            </if>
+            <if test="jbXz != null">
+                JB_XZ,
+            </if>
+            <if test="gwXz != null">
+                GW_XZ,
+            </if>
+            <if test="jxXz != null">
+                JX_XZ,
+            </if>
+            <if test="qqBt != null">
+                QQ_BT,
+            </if>
+            <if test="jtBt != null">
+                JT_BT,
+            </if>
+            <if test="csBt != null">
+                CS_BT,
+            </if>
+            <if test="cdZtKq != null">
+                CD_ZT_KQ,
+            </if>
+            <if test="qkBKq != null">
+                QK_B_KQ,
+            </if>
+            <if test="sjBjKq != null">
+                SJ_BJ_KQ,
+            </if>
+            <if test="qtKq != null">
+                QT_KQ,
+            </if>
+            <if test="sbKq != null">
+                SB_KQ,
+            </if>
+            <if test="gjjKq != null">
+                GJJ_KQ,
+            </if>
+            <if test="grsdsKq != null">
+                GRSDS_KQ,
+            </if>
+            <if test="dueSalary != null">
+                DUE_SALARY,
+            </if>
+            <if test="takeHomePay != null">
+                TAKE_HOME_PAY,
+            </if>
+            <if test="sendStatus != null">
+                SEND_STATUS,
+            </if>
+            <if test="checkStatus != null">
+                CHECK_STATUS,
+            </if>
+            <if test="confirmStatus != null">
+                CONFIRM_STATUS,
+            </if>
+            <if test="oepratePeople != null">
+                OEPRATE_PEOPLE,
+            </if>
+            <if test="sendTime != null">
+                SEND_TIME,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkSalaryrecordId != null and pkSalaryrecordId != ''">
+                #{pkSalaryrecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
+            </if>
+            <if test="jbXz != null">
+                #{jbXz,jdbcType=REAL},
+            </if>
+            <if test="gwXz != null">
+                #{gwXz,jdbcType=REAL},
+            </if>
+            <if test="jxXz != null">
+                #{jxXz,jdbcType=REAL},
+            </if>
+            <if test="qqBt != null">
+                #{qqBt,jdbcType=REAL},
+            </if>
+            <if test="jtBt != null">
+                #{jtBt,jdbcType=REAL},
+            </if>
+            <if test="csBt != null">
+                #{csBt,jdbcType=REAL},
+            </if>
+            <if test="cdZtKq != null">
+                #{cdZtKq,jdbcType=REAL},
+            </if>
+            <if test="qkBKq != null">
+                #{qkBKq,jdbcType=REAL},
+            </if>
+            <if test="sjBjKq != null">
+                #{sjBjKq,jdbcType=REAL},
+            </if>
+            <if test="qtKq != null">
+                #{qtKq,jdbcType=REAL},
+            </if>
+            <if test="sbKq != null">
+                #{sbKq,jdbcType=REAL},
+            </if>
+            <if test="gjjKq != null">
+                #{gjjKq,jdbcType=REAL},
+            </if>
+            <if test="grsdsKq != null">
+                #{grsdsKq,jdbcType=REAL},
+            </if>
+            <if test="dueSalary != null">
+                #{dueSalary,jdbcType=REAL},
+            </if>
+            <if test="takeHomePay != null">
+                #{takeHomePay,jdbcType=REAL},
+            </if>
+            <if test="sendStatus != null">
+                #{sendStatus,jdbcType=INTEGER},
+            </if>
+            <if test="checkStatus != null">
+                #{checkStatus,jdbcType=INTEGER},
+            </if>
+            <if test="confirmStatus != null">
+                #{confirmStatus,jdbcType=INTEGER},
+            </if>
+            <if test="oepratePeople != null">
+                #{oepratePeople,jdbcType=VARCHAR},
+            </if>
+            <if test="sendTime != null">
+                #{sendTime,jdbcType=TIMESTAMP},
             </if>
         </trim>
     </insert>
@@ -185,44 +327,47 @@
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
             </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
+            </if>
             <if test="jbXz != null">
-                JB_XZ = #{jbXz,jdbcType=OTHER},
+                JB_XZ = #{jbXz,jdbcType=REAL},
             </if>
             <if test="gwXz != null">
-                GW_XZ = #{gwXz,jdbcType=OTHER},
+                GW_XZ = #{gwXz,jdbcType=REAL},
             </if>
             <if test="jxXz != null">
-                JX_XZ = #{jxXz,jdbcType=OTHER},
+                JX_XZ = #{jxXz,jdbcType=REAL},
             </if>
             <if test="qqBt != null">
-                QQ_BT = #{qqBt,jdbcType=OTHER},
+                QQ_BT = #{qqBt,jdbcType=REAL},
             </if>
             <if test="jtBt != null">
-                JT_BT = #{jtBt,jdbcType=OTHER},
+                JT_BT = #{jtBt,jdbcType=REAL},
             </if>
             <if test="csBt != null">
-                CS_BT = #{csBt,jdbcType=OTHER},
+                CS_BT = #{csBt,jdbcType=REAL},
             </if>
             <if test="cdZtKq != null">
-                CD_ZT_KQ = #{cdZtKq,jdbcType=OTHER},
+                CD_ZT_KQ = #{cdZtKq,jdbcType=REAL},
             </if>
             <if test="qkBKq != null">
-                QK_B_KQ = #{qkBKq,jdbcType=OTHER},
+                QK_B_KQ = #{qkBKq,jdbcType=REAL},
             </if>
             <if test="sjBjKq != null">
-                SJ_BJ_KQ = #{sjBjKq,jdbcType=OTHER},
+                SJ_BJ_KQ = #{sjBjKq,jdbcType=REAL},
             </if>
             <if test="qtKq != null">
-                QT_KQ = #{qtKq,jdbcType=OTHER},
+                QT_KQ = #{qtKq,jdbcType=REAL},
             </if>
             <if test="sbKq != null">
-                SB_KQ = #{sbKq,jdbcType=OTHER},
+                SB_KQ = #{sbKq,jdbcType=REAL},
             </if>
             <if test="gjjKq != null">
-                GJJ_KQ = #{gjjKq,jdbcType=OTHER},
+                GJJ_KQ = #{gjjKq,jdbcType=REAL},
             </if>
             <if test="grsdsKq != null">
-                GRSDS_KQ = #{grsdsKq,jdbcType=OTHER},
+                GRSDS_KQ = #{grsdsKq,jdbcType=REAL},
             </if>
         </set>
         where PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}

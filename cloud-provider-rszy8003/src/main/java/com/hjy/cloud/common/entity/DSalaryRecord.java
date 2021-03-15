@@ -8,40 +8,46 @@ import lombok.Data;
  * (DSalaryRecord)表实体类
  *
  * @author makejava
- * @since 2021-03-01 15:46:29
+ * @since 2021-03-15 12:12:03
  */
 @Data
 public class DSalaryRecord {
 
-    private String pkSalaryId;
+    private String pkSalaryrecordId;
     //员工ID
     private String fkStaffId;
+    //员工姓名
+    private String staffName;
     //基本薪资
-    private float jbXz;
+    private double jbXz;
     //岗位薪资
-    private float gwXz;
+    private double gwXz;
     //绩效薪资
-    private float jxXz;
+    private double jxXz;
     //全勤补贴
-    private float qqBt;
+    private double qqBt;
     //交通补贴
-    private float jtBt;
+    private double jtBt;
     //餐宿补贴
-    private float csBt;
+    private double csBt;
     //迟到/早退扣款
-    private float cdZtKq;
+    private double cdZtKq;
     //缺卡/报扣款
-    private float qkBKq;
+    private double qkBKq;
     //事假/病假扣款
-    private float sjBjKq;
+    private double sjBjKq;
     //其他扣款
-    private float qtKq;
+    private double qtKq;
     //社保扣款
-    private float sbKq;
+    private double sbKq;
     //公积金扣款
-    private float gjjKq;
+    private double gjjKq;
     //个人所得税扣款
-    private float grsdsKq;
+    private double grsdsKq;
+    //应得工资
+    private double dueSalary;
+    //实得工资
+    private double takeHomePay;
     //发送状态
     private Integer sendStatus;
     //查看状态
@@ -52,5 +58,4 @@ public class DSalaryRecord {
     private String oepratePeople;
     //发送时间
     private Date sendTime;
-
 }

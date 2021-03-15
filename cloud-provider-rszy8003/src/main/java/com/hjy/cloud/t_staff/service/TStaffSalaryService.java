@@ -1,7 +1,11 @@
 package com.hjy.cloud.t_staff.service;
 
+import com.hjy.cloud.common.entity.DSalaryRecord;
 import com.hjy.cloud.t_staff.entity.TStaffSalary;
 import com.hjy.cloud.domin.CommonResult;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 /**
  * (TStaffSalary)表服务接口
@@ -56,4 +60,22 @@ public interface TStaffSalaryService {
      * @return
      */
     CommonResult selectById(TStaffSalary tStaffSalary);
+    /**
+     * 发送工资明细页面
+     *
+     * @param tStaffSalary 实体对象
+     */
+    CommonResult sendPage(TStaffSalary tStaffSalary);
+
+    CommonResult send(DSalaryRecord tStaffSalary, HttpServletRequest request);
+    /**
+     * 发送工资明细
+     * 管理员
+     */
+    CommonResult adminSendRecord(String param) throws ParseException;
+    /**
+     * 发送工资明细
+     * 员工
+     */
+    CommonResult staffSendRecord(String param,HttpServletRequest request) throws ParseException;
 }

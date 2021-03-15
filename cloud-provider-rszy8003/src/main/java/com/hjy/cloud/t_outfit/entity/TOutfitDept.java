@@ -34,5 +34,7 @@ public class TOutfitDept {
     private String leaderCard;
     //最大人数
     private Integer maxNum;
-
+    //--------
+    //领导姓名
+    private String leaderName;
 }

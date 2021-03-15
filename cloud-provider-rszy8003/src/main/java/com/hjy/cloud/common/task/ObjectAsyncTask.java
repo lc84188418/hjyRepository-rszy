@@ -24,6 +24,7 @@ import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.service.TSysParamService;
 import com.hjy.cloud.t_system.service.TSysRoleService;
 import com.hjy.cloud.t_system.service.TSysUserService;
+import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.TokenUtil;
 import javafx.beans.binding.StringBinding;
 import org.apache.commons.lang.StringUtils;
@@ -95,7 +96,15 @@ public class ObjectAsyncTask {
         idList.add("1596707062416");
         ntClient.tSysRoleService.distributeMenu(fk_role_id,idList);
     }
-
+    //从请求中获取token
+    public static SysToken getSysToken(HttpServletRequest request) {
+        String tokenId = TokenUtil.getRequestToken(request);
+        if(StringUtils.isEmpty(tokenId)){
+            return null;
+        }else {
+            return ntClient.tSysTokenService.selectPkId(tokenId);
+        }
+    }
     /**
      * 向部门-用户关联表中添加一条部门-用户信息
      * @param pkUserId 用户ID
@@ -161,25 +170,15 @@ public class ObjectAsyncTask {
     }
     /**
      *
-     * @param request
+     * @param sysToken
      * @param apvName 审批类型名称，如：入职审批
      * @param dataType
      * @return
      */
-    public static JSONObject handleApproval(HttpServletRequest request, String apvName, int dataType) {
+    public static JSONObject handleApproval(SysToken sysToken,String currentSourceId, String apvName, int dataType) {
         JSONObject resultJson = new JSONObject();
-        resultJson.put("msg",apvName+"获取数据成功！");
-        String token = TokenUtil.getRequestToken(request);
-        if (StringUtils.isEmpty(token)){
-            resultJson.put("msg","请在请求头中传入token");
-            return resultJson;
-        }
-        SysToken sysToken = ntClient.tSysTokenService.selectPkId(token);
-        if(sysToken == null){
-            resultJson.put("msg","token已失效，请重新登录后再试");
-            return resultJson;
-        }
-        String currentSourceId = sysToken.getFkUserId();
+        resultJson.put("msg","获取"+apvName+"数据成功");
+
         /**
          * 查询审批流程
          */
@@ -379,8 +378,10 @@ public class ObjectAsyncTask {
                 List<TApvApproval> apvList2 = new ArrayList<>();
                 for (int m = 0; m < apvList1.size()-1; m++) {
                     for (int n = apvList1.size()-1; n > m; n--) {
-                        if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
-                            apvList1.remove(n);
+                        if(apvList1.get(n).getApprovalPeople()!= null && apvList1.get(m).getApprovalPeople()!= null){
+                            if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
+                                apvList1.remove(n);
+                            }
                         }
                     }
                 }
