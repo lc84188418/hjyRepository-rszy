@@ -146,7 +146,7 @@ public class TStaffSalaryController {
         }
     }
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 管理员
      */
     @PostMapping(value = "/staff/salary/admin/sendRecord")
@@ -159,13 +159,41 @@ public class TStaffSalaryController {
         }
     }
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 员工
      */
     @PostMapping(value = "/staff/salary/staff/sendRecord")
     public CommonResult staffSendRecord(@RequestBody String param,HttpServletRequest request) throws FebsException {
         try {
             return tStaffSalaryService.staffSendRecord(param,request);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 工资明细记录获取详情
+     *
+     * @param salaryRecord 实体对象
+     */
+    @PostMapping(value = "/staff/salary/record/get")
+    public CommonResult recordGet(@RequestBody DSalaryRecord salaryRecord) throws FebsException {
+        try {
+            return tStaffSalaryService.selectRecordById(salaryRecord);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 工资明细记录员工确认
+     *
+     * @param salaryRecord 实体对象
+     */
+    @PostMapping(value = "/staff/salary/record/confirm")
+    public CommonResult recordConfirm(@RequestBody DSalaryRecord salaryRecord) throws FebsException {
+        try {
+            return tStaffSalaryService.recordConfirm(salaryRecord);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

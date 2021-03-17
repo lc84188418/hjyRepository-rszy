@@ -67,9 +67,16 @@
         <if test="staffName != null and staffName != ''">
             and D_SALARY_RECORD.STAFF_NAME like '%${staffName}%'
         </if>
+        <if test="fkStaffId != null and fkStaffId != ''">
+            and D_SALARY_RECORD.FK_STAFF_ID =#{fkStaffId,jdbcType=VARCHAR}
+        </if>
         <if test="sendTime != null">
             and DATE_FORMAT(D_SALARY_RECORD.SEND_TIME,'%Y%m') = DATE_FORMAT(#{sendTime},'%Y%m')
         </if>
+    </select>
+    <select id="selectRecordById" resultType="com.hjy.cloud.common.entity.DSalaryRecord">
+        select * FROM D_SALARY_RECORD
+        where PK_SALARYRECORD_ID = #{pkId,jdbcType=VARCHAR}
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffSalary">
@@ -181,6 +188,9 @@
             <if test="pkSalaryrecordId != null and pkSalaryrecordId != ''">
                 PK_SALARYRECORD_ID,
             </if>
+            <if test="salaryDesc != null and salaryDesc != ''">
+                SALARY_DESC,
+            </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID,
             </if>
@@ -251,6 +261,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkSalaryrecordId != null and pkSalaryrecordId != ''">
                 #{pkSalaryrecordId,jdbcType=VARCHAR},
+            </if>
+            <if test="salaryDesc != null and salaryDesc != ''">
+                #{salaryDesc,jdbcType=VARCHAR},
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 #{fkStaffId,jdbcType=VARCHAR},
@@ -371,6 +384,18 @@
             </if>
         </set>
         where PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateRecordByPkId">
+        update D_SALARY_RECORD
+        <set>
+            <if test="checkStatus != null">
+                CHECK_STATUS = #{checkStatus,jdbcType=INTEGER},
+            </if>
+            <if test="confirmStatus != null">
+                CONFIRM_STATUS = #{confirmStatus,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_SALARYRECORD_ID = #{pkSalaryrecordId,jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->

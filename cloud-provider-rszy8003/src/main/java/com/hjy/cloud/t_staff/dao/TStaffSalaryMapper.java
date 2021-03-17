@@ -2,6 +2,7 @@ package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.common.entity.DSalaryRecord;
 import com.hjy.cloud.t_staff.entity.TStaffSalary;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -58,4 +59,7 @@ public interface TStaffSalaryMapper {
 
     int insertSalaryRecord(DSalaryRecord tStaffSalary);
 
+    DSalaryRecord selectRecordById(@Param("pkId") String pkId);
+
+    int updateRecordByPkId(DSalaryRecord updateEntity);
 }

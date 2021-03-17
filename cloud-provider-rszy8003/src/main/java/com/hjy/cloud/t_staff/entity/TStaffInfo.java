@@ -28,6 +28,8 @@ public class TStaffInfo {
     //职位
     private String fkPositionId;
     private String positionName;
+    //工作地
+    private String fkAddressId;
 
     //入职时间
     private Date entryTime;

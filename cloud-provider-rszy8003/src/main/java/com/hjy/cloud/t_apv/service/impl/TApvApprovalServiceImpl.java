@@ -15,12 +15,8 @@ import com.hjy.cloud.t_apv.entity.*;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
-import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
-import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
-import com.hjy.cloud.t_staff.dao.TStaffZzMapper;
-import com.hjy.cloud.t_staff.entity.TStaffEntry;
-import com.hjy.cloud.t_staff.entity.TStaffInfo;
-import com.hjy.cloud.t_staff.entity.TStaffZz;
+import com.hjy.cloud.t_staff.dao.*;
+import com.hjy.cloud.t_staff.entity.*;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ActiveUser;
@@ -65,6 +61,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private TStaffEntryMapper tStaffEntryMapper;
     @Resource
     private TStaffZzMapper tStaffZzMapper;
+    @Resource
+    private TStaffQuitMapper tStaffQuitMapper;
+    @Resource
+    private TStaffReassignMapper tStaffReassignMapper;
     @Resource
     private TSysUserMapper tSysUserMapper;
     @Resource
@@ -692,8 +692,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private StringBuffer complateAPV(String approvalType,String sourceId) {
         StringBuffer stringBuffer = new StringBuffer();
         //如果该审批已完成最后流程并通过，
-        //且为入职审批即approvalType=12
         if("12".equals(approvalType)){
+            //且为入职审批即approvalType=12
             TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
             /**
              * 添加员工信息
@@ -706,6 +706,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             tStaffInfo.setStaffStatus(1);
             tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
             tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
+            tStaffInfo.setFkAddressId(tStaffEntry.getWorkAddress());
             tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
             tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
             tStaffInfo.setIdType(tStaffEntry.getIdType());
@@ -715,7 +716,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //其他信息需要后期添加
             int i = tStaffInfoMapper.insertSelective(tStaffInfo);
             if(i > 0){
-                stringBuffer.append("审批通过，已录入员工信息！");
+                stringBuffer.append("入职审批通过，已录入员工信息！");
             }
             /**
              * 添加系统用户
@@ -747,6 +748,41 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             int i = tStaffZzMapper.updateByPkId(tStaffZz);
             if(i > 0){
                 stringBuffer.append("转正审批通过，已录入员工转正信息！");
+            }
+        }else if ("11".equals(approvalType)){
+            //离职申请
+            //修改审批状态-离职信息和员工信息里
+            TStaffQuit tStaffQuit = new TStaffQuit();
+            tStaffQuit.setPkQuitId(sourceId);
+            tStaffQuit.setApvTime(new Date());
+            tStaffQuit.setQuitStatus(1);
+            int i = tStaffQuitMapper.updateByPkId(tStaffQuit);
+            TStaffInfo tStaffInfo = new TStaffInfo();
+            tStaffInfo.setPkStaffId(sourceId);
+            tStaffInfo.setStaffStatus(0);
+            int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
+            if(j > 0){
+                stringBuffer.append("离职审批通过，已保存员工离职信息！");
+            }
+        } else if ("8".equals(approvalType)){
+            //调动申请
+            //修改审批状态-调动信息
+            TStaffReassign updateEntity = new TStaffReassign();
+            updateEntity.setPkReassignId(sourceId);
+            updateEntity.setEndTime(new Date());
+            updateEntity.setApvStatus(1);
+            int i = tStaffReassignMapper.updateByPkId(updateEntity);
+            //查询出调动信息
+            TStaffReassign resultEntity = tStaffReassignMapper.selectByPkId(sourceId);
+            //将员工名单信息改为调动后的
+            TStaffInfo tStaffInfo = new TStaffInfo();
+            tStaffInfo.setPkStaffId(resultEntity.getFkStaffId());
+            tStaffInfo.setFkDeptId(resultEntity.getReassignDeptId());
+            tStaffInfo.setFkPositionId(resultEntity.getReassignPosition());
+            tStaffInfo.setFkAddressId(resultEntity.getReassignAddress());
+            int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
+            if(j > 0){
+                stringBuffer.append("调动审批通过，已更新员工档案信息！");
             }
         }
         return stringBuffer;

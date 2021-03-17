@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_kq.dao.TKqBkMapper">
+
+    <resultMap type="com.hjy.cloud.t_kq.entity.TKqBk" id="TKqBkMap">
+        <result property="pkBkId" column="PK_BK_ID" jdbcType="VARCHAR"/>
+        <result property="bkName" column="BK_NAME" jdbcType="VARCHAR"/>
+        <result property="bkStewards" column="BK_STEWARDS" jdbcType="VARCHAR"/>
+        <result property="bkNum" column="BK_NUM" jdbcType="INTEGER"/>
+        <result property="bkDate" column="BK_DATE" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TKqBkMap">
+        select * from hjy_cloud.T_KQ_BK
+        where PK_BK_ID = #{pkBkId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TKqBkMap">
+        select
+        PK_BK_ID, BK_NAME, BK_STEWARDS, BK_NUM, BK_DATE
+        from hjy_cloud.T_KQ_BK
+        <where>
+            <if test="pkBkId != null and pkBkId != ''">
+                and PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+            </if>
+            <if test="bkName != null and bkName != ''">
+                and BK_NAME = #{bkName,jdbcType=VARCHAR}
+            </if>
+            <if test="bkStewards != null and bkStewards != ''">
+                and BK_STEWARDS = #{bkStewards,jdbcType=VARCHAR}
+            </if>
+            <if test="bkNum != null">
+                and BK_NUM = #{bkNum,jdbcType=INTEGER}
+            </if>
+            <if test="bkDate != null">
+                and BK_DATE = #{bkDate,jdbcType=INTEGER}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBk">
+        insert into hjy_cloud.T_KQ_BK
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkBkId != null and pkBkId != ''">
+                PK_BK_ID,
+            </if>
+            <if test="bkName != null and bkName != ''">
+                BK_NAME,
+            </if>
+            <if test="bkStewards != null and bkStewards != ''">
+                BK_STEWARDS,
+            </if>
+            <if test="bkNum != null">
+                BK_NUM,
+            </if>
+            <if test="bkDate != null">
+                BK_DATE,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkBkId != null and pkBkId != ''">
+                #{pkBkId,jdbcType=VARCHAR},
+            </if>
+            <if test="bkName != null and bkName != ''">
+                #{bkName,jdbcType=VARCHAR},
+            </if>
+            <if test="bkStewards != null and bkStewards != ''">
+                #{bkStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="bkNum != null">
+                #{bkNum,jdbcType=INTEGER},
+            </if>
+            <if test="bkDate != null">
+                #{bkDate,jdbcType=INTEGER},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_KQ_BK
+        <set>
+            <if test="bkName != null and bkName != ''">
+                BK_NAME = #{bkName,jdbcType=VARCHAR},
+            </if>
+            <if test="bkStewards != null and bkStewards != ''">
+                BK_STEWARDS = #{bkStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="bkNum != null">
+                BK_NUM = #{bkNum,jdbcType=INTEGER},
+            </if>
+            <if test="bkDate != null">
+                BK_DATE = #{bkDate,jdbcType=INTEGER},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

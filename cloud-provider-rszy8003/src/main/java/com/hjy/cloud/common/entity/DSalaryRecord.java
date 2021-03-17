@@ -14,6 +14,8 @@ import lombok.Data;
 public class DSalaryRecord {
 
     private String pkSalaryrecordId;
+    //工资说明
+    private String salaryDesc;
     //员工ID
     private String fkStaffId;
     //员工姓名

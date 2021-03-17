@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_kq.dao.TKqGroupMapper">
+
+    <resultMap type="com.hjy.cloud.t_kq.entity.TKqGroup" id="TKqGroupMap">
+        <result property="pkGroupId" column="PK_GROUP_ID" jdbcType="VARCHAR"/>
+        <result property="groupName" column="GROUP_NAME" jdbcType="VARCHAR"/>
+        <result property="groupStewards" column="GROUP_STEWARDS" jdbcType="VARCHAR"/>
+        <result property="kqType" column="KQ_TYPE" jdbcType="INTEGER"/>
+        <result property="isPaixiu" column="IS_PAIXIU" jdbcType="INTEGER"/>
+        <result property="bxdkTime" column="BXDK_TIME" jdbcType="DATE"/>
+        <result property="wxdkTime" column="WXDK_TIME" jdbcType="DATE"/>
+        <result property="kqWay" column="KQ_WAY" jdbcType="INTEGER"/>
+        <result property="isWq" column="IS_WQ" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TKqGroupMap">
+        select * from hjy_cloud.T_KQ_GROUP
+        where PK_GROUP_ID = #{pkGroupId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TKqGroupMap">
+        select
+        PK_GROUP_ID, GROUP_NAME, GROUP_STEWARDS, KQ_TYPE, IS_PAIXIU, BXDK_TIME, WXDK_TIME, KQ_WAY, IS_WQ
+        from hjy_cloud.T_KQ_GROUP
+        <where>
+            <if test="pkGroupId != null and pkGroupId != ''">
+                and PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+            </if>
+            <if test="groupStewards != null and groupStewards != ''">
+                and GROUP_STEWARDS = #{groupStewards,jdbcType=VARCHAR}
+            </if>
+            <if test="kqType != null">
+                and KQ_TYPE = #{kqType,jdbcType=INTEGER}
+            </if>
+            <if test="isPaixiu != null">
+                and IS_PAIXIU = #{isPaixiu,jdbcType=INTEGER}
+            </if>
+            <if test="bxdkTime != null">
+                and BXDK_TIME = #{bxdkTime,jdbcType=DATE}
+            </if>
+            <if test="wxdkTime != null">
+                and WXDK_TIME = #{wxdkTime,jdbcType=DATE}
+            </if>
+            <if test="kqWay != null">
+                and KQ_WAY = #{kqWay,jdbcType=INTEGER}
+            </if>
+            <if test="isWq != null">
+                and IS_WQ = #{isWq,jdbcType=INTEGER}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqGroup">
+        insert into hjy_cloud.T_KQ_GROUP
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkGroupId != null and pkGroupId != ''">
+                PK_GROUP_ID,
+            </if>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME,
+            </if>
+            <if test="groupStewards != null and groupStewards != ''">
+                GROUP_STEWARDS,
+            </if>
+            <if test="kqType != null">
+                KQ_TYPE,
+            </if>
+            <if test="isPaixiu != null">
+                IS_PAIXIU,
+            </if>
+            <if test="bxdkTime != null">
+                BXDK_TIME,
+            </if>
+            <if test="wxdkTime != null">
+                WXDK_TIME,
+            </if>
+            <if test="kqWay != null">
+                KQ_WAY,
+            </if>
+            <if test="isWq != null">
+                IS_WQ,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkGroupId != null and pkGroupId != ''">
+                #{pkGroupId,jdbcType=VARCHAR},
+            </if>
+            <if test="groupName != null and groupName != ''">
+                #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="groupStewards != null and groupStewards != ''">
+                #{groupStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="kqType != null">
+                #{kqType,jdbcType=INTEGER},
+            </if>
+            <if test="isPaixiu != null">
+                #{isPaixiu,jdbcType=INTEGER},
+            </if>
+            <if test="bxdkTime != null">
+                #{bxdkTime,jdbcType=DATE},
+            </if>
+            <if test="wxdkTime != null">
+                #{wxdkTime,jdbcType=DATE},
+            </if>
+            <if test="kqWay != null">
+                #{kqWay,jdbcType=INTEGER},
+            </if>
+            <if test="isWq != null">
+                #{isWq,jdbcType=INTEGER},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <insert id="insertGroupStaffBatch">
+        insert into RE_GROUP_STAFF
+        (PK_GROUPSTAFF_ID,FK_GROUP_ID,FK_STAFF_ID,IS_KQ)
+        values
+        <foreach collection="groupStaffList" item="item" index="index" separator=",">
+            (
+            #{item.pkGroupstaffId, jdbcType=VARCHAR},
+            #{item.fkGroupId, jdbcType=VARCHAR},
+            #{item.fkStaffId, jdbcType=VARCHAR},
+            #{item.isKq, jdbcType=INTEGER}
+            )
+        </foreach>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_KQ_GROUP
+        <set>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="groupStewards != null and groupStewards != ''">
+                GROUP_STEWARDS = #{groupStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="kqType != null">
+                KQ_TYPE = #{kqType,jdbcType=INTEGER},
+            </if>
+            <if test="isPaixiu != null">
+                IS_PAIXIU = #{isPaixiu,jdbcType=INTEGER},
+            </if>
+            <if test="bxdkTime != null">
+                BXDK_TIME = #{bxdkTime,jdbcType=DATE},
+            </if>
+            <if test="wxdkTime != null">
+                WXDK_TIME = #{wxdkTime,jdbcType=DATE},
+            </if>
+            <if test="kqWay != null">
+                KQ_WAY = #{kqWay,jdbcType=INTEGER},
+            </if>
+            <if test="isWq != null">
+                IS_WQ = #{isWq,jdbcType=INTEGER},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_GROUP_ID = #{pkGroupId,jdbcType = VARCHAR}
+    </update>
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

@@ -14,6 +14,8 @@ import lombok.Data;
 public class TStaffContract {
 
     private String pkContrctId;
+    //员工关联主键
+    private String fkStaffId;
     //姓名
     private String staffName;
     //部门

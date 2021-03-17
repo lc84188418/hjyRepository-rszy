@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_kq.dao.TKqBcMapper">
+
+    <resultMap type="com.hjy.cloud.t_kq.entity.TKqBc" id="TKqBcMap">
+        <result property="pkBcId" column="PK_BC_ID" jdbcType="VARCHAR"/>
+        <result property="dkNum" column="DK_NUM" jdbcType="INTEGER"/>
+        <result property="timeSlot" column="TIME_SLOT" jdbcType="VARCHAR"/>
+        <result property="isRest" column="IS_REST" jdbcType="INTEGER"/>
+        <result property="restSlot" column="REST_SLOT" jdbcType="VARCHAR"/>
+        <result property="txdk" column="TXDK" jdbcType="INTEGER"/>
+        <result property="bcStewards" column="BC_STEWARDS" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TKqBcMap">
+        select * from hjy_cloud.T_KQ_BC
+        where PK_BC_ID = #{pkBcId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TKqBcMap">
+        select
+        PK_BC_ID, DK_NUM, TIME_SLOT, IS_REST, REST_SLOT, TXDK, BC_STEWARDS
+        from hjy_cloud.T_KQ_BC
+        <where>
+            <if test="pkBcId != null and pkBcId != ''">
+                and PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}
+            </if>
+            <if test="dkNum != null">
+                and DK_NUM = #{dkNum,jdbcType=INTEGER}
+            </if>
+            <if test="timeSlot != null and timeSlot != ''">
+                and TIME_SLOT = #{timeSlot,jdbcType=VARCHAR}
+            </if>
+            <if test="isRest != null">
+                and IS_REST = #{isRest,jdbcType=INTEGER}
+            </if>
+            <if test="restSlot != null and restSlot != ''">
+                and REST_SLOT = #{restSlot,jdbcType=VARCHAR}
+            </if>
+            <if test="txdk != null">
+                and TXDK = #{txdk,jdbcType=INTEGER}
+            </if>
+            <if test="bcStewards != null and bcStewards != ''">
+                and BC_STEWARDS = #{bcStewards,jdbcType=VARCHAR}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBc">
+        insert into hjy_cloud.T_KQ_BC
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkBcId != null and pkBcId != ''">
+                PK_BC_ID,
+            </if>
+            <if test="dkNum != null">
+                DK_NUM,
+            </if>
+            <if test="timeSlot != null and timeSlot != ''">
+                TIME_SLOT,
+            </if>
+            <if test="isRest != null">
+                IS_REST,
+            </if>
+            <if test="restSlot != null and restSlot != ''">
+                REST_SLOT,
+            </if>
+            <if test="txdk != null">
+                TXDK,
+            </if>
+            <if test="bcStewards != null and bcStewards != ''">
+                BC_STEWARDS,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkBcId != null and pkBcId != ''">
+                #{pkBcId,jdbcType=VARCHAR},
+            </if>
+            <if test="dkNum != null">
+                #{dkNum,jdbcType=INTEGER},
+            </if>
+            <if test="timeSlot != null and timeSlot != ''">
+                #{timeSlot,jdbcType=VARCHAR},
+            </if>
+            <if test="isRest != null">
+                #{isRest,jdbcType=INTEGER},
+            </if>
+            <if test="restSlot != null and restSlot != ''">
+                #{restSlot,jdbcType=VARCHAR},
+            </if>
+            <if test="txdk != null">
+                #{txdk,jdbcType=INTEGER},
+            </if>
+            <if test="bcStewards != null and bcStewards != ''">
+                #{bcStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_KQ_BC
+        <set>
+            <if test="dkNum != null">
+                DK_NUM = #{dkNum,jdbcType=INTEGER},
+            </if>
+            <if test="timeSlot != null and timeSlot != ''">
+                TIME_SLOT = #{timeSlot,jdbcType=VARCHAR},
+            </if>
+            <if test="isRest != null">
+                IS_REST = #{isRest,jdbcType=INTEGER},
+            </if>
+            <if test="restSlot != null and restSlot != ''">
+                REST_SLOT = #{restSlot,jdbcType=VARCHAR},
+            </if>
+            <if test="txdk != null">
+                TXDK = #{txdk,jdbcType=INTEGER},
+            </if>
+            <if test="bcStewards != null and bcStewards != ''">
+                BC_STEWARDS = #{bcStewards,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_KQ_BC where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+

@@ -178,7 +178,14 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         JSONObject resultJson = new JSONObject();
         String msg = "";
         if(list != null && list.size() == 1){
-            resultJson.put("entity", list.get(0));
+            TStaffSalary resultEntity = list.get(0);
+            double add = resultEntity.getJbXz()+resultEntity.getGwXz()+resultEntity.getJxXz()
+                +resultEntity.getCsBt()+resultEntity.getJtBt()+resultEntity.getQqBt();
+            double delete = resultEntity.getCdZtKq() +resultEntity.getQkBKq()+resultEntity.getSjBjKq()
+                +resultEntity.getQtKq()+resultEntity.getSbKq()+resultEntity.getGjjKq()+resultEntity.getGrsdsKq();
+            resultEntity.setDueSalary(add);
+            resultEntity.setTakeHomePay(add-delete);
+            resultJson.put("entity", resultEntity);
             if(list.get(0).getIsSend() == 1){
                 //说明当月已发工资
                 msg = "当前员工当月已发工资，不可再发！";
@@ -198,6 +205,20 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
     @Override
     public CommonResult send(DSalaryRecord tStaffSalary, HttpServletRequest request) {
         tStaffSalary.setPkSalaryrecordId(IDUtils.getUUID());
+        //工资说明，判断当前月份
+        Date currentDate = new Date();
+        String currentDateStr = DateUtil.getDateFormat(currentDate,"yyyy-MM");
+        String[] currentDateArray = currentDateStr.split("-");
+        StringBuffer salaryDesc = new StringBuffer();
+        if(currentDateArray[1].equals("01") ||currentDateArray[1].equals("1")){
+            //说明当前时间为1月，工资应为上一年12月
+            int lastYearInt = Integer.parseInt(currentDateArray[0]) - 1;
+            salaryDesc.append(lastYearInt+"年12月工资");
+        }else {
+            int lastMonthInt = Integer.parseInt(currentDateArray[1]) - 1;
+            salaryDesc.append(currentDateArray[0]+"年"+lastMonthInt+"月份工资");
+        }
+        tStaffSalary.setSalaryDesc(salaryDesc.toString());
         tStaffSalary.setSendStatus(1);
         tStaffSalary.setCheckStatus(0);
         tStaffSalary.setConfirmStatus(0);
@@ -207,7 +228,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         }
         tStaffSalary.setSendTime(new Date());
         /**
-         * 开始计算薪资，如果前端做了数据动态展现，可直接将值传回
+         * 开始计算薪资，如果前端做了数据动态展现，可直接将值传回，就无需再计算
          * 也可运用反射
          */
         //工资加项
@@ -215,7 +236,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
                 +tStaffSalary.getCsBt()+tStaffSalary.getJtBt()+tStaffSalary.getQqBt();
         double delete = tStaffSalary.getCdZtKq() +tStaffSalary.getQkBKq()+tStaffSalary.getSjBjKq()
                 +tStaffSalary.getQtKq()+tStaffSalary.getSbKq()+tStaffSalary.getGjjKq()+tStaffSalary.getGrsdsKq();
-        tStaffSalary.setDueSalary(add-delete);
+        tStaffSalary.setDueSalary(add);
         tStaffSalary.setTakeHomePay(add-delete);
         int i = this.tStaffSalaryMapper.insertSalaryRecord(tStaffSalary);
         if(i > 0){
@@ -226,7 +247,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         }
     }
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 管理员
      */
     @Override
@@ -260,7 +281,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         return new CommonResult(200, "success", "获取员工工资发送记录数据成功！", resultJson);
     }
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 员工
      */
     @Override
@@ -274,6 +295,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         String sendTime = JsonUtil.getStringParam(json, "sendTime");
         DSalaryRecord entity = new DSalaryRecord();
         entity.setStaffName(token.getFullName());
+        entity.setFkStaffId(token.getFkUserId());
         if(!StringUtils.isEmpty(sendTime)){
             entity.setSendTime(DateUtil.formatTime2(sendTime));
         }
@@ -292,6 +314,34 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);
         return new CommonResult(200, "success", "获取工资发送记录数据成功！", resultJson);
+    }
+    @Transactional()
+    @Override
+    public CommonResult selectRecordById(DSalaryRecord salaryRecord) {
+        String pkId = salaryRecord.getPkSalaryrecordId();
+        //修改查看的状态
+        DSalaryRecord updateEntity = new DSalaryRecord();
+        updateEntity.setPkSalaryrecordId(pkId);
+        updateEntity.setCheckStatus(1);
+        int i = tStaffSalaryMapper.updateRecordByPkId(updateEntity);
+        DSalaryRecord entity = this.tStaffSalaryMapper.selectRecordById(pkId);
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("entity", entity);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+    @Transactional()
+    @Override
+    public CommonResult recordConfirm(DSalaryRecord salaryRecord) {
+        //修改查看的状态
+        salaryRecord.setConfirmStatus(1);
+        int i = tStaffSalaryMapper.updateRecordByPkId(salaryRecord);
+        if(i > 0){
+            JSONObject listInfo = this.getListInfo();
+            return new CommonResult(200, "success", "工资明细确认成功", listInfo);
+        }else {
+            return new CommonResult(444, "error", "工资明细确认失败", null);
+
+        }
     }
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);

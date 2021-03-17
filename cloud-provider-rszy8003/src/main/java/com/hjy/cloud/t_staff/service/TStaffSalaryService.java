@@ -69,13 +69,25 @@ public interface TStaffSalaryService {
 
     CommonResult send(DSalaryRecord tStaffSalary, HttpServletRequest request);
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 管理员
      */
     CommonResult adminSendRecord(String param) throws ParseException;
     /**
-     * 发送工资明细
+     * 工资明细发送记录
      * 员工
      */
     CommonResult staffSendRecord(String param,HttpServletRequest request) throws ParseException;
+    /**
+     * 工资明细记录获取详情
+     *
+     * @param salaryRecord 实体对象
+     */
+    CommonResult selectRecordById(DSalaryRecord salaryRecord);
+    /**
+     * 工资明细记录员工确认
+     *
+     * @param salaryRecord 实体对象
+     */
+    CommonResult recordConfirm(DSalaryRecord salaryRecord);
 }

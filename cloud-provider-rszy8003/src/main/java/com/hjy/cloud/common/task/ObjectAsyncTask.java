@@ -14,8 +14,10 @@ import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
+import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.service.TSysTokenService;
 import com.hjy.cloud.utils.IDUtils;
@@ -62,6 +64,8 @@ public class ObjectAsyncTask {
     private TStaffInfoService tStaffInfoService;
     @Autowired
     private TStaffEntryService tStaffEntryService;
+    @Autowired
+    private TStaffReassignService tStaffReassignService;
     @Resource
     private DCcRecordService dCcRecordService;
 
@@ -178,14 +182,14 @@ public class ObjectAsyncTask {
     public static JSONObject handleApproval(SysToken sysToken,String currentSourceId, String apvName, int dataType) {
         JSONObject resultJson = new JSONObject();
         resultJson.put("msg","获取"+apvName+"数据成功");
-
         /**
          * 查询审批流程
          */
-        //先查询入职申请的PK_ID
+        //先查询apvName的PK_ID
         TApvApvtype entityApv = ntClient.tApvApvtypeService.selectByName(apvName);
         if (entityApv != null) {
             String approvalType = entityApv.getPkApvtypeId();
+            resultJson.put("approvalType",approvalType);
             List<TApvApproval> resultList = new ArrayList<>();
             String pk_apv_id = null;
             TStaffInfo deptLeader = null;
@@ -287,6 +291,7 @@ public class ObjectAsyncTask {
             resultJson.put("csrList",csrList);
         }else {
             resultJson.put("msg","未有"+apvName+"审批流程，确认后可直接通过！");
+            resultJson.put("approvalType",null);
         }
         //当前来源的信息
         if("入职申请".equals(apvName)){
@@ -301,6 +306,12 @@ public class ObjectAsyncTask {
             //员工个人基本信息
             TStaffInfo staffInfo = ntClient.tStaffInfoService.selectByPkId2(currentSourceId);
             resultJson.put("currentSource",staffInfo);
+        } else if("调动申请".equals(apvName)){
+            //调动信息
+            TStaffReassign selectEntity = new TStaffReassign();
+            selectEntity.setPkReassignId(currentSourceId);
+            List<TStaffReassign> list = ntClient.tStaffReassignService.selectAllPage(selectEntity);
+            resultJson.put("currentSource",list.get(0));
         }
         return resultJson;
     }
@@ -316,7 +327,6 @@ public class ObjectAsyncTask {
         /**
          * 抄送人
          */
-
         String newPkId = IDUtils.getUUID();
         String firstApvrecordId = newPkId;
         JSONArray csrArray = json.getJSONArray("csrList");
@@ -453,6 +463,6 @@ public class ObjectAsyncTask {
         ntClient.tStaffInfoService = this.tStaffInfoService;
         ntClient.tStaffEntryService = this.tStaffEntryService;
         ntClient.dCcRecordService = this.dCcRecordService;
-        ntClient.dCcRecordService = this.dCcRecordService;
+        ntClient.tStaffReassignService = this.tStaffReassignService;
     }
 }

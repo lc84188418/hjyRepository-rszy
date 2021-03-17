@@ -3,6 +3,9 @@ package com.hjy.cloud.t_staff.service;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.domin.CommonResult;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+
 /**
  * (TStaffReassign)表服务接口
  *
@@ -15,7 +18,7 @@ public interface TStaffReassignService {
      *
      * @return
      */
-    CommonResult insertPage();
+    CommonResult insertPage(TStaffReassign tStaffReassign);
 
     /**
      * 添加数据
@@ -56,4 +59,14 @@ public interface TStaffReassignService {
      * @return
      */
     CommonResult selectById(TStaffReassign tStaffReassign);
+    /**
+     * 发起调动审批页面
+     * 管理员
+     * @return 修改结果
+     */
+    CommonResult initiateApvPage(HttpServletRequest request, TStaffReassign tStaffReassign);
+
+    CommonResult initiateApv(HttpServletRequest request, String param);
+
+    List<TStaffReassign> selectAllPage(TStaffReassign selectEntity);
 }

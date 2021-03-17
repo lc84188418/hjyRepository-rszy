@@ -16,8 +16,6 @@ public class TStaffReassign {
     private String pkReassignId;
     //员工ID
     private String fkStaffId;
-    //审批编号
-    private String apvRecordId;
     //发起时间
     private Date startTime;
     //结束时间
@@ -48,5 +46,21 @@ public class TStaffReassign {
     private String reassignLeader;
     //调动原因
     private String reassignReason;
+    //审批状态
+    private Integer apvStatus;
+    //第一级审批id
+    private String firstApvrecordId;
+    //-----------
+    private String staffName;
+    private String oldDeptName;
+    private String reassignDeptName;
+    private String oldPositionName;
+    private String reassignPositionName;
+    private String oldWorkAddressName;
+    private String reassignWorkAddressName;
+    private String oldCompanyName;
+    private String reassignCompanyName;
+    private String oldLeaderName;
+    private String reassignLeaderName;
 
 }

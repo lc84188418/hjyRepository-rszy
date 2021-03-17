@@ -269,6 +269,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }
         JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,tStaffEntry.getPkEntryId(),"入职申请",1);
         String msg = (String) resultJson.get("msg");
+        resultJson.remove("msg");
         return new CommonResult(200, "success", msg, resultJson);
 
     }

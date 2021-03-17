@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hjy.cloud.t_kq.dao.TKqJbMapper">
+
+    <resultMap type="com.hjy.cloud.t_kq.entity.TKqJb" id="TKqJbMap">
+        <result property="pkJbId" column="PK_JB_ID" jdbcType="VARCHAR"/>
+        <result property="jbName" column="JB_NAME" jdbcType="VARCHAR"/>
+        <result property="fxyjFrequency" column="FXYJ_FREQUENCY" jdbcType="VARCHAR"/>
+        <result property="fxyjHour" column="FXYJ_HOUR" jdbcType="INTEGER"/>
+        <result property="jsWay" column="JS_WAY" jdbcType="INTEGER"/>
+        <result property="jbUnit" column="JB_UNIT" jdbcType="INTEGER"/>
+        <result property="isTxJbf" column="IS_TX_JBF" jdbcType="INTEGER"/>
+        <result property="txRole" column="TX_ROLE" jdbcType="VARCHAR"/>
+        <result property="jbfRole" column="JBF_ROLE" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="selectByPkId" resultMap="TKqJbMap">
+        select * from hjy_cloud.T_KQ_JB
+        where PK_JB_ID = #{pkJbId}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllPage" resultMap="TKqJbMap">
+        select
+        PK_JB_ID, JB_NAME, FXYJ_FREQUENCY, FXYJ_HOUR, JS_WAY, JB_UNIT, IS_TX_JBF, TX_ROLE, JBF_ROLE
+        from hjy_cloud.T_KQ_JB
+        <where>
+            <if test="pkJbId != null and pkJbId != ''">
+                and PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+            </if>
+            <if test="jbName != null and jbName != ''">
+                and JB_NAME = #{jbName,jdbcType=VARCHAR}
+            </if>
+            <if test="fxyjFrequency != null and fxyjFrequency != ''">
+                and FXYJ_FREQUENCY = #{fxyjFrequency,jdbcType=VARCHAR}
+            </if>
+            <if test="fxyjHour != null">
+                and FXYJ_HOUR = #{fxyjHour,jdbcType=INTEGER}
+            </if>
+            <if test="jsWay != null">
+                and JS_WAY = #{jsWay,jdbcType=INTEGER}
+            </if>
+            <if test="jbUnit != null">
+                and JB_UNIT = #{jbUnit,jdbcType=INTEGER}
+            </if>
+            <if test="isTxJbf != null">
+                and IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER}
+            </if>
+            <if test="txRole != null and txRole != ''">
+                and TX_ROLE = #{txRole,jdbcType=VARCHAR}
+            </if>
+            <if test="jbfRole != null and jbfRole != ''">
+                and JBF_ROLE = #{jbfRole,jdbcType=VARCHAR}
+            </if>
+            <if test="turnOn != null">
+                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <!--新增-->
+    <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqJb">
+        insert into hjy_cloud.T_KQ_JB
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="pkJbId != null and pkJbId != ''">
+                PK_JB_ID,
+            </if>
+            <if test="jbName != null and jbName != ''">
+                JB_NAME,
+            </if>
+            <if test="fxyjFrequency != null and fxyjFrequency != ''">
+                FXYJ_FREQUENCY,
+            </if>
+            <if test="fxyjHour != null">
+                FXYJ_HOUR,
+            </if>
+            <if test="jsWay != null">
+                JS_WAY,
+            </if>
+            <if test="jbUnit != null">
+                JB_UNIT,
+            </if>
+            <if test="isTxJbf != null">
+                IS_TX_JBF,
+            </if>
+            <if test="txRole != null and txRole != ''">
+                TX_ROLE,
+            </if>
+            <if test="jbfRole != null and jbfRole != ''">
+                JBF_ROLE,
+            </if>
+            <if test="turnOn != null">
+                TURN_ON,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="pkJbId != null and pkJbId != ''">
+                #{pkJbId,jdbcType=VARCHAR},
+            </if>
+            <if test="jbName != null and jbName != ''">
+                #{jbName,jdbcType=VARCHAR},
+            </if>
+            <if test="fxyjFrequency != null and fxyjFrequency != ''">
+                #{fxyjFrequency,jdbcType=VARCHAR},
+            </if>
+            <if test="fxyjHour != null">
+                #{fxyjHour,jdbcType=INTEGER},
+            </if>
+            <if test="jsWay != null">
+                #{jsWay,jdbcType=INTEGER},
+            </if>
+            <if test="jbUnit != null">
+                #{jbUnit,jdbcType=INTEGER},
+            </if>
+            <if test="isTxJbf != null">
+                #{isTxJbf,jdbcType=INTEGER},
+            </if>
+            <if test="txRole != null and txRole != ''">
+                #{txRole,jdbcType=VARCHAR},
+            </if>
+            <if test="jbfRole != null and jbfRole != ''">
+                #{jbfRole,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                #{turnOn,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <!--通过主键修改数据-->
+    <update id="updateByPkId">
+        update hjy_cloud.T_KQ_JB
+        <set>
+            <if test="jbName != null and jbName != ''">
+                JB_NAME = #{jbName,jdbcType=VARCHAR},
+            </if>
+            <if test="fxyjFrequency != null and fxyjFrequency != ''">
+                FXYJ_FREQUENCY = #{fxyjFrequency,jdbcType=VARCHAR},
+            </if>
+            <if test="fxyjHour != null">
+                FXYJ_HOUR = #{fxyjHour,jdbcType=INTEGER},
+            </if>
+            <if test="jsWay != null">
+                JS_WAY = #{jsWay,jdbcType=INTEGER},
+            </if>
+            <if test="jbUnit != null">
+                JB_UNIT = #{jbUnit,jdbcType=INTEGER},
+            </if>
+            <if test="isTxJbf != null">
+                IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER},
+            </if>
+            <if test="txRole != null and txRole != ''">
+                TX_ROLE = #{txRole,jdbcType=VARCHAR},
+            </if>
+            <if test="jbfRole != null and jbfRole != ''">
+                JBF_ROLE = #{jbfRole,jdbcType=VARCHAR},
+            </if>
+            <if test="turnOn != null">
+                TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+        </set>
+        where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from hjy_cloud.T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+    </delete>
+
+</mapper>
+
