@@ -17,6 +17,8 @@ public class DApvRecord {
     //审批类别
     private String approvalType;
     private String apvtypeName;
+    //申请人
+    private String applyPeople;
     //发起人
     private String sponsor;
     //发起时间

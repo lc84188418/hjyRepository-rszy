@@ -6,9 +6,14 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.t_kq.dao.TKqBcMapper;
+import com.hjy.cloud.t_kq.entity.ReGroupStaff;
 import com.hjy.cloud.t_kq.entity.TKqBc;
 import com.hjy.cloud.t_kq.service.TKqBcService;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -16,6 +21,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -29,7 +36,8 @@ public class TKqBcServiceImpl implements TKqBcService {
 
     @Resource
     private TKqBcMapper tKqBcMapper;
-
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     /**
      * 添加前获取数据
      *
@@ -37,23 +45,64 @@ public class TKqBcServiceImpl implements TKqBcService {
      */
     @Override
     public CommonResult insertPage() {
+        //返回员工列表
+        List<TStaffInfo> staffList = tStaffInfoMapper.selectAllId_Name();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("entity", null);
+        jsonObject.put("staffList", staffList);
         return new CommonResult(200, "success", "获取数据成功", jsonObject);
     }
 
     /**
      * 添加数据
      *
-     * @param tKqBc
+     * @param param
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult insert(TKqBc tKqBc) {
+    public CommonResult insert(String param) {
+        JSONObject json = JSON.parseObject(param);
+        StringBuffer stringBuffer = new StringBuffer();
+        //分页参数
+        List<String> timeSlots = new ArrayList<>();
+        JSONArray timeSlotArray = json.getJSONArray("timeSlots");
+        if(timeSlotArray == null){
+            stringBuffer.append("未输入上下班时间段，已设置为默认时段09:00-17:30");
+        }else{
+            String timeSlotStr = timeSlotArray.toString();
+            if(timeSlotStr.equals("[]")){
+                stringBuffer.append("未输入上下班时间段，已设置为默认时段09:00-17:30");
+            }else {
+                timeSlots = JSONObject.parseArray(timeSlotStr,String.class);
+            }
+        }
+        String timeSlot = "09:00-17:30";
+        if(timeSlots != null && timeSlots.size() > 0){
+            timeSlot = "";
+            for (String s : timeSlots) {
+                timeSlot =timeSlot +"+"+s;
+            }
+        }
+        int isRestDefault = 1;
+        int isRest = JsonUtil.getIntegerParam(json, "isRest");
+        isRestDefault = isRest;
+        String restSlot = JsonUtil.getStringParam(json, "restSlot");
+        int txdk = JsonUtil.getIntegerParam(json, "txdk");
+        String bcStewards = JsonUtil.getStringParam(json, "bcStewards");
+        TKqBc tKqBc = new TKqBc();
+        tKqBc.setPkBcId(IDUtils.getUUID());
+        tKqBc.setDkNum(timeSlots.size());
+        tKqBc.setTimeSlot(timeSlot.substring(1,timeSlot.length()));
+        tKqBc.setIsRest(isRestDefault);
+        tKqBc.setRestSlot(restSlot);
+        tKqBc.setTxdk(txdk);
+        tKqBc.setBcStewards(bcStewards);
+        tKqBc.setTurnOn(1);
         int i = this.tKqBcMapper.insertSelective(tKqBc);
         if (i > 0) {
-            return new CommonResult(200, "success", "添加数据成功", null);
+            stringBuffer.append("班次数据添加成功！");
+            JSONObject listInfo = this.getListInfo();
+            return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
         } else {
             return new CommonResult(444, "error", "添加数据失败", null);
         }
@@ -103,7 +152,6 @@ public class TKqBcServiceImpl implements TKqBcService {
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //分页参数
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         //查询条件

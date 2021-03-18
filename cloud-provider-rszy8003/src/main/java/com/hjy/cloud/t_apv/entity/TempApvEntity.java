@@ -16,6 +16,7 @@ public class TempApvEntity {
     private String pkApprovalId;
     private String approvalType;
     private String apvtypeName;
+    private String applyPeople;
     private String sponsor;
     private Date startTime;
     private String approvalPeople1;

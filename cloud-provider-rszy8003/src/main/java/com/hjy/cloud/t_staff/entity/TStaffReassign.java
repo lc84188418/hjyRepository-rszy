@@ -46,7 +46,7 @@ public class TStaffReassign {
     private String reassignLeader;
     //调动原因
     private String reassignReason;
-    //审批状态
+    //审批状态,0审批中，1审批通过，2审批被拒绝
     private Integer apvStatus;
     //第一级审批id
     private String firstApvrecordId;

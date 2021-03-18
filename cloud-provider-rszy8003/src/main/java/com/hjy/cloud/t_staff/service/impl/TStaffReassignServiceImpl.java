@@ -60,6 +60,14 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
      */
     @Override
     public CommonResult insertPage(TStaffReassign tStaffReassign) {
+        String fkStaffId = tStaffReassign.getFkStaffId();
+        /**
+         * 查询员工是否还有在审批中的调动申请
+         */
+        TStaffReassign temp = tStaffReassignMapper.selectByStaffId_ApvStatus(fkStaffId);
+        if(temp != null){
+            return new CommonResult(444, "error", "当前还有审批中的调动申请，请等待审批，无需再次提交", null);
+        }
         JSONObject jsonObject = new JSONObject();
         //部门
         List<TOutfitDept> depts = tOutfitDeptMapper.selectAllIdAndName();
@@ -76,7 +84,6 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         /**
          * 当前员工调动前信息
          */
-        String fkStaffId = tStaffReassign.getFkStaffId();
         TStaffReassign resultEntity = tStaffReassignMapper.selectStaffOldInfoByStaffId(fkStaffId);
         jsonObject.put("staffInfo", resultEntity);
         return new CommonResult(200, "success", "获取数据成功", jsonObject);
@@ -91,15 +98,22 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffReassign tStaffReassign) {
+        /**
+         * 查询员工是否还有在审批中的调动申请
+         */
+        TStaffReassign temp = tStaffReassignMapper.selectByStaffId_ApvStatus(tStaffReassign.getFkStaffId());
+        if(temp != null){
+            return new CommonResult(445, "error", "当前还有审批中的调动申请，请等待审批，无需再次提交", null);
+        }
         tStaffReassign.setPkReassignId(IDUtils.getUUID());
         tStaffReassign.setStartTime(new Date());
         tStaffReassign.setApvStatus(0);
         //调动时间
         int i = this.tStaffReassignMapper.insertSelective(tStaffReassign);
         if (i > 0) {
-            return new CommonResult(200, "success", "添加数据成功", null);
+            return new CommonResult(200, "success", "员工调动数据添加成功，待发起审批", null);
         } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
+            return new CommonResult(444, "error", "员工调动数据添加失败", null);
         }
     }
 
@@ -243,7 +257,8 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
                 stringBuffer.append("已发起调动申请成功!");
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId);
+                String applyPeople = tStaffReassignMapper.selectStaffName(pkReassignId);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);

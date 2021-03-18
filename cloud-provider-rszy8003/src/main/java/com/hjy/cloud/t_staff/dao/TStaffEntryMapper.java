@@ -62,4 +62,6 @@ public interface TStaffEntryMapper {
      * @return 影响行数
      */
     int deleteById(TStaffEntry tStaffEntry);
+
+    String selectApplyPeople(String pkEntryId);
 }

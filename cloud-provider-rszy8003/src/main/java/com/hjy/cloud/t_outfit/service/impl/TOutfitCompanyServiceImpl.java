@@ -243,7 +243,11 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
             companyDept.setFkDeptId(s);
             companyDepts.add(companyDept);
         }
-        //批量添加公司部门信息
-        return tOutfitCompanyMapper.addCompanyDeptByList(companyDepts);
+        if(companyDepts != null && companyDepts.size() > 0){
+            //批量添加公司部门信息
+            return tOutfitCompanyMapper.addCompanyDeptByList(companyDepts);
+        }else {
+            return 0;
+        }
     }
 }

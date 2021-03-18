@@ -20,10 +20,10 @@ public interface TKqBcService {
     /**
      * 添加数据
      *
-     * @param tKqBc
+     * @param param
      * @return
      */
-    CommonResult insert(TKqBc tKqBc);
+    CommonResult insert(String param);
 
     /**
      * 修改数据

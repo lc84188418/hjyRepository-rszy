@@ -1,7 +1,7 @@
 package com.hjy.cloud.t_kq.dao;
 
-import com.hjy.cloud.t_kq.entity.ReGroupStaff;
-import com.hjy.cloud.t_kq.entity.TKqGroup;
+import com.hjy.cloud.t_kq.entity.*;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -17,10 +17,10 @@ public interface TKqGroupMapper {
     /**
      * 通过ID查询单条数据
      *
-     * @param pk_id 主键
+     * @param pkGroupId 主键
      * @return 实例对象
      */
-    TKqGroup selectByPkId(String pk_id);
+    TKqGroup selectByPkId(@Param("pkGroupId")String pkGroupId);
 
     /**
      * 通过实体作为筛选条件查询
@@ -53,6 +53,32 @@ public interface TKqGroupMapper {
      * @return 影响行数
      */
     int deleteById(TKqGroup tKqGroup);
-
+    //批量添加考勤分组-员工
     int insertGroupStaffBatch(@Param("groupStaffList")List<ReGroupStaff> joinList);
+    //批量添加考勤分组-班次
+    int insertGroupBcBatch(@Param("groupBcList")List<ReGroupWorkingdays> workingDaysList);
+    //批量添加考勤分组-工作地
+    int insertGroupWorkaddressBatch(@Param("groupWorkaddressList")List<ReGroupWorkaddress> workAddressList);
+    //批量添加考勤分组-加班规则
+    int insertJbGroupBatch(@Param("jbGroupList")List<ReJbGroup> jbList);
+
+    //批量删除考勤分组-员工
+    int deleteGroupStaffByGroupId(@Param("fkGroupId")String fkGroupId);
+    //批量删除考勤分组-班次
+    int deleteGroupBcByGroupId(@Param("fkGroupId")String fkGroupId);
+    //批量删除考勤分组-工作地
+    int deleteGroupWorkaddressByGroupId(@Param("fkGroupId")String fkGroupId);
+    //批量删除考勤分组-加班规则
+    int deleteJbGroupByGroupId(@Param("fkGroupId")String fkGroupId);
+
+    //查询该分组下已选考勤的员工
+    List<ReGroupStaff> select_YX_StaffByGroup_IsKQ(@Param("fkGroupId")String fkGroupId, @Param("isKq")int isKq);
+    //查询该分组下已选工作日设置
+    List<ReGroupWorkingdays> select_YX_workingdaysByGroup(@Param("fkGroupId")String fkGroupId);
+    //查询该分组下已选工作地
+    List<ReGroupWorkaddress> select_YX_workaddressByGroup(@Param("fkGroupId")String fkGroupId);
+    //查询该分组下已选加班规则
+    List<ReJbGroup> select_YX_JbByGroup(@Param("fkGroupId")String fkGroupId);
+
+
 }

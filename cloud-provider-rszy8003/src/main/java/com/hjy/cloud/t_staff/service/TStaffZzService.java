@@ -12,20 +12,6 @@ import javax.servlet.http.HttpServletRequest;
  * @since 2021-03-01 15:53:18
  */
 public interface TStaffZzService {
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    CommonResult insertPage();
-
-    /**
-     * 添加数据
-     *
-     * @param tStaffZz
-     * @return
-     */
-    CommonResult insert(TStaffZz tStaffZz);
 
     /**
      * 修改数据

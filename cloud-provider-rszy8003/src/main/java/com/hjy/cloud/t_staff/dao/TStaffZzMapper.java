@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffZz;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -51,4 +52,6 @@ public interface TStaffZzMapper {
      * @return 影响行数
      */
     int deleteById(TStaffZz tStaffZz);
+
+    TStaffZz selectByStaffId(@Param("fkStaffId") String fkUserId);
 }

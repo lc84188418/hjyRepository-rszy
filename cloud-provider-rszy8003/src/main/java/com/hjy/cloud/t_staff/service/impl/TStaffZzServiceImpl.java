@@ -55,34 +55,6 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     private DCcRecordMapper dCcRecordMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
-    /**
-     * 添加前获取数据
-     *
-     * @return
-     */
-    @Override
-    public CommonResult insertPage() {
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("entity", null);
-        return new CommonResult(200, "success", "获取数据成功", jsonObject);
-    }
-
-    /**
-     * 添加数据
-     *
-     * @param tStaffZz
-     * @return
-     */
-    @Transactional()
-    @Override
-    public CommonResult insert(TStaffZz tStaffZz) {
-        int i = this.tStaffZzMapper.insertSelective(tStaffZz);
-        if (i > 0) {
-            return new CommonResult(200, "success", "添加数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
-        }
-    }
 
     /**
      * 修改数据
@@ -187,10 +159,16 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"转正申请",1);
-        String msg = (String) resultJson.get("msg");
-        resultJson.remove("msg");
-        return new CommonResult(200, "success", msg, resultJson);
+        //查询自己是否提交过转正申请
+        TStaffZz tStaffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
+        if(tStaffZz == null){
+            JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"转正申请",1);
+            String msg = (String) resultJson.get("msg");
+            resultJson.remove("msg");
+            return new CommonResult(200, "success", msg, resultJson);
+        }else {
+            return new CommonResult(444, "error", "该员工已提交过转正申请，无需再次提交", null);
+        }
     }
     /**
      * 发起转正审批页面
@@ -204,6 +182,14 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         SysToken sysToken = tSysTokenMapper.findByToken(token);
         if(sysToken == null){
             return new CommonResult(444, "error", "未传入token或已失效", null);
+        }
+        /**
+         * 查询是否提交过转正申请
+         */
+        //查询自己是否提交过转正申请
+        TStaffZz isProve = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
+        if(isProve != null){
+            return new CommonResult(445, "error", "该员工已提交过转正申请，无需再次提交!", null);
         }
         JSONObject jsonObject = JSON.parseObject(param);
         //入职申请信息主键
@@ -251,7 +237,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             stringBuffer.append("转正申请已发起成功！");
             //审批类型
             String approvalType = "13";
-            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId());
+            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName());
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
             return new CommonResult(444, "error","转正申请发起失败！", null);

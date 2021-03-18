@@ -323,7 +323,7 @@ public class ObjectAsyncTask {
      * @param approvalType
      * @return
      */
-    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkQuitId) {
+    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkSourceId,String applyPeople) {
         /**
          * 抄送人
          */
@@ -362,14 +362,14 @@ public class ObjectAsyncTask {
                         dCcRecord.setFirstApvrecordId(firstApvrecordId);
                         ccRecordList.add(dCcRecord);
                     }
-                }
-                //批量添加抄送记录
-                int i = ntClient.dCcRecordService.insertCCRecordBatch(ccRecordList);
-                if(i > 0){
-                    stringBuffer.append("抄送记录添加成功！");
-                }else {
-                    stringBuffer.append("抄送记录添加成功！");
-                    return stringBuffer;
+                    //批量添加抄送记录
+                    int i = ntClient.dCcRecordService.insertCCRecordBatch(ccRecordList);
+                    if(i > 0){
+                        stringBuffer.append("抄送记录添加成功！");
+                    }else {
+                        stringBuffer.append("抄送记录添加成功！");
+                        return stringBuffer;
+                    }
                 }
             }
         }
@@ -419,6 +419,7 @@ public class ObjectAsyncTask {
                     DApvRecord dApvRecord = new DApvRecord();
                     dApvRecord.setPkRecordId(newPkId);
                     dApvRecord.setApprovalType(approvalType);
+                    dApvRecord.setApplyPeople(applyPeople);
                     dApvRecord.setSponsor(sysToken.getFullName());
                     dApvRecord.setStartTime(new Date());
                     dApvRecord.setApvApproval(approval.getApprovalPeople());
@@ -427,7 +428,7 @@ public class ObjectAsyncTask {
                     }else {
                         dApvRecord.setNextApproval(nextPkId);
                     }
-                    dApvRecord.setSourceId(pkQuitId);
+                    dApvRecord.setSourceId(pkSourceId);
                     dApvRecord.setIsStart(isStart);
                     dApvRecord.setIsIng(1);
                     apvRecordList.add(dApvRecord);
@@ -436,13 +437,15 @@ public class ObjectAsyncTask {
                     isStart = 0;
                     num ++;
                 }
-                //批量添加审批记录
-                int j = ntClient.tApvApprovalService.insertApvRecordBatch(apvRecordList);
-                if(j > 0){
-                    stringBuffer.append("审批记录添加成功！");
-                }else {
-                    stringBuffer.append("审批记录添加成功！");
-                    return stringBuffer;
+                if(apvRecordList != null && apvRecordList.size() > 0){
+                    //批量添加审批记录
+                    int j = ntClient.tApvApprovalService.insertApvRecordBatch(apvRecordList);
+                    if(j > 0){
+                        stringBuffer.append("审批记录添加成功！");
+                    }else {
+                        stringBuffer.append("审批记录添加成功！");
+                        return stringBuffer;
+                    }
                 }
             }
         }

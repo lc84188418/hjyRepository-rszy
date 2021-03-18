@@ -135,8 +135,14 @@ FROM
 	) table1
 	LEFT JOIN T_OUTFIT_COMPANY ON T_OUTFIT_COMPANY.PK_COMPANY_ID = table1.oldCompany
     </select>
-    <select id="selectStaff" resultType="java.lang.String">
+    <select id="selectStaffId" resultType="java.lang.String">
         select FK_STAFF_ID from T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectStaffName" resultType="java.lang.String">
+        select START_TIME from T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+    </select>
+    <select id="selectByStaffId_ApvStatus" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign">
+        select * from T_STAFF_REASSIGN where FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR} and APV_STATUS = 0
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffReassign">
@@ -203,9 +209,6 @@ FROM
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 #{fkStaffId,jdbcType=VARCHAR},
-            </if>
-            <if test="apvRecordId != null and apvRecordId != ''">
-                #{apvRecordId,jdbcType=VARCHAR},
             </if>
             <if test="startTime != null">
                 #{startTime,jdbcType=TIMESTAMP},

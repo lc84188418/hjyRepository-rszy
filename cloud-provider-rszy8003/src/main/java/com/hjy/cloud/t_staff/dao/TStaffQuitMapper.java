@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -51,4 +52,6 @@ public interface TStaffQuitMapper {
      * @return 影响行数
      */
     int deleteById(TStaffQuit tStaffQuit);
+
+    TStaffQuit selectByStaffId(@Param("fkStaffId") String fkUserId);
 }

@@ -63,11 +63,18 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
 
         }
-        //离职审批流程信息
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"离职申请",1);
-        String msg = (String) resultJson.get("msg");
-        resultJson.remove("msg");
-        return new CommonResult(200, "success", msg, resultJson);
+        //查询是否提交过离职申请
+        TStaffQuit tStaffQuit = tStaffQuitMapper.selectByStaffId(sysToken.getFkUserId());
+        if(tStaffQuit == null){
+            //离职审批流程信息
+            JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"离职申请",1);
+            String msg = (String) resultJson.get("msg");
+            resultJson.remove("msg");
+            return new CommonResult(200, "success", msg, resultJson);
+        }else {
+            return new CommonResult(444, "error", "该员工已提交过离职申请，无需再次申请，请等待审批！", null);
+
+        }
     }
 
     /**
@@ -117,7 +124,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         }
         //审批类型
         String approvalType = "11";
-        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId);
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName());
 
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }

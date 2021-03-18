@@ -30,10 +30,10 @@ public interface TKqGroupService {
     /**
      * 修改数据
      *
-     * @param tKqGroup
+     * @param param
      * @return
      */
-    CommonResult updateByPkId(TKqGroup tKqGroup);
+    CommonResult updateByPkId(String param) throws ParseException;
 
     /**
      * 删除数据

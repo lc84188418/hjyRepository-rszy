@@ -27,35 +27,6 @@ public class TStaffZzController {
     private TStaffZzService tStaffZzService;
 
     /**
-     * 1 跳转到新增页面
-     */
-    @GetMapping(value = "/staff/Zz/addPage")
-    public CommonResult insertPage() throws FebsException {
-        try {
-            return tStaffZzService.insertPage();
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
-     * 新增数据
-     *
-     * @param tStaffZz 实体对象
-     * @return 新增结果
-     */
-    @PostMapping(value = "/staff/Zz/add")
-    public CommonResult insert(@RequestBody TStaffZz tStaffZz) throws FebsException {
-        try {
-            return tStaffZzService.insert(tStaffZz);
-        } catch (Exception e) {
-            String message = "失败";
-            throw new FebsException(message);
-        }
-    }
-
-    /**
      * 删除数据
      *
      * @param tStaffZz 实体对象

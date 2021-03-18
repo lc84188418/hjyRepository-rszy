@@ -303,7 +303,8 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }else {
             stringBuffer.append("入职审批流程记录添加失败！");
         }
-        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId);
+        String applyPeople = tStaffEntryMapper.selectApplyPeople(pkEntryId);
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,applyPeople);
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 

@@ -15,16 +15,25 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TKqGroupMap">
-        select * from hjy_cloud.T_KQ_GROUP
-        where PK_GROUP_ID = #{pkGroupId}
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
+SELECT
+	T_KQ_GROUP.*,
+	T_STAFF_INFO.STAFF_NAME AS stewardsName
+FROM
+	hjy_cloud.T_KQ_GROUP
+	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_GROUP.GROUP_STEWARDS
+WHERE
+	T_KQ_GROUP.PK_GROUP_ID = #{pkGroupId}
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TKqGroupMap">
-        select
-        PK_GROUP_ID, GROUP_NAME, GROUP_STEWARDS, KQ_TYPE, IS_PAIXIU, BXDK_TIME, WXDK_TIME, KQ_WAY, IS_WQ
-        from hjy_cloud.T_KQ_GROUP
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
+        SELECT
+        T_KQ_GROUP.*,
+        T_STAFF_INFO.STAFF_NAME AS stewardsName
+        FROM
+        hjy_cloud.T_KQ_GROUP
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_GROUP.GROUP_STEWARDS
         <where>
             <if test="pkGroupId != null and pkGroupId != ''">
                 and PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
@@ -57,6 +66,42 @@
                 and TURN_ON = #{turnOn,jdbcType=INTEGER}
             </if>
         </where>
+    </select>
+    <select id="select_YX_StaffByGroup_IsKQ" resultType="com.hjy.cloud.t_kq.entity.ReGroupStaff">
+SELECT
+	RE_GROUP_STAFF.FK_STAFF_ID,
+	T_STAFF_INFO.STAFF_NAME
+FROM
+	RE_GROUP_STAFF
+	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = RE_GROUP_STAFF.FK_STAFF_ID
+WHERE
+	RE_GROUP_STAFF.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+	AND RE_GROUP_STAFF.IS_KQ = #{isKq,jdbcType=INTEGER}
+    </select>
+    <select id="select_YX_workingdaysByGroup" resultType="com.hjy.cloud.t_kq.entity.ReGroupWorkingdays">
+        select WORKING_DAYS,FK_BC_ID from RE_GROUP_WORKINGDAYS where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </select>
+    <select id="select_YX_workaddressByGroup" resultType="com.hjy.cloud.t_kq.entity.ReGroupWorkaddress">
+        SELECT
+	RE_GROUP_WORKADDRESS.FK_WORKADDRESS_ID,
+	T_OUTFIT_WORKADDRESS.WORKADRESS_NAME AS workaddressName
+FROM
+	RE_GROUP_WORKADDRESS
+LEFT JOIN T_OUTFIT_WORKADDRESS
+ON T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID = RE_GROUP_WORKADDRESS.FK_WORKADDRESS_ID
+WHERE
+	RE_GROUP_WORKADDRESS.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </select>
+    <select id="select_YX_JbByGroup" resultType="com.hjy.cloud.t_kq.entity.ReJbGroup">
+SELECT
+	RE_JB_GROUP.FK_JB_ID,
+	T_KQ_JB.JB_NAME AS JB_NAME
+FROM
+	RE_JB_GROUP
+LEFT JOIN T_KQ_JB
+ON T_KQ_JB.PK_JB_ID = RE_JB_GROUP.FK_JB_ID
+WHERE
+	RE_JB_GROUP.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqGroup">
@@ -139,6 +184,55 @@
             )
         </foreach>
     </insert>
+    <delete id="deleteGroupStaffByGroupId">
+        delete from RE_GROUP_STAFF where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insertGroupBcBatch">
+        insert into RE_GROUP_WORKINGDAYS
+        (PK_GROUPWORKINGDAYS_ID,FK_GROUP_ID,WORKING_DAYS,FK_BC_ID)
+        values
+        <foreach collection="groupBcList" item="item" index="index" separator=",">
+            (
+            #{item.pkGroupworkingdaysId,jdbcType=VARCHAR},
+            #{item.fkGroupId,jdbcType=VARCHAR},
+            #{item.workingDays,jdbcType=VARCHAR},
+            #{item.fkBcId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteGroupBcByGroupId">
+        delete from RE_GROUP_WORKINGDAYS where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insertGroupWorkaddressBatch">
+        insert into RE_GROUP_WORKADDRESS
+        (PK_GROUPWORKADDRESS_ID,FK_GROUP_ID,FK_WORKADDRESS_ID)
+        values
+        <foreach collection="groupWorkaddressList" item="item" index="index" separator=",">
+            (
+            #{item.pkGroupworkaddressId,jdbcType=VARCHAR},
+            #{item.fkGroupId,jdbcType=VARCHAR},
+            #{item.fkWorkaddressId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteGroupWorkaddressByGroupId">
+        delete from RE_GROUP_WORKADDRESS where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insertJbGroupBatch">
+        insert into RE_JB_GROUP
+        (PK_JBGROUP_ID,FK_JB_ID,FK_GROUP_ID)
+        values
+        <foreach collection="jbGroupList" item="item" index="index" separator=",">
+            (
+            #{item.pkJbgroupId,jdbcType=VARCHAR},
+            #{item.fkJbId,jdbcType=VARCHAR},
+            #{item.fkGroupId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
+    <delete id="deleteJbGroupByGroupId">
+        delete from RE_JB_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </delete>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
         update hjy_cloud.T_KQ_GROUP

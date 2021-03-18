@@ -21,7 +21,8 @@ public class JsonUtil {
     }
     public static Integer getIntegerParam(JSONObject jsonObject,String paramName){
         if(jsonObject.get(paramName)!=null){
-            return Integer.parseInt((String) jsonObject.get(paramName));
+            String param = String.valueOf(jsonObject.get(paramName));
+            return Integer.parseInt(param);
         }
         return null;
     }

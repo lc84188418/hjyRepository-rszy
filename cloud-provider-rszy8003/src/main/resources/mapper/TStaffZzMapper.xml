@@ -20,6 +20,10 @@
         select * from hjy_cloud.T_STAFF_ZZ
         where PK_ZZ_ID = #{pkZzId}
     </select>
+    <select id="selectByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffZz">
+        select * from hjy_cloud.T_STAFF_ZZ
+        where FK_STAFF_ID = #{fkStaffId}
+    </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TStaffZzMap">

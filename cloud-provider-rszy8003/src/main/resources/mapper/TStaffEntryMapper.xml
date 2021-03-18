@@ -31,6 +31,10 @@
         select * from hjy_cloud.T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
+    <select id="selectApplyPeople" resultType="java.lang.String">
+        select STAFF_NAME from hjy_cloud.T_STAFF_ENTRY
+        where PK_ENTRY_ID = #{pkEntryId}
+    </select>
     <select id="selectByPkId2" resultMap="TStaffEntryMap">
         SELECT
         T_STAFF_ENTRY.PK_ENTRY_ID,

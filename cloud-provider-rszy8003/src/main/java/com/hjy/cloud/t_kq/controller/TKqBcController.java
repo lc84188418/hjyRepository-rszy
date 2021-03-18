@@ -26,8 +26,9 @@ public class TKqBcController {
 
     /**
      * 1 跳转到新增页面
+     * 已上传
      */
-    @GetMapping(value = "/tKqBc/addPage")
+    @GetMapping(value = "/kq/bc/addPage")
     public CommonResult insertPage() throws FebsException {
         try {
             return tKqBcService.insertPage();
@@ -39,14 +40,14 @@ public class TKqBcController {
 
     /**
      * 新增数据
-     *
-     * @param tKqBc 实体对象
+     * 已上传
+     * @param param json参数
      * @return 新增结果
      */
-    @PostMapping(value = "/tKqBc/add")
-    public CommonResult insert(@RequestBody TKqBc tKqBc) throws FebsException {
+    @PostMapping(value = "/kq/bc/add")
+    public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
-            return tKqBcService.insert(tKqBc);
+            return tKqBcService.insert(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -59,7 +60,7 @@ public class TKqBcController {
      * @param tKqBc 实体对象
      * @return 删除结果
      */
-    @DeleteMapping(value = "/tKqBc/del")
+    @DeleteMapping(value = "/kq/bc/del")
     public CommonResult delete(@RequestBody TKqBc tKqBc) throws FebsException {
         try {
             return tKqBcService.delete(tKqBc);
@@ -71,11 +72,11 @@ public class TKqBcController {
 
     /**
      * 分页查询所有数据
-     *
+     * 已上传
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/tKqBc/list")
+    @PostMapping(value = "/kq/bc/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tKqBcService.selectAll(param);
@@ -90,7 +91,7 @@ public class TKqBcController {
      *
      * @param tKqBc 实体对象
      */
-    @PostMapping(value = "/tKqBc/get")
+    @PostMapping(value = "/kq/bc/get")
     public CommonResult selectOne(@RequestBody TKqBc tKqBc) throws FebsException {
         try {
             return tKqBcService.selectById(tKqBc);
@@ -106,7 +107,7 @@ public class TKqBcController {
      * @param tKqBc 实体对象
      * @return 修改结果
      */
-    @PutMapping(value = "/tKqBc/update")
+    @PutMapping(value = "/kq/bc/update")
     public CommonResult update(@RequestBody TKqBc tKqBc) throws FebsException {
         try {
             return tKqBcService.updateByPkId(tKqBc);

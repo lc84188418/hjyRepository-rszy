@@ -26,4 +26,6 @@ public class TKqBc {
     private String bcStewards;
     //是否启用
     private Integer turnOn;
+    //------------
+    private String stewardsName;
 }

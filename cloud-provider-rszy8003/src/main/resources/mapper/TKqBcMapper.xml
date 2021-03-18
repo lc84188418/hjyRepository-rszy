@@ -10,6 +10,7 @@
         <result property="restSlot" column="REST_SLOT" jdbcType="VARCHAR"/>
         <result property="txdk" column="TXDK" jdbcType="INTEGER"/>
         <result property="bcStewards" column="BC_STEWARDS" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -19,10 +20,11 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TKqBcMap">
-        select
-        PK_BC_ID, DK_NUM, TIME_SLOT, IS_REST, REST_SLOT, TXDK, BC_STEWARDS
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_kq.entity.TKqBc">
+        select T_KQ_BC.*,
+        T_STAFF_INFO.STAFF_NAME AS stewardsName
         from hjy_cloud.T_KQ_BC
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_BC.BC_STEWARDS
         <where>
             <if test="pkBcId != null and pkBcId != ''">
                 and PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}

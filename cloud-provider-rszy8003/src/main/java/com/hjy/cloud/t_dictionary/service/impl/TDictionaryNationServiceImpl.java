@@ -86,7 +86,10 @@ public class TDictionaryNationServiceImpl implements TDictionaryNationService {
             tDictionaryNation.setNationName(s);
             list.add(tDictionaryNation);
         }
-        int i = tDictionaryNationMapper.insertBatch(list);
+        int i = 0;
+        if(list != null && list.size() > 0){
+            i = tDictionaryNationMapper.insertBatch(list);
+        }
         if (i > 0) {
             return new CommonResult(200, "success", "添加数据成功", null);
         } else {

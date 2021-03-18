@@ -57,5 +57,8 @@ public interface TStaffReassignMapper {
      */
     TStaffReassign selectStaffOldInfoByStaffId(@Param("fkStaffId") String fkStaffId);
 
-    String selectStaff(@Param("pkReassignId")String sourceId);
+    String selectStaffId(@Param("pkReassignId")String sourceId);
+    String selectStaffName(@Param("pkReassignId")String sourceId);
+
+    TStaffReassign selectByStaffId_ApvStatus(@Param("fkStaffId")String fkStaffId);
 }

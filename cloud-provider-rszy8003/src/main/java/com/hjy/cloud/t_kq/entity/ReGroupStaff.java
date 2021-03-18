@@ -18,5 +18,7 @@ public class ReGroupStaff {
     private String fkStaffId;
     //是否需要考勤，1代表需要考勤，0代表无需考勤
     private Integer isKq;
-
+    //-----------
+    //姓名
+    private String staffName;
 }

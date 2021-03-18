@@ -70,11 +70,15 @@ public class DateUtil {
      * @throws ParseException
      */
     public static Date addSYQTime(Date date,String num){
-        int sc = Integer.parseInt(num);
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.MONTH,sc);
-        date = calendar.getTime();
-        return date;
+        if(date == null){
+            return null;
+        }else {
+            int sc = Integer.parseInt(num);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.MONTH,sc);
+            date = calendar.getTime();
+            return date;
+        }
     }
 }

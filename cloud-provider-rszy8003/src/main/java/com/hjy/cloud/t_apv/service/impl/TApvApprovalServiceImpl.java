@@ -236,6 +236,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 next.setIsStart(0);
             }
             idList.addAll(idList.size(),csrList);
+        }
+        if(idList != null && idList.size() > 0){
             i = this.tApvApprovalMapper.insertBatch(idList);
         }
         if (i > 0) {
@@ -376,6 +378,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 tempApvEntity.setPkApprovalId(first.getPkRecordId());
                 tempApvEntity.setApprovalType(first.getApprovalType());
                 tempApvEntity.setApvtypeName(first.getApvtypeName());
+                tempApvEntity.setApplyPeople(first.getApplyPeople());
                 tempApvEntity.setSponsor(first.getSponsor());
                 tempApvEntity.setStartTime(first.getStartTime());
                 tempApvEntity.setApprovalPeople1(first.getApvApproval());
