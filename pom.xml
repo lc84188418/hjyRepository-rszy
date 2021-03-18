@@ -14,6 +14,7 @@
         <module>cloud-provider-rszy8003</module>
         <module>cloud-provider-rszy8004</module>
         <module>cloud-consumer-main8083</module>
+        <module>cloud-provider-xmgl8005</module>
     </modules>
 
 
