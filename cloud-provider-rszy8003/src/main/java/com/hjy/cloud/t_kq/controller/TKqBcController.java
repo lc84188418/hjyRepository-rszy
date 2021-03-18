@@ -5,6 +5,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqBc;
 import com.hjy.cloud.t_kq.service.TKqBcService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -23,7 +24,17 @@ public class TKqBcController {
      */
     @Resource
     private TKqBcService tKqBcService;
-
+    @Value("${server.port}")
+    private String serverPort;
+    @GetMapping(value = "/provider/rszy/bc")
+    public CommonResult providerRszyBc() throws FebsException {
+        try {
+            return new CommonResult(200, "success", "这里是提供者8003-bc", serverPort);
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
     /**
      * 1 跳转到新增页面
      */

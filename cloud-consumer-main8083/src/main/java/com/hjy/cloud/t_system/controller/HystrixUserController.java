@@ -31,14 +31,22 @@ public class HystrixUserController {
     @Value("${server.port}")
     private String serverPort;
 
+    @GetMapping(value = "/consumer/provider/rszy/group")
+    public CommonResult insertPage(){
+        return hystrixUserService.insertPage();
+    }
+    @GetMapping(value = "/consumer/provider/rszy/bc")
+    public CommonResult insertPagebc(){
+        return hystrixUserService.insertPagebc();
+    }
 //    @HystrixCommand(fallbackMethod = "consumer_fallback_consumerSystemUserList",commandProperties = {
 //            @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds",value = "20000")
 //    })
 //    @HystrixCommand
-    @PostMapping(value = "/consumer/system/user/list")
-    public CommonResult consumerSystemUserList(@RequestBody String param){
-        return hystrixUserService.consumerSystemUserList(param);
-    }
+//    @PostMapping(value = "/consumer/system/user/list")
+//    public CommonResult consumerSystemUserList(@RequestBody String param){
+//        return hystrixUserService.consumerSystemUserList(param);
+//    }
 //    @GetMapping(value = "/consumer/payment/hystrix/error/{username}")
 //    public String paymentInfo_timeout(@PathVariable("username") String username){
 //        return hystrixUserService.paymentInfo_timeout2(username);
