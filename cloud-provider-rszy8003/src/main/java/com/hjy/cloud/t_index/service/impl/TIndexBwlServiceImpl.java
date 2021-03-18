@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.common.config.rabbitmq.Sender;
 import com.hjy.cloud.t_index.dao.TIndexBwlMapper;
 import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.t_index.service.TIndexBwlService;
@@ -37,8 +36,6 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
 
     @Resource
     private TIndexBwlMapper tIndexBwlMapper;
-    @Resource
-    private Sender sender;
     /**
      * 添加前获取数据
      *
@@ -71,12 +68,6 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
         tIndexBwl.setFkUserId(activeUser.getUserId());
         int i = this.tIndexBwlMapper.insertSelective(tIndexBwl);
         if (i > 0) {
-            /**
-             * 发送消息
-             */
-            Map<String,Object> rabbitMap = new HashMap<>();
-            rabbitMap.put("data",tIndexBwl);
-//            sender.send("liuchun",rabbitMap);
             return new CommonResult(200, "success", "添加数据成功", null);
         } else {
             return new CommonResult(444, "error", "添加数据失败", null);
