@@ -1,6 +1,9 @@
 package com.hjy.cloud.t_kq.dao;
 
+import com.hjy.cloud.t_kq.entity.ReJbGroup;
+import com.hjy.cloud.t_kq.entity.TKqGroup;
 import com.hjy.cloud.t_kq.entity.TKqJb;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -51,4 +54,10 @@ public interface TKqJbMapper {
      * @return 影响行数
      */
     int deleteById(TKqJb tKqJb);
+
+    int deleteJbGroupByJbId(@Param("fkJbId")String fkJbId);
+
+    int insertJbGroupBatch(@Param("jbGroups")List<ReJbGroup> joinList);
+
+    List<TKqGroup> select_YX_JbGroupByJbId(@Param("fkJbId")String fkJbId);
 }

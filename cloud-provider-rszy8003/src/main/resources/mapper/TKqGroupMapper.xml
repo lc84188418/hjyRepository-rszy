@@ -103,6 +103,9 @@ ON T_KQ_JB.PK_JB_ID = RE_JB_GROUP.FK_JB_ID
 WHERE
 	RE_JB_GROUP.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </select>
+    <select id="selectAllId_name" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
+        SELECT PK_GROUP_ID,GROUP_NAME FROM hjy_cloud.T_KQ_GROUP where TURN_ON = 1
+    </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqGroup">
         insert into hjy_cloud.T_KQ_GROUP

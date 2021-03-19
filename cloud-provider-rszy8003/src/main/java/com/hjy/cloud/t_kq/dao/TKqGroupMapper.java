@@ -29,6 +29,7 @@ public interface TKqGroupMapper {
      * @return 对象列表
      */
     List<TKqGroup> selectAllPage(TKqGroup tKqGroup);
+    List<TKqGroup> selectAllId_name();
 
     /**
      * 新增数据
@@ -81,4 +82,5 @@ public interface TKqGroupMapper {
     List<ReJbGroup> select_YX_JbByGroup(@Param("fkGroupId")String fkGroupId);
     //删除补卡-group
     int deleteBkGroupByGroupId(@Param("fkGroupId")String fkGroupId);
+
 }

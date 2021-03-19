@@ -20,18 +20,18 @@ public interface TKqJbService {
     /**
      * 添加数据
      *
-     * @param tKqJb
+     * @param param
      * @return
      */
-    CommonResult insert(TKqJb tKqJb);
+    CommonResult insert(String param);
 
     /**
      * 修改数据
      *
-     * @param tKqJb
+     * @param param
      * @return
      */
-    CommonResult updateByPkId(TKqJb tKqJb);
+    CommonResult updateByPkId(String param);
 
     /**
      * 删除数据

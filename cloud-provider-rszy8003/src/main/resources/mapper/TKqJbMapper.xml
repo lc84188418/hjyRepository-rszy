@@ -8,10 +8,10 @@
         <result property="fxyjFrequency" column="FXYJ_FREQUENCY" jdbcType="VARCHAR"/>
         <result property="fxyjHour" column="FXYJ_HOUR" jdbcType="INTEGER"/>
         <result property="jsWay" column="JS_WAY" jdbcType="INTEGER"/>
-        <result property="jbUnit" column="JB_UNIT" jdbcType="INTEGER"/>
+        <result property="jbUnit" column="JB_UNIT" jdbcType="VARCHAR"/>
         <result property="isTxJbf" column="IS_TX_JBF" jdbcType="INTEGER"/>
-        <result property="txRole" column="TX_ROLE" jdbcType="VARCHAR"/>
-        <result property="jbfRole" column="JBF_ROLE" jdbcType="VARCHAR"/>
+        <result property="txRule" column="TX_RULE" jdbcType="VARCHAR"/>
+        <result property="jbfRule" column="JBF_RULE" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -21,10 +21,18 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TKqJbMap">
-        select
-        PK_JB_ID, JB_NAME, FXYJ_FREQUENCY, FXYJ_HOUR, JS_WAY, JB_UNIT, IS_TX_JBF, TX_ROLE, JBF_ROLE
-        from hjy_cloud.T_KQ_JB
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_kq.entity.TKqJb">
+        SELECT
+        a.*,
+        group_concat(c.FK_GROUP_ID) jbGroupId,
+        group_concat(b.GROUP_NAME) jbGroupName
+        FROM
+        T_KQ_JB a
+        LEFT JOIN RE_JB_GROUP c
+        on a.PK_JB_ID = c.FK_JB_ID
+        LEFT JOIN T_KQ_GROUP b
+        on b.PK_GROUP_ID = c.FK_GROUP_ID
+        GROUP BY a.PK_JB_ID
         <where>
             <if test="pkJbId != null and pkJbId != ''">
                 and PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
@@ -42,22 +50,37 @@
                 and JS_WAY = #{jsWay,jdbcType=INTEGER}
             </if>
             <if test="jbUnit != null">
-                and JB_UNIT = #{jbUnit,jdbcType=INTEGER}
+                and JB_UNIT = #{jbUnit,jdbcType=VARCHAR}
             </if>
             <if test="isTxJbf != null">
                 and IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER}
             </if>
-            <if test="txRole != null and txRole != ''">
-                and TX_ROLE = #{txRole,jdbcType=VARCHAR}
+            <if test="txRule != null and txRule != ''">
+                and TX_RULE = #{txRule,jdbcType=VARCHAR}
             </if>
-            <if test="jbfRole != null and jbfRole != ''">
-                and JBF_ROLE = #{jbfRole,jdbcType=VARCHAR}
+            <if test="jbfRule != null and jbfRule != ''">
+                and JBF_RULE = #{jbfRule,jdbcType=VARCHAR}
             </if>
             <if test="turnOn != null">
                 and TURN_ON = #{turnOn,jdbcType=INTEGER}
             </if>
         </where>
     </select>
+    <select id="select_YX_JbGroupByJbId" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
+       select RE_JB_GROUP.FK_GROUP_ID as pkGroupId from RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}
+    </select>
+    <insert id="insertJbGroupBatch">
+        insert into RE_JB_GROUP
+        (PK_JBGROUP_ID,FK_JB_ID,FK_GROUP_ID)
+        values
+        <foreach collection="jbGroups" item="item" index="index" separator=",">
+            (
+            #{item.pkJbgroupId,jdbcType=VARCHAR},
+            #{item.fkJbId,jdbcType=VARCHAR},
+            #{item.fkGroupId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqJb">
         insert into hjy_cloud.T_KQ_JB
@@ -83,11 +106,11 @@
             <if test="isTxJbf != null">
                 IS_TX_JBF,
             </if>
-            <if test="txRole != null and txRole != ''">
-                TX_ROLE,
+            <if test="txRule != null and txRule != ''">
+                TX_RULE,
             </if>
-            <if test="jbfRole != null and jbfRole != ''">
-                JBF_ROLE,
+            <if test="jbfRule != null and jbfRule != ''">
+                JBF_RULE,
             </if>
             <if test="turnOn != null">
                 TURN_ON,
@@ -110,16 +133,16 @@
                 #{jsWay,jdbcType=INTEGER},
             </if>
             <if test="jbUnit != null">
-                #{jbUnit,jdbcType=INTEGER},
+                #{jbUnit,jdbcType=VARCHAR},
             </if>
             <if test="isTxJbf != null">
                 #{isTxJbf,jdbcType=INTEGER},
             </if>
-            <if test="txRole != null and txRole != ''">
-                #{txRole,jdbcType=VARCHAR},
+            <if test="txRule != null and txRule != ''">
+                #{txRule,jdbcType=VARCHAR},
             </if>
-            <if test="jbfRole != null and jbfRole != ''">
-                #{jbfRole,jdbcType=VARCHAR},
+            <if test="jbfRule != null and jbfRule != ''">
+                #{jbfRule,jdbcType=VARCHAR},
             </if>
             <if test="turnOn != null">
                 #{turnOn,jdbcType=INTEGER},
@@ -143,16 +166,16 @@
                 JS_WAY = #{jsWay,jdbcType=INTEGER},
             </if>
             <if test="jbUnit != null">
-                JB_UNIT = #{jbUnit,jdbcType=INTEGER},
+                JB_UNIT = #{jbUnit,jdbcType=VARCHAR},
             </if>
             <if test="isTxJbf != null">
                 IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER},
             </if>
-            <if test="txRole != null and txRole != ''">
-                TX_ROLE = #{txRole,jdbcType=VARCHAR},
+            <if test="txRule != null and txRule != ''">
+                TX_RULE = #{txRule,jdbcType=VARCHAR},
             </if>
-            <if test="jbfRole != null and jbfRole != ''">
-                JBF_ROLE = #{jbfRole,jdbcType=VARCHAR},
+            <if test="jbfRule != null and jbfRule != ''">
+                JBF_RULE = #{jbfRule,jdbcType=VARCHAR},
             </if>
             <if test="turnOn != null">
                 TURN_ON = #{turnOn,jdbcType=INTEGER},
@@ -164,6 +187,9 @@
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from hjy_cloud.T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteJbGroupByJbId">
+        delete from hjy_cloud.RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

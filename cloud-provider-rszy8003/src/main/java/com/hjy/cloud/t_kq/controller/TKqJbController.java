@@ -27,7 +27,7 @@ public class TKqJbController {
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/tKqJb/addPage")
+    @GetMapping(value = "/kq/jb/addPage")
     public CommonResult insertPage() throws FebsException {
         try {
             return tKqJbService.insertPage();
@@ -39,14 +39,14 @@ public class TKqJbController {
 
     /**
      * 新增数据
-     *
-     * @param tKqJb 实体对象
+     * 已上传
+     * @param param 实体对象
      * @return 新增结果
      */
-    @PostMapping(value = "/tKqJb/add")
-    public CommonResult insert(@RequestBody TKqJb tKqJb) throws FebsException {
+    @PostMapping(value = "/kq/jb/add")
+    public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
-            return tKqJbService.insert(tKqJb);
+            return tKqJbService.insert(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -55,11 +55,11 @@ public class TKqJbController {
 
     /**
      * 删除数据
-     *
+     * 已上传
      * @param tKqJb 实体对象
      * @return 删除结果
      */
-    @DeleteMapping(value = "/tKqJb/del")
+    @DeleteMapping(value = "/kq/jb/del")
     public CommonResult delete(@RequestBody TKqJb tKqJb) throws FebsException {
         try {
             return tKqJbService.delete(tKqJb);
@@ -71,11 +71,11 @@ public class TKqJbController {
 
     /**
      * 分页查询所有数据
-     *
+     * 已上传
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/tKqJb/list")
+    @PostMapping(value = "/kq/jb/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tKqJbService.selectAll(param);
@@ -87,10 +87,10 @@ public class TKqJbController {
 
     /**
      * 通过主键查询单条数据
-     *
+     * 已上传
      * @param tKqJb 实体对象
      */
-    @PostMapping(value = "/tKqJb/get")
+    @PostMapping(value = "/kq/jb/get")
     public CommonResult selectOne(@RequestBody TKqJb tKqJb) throws FebsException {
         try {
             return tKqJbService.selectById(tKqJb);
@@ -102,14 +102,14 @@ public class TKqJbController {
 
     /**
      * 修改数据
-     *
-     * @param tKqJb 实体对象
+     * 已上传
+     * @param param 实体对象
      * @return 修改结果
      */
-    @PutMapping(value = "/tKqJb/update")
-    public CommonResult update(@RequestBody TKqJb tKqJb) throws FebsException {
+    @PutMapping(value = "/kq/jb/update")
+    public CommonResult update(@RequestBody String param) throws FebsException {
         try {
-            return tKqJbService.updateByPkId(tKqJb);
+            return tKqJbService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
