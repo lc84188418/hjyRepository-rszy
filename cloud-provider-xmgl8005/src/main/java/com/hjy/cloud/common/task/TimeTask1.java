@@ -16,8 +16,6 @@ import java.util.Map;
 @Component
 public class TimeTask1 {
 
-//    @Resource
-//    private Sender sender;
     @Resource
     private TIndexBwlMapper tIndexBwlMapper;
     /**
