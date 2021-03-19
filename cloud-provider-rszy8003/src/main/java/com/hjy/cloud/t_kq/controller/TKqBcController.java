@@ -67,7 +67,7 @@ public class TKqBcController {
 
     /**
      * 删除数据
-     *
+     * 已上传
      * @param tKqBc 实体对象
      * @return 删除结果
      */
@@ -99,7 +99,7 @@ public class TKqBcController {
 
     /**
      * 通过主键查询单条数据
-     *
+     * 已上传
      * @param tKqBc 实体对象
      */
     @PostMapping(value = "/kq/bc/get")
@@ -114,14 +114,14 @@ public class TKqBcController {
 
     /**
      * 修改数据
-     *
-     * @param tKqBc 实体对象
+     * 已上传
+     * @param param json参数
      * @return 修改结果
      */
     @PutMapping(value = "/kq/bc/update")
-    public CommonResult update(@RequestBody TKqBc tKqBc) throws FebsException {
+    public CommonResult update(@RequestBody String param) throws FebsException {
         try {
-            return tKqBcService.updateByPkId(tKqBc);
+            return tKqBcService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

@@ -28,10 +28,10 @@ public interface TKqBcService {
     /**
      * 修改数据
      *
-     * @param tKqBc
+     * @param param
      * @return
      */
-    CommonResult updateByPkId(TKqBc tKqBc);
+    CommonResult updateByPkId(String param);
 
     /**
      * 删除数据

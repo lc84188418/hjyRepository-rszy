@@ -176,9 +176,21 @@ public class TKqGroupServiceImpl implements TKqGroupService {
     @Transactional()
     @Override
     public CommonResult delete(TKqGroup tKqGroup) {
+        //删除考勤分组基本信息
         int i = this.tKqGroupMapper.deleteById(tKqGroup);
+        //删除补卡-group
+        int j = this.tKqGroupMapper.deleteBkGroupByGroupId(tKqGroup.getPkGroupId());
+        //删除group-staff
+        int k = this.tKqGroupMapper.deleteGroupStaffByGroupId(tKqGroup.getPkGroupId());
+        //删除group-workaddress
+        int l = this.tKqGroupMapper.deleteGroupWorkaddressByGroupId(tKqGroup.getPkGroupId());
+        //删除group-workingdays
+        int m = this.tKqGroupMapper.deleteGroupBcByGroupId(tKqGroup.getPkGroupId());
+        //删除jb-group
+        int n = this.tKqGroupMapper.deleteJbGroupByGroupId(tKqGroup.getPkGroupId());
         if (i > 0) {
-            return new CommonResult(200, "success", "删除数据成功", null);
+            JSONObject listInfo = this.getListInfo();
+            return new CommonResult(200, "success", "删除数据成功", listInfo);
         } else {
             return new CommonResult(444, "error", "删除数据失败", null);
         }

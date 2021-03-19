@@ -37,6 +37,7 @@ public class TKqGroupController {
     }
     /**
      * 1 跳转到新增页面
+     * 已上传
      */
     @GetMapping(value = "/kq/group/addPage")
     public CommonResult insertPage() throws FebsException {
@@ -50,7 +51,7 @@ public class TKqGroupController {
 
     /**
      * 新增数据
-     *
+     * 已上传
      * @return 新增结果
      */
     @PostMapping(value = "/kq/group/add")
@@ -65,7 +66,7 @@ public class TKqGroupController {
 
     /**
      * 删除数据
-     *
+     * 已上传
      * @param tKqGroup 实体对象
      * @return 删除结果
      */
@@ -81,7 +82,7 @@ public class TKqGroupController {
 
     /**
      * 分页查询所有数据
-     *
+     * 已上传
      * @param param json参数
      * @return 所有数据
      */
@@ -97,7 +98,7 @@ public class TKqGroupController {
 
     /**
      * 通过主键查询单条数据
-     *
+     * 已上传
      * @param tKqGroup 实体对象
      */
     @PostMapping(value = "/kq/group/get")
@@ -112,14 +113,14 @@ public class TKqGroupController {
 
     /**
      * 修改数据
-     *
-     * @param tKqGroup 实体对象
+     * 已上传
+     * @param param 实体对象
      * @return 修改结果
      */
     @PutMapping(value = "/kq/group/update")
-    public CommonResult update(@RequestBody TKqGroup tKqGroup) throws FebsException {
+    public CommonResult update(@RequestBody String param) throws FebsException {
         try {
-            return tKqGroupService.updateByPkId(tKqGroup);
+            return tKqGroupService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

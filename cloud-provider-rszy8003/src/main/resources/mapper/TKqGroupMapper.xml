@@ -233,6 +233,9 @@ WHERE
     <delete id="deleteJbGroupByGroupId">
         delete from RE_JB_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </delete>
+    <delete id="deleteBkGroupByGroupId">
+        delete from hjy_cloud.RE_BK_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+    </delete>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
         update hjy_cloud.T_KQ_GROUP
@@ -271,6 +274,7 @@ WHERE
     <delete id="deleteById">
         delete from hjy_cloud.T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
     </delete>
+
 
 </mapper>
 

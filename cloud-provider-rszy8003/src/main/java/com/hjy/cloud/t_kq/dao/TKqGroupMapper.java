@@ -79,6 +79,6 @@ public interface TKqGroupMapper {
     List<ReGroupWorkaddress> select_YX_workaddressByGroup(@Param("fkGroupId")String fkGroupId);
     //查询该分组下已选加班规则
     List<ReJbGroup> select_YX_JbByGroup(@Param("fkGroupId")String fkGroupId);
-
-
+    //删除补卡-group
+    int deleteBkGroupByGroupId(@Param("fkGroupId")String fkGroupId);
 }

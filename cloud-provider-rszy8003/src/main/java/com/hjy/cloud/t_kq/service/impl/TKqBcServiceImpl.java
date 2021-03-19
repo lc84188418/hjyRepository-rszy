@@ -111,17 +111,57 @@ public class TKqBcServiceImpl implements TKqBcService {
     /**
      * 修改数据
      *
-     * @param tKqBc
+     * @param param
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult updateByPkId(TKqBc tKqBc) {
+    public CommonResult updateByPkId(String param) {
+        JSONObject json = JSON.parseObject(param);
+        String pkBcId = JsonUtil.getStringParam(json, "pkBcId");
+        StringBuffer stringBuffer = new StringBuffer();
+        //分页参数
+        List<String> timeSlots = new ArrayList<>();
+        JSONArray timeSlotArray = json.getJSONArray("timeSlots");
+        if(timeSlotArray == null){
+            stringBuffer.append("未输入上下班时间段，已设置为默认时段09:00-17:30");
+        }else{
+            String timeSlotStr = timeSlotArray.toString();
+            if(timeSlotStr.equals("[]")){
+                stringBuffer.append("未输入上下班时间段，已设置为默认时段09:00-17:30");
+            }else {
+                timeSlots = JSONObject.parseArray(timeSlotStr,String.class);
+            }
+        }
+        String timeSlot = "09:00-17:30";
+        if(timeSlots != null && timeSlots.size() > 0){
+            timeSlot = "";
+            for (String s : timeSlots) {
+                timeSlot =timeSlot +"+"+s;
+            }
+        }
+        int isRestDefault = 1;
+        int isRest = JsonUtil.getIntegerParam(json, "isRest");
+        isRestDefault = isRest;
+        String restSlot = JsonUtil.getStringParam(json, "restSlot");
+        int txdk = JsonUtil.getIntegerParam(json, "txdk");
+        String bcStewards = JsonUtil.getStringParam(json, "bcStewards");
+        TKqBc tKqBc = new TKqBc();
+        tKqBc.setPkBcId(pkBcId);
+        tKqBc.setDkNum(timeSlots.size());
+        tKqBc.setTimeSlot(timeSlot.substring(1,timeSlot.length()));
+        tKqBc.setIsRest(isRestDefault);
+        tKqBc.setRestSlot(restSlot);
+        tKqBc.setTxdk(txdk);
+        tKqBc.setBcStewards(bcStewards);
+        tKqBc.setTurnOn(1);
         int i = this.tKqBcMapper.updateByPkId(tKqBc);
         if (i > 0) {
-            return new CommonResult(200, "success", "修改数据成功", null);
+            stringBuffer.append("班次数据修改成功！");
+            JSONObject listInfo = this.getListInfo();
+            return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
         } else {
-            return new CommonResult(444, "error", "修改数据失败", null);
+            return new CommonResult(444, "error", "添加数据失败", null);
         }
     }
 
@@ -134,9 +174,13 @@ public class TKqBcServiceImpl implements TKqBcService {
     @Transactional()
     @Override
     public CommonResult delete(TKqBc tKqBc) {
+        //班次基本信息
         int i = this.tKqBcMapper.deleteById(tKqBc);
+        //删除group-bc信息
+        int j = tKqBcMapper.deleteGroupBcByBcId(tKqBc.getPkBcId());
         if (i > 0) {
-            return new CommonResult(200, "success", "删除数据成功", null);
+            JSONObject listInfo = this.getListInfo();
+            return new CommonResult(200, "success", "删除数据成功", listInfo);
         } else {
             return new CommonResult(444, "error", "删除数据失败", null);
         }
@@ -182,10 +226,14 @@ public class TKqBcServiceImpl implements TKqBcService {
      */
     @Override
     public CommonResult selectById(TKqBc tKqBc) {
+        //实体基本信息
         String pkId = tKqBc.getPkBcId();
         TKqBc entity = this.tKqBcMapper.selectByPkId(pkId);
         JSONObject resultJson = new JSONObject();
         resultJson.put("entity", entity);
+        //所有员工
+        List<TStaffInfo> infoList = tStaffInfoMapper.selectAllId_Name();
+        resultJson.put("infoList", infoList);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 

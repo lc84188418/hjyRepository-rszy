@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_kq.dao;
 
 import com.hjy.cloud.t_kq.entity.TKqBc;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -51,4 +52,6 @@ public interface TKqBcMapper {
      * @return 影响行数
      */
     int deleteById(TKqBc tKqBc);
+
+    int deleteGroupBcByBcId(@Param("fkBcId")String fkBcId);
 }
