@@ -5,6 +5,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqBk;
 import com.hjy.cloud.t_kq.service.TKqBkService;
+import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-16 14:50:59
  */
+@Api(tags = "补卡控制层")
 @RestController
 public class TKqBkController {
     /**
@@ -26,8 +28,9 @@ public class TKqBkController {
 
     /**
      * 1 跳转到新增页面
+     * 已上传
      */
-    @GetMapping(value = "/tKqBk/addPage")
+    @GetMapping(value = "/kq/bk/addPage")
     public CommonResult insertPage() throws FebsException {
         try {
             return tKqBkService.insertPage();
@@ -39,14 +42,14 @@ public class TKqBkController {
 
     /**
      * 新增数据
-     *
-     * @param tKqBk 实体对象
+     * 已上传
+     * @param param 实体对象
      * @return 新增结果
      */
-    @PostMapping(value = "/tKqBk/add")
-    public CommonResult insert(@RequestBody TKqBk tKqBk) throws FebsException {
+    @PostMapping(value = "/kq/bk/add")
+    public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
-            return tKqBkService.insert(tKqBk);
+            return tKqBkService.insert(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
@@ -59,7 +62,7 @@ public class TKqBkController {
      * @param tKqBk 实体对象
      * @return 删除结果
      */
-    @DeleteMapping(value = "/tKqBk/del")
+    @DeleteMapping(value = "/kq/bk/del")
     public CommonResult delete(@RequestBody TKqBk tKqBk) throws FebsException {
         try {
             return tKqBkService.delete(tKqBk);
@@ -75,7 +78,7 @@ public class TKqBkController {
      * @param param json参数
      * @return 所有数据
      */
-    @PostMapping(value = "/tKqBk/list")
+    @PostMapping(value = "/kq/bk/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
             return tKqBkService.selectAll(param);
@@ -90,7 +93,7 @@ public class TKqBkController {
      *
      * @param tKqBk 实体对象
      */
-    @PostMapping(value = "/tKqBk/get")
+    @PostMapping(value = "/kq/bk/get")
     public CommonResult selectOne(@RequestBody TKqBk tKqBk) throws FebsException {
         try {
             return tKqBkService.selectById(tKqBk);
@@ -103,18 +106,17 @@ public class TKqBkController {
     /**
      * 修改数据
      *
-     * @param tKqBk 实体对象
+     * @param param 实体对象
      * @return 修改结果
      */
-    @PutMapping(value = "/tKqBk/update")
-    public CommonResult update(@RequestBody TKqBk tKqBk) throws FebsException {
+    @PutMapping(value = "/kq/bk/update")
+    public CommonResult update(@RequestBody String param) throws FebsException {
         try {
-            return tKqBkService.updateByPkId(tKqBk);
+            return tKqBkService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);
         }
     }
-
 
 }

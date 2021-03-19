@@ -22,4 +22,8 @@ public class TKqBk {
     private Integer bkDate;
     //是否启用
     private Integer turnOn;
+    //-----------
+    private String stewardsName;
+    private String bkGroupId;
+    private String bkGroupName;
 }

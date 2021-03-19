@@ -1,7 +1,12 @@
 package com.hjy.cloud.utils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class IPUtil {
 
@@ -76,6 +81,28 @@ public class IPUtil {
 		return ip;
 	}
 
+	public static String getMacAddrByIp(String ip) {
+		String macAddr = null;
+		try {
+			Process process = Runtime.getRuntime().exec("nbtstat -a " + ip);
+			BufferedReader br = new BufferedReader(
+					new InputStreamReader(process.getInputStream()));
+			Pattern pattern = Pattern.compile("([A-F0-9]{2}-){5}[A-F0-9]{2}");
+			Matcher matcher;
+			for (String strLine = br.readLine(); strLine != null;
+				 strLine = br.readLine()) {
+				matcher = pattern.matcher(strLine);
+				if (matcher.find()) {
+					macAddr = matcher.group();
+					break;
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		System.out.println(macAddr);
+		return macAddr;
+	}
 	/**
 	 * 获取服务端ip
 	 * 此方法只能获取到该服务器所在机器的ip

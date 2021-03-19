@@ -1,6 +1,9 @@
 package com.hjy.cloud.t_kq.dao;
 
+import com.hjy.cloud.t_kq.entity.ReBkGroup;
 import com.hjy.cloud.t_kq.entity.TKqBk;
+import com.hjy.cloud.t_kq.entity.TKqGroup;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -15,10 +18,10 @@ public interface TKqBkMapper {
     /**
      * 通过ID查询单条数据
      *
-     * @param pk_id 主键
+     * @param pkBkId 主键
      * @return 实例对象
      */
-    TKqBk selectByPkId(String pk_id);
+    TKqBk selectByPkId(@Param("pkBkId")String pkBkId);
 
     /**
      * 通过实体作为筛选条件查询
@@ -51,4 +54,10 @@ public interface TKqBkMapper {
      * @return 影响行数
      */
     int deleteById(TKqBk tKqBk);
+
+    int insertBkGroupBatch(@Param("bkGroupList")List<ReBkGroup> joinList);
+
+    int deleteBkGroupByBkId(@Param("fkBkId")String fkBkId);
+
+    List<TKqGroup> select_YX_BkGroupByBkId(@Param("fkBkId")String fkBkId);
 }

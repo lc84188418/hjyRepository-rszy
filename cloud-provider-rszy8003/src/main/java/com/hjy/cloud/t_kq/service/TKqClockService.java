@@ -1,45 +1,47 @@
 package com.hjy.cloud.t_kq.service;
 
-import com.hjy.cloud.t_kq.entity.TKqBk;
+import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
- * (TKqBk)表服务接口
+ * (TKqClock)表服务接口
  *
  * @author makejava
- * @since 2021-03-16 14:50:58
+ * @since 2021-03-19 17:46:25
  */
-public interface TKqBkService {
+public interface TKqClockService {
     /**
      * 添加前获取数据
      *
      * @return
      */
-    CommonResult insertPage();
+    CommonResult insertPage(HttpServletRequest request);
 
     /**
      * 添加数据
      *
-     * @param param
+     * @param tKqClock
      * @return
      */
-    CommonResult insert(String param);
+    CommonResult insert(TKqClock tKqClock);
 
     /**
      * 修改数据
      *
-     * @param param
+     * @param tKqClock
      * @return
      */
-    CommonResult updateByPkId(String param);
+    CommonResult updateByPkId(TKqClock tKqClock);
 
     /**
      * 删除数据
      *
-     * @param tKqBk
+     * @param tKqClock
      * @return
      */
-    CommonResult delete(TKqBk tKqBk);
+    CommonResult delete(TKqClock tKqClock);
 
     /**
      * 查询所有数据
@@ -52,8 +54,8 @@ public interface TKqBkService {
     /**
      * 获取单个数据
      *
-     * @param tKqBk 实体对象
+     * @param tKqClock 实体对象
      * @return
      */
-    CommonResult selectById(TKqBk tKqBk);
+    CommonResult selectById(TKqClock tKqClock);
 }

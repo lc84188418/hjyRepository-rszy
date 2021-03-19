@@ -11,16 +11,38 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TKqBkMap">
-        select * from hjy_cloud.T_KQ_BK
-        where PK_BK_ID = #{pkBkId}
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_kq.entity.TKqBk">
+SELECT
+	a.*,
+	T_STAFF_INFO.STAFF_NAME AS stewardsName,
+	group_concat( c.FK_GROUP_ID ) bkGroupId,
+	group_concat( b.GROUP_NAME ) bkGroupName
+FROM
+	T_KQ_BK a
+	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = a.BK_STEWARDS
+	LEFT JOIN RE_BK_GROUP c ON a.PK_BK_ID = c.FK_BK_ID
+	LEFT JOIN T_KQ_GROUP b ON b.PK_GROUP_ID = c.FK_GROUP_ID
+WHERE
+	a.PK_BK_ID = #{pkBkId}
+
+GROUP BY
+	a.PK_BK_ID
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TKqBkMap">
-        select
-        PK_BK_ID, BK_NAME, BK_STEWARDS, BK_NUM, BK_DATE
-        from hjy_cloud.T_KQ_BK
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_kq.entity.TKqBk">
+        SELECT
+        a.*,
+        T_STAFF_INFO.STAFF_NAME AS stewardsName,
+        group_concat( c.FK_GROUP_ID ) bkGroupId,
+        group_concat( b.GROUP_NAME ) bkGroupName
+        FROM
+        T_KQ_BK a
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = a.BK_STEWARDS
+        LEFT JOIN RE_BK_GROUP c ON a.PK_BK_ID = c.FK_BK_ID
+        LEFT JOIN T_KQ_GROUP b ON b.PK_GROUP_ID = c.FK_GROUP_ID
+        GROUP BY
+        a.PK_BK_ID
         <where>
             <if test="pkBkId != null and pkBkId != ''">
                 and PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
@@ -41,6 +63,9 @@
                 and TURN_ON = #{turnOn,jdbcType=INTEGER}
             </if>
         </where>
+    </select>
+    <select id="select_YX_BkGroupByBkId" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
+        select RE_BK_GROUP.FK_GROUP_ID as pkGroupId from RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBk">
@@ -86,6 +111,18 @@
             </if>
         </trim>
     </insert>
+    <insert id="insertBkGroupBatch">
+        insert into RE_BK_GROUP
+        (PK_BKGROUP_ID,FK_BK_ID,FK_GROUP_ID)
+        values
+        <foreach collection="bkGroupList" item="item" index="index" separator=",">
+            (
+            #{item.pkBkgroupId,jdbcType=VARCHAR},
+            #{item.fkBkId,jdbcType=VARCHAR},
+            #{item.fkGroupId,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
         update hjy_cloud.T_KQ_BK
@@ -112,6 +149,9 @@
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from hjy_cloud.T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+    </delete>
+    <delete id="deleteBkGroupByBkId">
+        delete from hjy_cloud.RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

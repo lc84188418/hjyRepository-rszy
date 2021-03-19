@@ -116,6 +116,12 @@ WHERE
             <if test="groupName != null and groupName != ''">
                 GROUP_NAME,
             </if>
+            <if test="kqAddress != null and kqAddress != ''">
+                KQ_ADDRESS,
+            </if>
+            <if test="kqRange != null">
+                KQ_RANGE,
+            </if>
             <if test="groupStewards != null and groupStewards != ''">
                 GROUP_STEWARDS,
             </if>
@@ -147,6 +153,12 @@ WHERE
             </if>
             <if test="groupName != null and groupName != ''">
                 #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="kqAddress != null and kqAddress != ''">
+                #{kqAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="kqRange != null">
+                #{kqRange,jdbcType=INTEGER},
             </if>
             <if test="groupStewards != null and groupStewards != ''">
                 #{groupStewards,jdbcType=VARCHAR},
@@ -245,6 +257,12 @@ WHERE
         <set>
             <if test="groupName != null and groupName != ''">
                 GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+            </if>
+            <if test="kqAddress != null and kqAddress != ''">
+                KQ_ADDRESS = #{kqAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="kqRange != null">
+                KQ_RANGE = #{kqRange,jdbcType=INTEGER},
             </if>
             <if test="groupStewards != null and groupStewards != ''">
                 GROUP_STEWARDS = #{groupStewards,jdbcType=VARCHAR},

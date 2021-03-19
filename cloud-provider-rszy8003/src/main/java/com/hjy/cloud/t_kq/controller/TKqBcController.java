@@ -5,6 +5,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqBc;
 import com.hjy.cloud.t_kq.service.TKqBcService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-16 14:50:58
  */
+@Api(tags = "班次控制层")
 @RestController
 public class TKqBcController {
     /**

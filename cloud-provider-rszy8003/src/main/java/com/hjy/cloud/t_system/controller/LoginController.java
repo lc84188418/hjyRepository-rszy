@@ -25,7 +25,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-@Api(tags = "Shiro权限管理")
+@Api(tags = "登录控制层")
 @Slf4j
 @RestController
 public class LoginController {
@@ -52,6 +52,9 @@ public class LoginController {
         }else {
             //获取ip
             String ip= IPUtil.getIpAddress(request);
+//            String ip= "192.168.2.34";
+//            String mac = IPUtil.getMacAddrByIp(ip);
+//            System.err.println(mac);
             user.setIp(ip);
             //生成token，并保存到数据库
             Map<String, Object> result = shiroService.createToken(user, session);

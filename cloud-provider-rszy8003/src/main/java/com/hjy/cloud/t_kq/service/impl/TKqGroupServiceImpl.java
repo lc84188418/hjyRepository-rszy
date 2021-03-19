@@ -89,8 +89,10 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         String pkGroupId = IDUtils.getUUID();
         //实体基本数据
         String groupName = JsonUtil.getStringParam(json, "groupName");
+        String kqAddress = JsonUtil.getStringParam(json, "kqAddress");
         String groupStewards = JsonUtil.getStringParam(json, "groupStewards");
         int kqType = JsonUtil.getIntegerParam(json, "kqType");
+        int kqRange = JsonUtil.getIntegerParam(json, "kqRange");
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
         Date wxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","wxdkTime");
@@ -102,6 +104,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         tKqGroup.setPkGroupId(pkGroupId);
         tKqGroup.setTurnOn(1);
         tKqGroup.setGroupName(groupName);
+        tKqGroup.setKqAddress(kqAddress);
+        tKqGroup.setKqRange(kqRange);
         tKqGroup.setGroupStewards(groupStewards);
         tKqGroup.setKqType(kqType);
         tKqGroup.setIsPaixiu(isPaixiu);
