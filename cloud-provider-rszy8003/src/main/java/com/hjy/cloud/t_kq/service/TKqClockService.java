@@ -4,6 +4,7 @@ import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 
 /**
  * (TKqClock)表服务接口
@@ -17,7 +18,7 @@ public interface TKqClockService {
      *
      * @return
      */
-    CommonResult insertPage(HttpServletRequest request);
+    CommonResult insertPage(HttpServletRequest request) throws ParseException;
 
     /**
      * 添加数据

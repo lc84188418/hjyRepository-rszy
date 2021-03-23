@@ -80,15 +80,26 @@ public class TKqBcServiceImpl implements TKqBcService {
         if(timeSlots != null && timeSlots.size() > 0){
             timeSlot = "";
             for (String s : timeSlots) {
-                timeSlot =timeSlot +"+"+s;
+                timeSlot =timeSlot +"&"+s;
             }
         }
         int isRestDefault = 1;
-        int isRest = JsonUtil.getIntegerParam(json, "isRest");
-        isRestDefault = isRest;
+//        int isRest = JsonUtil.getIntegerParam(json, "isRest");
+//        isRestDefault = isRest;
         String restSlot = JsonUtil.getStringParam(json, "restSlot");
+        if(restSlot == null){
+            isRestDefault = 0;
+        }else {
+            String restSlotStr = restSlot.toString();
+            if(restSlotStr.equals("[]")){
+                isRestDefault = 0;
+            }
+        }
         int txdk = JsonUtil.getIntegerParam(json, "txdk");
         String bcStewards = JsonUtil.getStringParam(json, "bcStewards");
+//        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
+//        int isDefault = JsonUtil.getIntegerParam(json, "isDefault");
+        //如果设置为默认规则isDefault=1，之前的默认规则需要修改isDefault=0
         TKqBc tKqBc = new TKqBc();
         tKqBc.setPkBcId(IDUtils.getUUID());
         tKqBc.setDkNum(timeSlots.size());
@@ -97,7 +108,10 @@ public class TKqBcServiceImpl implements TKqBcService {
         tKqBc.setRestSlot(restSlot);
         tKqBc.setTxdk(txdk);
         tKqBc.setBcStewards(bcStewards);
+//        tKqBc.setTurnOn(turnOn);
         tKqBc.setTurnOn(1);
+//        tKqBc.setIsDefault(isDefault);
+        tKqBc.setIsDefault(0);
         int i = this.tKqBcMapper.insertSelective(tKqBc);
         if (i > 0) {
             stringBuffer.append("班次数据添加成功！");
@@ -137,13 +151,21 @@ public class TKqBcServiceImpl implements TKqBcService {
         if(timeSlots != null && timeSlots.size() > 0){
             timeSlot = "";
             for (String s : timeSlots) {
-                timeSlot =timeSlot +"+"+s;
+                timeSlot =timeSlot +"&"+s;
             }
         }
         int isRestDefault = 1;
-        int isRest = JsonUtil.getIntegerParam(json, "isRest");
-        isRestDefault = isRest;
+//        int isRest = JsonUtil.getIntegerParam(json, "isRest");
+//        isRestDefault = isRest;
         String restSlot = JsonUtil.getStringParam(json, "restSlot");
+        if(restSlot == null){
+            isRestDefault = 0;
+        }else {
+            String restSlotStr = restSlot.toString();
+            if(restSlotStr.equals("[]")){
+                isRestDefault = 0;
+            }
+        }
         int txdk = JsonUtil.getIntegerParam(json, "txdk");
         String bcStewards = JsonUtil.getStringParam(json, "bcStewards");
         TKqBc tKqBc = new TKqBc();
@@ -176,14 +198,17 @@ public class TKqBcServiceImpl implements TKqBcService {
     public CommonResult delete(TKqBc tKqBc) {
         //班次基本信息
         int i = this.tKqBcMapper.deleteById(tKqBc);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(i > 0){
+            stringBuffer.append("班次基本信息删除成功！");
+        }else {
+            return new CommonResult(444, "error", "班次基本信息删除失败！", null);
+        }
         //删除group-bc信息
         int j = tKqBcMapper.deleteGroupBcByBcId(tKqBc.getPkBcId());
-        if (i > 0) {
-            JSONObject listInfo = this.getListInfo();
-            return new CommonResult(200, "success", "删除数据成功", listInfo);
-        } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
-        }
+        stringBuffer.append("已清除班次相关考勤组设置，"+j+"个");
+        JSONObject listInfo = this.getListInfo();
+        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
     }
 
     /**

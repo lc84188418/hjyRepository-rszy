@@ -54,4 +54,6 @@ public interface TKqBcMapper {
     int deleteById(TKqBc tKqBc);
 
     int deleteGroupBcByBcId(@Param("fkBcId")String fkBcId);
+
+    TKqBc selectDefaultBc();
 }

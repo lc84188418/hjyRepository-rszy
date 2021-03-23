@@ -72,4 +72,8 @@ public interface TStaffInfoMapper {
      * 查询还没添加工资条的员工列表，不包括已经添加过的员工
      */
     List<TStaffInfo> selectEnableAddSalary();
+    /**
+     * 查询还没添加考勤组的员工列表，不包括已经添加过的员工
+     */
+    List<TStaffInfo> selectAll_KX_StaffId_Name();
 }

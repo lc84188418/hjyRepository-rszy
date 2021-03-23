@@ -26,7 +26,7 @@ public class TKqClock {
     private String jobId;
     //当时日期
     @ApiModelProperty("当时日期")
-    private Date currentDate;
+    private Date todayDate;
     //上班打卡时间
     @ApiModelProperty("上班打卡时间")
     private Date onDutyTime;
@@ -57,9 +57,15 @@ public class TKqClock {
     //是否迟到
     @ApiModelProperty("是否迟到")
     private Integer isCd;
+    @ApiModelProperty("迟到时间")
+    private String cdMinute;
     //是否早退
     @ApiModelProperty("是否早退")
     private Integer isZt;
+    @ApiModelProperty("早退时间")
+    private String ztMinute;
+    @ApiModelProperty("是否为打卡日")
+    private Integer isDkr;
     //当时所属部门
     @ApiModelProperty("当时所属部门")
     private String fkDeptId;

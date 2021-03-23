@@ -26,6 +26,8 @@ public class TKqBc {
     private String bcStewards;
     //是否启用
     private Integer turnOn;
+    //是否默认规则
+    private Integer isDefault;
     //------------
     private String stewardsName;
 }

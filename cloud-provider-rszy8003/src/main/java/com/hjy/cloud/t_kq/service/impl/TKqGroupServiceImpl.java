@@ -57,20 +57,48 @@ public class TKqGroupServiceImpl implements TKqGroupService {
      */
     @Override
     public CommonResult insertPage() {
-        //返回员工列表
-        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("staffList", staffInfos);
+        //返回员工列表
+        List<TStaffInfo> staffList = tStaffInfoMapper.selectAllId_Name();
+        jsonObject.put("staffList", staffList);
+        //返回可选考勤员工列表
+        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAll_KX_StaffId_Name();
+        jsonObject.put("staffInfos", staffInfos);
         //班次列表
         TKqBc selectBc = new TKqBc();
         selectBc.setTurnOn(1);
         List<TKqBc> bcList = tKqBcMapper.selectAllPage(selectBc);
         jsonObject.put("bcList", bcList);
+        //工作日
+        List<ReGroupWorkingdays> workingdaysList = new ArrayList<>();
+        ReGroupWorkingdays workingdays1 = new ReGroupWorkingdays();
+        workingdays1.setWorkingDays("星期一");
+        workingdaysList.add(workingdays1);
+        ReGroupWorkingdays workingdays2 = new ReGroupWorkingdays();
+        workingdays2.setWorkingDays("星期二");
+        workingdaysList.add(workingdays2);
+        ReGroupWorkingdays workingdays3 = new ReGroupWorkingdays();
+        workingdays3.setWorkingDays("星期三");
+        workingdaysList.add(workingdays3);
+        ReGroupWorkingdays workingdays4 = new ReGroupWorkingdays();
+        workingdays4.setWorkingDays("星期四");
+        workingdaysList.add(workingdays4);
+        ReGroupWorkingdays workingdays5 = new ReGroupWorkingdays();
+        workingdays5.setWorkingDays("星期五");
+        workingdaysList.add(workingdays5);
+        ReGroupWorkingdays workingdays6 = new ReGroupWorkingdays();
+        workingdays6.setWorkingDays("星期六");
+        workingdaysList.add(workingdays6);
+        ReGroupWorkingdays workingdays7 = new ReGroupWorkingdays();
+        workingdays7.setWorkingDays("星期日");
+        workingdaysList.add(workingdays7);
+        jsonObject.put("workingdaysList", workingdaysList);
         //办公地
         List<TOutfitWorkaddress> workaddressList = tOutfitWorkaddressMapper.selectAllId_Name();
         jsonObject.put("workaddressList", workaddressList);
         //加班规则
         TKqJb selectJb = new TKqJb();
+        selectJb.setTurnOn(1);
         List<TKqJb> jbList = tKqJbMapper.selectAllPage(selectJb);
         jsonObject.put("jbList", jbList);
         return new CommonResult(200, "success", "获取数据成功", jsonObject);
@@ -89,9 +117,11 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         String pkGroupId = IDUtils.getUUID();
         //实体基本数据
         String groupName = JsonUtil.getStringParam(json, "groupName");
+//        int autoJoin = JsonUtil.getIntegerParam(json, "autoJoin");
         String kqAddress = JsonUtil.getStringParam(json, "kqAddress");
         String groupStewards = JsonUtil.getStringParam(json, "groupStewards");
         int kqType = JsonUtil.getIntegerParam(json, "kqType");
+//        int typeSet = JsonUtil.getIntegerParam(json, "typeSet");
         int kqRange = JsonUtil.getIntegerParam(json, "kqRange");
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
@@ -119,7 +149,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         } else {
             stringBuffer.append("考勤组数据添加失败！");
         }
-        stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,"add");
+        stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,kqType,"add");
         JSONObject listInfo = this.getListInfo();
         return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
     }
@@ -166,7 +196,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         } else {
             stringBuffer.append("数据提交失败！");
         }
-        stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,"update");
+        stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,kqType,"update");
         JSONObject listInfo = this.getListInfo();
         return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
     }
@@ -245,8 +275,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         TKqGroup entity = this.tKqGroupMapper.selectByPkId(pkId);
         resultJson.put("entity", entity);
         //所有员工列表
-        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
-        resultJson.put("staffList", staffInfos);
+        List<TStaffInfo> staffList = tStaffInfoMapper.selectAllId_Name();
+        resultJson.put("staffList", staffList);
         //已选参与考勤人员列表
         List<ReGroupStaff> joins = tKqGroupMapper.select_YX_StaffByGroup_IsKQ(pkId,1);
         resultJson.put("joins", joins);
@@ -277,7 +307,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
-    private StringBuffer handleGroupData(StringBuffer stringBuffer, JSONObject json, String pkGroupId,String addOrUpdate) {
+    private StringBuffer handleGroupData(StringBuffer stringBuffer, JSONObject json, String pkGroupId,int kqType,String addOrUpdate) {
         /**
          * 一、考勤人员设置
          */
@@ -340,7 +370,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             }
         }
         /**
-         * 二、工作日设置
+         * 二、工作日设置,type=1和2时
          */
         List<ReGroupWorkingdays> workingDaysList = new ArrayList<>();
         JSONArray workingDaysArray = json.getJSONArray("workingDays");

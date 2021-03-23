@@ -67,21 +67,30 @@ public class TKqJbServiceImpl implements TKqJbService {
         String pkJbId = IDUtils.getUUID();
         //实体数据
         String jbName = JsonUtil.getStringParam(json, "jbName");
-        String fxyjFrequency = JsonUtil.getStringParam(json, "fxyjFrequency");
-        int fxyjHour = JsonUtil.getIntegerParam(json, "fxyjHour");
+//        String fxyjFrequency = JsonUtil.getStringParam(json, "fxyjFrequency");
+//        int fxyjHour = JsonUtil.getIntegerParam(json, "fxyjHour");
+        int jsWay = JsonUtil.getIntegerParam(json, "jsWay");
         String jbUnit = JsonUtil.getStringParam(json, "jbUnit");
-        int isTxJbf = JsonUtil.getIntegerParam(json, "isTxJbf");
+//        int isTxJbf = JsonUtil.getIntegerParam(json, "isTxJbf");
         String txRule = JsonUtil.getStringParam(json, "txRule");
         String jbfRule = JsonUtil.getStringParam(json, "jbfRule");
+//        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
+//        int isDefault = JsonUtil.getIntegerParam(json, "isDefault");
+        //如果设置为默认规则，之前的默认规则需要修改isDefault=0
         tKqJb.setPkJbId(pkJbId);
         tKqJb.setJbName(jbName);
-        tKqJb.setFxyjFrequency(fxyjFrequency);
-        tKqJb.setFxyjHour(fxyjHour);
+        tKqJb.setJsWay(jsWay);
+//        tKqJb.setFxyjFrequency(fxyjFrequency);
+//        tKqJb.setFxyjHour(fxyjHour);
         tKqJb.setJbUnit(jbUnit);
-        tKqJb.setIsTxJbf(isTxJbf);
+//        tKqJb.setIsTxJbf(isTxJbf);
+        tKqJb.setIsTxJbf(1);
         tKqJb.setTxRule(txRule);
         tKqJb.setJbfRule(jbfRule);
+//        tKqJb.setTurnOn(turnOn);
         tKqJb.setTurnOn(1);
+//        tKqJb.setIsDefault(isDefault);
+        tKqJb.setIsDefault(0);
         int i = this.tKqJbMapper.insertSelective(tKqJb);
         StringBuffer stringBuffer = new StringBuffer();
         if (i > 0) {
@@ -105,6 +114,8 @@ public class TKqJbServiceImpl implements TKqJbService {
             }
         }
         if(joinList != null && joinList.size() > 0){
+            //删除分组原来分配的加班规则
+            int k = tKqGroupMapper.deleteJbGroupByGroupId_Batch(joinList);
             Iterator<ReJbGroup> joinIterator = joinList.iterator();
             while (joinIterator.hasNext()){
                 ReJbGroup joinNext = joinIterator.next();
@@ -134,18 +145,20 @@ public class TKqJbServiceImpl implements TKqJbService {
         //实体数据
         String pkJbId = JsonUtil.getStringParam(json, "pkJbId");
         String jbName = JsonUtil.getStringParam(json, "jbName");
-        String fxyjFrequency = JsonUtil.getStringParam(json, "fxyjFrequency");
-        int fxyjHour = JsonUtil.getIntegerParam(json, "fxyjHour");
+//        String fxyjFrequency = JsonUtil.getStringParam(json, "fxyjFrequency");
+//        int fxyjHour = JsonUtil.getIntegerParam(json, "fxyjHour");
+        int jsWay = JsonUtil.getIntegerParam(json, "jsWay");
         String jbUnit = JsonUtil.getStringParam(json, "jbUnit");
-        int isTxJbf = JsonUtil.getIntegerParam(json, "isTxJbf");
+//        int isTxJbf = JsonUtil.getIntegerParam(json, "isTxJbf");
         String txRule = JsonUtil.getStringParam(json, "txRule");
         String jbfRule = JsonUtil.getStringParam(json, "jbfRule");
         tKqJb.setPkJbId(pkJbId);
         tKqJb.setJbName(jbName);
-        tKqJb.setFxyjFrequency(fxyjFrequency);
-        tKqJb.setFxyjHour(fxyjHour);
+        tKqJb.setJsWay(jsWay);
+//        tKqJb.setFxyjFrequency(fxyjFrequency);
+//        tKqJb.setFxyjHour(fxyjHour);
         tKqJb.setJbUnit(jbUnit);
-        tKqJb.setIsTxJbf(isTxJbf);
+        tKqJb.setIsTxJbf(1);
         tKqJb.setTxRule(txRule);
         tKqJb.setJbfRule(jbfRule);
         tKqJb.setTurnOn(1);

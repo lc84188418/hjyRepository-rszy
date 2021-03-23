@@ -8,6 +8,8 @@
         <result property="bkStewards" column="BK_STEWARDS" jdbcType="VARCHAR"/>
         <result property="bkNum" column="BK_NUM" jdbcType="INTEGER"/>
         <result property="bkDate" column="BK_DATE" jdbcType="INTEGER"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="isDefault" column="IS_DEFAULT" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -24,7 +26,6 @@ FROM
 	LEFT JOIN T_KQ_GROUP b ON b.PK_GROUP_ID = c.FK_GROUP_ID
 WHERE
 	a.PK_BK_ID = #{pkBkId}
-
 GROUP BY
 	a.PK_BK_ID
     </select>
@@ -41,28 +42,31 @@ GROUP BY
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = a.BK_STEWARDS
         LEFT JOIN RE_BK_GROUP c ON a.PK_BK_ID = c.FK_BK_ID
         LEFT JOIN T_KQ_GROUP b ON b.PK_GROUP_ID = c.FK_GROUP_ID
-        GROUP BY
-        a.PK_BK_ID
         <where>
             <if test="pkBkId != null and pkBkId != ''">
-                and PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+                and a.PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
             </if>
             <if test="bkName != null and bkName != ''">
-                and BK_NAME = #{bkName,jdbcType=VARCHAR}
+                and a.BK_NAME = #{bkName,jdbcType=VARCHAR}
             </if>
             <if test="bkStewards != null and bkStewards != ''">
-                and BK_STEWARDS = #{bkStewards,jdbcType=VARCHAR}
+                and a.BK_STEWARDS = #{bkStewards,jdbcType=VARCHAR}
             </if>
             <if test="bkNum != null">
-                and BK_NUM = #{bkNum,jdbcType=INTEGER}
+                and a.BK_NUM = #{bkNum,jdbcType=INTEGER}
             </if>
             <if test="bkDate != null">
-                and BK_DATE = #{bkDate,jdbcType=INTEGER}
+                and a.BK_DATE = #{bkDate,jdbcType=INTEGER}
             </if>
             <if test="turnOn != null">
-                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+                and a.TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+            <if test="isDefault != null">
+                and a.IS_DEFAULT = #{isDefault,jdbcType=INTEGER}
             </if>
         </where>
+        GROUP BY
+        a.PK_BK_ID
     </select>
     <select id="select_YX_BkGroupByBkId" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
         select RE_BK_GROUP.FK_GROUP_ID as pkGroupId from RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}
@@ -89,6 +93,9 @@ GROUP BY
             <if test="turnOn != null">
                 TURN_ON,
             </if>
+            <if test="isDefault != null">
+                IS_DEFAULT,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkBkId != null and pkBkId != ''">
@@ -108,6 +115,9 @@ GROUP BY
             </if>
             <if test="turnOn != null">
                 #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -141,6 +151,9 @@ GROUP BY
             </if>
             <if test="turnOn != null">
                 TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                IS_DEFAULT = #{isDefault,jdbcType=INTEGER},
             </if>
         </set>
         where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}

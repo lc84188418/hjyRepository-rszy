@@ -12,6 +12,9 @@
         <result property="isTxJbf" column="IS_TX_JBF" jdbcType="INTEGER"/>
         <result property="txRule" column="TX_RULE" jdbcType="VARCHAR"/>
         <result property="jbfRule" column="JBF_RULE" jdbcType="VARCHAR"/>
+        <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="isDefault" column="IS_DEFAULT" jdbcType="INTEGER"/>
+
     </resultMap>
 
     <!--查询单个-->
@@ -32,39 +35,42 @@
         on a.PK_JB_ID = c.FK_JB_ID
         LEFT JOIN T_KQ_GROUP b
         on b.PK_GROUP_ID = c.FK_GROUP_ID
-        GROUP BY a.PK_JB_ID
         <where>
             <if test="pkJbId != null and pkJbId != ''">
-                and PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+                and a.PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
             </if>
             <if test="jbName != null and jbName != ''">
-                and JB_NAME = #{jbName,jdbcType=VARCHAR}
+                and a.JB_NAME = #{jbName,jdbcType=VARCHAR}
             </if>
             <if test="fxyjFrequency != null and fxyjFrequency != ''">
-                and FXYJ_FREQUENCY = #{fxyjFrequency,jdbcType=VARCHAR}
+                and a.FXYJ_FREQUENCY = #{fxyjFrequency,jdbcType=VARCHAR}
             </if>
             <if test="fxyjHour != null">
-                and FXYJ_HOUR = #{fxyjHour,jdbcType=INTEGER}
+                and a.FXYJ_HOUR = #{fxyjHour,jdbcType=INTEGER}
             </if>
             <if test="jsWay != null">
-                and JS_WAY = #{jsWay,jdbcType=INTEGER}
+                and a.JS_WAY = #{jsWay,jdbcType=INTEGER}
             </if>
             <if test="jbUnit != null">
-                and JB_UNIT = #{jbUnit,jdbcType=VARCHAR}
+                and a.JB_UNIT = #{jbUnit,jdbcType=VARCHAR}
             </if>
             <if test="isTxJbf != null">
-                and IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER}
+                and a.IS_TX_JBF = #{isTxJbf,jdbcType=INTEGER}
             </if>
             <if test="txRule != null and txRule != ''">
-                and TX_RULE = #{txRule,jdbcType=VARCHAR}
+                and a.TX_RULE = #{txRule,jdbcType=VARCHAR}
             </if>
             <if test="jbfRule != null and jbfRule != ''">
-                and JBF_RULE = #{jbfRule,jdbcType=VARCHAR}
+                and a.JBF_RULE = #{jbfRule,jdbcType=VARCHAR}
             </if>
             <if test="turnOn != null">
-                and TURN_ON = #{turnOn,jdbcType=INTEGER}
+                and a.TURN_ON = #{turnOn,jdbcType=INTEGER}
+            </if>
+            <if test="isDefault != null">
+                and a.IS_DEFAULT = #{isDefault,jdbcType=INTEGER}
             </if>
         </where>
+        GROUP BY a.PK_JB_ID
     </select>
     <select id="select_YX_JbGroupByJbId" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
        select RE_JB_GROUP.FK_GROUP_ID as pkGroupId from RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}
@@ -115,6 +121,9 @@
             <if test="turnOn != null">
                 TURN_ON,
             </if>
+            <if test="isDefault != null">
+                IS_DEFAULT,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkJbId != null and pkJbId != ''">
@@ -146,6 +155,9 @@
             </if>
             <if test="turnOn != null">
                 #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -179,6 +191,9 @@
             </if>
             <if test="turnOn != null">
                 TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                IS_DEFAULT = #{isDefault,jdbcType=INTEGER},
             </if>
         </set>
         where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}

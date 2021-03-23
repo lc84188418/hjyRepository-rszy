@@ -75,6 +75,8 @@ public class TKqBkServiceImpl implements TKqBkService {
         int bkNum = JsonUtil.getIntegerParam(json, "bkNum");
         int bkDate = JsonUtil.getIntegerParam(json, "bkDate");
 //        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
+//        int isDefault = JsonUtil.getIntegerParam(json, "isDefault");
+        //如果设置为默认规则，之前的默认规则需要修改isDefault=0
         tKqBk.setPkBkId(pkBkId);
         tKqBk.setBkName(bkName);
         tKqBk.setBkStewards(bkStewards);
@@ -82,6 +84,8 @@ public class TKqBkServiceImpl implements TKqBkService {
         tKqBk.setBkDate(bkDate);
 //        tKqBk.setTurnOn(turnOn);
         tKqBk.setTurnOn(1);
+//        tKqBk.setIsDefault(isDefault);
+        tKqBk.setIsDefault(0);
         int i = this.tKqBkMapper.insertSelective(tKqBk);
         StringBuffer stringBuffer = new StringBuffer();
         if (i > 0) {
@@ -195,14 +199,17 @@ public class TKqBkServiceImpl implements TKqBkService {
     @Override
     public CommonResult delete(TKqBk tKqBk) {
         //删除补卡分组数据
-        int j = tKqBkMapper.deleteBkGroupByBkId(tKqBk.getPkBkId());
         int i = this.tKqBkMapper.deleteById(tKqBk);
-        if (i > 0) {
-            JSONObject listInfo = this.getListInfo();
-            return new CommonResult(200, "success", "补卡规则数据删除成功！", listInfo);
-        } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(i > 0){
+            stringBuffer.append("补卡规则基本信息删除成功！");
+        }else {
+            return new CommonResult(444, "error", "补卡规则基本信息删除失败！", null);
         }
+        int j = tKqBkMapper.deleteBkGroupByBkId(tKqBk.getPkBkId());
+        stringBuffer.append("已清除补卡规则相关考勤组设置，"+j+"个");
+        JSONObject listInfo = this.getListInfo();
+        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
     }
 
     /**

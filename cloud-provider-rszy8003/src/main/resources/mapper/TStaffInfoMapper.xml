@@ -247,12 +247,16 @@ WHERE
 	T_STAFF_INFO.ID_CARD = #{idcard}
 
     </select>
-<!--    查询还没添加工资条的员工列表，不包括已经添加过的员工-->
+<!--查询还没添加工资条的员工列表，不包括已经添加过的员工-->
     <select id="selectEnableAddSalary" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
 SELECT T_STAFF_INFO.PK_STAFF_ID,T_STAFF_INFO.STAFF_NAME
 FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(T_STAFF_SALARY.FK_STAFF_ID) FROM T_STAFF_SALARY)
     </select>
-
+    <!--查询还没添加考勤组的员工列表，不包括已经添加过的员工-->
+    <select id="selectAll_KX_StaffId_Name" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+SELECT T_STAFF_INFO.PK_STAFF_ID,T_STAFF_INFO.STAFF_NAME
+FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_STAFF_ID) FROM RE_GROUP_STAFF)
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">
         insert into hjy_cloud.T_STAFF_INFO(STAFF_NAME, STAFF_SEX, STAFF_AGE, FK_DEPT_ID, FK_POSITION_ID, ENTRY_TIME, FK_HTLX_ID, RECRUIT_WAY, SYQDQ_TIME, ID_TYPE, ID_CARD, NATIVE_PLACE, BIRTHDAY, FK_NATION_ID, HKSZD, POLITIVAL_OUTLOOK, CURRENT_ADDRESS, IS_MARRY, FK_EDUCATION_ID, ZGXLBYYX, WY_DJ, JSJ_DJ, MAJOR, BANK_NAME, BANK_ID, BRANCH_BANK, SYR, PICTURE_PATH, HBLX_NAME1, OBJECT1, HBLX_NAME2, OBJECT2, HBLX_NAME3, OBJECT3, HBLX_NAME4, OBJECT4, HBLX_NAME5, OBJECT5)

@@ -19,6 +19,8 @@ public class TKqGroup {
     private String pkGroupId;
     @ApiModelProperty("考勤组名称")
     private String groupName;
+    @ApiModelProperty("同部门后续同事自动加入该考勤组")
+    private Integer autoJoin;
     @ApiModelProperty("考勤地址")
     private String kqAddress;
     @ApiModelProperty("考勤范围")
@@ -27,6 +29,8 @@ public class TKqGroup {
     private String groupStewards;
     @ApiModelProperty("考勤类型，1固定班制2排班制3自由工时")
     private Integer kqType;
+    @ApiModelProperty("类型设置")
+    private Integer typeSet;
     @ApiModelProperty("法定节假日自动排休")
     private Integer isPaixiu;
     @ApiModelProperty("必须打卡日期")

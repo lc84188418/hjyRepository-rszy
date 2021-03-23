@@ -6,7 +6,7 @@
         <result property="pkClockId" column="PK_CLOCK_ID" jdbcType="VARCHAR"/>
         <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
         <result property="jobId" column="JOB_ID" jdbcType="VARCHAR"/>
-        <result property="currentDate" column="CURRENT_DATE" jdbcType="DATE"/>
+        <result property="todayDate" column="TODAY_DATE" jdbcType="DATE"/>
         <result property="onDutyTime" column="ON_DUTY_TIME" jdbcType="TIMESTAMP"/>
         <result property="onCloudAddress" column="ON_CLOUD_ADDRESS" jdbcType="VARCHAR"/>
         <result property="onCloudIp" column="ON_CLOUD_IP" jdbcType="VARCHAR"/>
@@ -15,9 +15,12 @@
         <result property="offCloudAddress" column="OFF_CLOUD_ADDRESS" jdbcType="VARCHAR"/>
         <result property="offCloudIp" column="OFF_CLOUD_IP" jdbcType="VARCHAR"/>
         <result property="offIsWq" column="OFF_IS_WQ" jdbcType="VARCHAR"/>
-        <result property="workingHours" column="WORKING_HOURS" jdbcType="REAL"/>
+        <result property="workingHours" column="WORKING_HOURS" jdbcType="OTHER"/>
         <result property="isCd" column="IS_CD" jdbcType="INTEGER"/>
+        <result property="cdMinute" column="CD_MINUTE" jdbcType="VARCHAR"/>
         <result property="isZt" column="IS_ZT" jdbcType="INTEGER"/>
+        <result property="ztMinute" column="ZT_MINUTE" jdbcType="VARCHAR"/>
+        <result property="isDkr" column="IS_DKR" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="fkGroupId" column="FK_GROUP_ID" jdbcType="VARCHAR"/>
         <result property="fkPositionId" column="FK_POSITION_ID" jdbcType="VARCHAR"/>
@@ -28,13 +31,38 @@
         select * from hjy_cloud.T_KQ_CLOCK
         where PK_CLOCK_ID = #{pkClockId}
     </select>
-
+    <select id="selectGroupStaffByStaffId" resultType="com.hjy.cloud.t_kq.entity.ReGroupStaff">
+        select * from RE_GROUP_STAFF where RE_GROUP_STAFF.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+    </select>
+    <!--通过分组id查询工作地信息-->
+    <select id="selectWorkAddressByGroupId" resultType="com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress">
+SELECT
+	T_OUTFIT_WORKADDRESS.*
+FROM
+	T_OUTFIT_WORKADDRESS
+WHERE
+	T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID IN
+	( SELECT RE_GROUP_WORKADDRESS.FK_WORKADDRESS_ID
+	FROM RE_GROUP_WORKADDRESS WHERE RE_GROUP_WORKADDRESS.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR})
+    </select>
+    <select id="selectGroupWorkingDaysByEntity" resultType="com.hjy.cloud.t_kq.entity.ReGroupWorkingdays">
+        SELECT * FROM RE_GROUP_WORKINGDAYS WHERE 1=1
+        <if test="fkGroupId != null and fkGroupId != ''">
+            and FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+        </if>
+        <if test="workingDays != null and workingDays != ''">
+            and WORKING_DAYS = #{workingDays,jdbcType=VARCHAR}
+        </if>
+        <if test="fkBcId != null and fkBcId != ''">
+            and FK_BC_ID = #{fkBcId,jdbcType=VARCHAR}
+        </if>
+    </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TKqClockMap">
         select
-        PK_CLOCK_ID, FK_STAFF_ID, JOB_ID, CURRENT_DATE, ON_DUTY_TIME, ON_CLOUD_ADDRESS, ON_CLOUD_IP, ON_IS_WQ,
-        OFF_DUTY_TIME, OFF_CLOUD_ADDRESS, OFF_CLOUD_IP, OFF_IS_WQ, WORKING_HOURS, IS_CD, IS_ZT, FK_DEPT_ID, FK_GROUP_ID,
-        FK_POSITION_ID
+        PK_CLOCK_ID, FK_STAFF_ID, JOB_ID, TODAY_DATE, ON_DUTY_TIME, ON_CLOUD_ADDRESS, ON_CLOUD_IP, ON_IS_WQ,
+        OFF_DUTY_TIME, OFF_CLOUD_ADDRESS, OFF_CLOUD_IP, OFF_IS_WQ, WORKING_HOURS, IS_CD, CD_MINUTE, IS_ZT, ZT_MINUTE,
+        IS_DKR, FK_DEPT_ID, FK_GROUP_ID, FK_POSITION_ID
         from hjy_cloud.T_KQ_CLOCK
         <where>
             <if test="pkClockId != null and pkClockId != ''">
@@ -46,8 +74,8 @@
             <if test="jobId != null and jobId != ''">
                 and JOB_ID = #{jobId,jdbcType=VARCHAR}
             </if>
-            <if test="currentDate != null">
-                and CURRENT_DATE = #{currentDate,jdbcType=DATE}
+            <if test="todayDate != null">
+                and TODAY_DATE = #{todayDate,jdbcType=DATE}
             </if>
             <if test="onDutyTime != null">
                 and ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP}
@@ -74,13 +102,22 @@
                 and OFF_IS_WQ = #{offIsWq,jdbcType=VARCHAR}
             </if>
             <if test="workingHours != null">
-                and WORKING_HOURS = #{workingHours,jdbcType=REAL}
+                and WORKING_HOURS = #{workingHours,jdbcType=OTHER}
             </if>
             <if test="isCd != null">
                 and IS_CD = #{isCd,jdbcType=INTEGER}
             </if>
+            <if test="cdMinute != null and cdMinute != ''">
+                and CD_MINUTE = #{cdMinute,jdbcType=VARCHAR}
+            </if>
             <if test="isZt != null">
                 and IS_ZT = #{isZt,jdbcType=INTEGER}
+            </if>
+            <if test="ztMinute != null and ztMinute != ''">
+                and ZT_MINUTE = #{ztMinute,jdbcType=VARCHAR}
+            </if>
+            <if test="isDkr != null">
+                and IS_DKR = #{isDkr,jdbcType=INTEGER}
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
@@ -106,8 +143,8 @@
             <if test="jobId != null and jobId != ''">
                 JOB_ID,
             </if>
-            <if test="currentDate != null">
-                CURRENT_DATE,
+            <if test="todayDate != null">
+                TODAY_DATE,
             </if>
             <if test="onDutyTime != null">
                 ON_DUTY_TIME,
@@ -139,8 +176,17 @@
             <if test="isCd != null">
                 IS_CD,
             </if>
+            <if test="cdMinute != null and cdMinute != ''">
+                CD_MINUTE,
+            </if>
             <if test="isZt != null">
                 IS_ZT,
+            </if>
+            <if test="ztMinute != null and ztMinute != ''">
+                ZT_MINUTE,
+            </if>
+            <if test="isDkr != null">
+                IS_DKR,
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID,
@@ -162,8 +208,8 @@
             <if test="jobId != null and jobId != ''">
                 #{jobId,jdbcType=VARCHAR},
             </if>
-            <if test="currentDate != null">
-                #{currentDate,jdbcType=DATE},
+            <if test="todayDate != null">
+                #{todayDate,jdbcType=DATE},
             </if>
             <if test="onDutyTime != null">
                 #{onDutyTime,jdbcType=TIMESTAMP},
@@ -190,13 +236,22 @@
                 #{offIsWq,jdbcType=VARCHAR},
             </if>
             <if test="workingHours != null">
-                #{workingHours,jdbcType=REAL},
+                #{workingHours,jdbcType=OTHER},
             </if>
             <if test="isCd != null">
                 #{isCd,jdbcType=INTEGER},
             </if>
+            <if test="cdMinute != null and cdMinute != ''">
+                #{cdMinute,jdbcType=VARCHAR},
+            </if>
             <if test="isZt != null">
                 #{isZt,jdbcType=INTEGER},
+            </if>
+            <if test="ztMinute != null and ztMinute != ''">
+                #{ztMinute,jdbcType=VARCHAR},
+            </if>
+            <if test="isDkr != null">
+                #{isDkr,jdbcType=INTEGER},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 #{fkDeptId,jdbcType=VARCHAR},
@@ -219,8 +274,8 @@
             <if test="jobId != null and jobId != ''">
                 JOB_ID = #{jobId,jdbcType=VARCHAR},
             </if>
-            <if test="currentDate != null">
-                CURRENT_DATE = #{currentDate,jdbcType=DATE},
+            <if test="todayDate != null">
+                TODAY_DATE = #{todayDate,jdbcType=DATE},
             </if>
             <if test="onDutyTime != null">
                 ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP},
@@ -247,13 +302,22 @@
                 OFF_IS_WQ = #{offIsWq,jdbcType=VARCHAR},
             </if>
             <if test="workingHours != null">
-                WORKING_HOURS = #{workingHours,jdbcType=REAL},
+                WORKING_HOURS = #{workingHours,jdbcType=OTHER},
             </if>
             <if test="isCd != null">
                 IS_CD = #{isCd,jdbcType=INTEGER},
             </if>
+            <if test="cdMinute != null and cdMinute != ''">
+                CD_MINUTE = #{cdMinute,jdbcType=VARCHAR},
+            </if>
             <if test="isZt != null">
                 IS_ZT = #{isZt,jdbcType=INTEGER},
+            </if>
+            <if test="ztMinute != null and ztMinute != ''">
+                ZT_MINUTE = #{ztMinute,jdbcType=VARCHAR},
+            </if>
+            <if test="isDkr != null">
+                IS_DKR = #{isDkr,jdbcType=INTEGER},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},

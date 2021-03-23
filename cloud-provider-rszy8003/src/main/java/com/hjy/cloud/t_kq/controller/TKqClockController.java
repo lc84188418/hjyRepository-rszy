@@ -34,7 +34,11 @@ public class TKqClockController {
     /**
      * 1 跳转到新增页面
      */
-    @ApiOperation(value = "新增页面", notes = "参数:")
+    @ApiOperation(value = "新增页面", notes = "入参:无\n" +
+            "回参：\nisKq：true,为true代表需要考勤\n" +
+            "group：员工所属考勤组基本信息\n" +
+            "workAddress：考勤组设置的办公地信息\n" +
+            "todayBc：今日班次信息\n")
     @GetMapping(value = "/kq/clock/addPage")
     public CommonResult insertPage(HttpServletRequest request) throws FebsException {
         try {

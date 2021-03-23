@@ -22,6 +22,8 @@ public class TKqBk {
     private Integer bkDate;
     //是否启用
     private Integer turnOn;
+    //是否默认规则IS_DEFAULT
+    private Integer isDefault;
     //-----------
     private String stewardsName;
     private String bkGroupId;

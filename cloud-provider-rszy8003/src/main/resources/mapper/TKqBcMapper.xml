@@ -11,6 +11,7 @@
         <result property="txdk" column="TXDK" jdbcType="INTEGER"/>
         <result property="bcStewards" column="BC_STEWARDS" jdbcType="VARCHAR"/>
         <result property="turnOn" column="TURN_ON" jdbcType="INTEGER"/>
+        <result property="isDefault" column="IS_DEFAULT" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
@@ -50,7 +51,17 @@
             <if test="turnOn != null">
                 and TURN_ON = #{turnOn,jdbcType=INTEGER}
             </if>
+            <if test="isDefault != null">
+                and IS_DEFAULT = #{isDefault,jdbcType=INTEGER}
+            </if>
         </where>
+    </select>
+    <select id="selectDefaultBc" resultType="com.hjy.cloud.t_kq.entity.TKqBc">
+        select T_KQ_BC.*,
+        T_STAFF_INFO.STAFF_NAME AS stewardsName
+        from hjy_cloud.T_KQ_BC
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_BC.BC_STEWARDS
+        where IS_DEFAULT = 1
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBc">
@@ -80,6 +91,9 @@
             <if test="turnOn != null">
                 TURN_ON,
             </if>
+            <if test="isDefault != null">
+                IS_DEFAULT,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkBcId != null and pkBcId != ''">
@@ -105,6 +119,9 @@
             </if>
             <if test="turnOn != null">
                 #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                #{isDefault,jdbcType=INTEGER},
             </if>
         </trim>
     </insert>
@@ -132,6 +149,9 @@
             </if>
             <if test="turnOn != null">
                 TURN_ON = #{turnOn,jdbcType=INTEGER},
+            </if>
+            <if test="isDefault != null">
+                IS_DEFAULT = #{isDefault,jdbcType=INTEGER},
             </if>
         </set>
         where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}

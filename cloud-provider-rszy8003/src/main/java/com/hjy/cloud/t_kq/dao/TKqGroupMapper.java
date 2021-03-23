@@ -82,5 +82,6 @@ public interface TKqGroupMapper {
     List<ReJbGroup> select_YX_JbByGroup(@Param("fkGroupId")String fkGroupId);
     //删除补卡-group
     int deleteBkGroupByGroupId(@Param("fkGroupId")String fkGroupId);
-
+    //删除加班-group
+    int deleteJbGroupByGroupId_Batch(@Param("jbGroupList")List<ReJbGroup> joinList);
 }
