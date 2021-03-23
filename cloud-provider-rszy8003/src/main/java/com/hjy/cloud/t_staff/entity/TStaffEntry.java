@@ -14,7 +14,7 @@ import lombok.Data;
 public class TStaffEntry {
     //入职信息主键
     private String pkEntryId;
-    //姓名
+    //姓名,必填
     private String staffName;
     //性别
     private Integer staffSex;
@@ -34,7 +34,7 @@ public class TStaffEntry {
     private String idType;
     //证件号
     private String idCard;
-    //入职日期-页面上添加
+    //入职日期-页面上添加,必填
     private Date entryTime;
     //个人邮箱
     private String email;

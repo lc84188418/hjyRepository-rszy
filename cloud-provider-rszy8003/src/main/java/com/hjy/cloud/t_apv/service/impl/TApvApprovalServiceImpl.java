@@ -356,11 +356,14 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
          *
          */
         List<DApvRecord> waitApvRecords = tApvApprovalMapper.waitApvUser(tokenEntity.getFkUserId());
+        if(waitApvRecords == null || waitApvRecords.size() == 0){
+            return new CommonResult(201, "success", "暂未有待审批流程！", null);
+        }
         //将待审批数据进行处理
         List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,tokenEntity.getFkUserId());
         JSONObject resultJson = new JSONObject();
         resultJson.put("waitApvRecords", apvRecords);
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
+        return new CommonResult(200, "success", "获取数据成功！", resultJson);
 
     }
     //将待审批数据进行处理
@@ -608,7 +611,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         if(apvRecords != null && apvRecords.size() > 0){
             StringBuffer stringBuffer = new StringBuffer();
             DApvRecord apvRecord = apvRecords.get(0);
-            if(apvRecord.getApvResult() == null || !StringUtils.isEmpty(apvRecord.getApvResult().toString())){
+            if(apvRecord.getApvResult() != null && !StringUtils.isEmpty(apvRecord.getApvResult().toString().trim())){
                 //说明此前已审批过了该流程，可更新审批结果
                 stringBuffer.append("已审批过该流程！");
                 apvRecord.setApvDate(new Date());
@@ -647,7 +650,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
             return new CommonResult(445, "error", "未查询到您所需的审批流程！", null);
-
         }
     }
 
@@ -672,16 +674,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         JSONObject jsonObject = JSON.parseObject(param);
         JSONObject resultJson = new JSONObject();
         String firstApvRecordId = String.valueOf(jsonObject.get("apvId"));
-//        List<DApvRecord> dApvRecordList = tApvApprovalMapper.selectByFirstApvRecordId(firstApvRecordId);
-//        if(dApvRecordList == null || dApvRecordList.size() == 0){
-//            return new CommonResult(444, "error", "该审批流程已被清除！", null);
-//        }
-//        //将审批流程数据进行处理
-//        TempApvEntity apvProcessDetail = this.optimizeApvProcessDetail(dApvRecordList);
-//        resultJson.put("apvProcessDetail", apvProcessDetail);
-        List<DApvRecord> dApvRecordList = this.optimizeApvProcessDetail2(firstApvRecordId);
+        List<DApvRecord> dApvRecordList = this.optimizeApvProcessDetail(firstApvRecordId);
         resultJson.put("apvList", dApvRecordList);
-
         /**
          * 处理抄送人,firstApvRecordId
          */
@@ -690,7 +684,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DCcRecord> dCcRecords = dCcRecordMapper.selectAllPage(selectEntity);
         resultJson.put("csrList", dCcRecords);
         return new CommonResult(200, "success", "获取审批流程信息成功", resultJson);
-
     }
 
     /**
@@ -698,7 +691,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
      * @param firstApvRecordId
      * @return
      */
-    private List<DApvRecord> optimizeApvProcessDetail2(String firstApvRecordId) {
+    private List<DApvRecord> optimizeApvProcessDetail(String firstApvRecordId) {
         List<DApvRecord> resultList = new ArrayList<>();
         String pk_apv_id = firstApvRecordId;
         int num = 1;
@@ -842,100 +835,5 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         return resultJson;
     }
 
-    //将审批流程数据进行处理，但只对查看信息有效
-    private TempApvEntity optimizeApvProcessDetail(List<DApvRecord> dApvRecords) {
-        if(dApvRecords == null && dApvRecords.size() == 0){
-            return null;
-        }
-        System.err.println(dApvRecords);
-        TempApvEntity tempApvEntity = new TempApvEntity();
-        Iterator<DApvRecord> iterator = dApvRecords.iterator();
-        while (iterator.hasNext()){
-            DApvRecord first = iterator.next();
-            if(first.getIsStart() == 1){
-                //第一级审批人
-                tempApvEntity.setPkApprovalId(first.getPkRecordId());
-                tempApvEntity.setApprovalType(first.getApprovalType());
-                tempApvEntity.setApplyPeople(first.getApplyPeople());
-                tempApvEntity.setApvtypeName(first.getApvtypeName());
-                tempApvEntity.setSponsor(first.getSponsor());
-                tempApvEntity.setStartTime(first.getStartTime());
-                tempApvEntity.setApprovalPeople1(first.getApvApproval());
-                tempApvEntity.setApvDate1(first.getApvDate());
-                tempApvEntity.setApvResult1(first.getApvResult());
-                tempApvEntity.setApvReason1(first.getApvReason());
-                //来源ID
-                tempApvEntity.setSourceId(first.getSourceId());
-                tempApvEntity.setApprovalPeople2(first.getNextApproval());
-                //将该审批记录移除
-                iterator.remove();
-            }
-        }
-        //二级审批人
-        if(!tempApvEntity.getApprovalPeople2().equals("0")){
-            //说明有下级审批
-            Iterator<DApvRecord> secondIterator = dApvRecords.iterator();
-            while (secondIterator.hasNext()){
-                DApvRecord second = secondIterator.next();
-                if(tempApvEntity.getApprovalPeople2().equals(second.getPkRecordId())){
-                    tempApvEntity.setApprovalPeople2(second.getApvApproval());
-                    tempApvEntity.setApvDate2(second.getApvDate());
-                    tempApvEntity.setApvResult2(second.getApvResult());
-                    tempApvEntity.setApvReason2(second.getApvReason());
-                    tempApvEntity.setApprovalPeople3(second.getNextApproval());
-                    //将该审批记录移除
-                    secondIterator.remove();
-                }
-            }
-            if(!tempApvEntity.getApprovalPeople3().equals("0")){
-                //说明有下级审批，三级审批人
-                Iterator<DApvRecord> thirdIterator = dApvRecords.iterator();
-                while (thirdIterator.hasNext()){
-                    DApvRecord third = thirdIterator.next();
-                    if(tempApvEntity.getApprovalPeople3().equals(third.getPkRecordId())){
-                        tempApvEntity.setApprovalPeople3(third.getApvApproval());
-                        tempApvEntity.setApvDate3(third.getApvDate());
-                        tempApvEntity.setApvResult3(third.getApvResult());
-                        tempApvEntity.setApvReason3(third.getApvReason());
-                        tempApvEntity.setApprovalPeople4(third.getNextApproval());
-                        //将该审批记录移除
-                        thirdIterator.remove();
-                    }
-                }
-                if(!tempApvEntity.getApprovalPeople4().equals("0")){
-                    //说明有下级审批，四级审批人
-                    Iterator<DApvRecord> fourthIterator = dApvRecords.iterator();
-                    while (fourthIterator.hasNext()){
-                        DApvRecord fourth = fourthIterator.next();
-                        if(tempApvEntity.getApprovalPeople4().equals(fourth.getPkRecordId())){
-                            tempApvEntity.setApprovalPeople4(fourth.getApvApproval());
-                            tempApvEntity.setApvDate4(fourth.getApvDate());
-                            tempApvEntity.setApvResult4(fourth.getApvResult());
-                            tempApvEntity.setApvReason4(fourth.getApvReason());
-                            tempApvEntity.setApprovalPeople5(fourth.getNextApproval());
-                            //将该审批记录移除
-                            fourthIterator.remove();
-                        }
-                    }
-                    if(!tempApvEntity.getApprovalPeople5().equals("0")){
-                        //说明有下级审批，五级审批人
-                        Iterator<DApvRecord> fifthIterator = dApvRecords.iterator();
-                        while (fifthIterator.hasNext()){
-                            DApvRecord fifth = fifthIterator.next();
-                            if(tempApvEntity.getApprovalPeople5().equals(fifth.getPkRecordId())){
-                                tempApvEntity.setApprovalPeople5(fifth.getApvApproval());
-                                tempApvEntity.setApvDate5(fifth.getApvDate());
-                                tempApvEntity.setApvResult5(fifth.getApvResult());
-                                tempApvEntity.setApvReason5(fifth.getApvReason());
-                                //将该审批记录移除
-                                fifthIterator.remove();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return tempApvEntity;
-    }
 }
     

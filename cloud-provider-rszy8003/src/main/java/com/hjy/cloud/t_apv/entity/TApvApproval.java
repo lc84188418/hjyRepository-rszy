@@ -16,20 +16,21 @@ public class TApvApproval implements Comparable<TApvApproval>{
     private String approvalType;
     //审批人ID
     private String approvalPeople;
-    //审批人名字
-    private String peopleName;
     //下级审批
     private String nextApproval;
     //数据保存类型，1为通用，0为临时
     private Integer dataType;
     //审批人岗位
     private String apvStation;
-    //岗位名字
-    private String stationName;
     //是否为结尾审批
     private int isEnding;
     //是否为第一级审批
     private int isStart;
+    //---------
+    //审批人名字
+    private String peopleName;
+    //岗位名字
+    private String stationName;
     @Override
     public int compareTo(TApvApproval tApvApproval) {
         return String.valueOf(this.getIsStart()).compareTo(String.valueOf(tApvApproval.getIsStart()));

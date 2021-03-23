@@ -153,31 +153,31 @@ public class DateUtil {
         Date endTime = df.parse(timeSlots[1]);
         int status = belongCalendar(nowTime, beginTime, endTime);
         resultMap.put("isTimeSlot",String.valueOf(status));
-        if(status == 1){
-            if(dkType == 1){
-                //说明上班提前打卡，计算提前时间
-            }else {
-                //说明为早退卡,还没到上班时间就已经打了下班卡了
-            }
-        }else if(status == 2){
-            if(dkType == 1){
-                //说明上班迟到打卡，计算迟到时间
-                String minute = DateUtil.getminute(beginTime,nowTime);
-                resultMap.put("cd_ztMinute",minute);
-            }else {
-                //说明下班早退打卡，计算早退时间
-                String minute = DateUtil.getminute(nowTime,endTime);
-                resultMap.put("cd_ztMinute",minute);
-            }
-        }else {
-            //说明下班时间打卡
-            if(dkType == 1){
-                //说明为忘记打卡，今天一次都没有打卡
-            }else {
-                //说明该员工还在努力的加班中
-                //根据加班规则，计算加班
-            }
-        }
+//        if(status == 1){
+//            if(dkType == 1){
+//                //说明上班提前打卡，计算提前时间
+//            }else {
+//                //说明为早退卡,还没到上班时间就已经打了下班卡了
+//            }
+//        }else if(status == 2){
+//            if(dkType == 1){
+//                //说明上班迟到打卡，计算迟到时间
+//                String minute = DateUtil.getminute(beginTime,nowTime);
+//                resultMap.put("cd_ztMinute",minute);
+//            }else {
+//                //说明下班早退打卡，计算早退时间
+//                String minute = DateUtil.getminute(nowTime,endTime);
+//                resultMap.put("cd_ztMinute",minute);
+//            }
+//        }else {
+//            //说明下班时间打卡
+//            if(dkType == 1){
+//                //说明为忘记打卡，今天一次都没有打卡
+//            }else {
+//                //说明该员工还在努力的加班中
+//                //根据加班规则，计算加班
+//            }
+//        }
         return resultMap;
     }
     /**

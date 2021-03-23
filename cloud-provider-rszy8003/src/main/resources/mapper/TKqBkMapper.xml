@@ -161,7 +161,7 @@ GROUP BY
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR}
+        delete from hjy_cloud.T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteBkGroupByBkId">
         delete from hjy_cloud.RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}

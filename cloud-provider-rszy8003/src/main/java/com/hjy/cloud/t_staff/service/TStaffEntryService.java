@@ -26,7 +26,7 @@ public interface TStaffEntryService {
      * @param tStaffEntry
      * @return
      */
-    CommonResult insert(TStaffEntry tStaffEntry);
+    CommonResult insert(TStaffEntry tStaffEntry,HttpServletRequest request);
 
     /**
      * 修改数据

@@ -159,7 +159,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_BC where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR}
+        delete from hjy_cloud.T_KQ_BC where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteGroupBcByBcId">
         delete from RE_GROUP_WORKINGDAYS where FK_BC_ID = #{fkBcId,jdbcType=VARCHAR}

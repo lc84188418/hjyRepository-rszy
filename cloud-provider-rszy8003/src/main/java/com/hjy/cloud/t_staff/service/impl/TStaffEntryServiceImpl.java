@@ -111,17 +111,20 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
      */
     @Transactional()
     @Override
-    public CommonResult insert(TStaffEntry tStaffEntry) {
-        StringBuffer sb = new StringBuffer();
+    public CommonResult insert(TStaffEntry tStaffEntry,HttpServletRequest request) {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String pkId = IDUtils.getUUID();
         tStaffEntry.setPkEntryId(pkId);
         tStaffEntry.setStatus(0);
+        if(sysToken != null){
+            tStaffEntry.setOperatedPeople(sysToken.getFullName());
+        }
         //入职时间
         //操作人
         int i = this.tStaffEntryMapper.insertSelective(tStaffEntry);
         if (i > 0) {
             JSONObject resultJson = this.getListInfo();
-            return new CommonResult(200, "success", "入职信息添加成功！", resultJson);
+            return new CommonResult(200, "success", tStaffEntry.getStaffName()+" 入职信息添加成功！", resultJson);
         } else {
             return new CommonResult(444, "error", "添加数据失败！", null);
         }

@@ -44,15 +44,19 @@
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TApvApprovalMap">
-        select
-        PK_APPROVAL_ID,
-        APPROVAL_TYPE,
-        APPROVAL_PEOPLE,
-        APV_STATION,
-        T_STAFF_INFO.STAFF_NAME AS PEOPLE_NAME
-        from hjy_cloud.T_APV_APPROVAL
-        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_APV_APPROVAL.APPROVAL_PEOPLE
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
+        SELECT
+        t.PK_APPROVAL_ID,
+        t.APPROVAL_TYPE,
+        t.APPROVAL_PEOPLE,
+        t.APV_STATION,
+        T_STAFF_INFO.STAFF_NAME AS peopleName,
+        T_STAFF_INFO.FK_POSITION_ID,
+        T_DICTIONARY_POSITION.POSITION_NAME AS stationName
+        FROM
+        hjy_cloud.T_APV_APPROVAL t
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.APPROVAL_PEOPLE
+        LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
         <where>
             <if test="pkApprovalId != null and pkApprovalId != ''">
                 and PK_APPROVAL_ID = #{pkApprovalId}
@@ -212,13 +216,14 @@ ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
     <select id="selectApvRecordByPkId" resultType="com.hjy.cloud.common.entity.DApvRecord">
         SELECT
 	t.*,
-	T_STAFF_INFO.STAFF_NAME AS approvalPeopleName,
 	T_STAFF_INFO.FK_POSITION_ID,
-	T_DICTIONARY_POSITION.POSITION_NAME positionName
+	T_DICTIONARY_POSITION.POSITION_NAME positionName,
+	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
 FROM
 	D_APV_RECORD t
 	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.APV_APPROVAL
 	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
+	LEFT JOIN T_APV_APVTYPE ON T_APV_APVTYPE.PK_APVTYPE_ID = t.APPROVAL_TYPE
 where PK_RECORD_ID = #{pkRecordId}
     </select>
 <!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->

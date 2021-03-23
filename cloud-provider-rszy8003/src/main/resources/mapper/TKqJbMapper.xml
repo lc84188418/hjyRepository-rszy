@@ -201,7 +201,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR}
+        delete from hjy_cloud.T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteJbGroupByJbId">
         delete from hjy_cloud.RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}

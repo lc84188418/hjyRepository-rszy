@@ -56,6 +56,9 @@ WHERE
         <if test="fkBcId != null and fkBcId != ''">
             and FK_BC_ID = #{fkBcId,jdbcType=VARCHAR}
         </if>
+        <if test="kqType != null">
+            and KQ_TYPE = #{kqType,jdbcType=INTEGER}
+        </if>
     </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TKqClockMap">
@@ -100,9 +103,6 @@ WHERE
             </if>
             <if test="offIsWq != null and offIsWq != ''">
                 and OFF_IS_WQ = #{offIsWq,jdbcType=VARCHAR}
-            </if>
-            <if test="workingHours != null">
-                and WORKING_HOURS = #{workingHours,jdbcType=OTHER}
             </if>
             <if test="isCd != null">
                 and IS_CD = #{isCd,jdbcType=INTEGER}

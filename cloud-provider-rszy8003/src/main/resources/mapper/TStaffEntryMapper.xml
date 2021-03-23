@@ -217,6 +217,9 @@
             <if test="idCard != null and idCard != ''">
                 ID_CARD,
             </if>
+            <if test="status != null">
+                STATUS,
+            </if>
             <if test="entryTime != null">
                 ENTRY_TIME,
             </if>
@@ -226,26 +229,11 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 OPERATED_PEOPLE,
             </if>
-            <if test="status != null">
-                STATUS,
-            </if>
             <if test="remarks != null and remarks != ''">
                 REMARKS,
             </if>
-            <if test="isAbandon != null">
-                IS_ABANDON,
-            </if>
-            <if test="abandonTime != null">
-                ABANDON_TIME,
-            </if>
-            <if test="abandonReason != null and abandonReason != ''">
-                ABANDON_REASON,
-            </if>
             <if test="entryDesc != null and entryDesc != ''">
                 ENTRY_DESC,
-            </if>
-            <if test="apvId != null and apvId != ''">
-                APV_ID,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -282,6 +270,9 @@
             <if test="idCard != null and idCard != ''">
                 #{idCard,jdbcType=VARCHAR},
             </if>
+            <if test="status != null">
+                #{status,jdbcType=INTEGER},
+            </if>
             <if test="entryTime != null">
                 #{entryTime,jdbcType=DATE},
             </if>
@@ -291,26 +282,11 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 #{operatedPeople,jdbcType=VARCHAR},
             </if>
-            <if test="status != null">
-                #{status,jdbcType=INTEGER},
-            </if>
             <if test="remarks != null and remarks != ''">
                 #{remarks,jdbcType=VARCHAR},
             </if>
-            <if test="isAbandon != null">
-                #{isAbandon,jdbcType=INTEGER},
-            </if>
-            <if test="abandonTime != null">
-                #{abandonTime,jdbcType=DATE},
-            </if>
-            <if test="abandonReason != null and abandonReason != ''">
-                #{abandonReason,jdbcType=VARCHAR},
-            </if>
             <if test="entryDesc != null and entryDesc != ''">
                 #{entryDesc,jdbcType=VARCHAR},
-            </if>
-            <if test="apvId != null and apvId != ''">
-                #{apvId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>

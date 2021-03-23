@@ -204,7 +204,7 @@ public class TKqBkServiceImpl implements TKqBkService {
         if(i > 0){
             stringBuffer.append("补卡规则基本信息删除成功！");
         }else {
-            return new CommonResult(444, "error", "补卡规则基本信息删除失败！", null);
+            return new CommonResult(444, "error", "默认补卡规则无法！", null);
         }
         int j = tKqBkMapper.deleteBkGroupByBkId(tKqBk.getPkBkId());
         stringBuffer.append("已清除补卡规则相关考勤组设置，"+j+"个");

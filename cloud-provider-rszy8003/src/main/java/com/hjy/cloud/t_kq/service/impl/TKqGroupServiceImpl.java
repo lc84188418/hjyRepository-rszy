@@ -415,12 +415,20 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             }
         }
         if(workingDaysList != null && workingDaysList.size() > 0){
+            Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
             if(kqType == 1){
-
+                //固定班制
+                while (workingdaysIterator.hasNext()){
+                    ReGroupWorkingdays workingdays = workingdaysIterator.next();
+                    workingdays.setPkGroupworkingdaysId(IDUtils.getUUID());
+                    workingdays.setFkGroupId(pkGroupId);
+                    //workingdays、fkBcId前端传过来
+                    workingdays.setKqType(kqType);
+                }
             }else if(kqType == 2){
-
+                //排班制
             }else if(kqType == 3){
-                Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
+                //自由工时
                 while (workingdaysIterator.hasNext()){
                     ReGroupWorkingdays workingdays = workingdaysIterator.next();
                     workingdays.setPkGroupworkingdaysId(IDUtils.getUUID());
@@ -442,7 +450,6 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                 stringBuffer.append("班次设置失败！");
             }
         }
-
         /**
          * 三、工作地设置
          */

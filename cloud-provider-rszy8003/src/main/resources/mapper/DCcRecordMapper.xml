@@ -14,12 +14,16 @@
         select * from hjy_cloud.D_CC_RECORD
         where PK_CC_ID = #{pkCcId}
     </select>
-
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="DCcRecordMap">
-        select
-        PK_CC_ID, FK_STAFF_ID, STAFF_NAME, FIRST_APVRECORD_ID
-        from hjy_cloud.D_CC_RECORD
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_apv.entity.DCcRecord">
+        SELECT
+        t.*,
+        T_STAFF_INFO.FK_POSITION_ID,
+        T_DICTIONARY_POSITION.POSITION_NAME AS stationName
+        FROM
+        hjy_cloud.D_CC_RECORD t
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.FK_STAFF_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
         <where>
             <if test="pkCcId != null and pkCcId != ''">
                 and PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}

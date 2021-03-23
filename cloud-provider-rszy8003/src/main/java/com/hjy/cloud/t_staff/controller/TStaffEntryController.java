@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -49,9 +50,9 @@ public class TStaffEntryController {
     @OperLog(operModul = "人员管理-入职管理",operType = "添加",operDesc = "新增入职基本信息")
     @RequiresPermissions({"entry:add"})
     @PostMapping(value = "/staff/entry/add")
-    public CommonResult insert(@RequestBody TStaffEntry tStaffEntry) throws FebsException {
+    public CommonResult insert(@RequestBody TStaffEntry tStaffEntry, HttpServletRequest request) throws FebsException {
         try {
-            return tStaffEntryService.insert(tStaffEntry);
+            return tStaffEntryService.insert(tStaffEntry,request);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

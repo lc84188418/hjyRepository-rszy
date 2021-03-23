@@ -202,7 +202,7 @@ public class TKqBcServiceImpl implements TKqBcService {
         if(i > 0){
             stringBuffer.append("班次基本信息删除成功！");
         }else {
-            return new CommonResult(444, "error", "班次基本信息删除失败！", null);
+            return new CommonResult(444, "error", "默认班次无法删除！", null);
         }
         //删除group-bc信息
         int j = tKqBcMapper.deleteGroupBcByBcId(tKqBc.getPkBcId());

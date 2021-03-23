@@ -216,9 +216,9 @@ public class TKqJbServiceImpl implements TKqJbService {
         int i = this.tKqJbMapper.deleteById(tKqJb);
         if (i > 0) {
             JSONObject listInfo = this.getListInfo();
-            return new CommonResult(200, "success", "删除数据成功", listInfo);
+            return new CommonResult(200, "success", "加班规则删除成功!", listInfo);
         } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
+            return new CommonResult(444, "error", "默认加班规则无法删除！", null);
         }
     }
 

@@ -377,6 +377,7 @@ public class ObjectAsyncTask {
          * 审批人
          */
         JSONArray apvArray = json.getJSONArray("apvList");
+        int isquchong = 0;
         if(apvArray != null){
             String apvIdsStr = apvArray.toString();
             if(!apvIdsStr.equals("[]")){
@@ -389,12 +390,16 @@ public class ObjectAsyncTask {
                     for (int n = apvList1.size()-1; n > m; n--) {
                         if(apvList1.get(n).getApprovalPeople()!= null && apvList1.get(m).getApprovalPeople()!= null){
                             if (apvList1.get(n).getApprovalPeople().equals(apvList1.get(m).getApprovalPeople())) {
+                                isquchong = 1;
                                 apvList1.remove(n);
                             }
                         }
                     }
                 }
                 apvList2 = apvList1;
+                if (isquchong == 1){
+                    stringBuffer.append("审批人已自动去重！");
+                }
                 /**
                  * 再排序
                  */
@@ -423,6 +428,7 @@ public class ObjectAsyncTask {
                     }
                     dApvRecord.setApprovalType(approvalType);
                     dApvRecord.setApplyPeople(applyPeople);
+                    //前端需要传peopleName
                     dApvRecord.setSponsor(sysToken.getFullName());
                     dApvRecord.setStartTime(new Date());
                     dApvRecord.setApvApproval(approval.getApprovalPeople());

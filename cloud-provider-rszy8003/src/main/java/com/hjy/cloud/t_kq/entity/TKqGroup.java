@@ -32,7 +32,7 @@ public class TKqGroup {
     @ApiModelProperty("考勤组负责人")
     private String groupStewards;
     //考勤类型：1固定班制2排班制3自由工时
-    @ApiModelProperty("考勤类型：1固定班制2排班制3自由工时")
+    @ApiModelProperty("考勤类型：1固定班制\n2排班制:仅支持一个默认班次\n3自由工时")
     private Integer kqType;
     //未排班时，员工可选择班次打卡
     @ApiModelProperty("排班制：未排班时，员工可选择班次打卡")

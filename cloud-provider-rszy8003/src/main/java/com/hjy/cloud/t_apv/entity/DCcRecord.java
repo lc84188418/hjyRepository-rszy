@@ -18,5 +18,8 @@ public class DCcRecord {
     private String staffName;
 
     private String firstApvrecordId;
+    //-----------
+    //岗位名字
+    private String stationName;
 
 }

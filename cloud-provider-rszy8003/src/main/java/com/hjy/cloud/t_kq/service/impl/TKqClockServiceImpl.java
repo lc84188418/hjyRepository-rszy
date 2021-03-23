@@ -157,22 +157,33 @@ public class TKqClockServiceImpl implements TKqClockService {
                     return new CommonResult(446, "error", stringBuffer.toString(), jsonObject);
                 }
             }
-            jsonObject.put("todayBc", tKqBc);
         }else if(tKqGroup.getKqType() == 2){
-            //排班制
+            /**
+             * 2.说明为排班制
+             */
 
         }else {
-            //自由工时,打卡时间任意
-
-
+            /**
+             * 2.说明为自由工时,打卡时间任意，无班次信息
+             */
+            if(resultGroupWorkingdays == null || resultGroupWorkingdays.size() == 0){
+                //非必须考勤日期
+                if(!bxdkBoolean){
+                    //说明当前工作日未设置考勤，
+                    isDkr = 0;
+                    resultClock.setIsDkr(isDkr);
+                    stringBuffer.append("今日非工作时间，无需考勤");
+                    jsonObject.put("clock", resultClock);
+                    return new CommonResult(204, "success", stringBuffer.toString(), jsonObject);
+                }else {
+                    stringBuffer.append("自由工时");
+                }
+            }else {
+                stringBuffer.append("自由工时");
+            }
         }
         /**
-         * 四、查询该考勤组其他相关信息，班制、工作地，班次。
-         */
-
-
-        /**
-         * 五、判断今日是否有打卡记录，若无打卡记录，则此次打卡为上班，反之为下班打卡
+         * 四、判断今日是否有打卡记录，若无打卡记录，则此次打卡为上班，反之为下班打卡
          */
         //打卡类型，1代表上班打卡，2代表下班打卡
         int dkType = 1;
@@ -181,54 +192,78 @@ public class TKqClockServiceImpl implements TKqClockService {
         List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectTKqCloc);
         resultClock.setTodayDate(nowDate);
         if(kqClockList != null && kqClockList.size() >0){
-            //说明为下班打卡
+            //有打卡记录，说明为下班打卡
             dkType = 2;
             resultClock.setOffDutyTime(nowDate);
             //----------还要计算是否早退
         }else {
-            //说明为上班打卡
+            //无打卡记录，说明为上班打卡
             resultClock.setOnDutyTime(nowDate);
         }
         /**
-         * 六、当前班次下的上下班时间计算，是否在上下班时间段内
+         * 五、当前班次下的上下班时间计算，是否在上下班时间段内
          */
-        Map<String,Object> timeSlotMap = new HashMap<>();
-        String timeSlot = tKqBc.getTimeSlot();
-        String[] timeSlots = timeSlot.split("&");
-        if(timeSlots != null && timeSlots.length > 0){
-            for (String s:timeSlots) {
-                timeSlotMap = DateUtil.belongCalendar2(nowDate,s,dkType);
+        if(tKqBc != null){
+            //班次信息不为空，说明为固定班次或排班制，非自由工时
+            Map<String,Object> timeSlotMap = new HashMap<>();
+            String timeSlot = tKqBc.getTimeSlot();
+            String[] timeSlots = timeSlot.split("&");
+            if(timeSlots != null && timeSlots.length > 0){
+                for (String s:timeSlots) {
+                    timeSlotMap = DateUtil.belongCalendar2(nowDate,s,dkType);
+                }
             }
+            /**
+             * =1代表，当前时间在上下班时间段之前
+             * =2代表，当前时间在上下班时间段之中
+             * =3代表，当前时间在上下班时间段之后
+             */
+            if((timeSlotMap.get("isTimeSlot")).equals("1")){
+                if(dkType == 2){
+                    //说明为早退卡,还没到上班时间就已经打了下班卡了
+                    //根据打卡规则，判断是否为早退
+                    //看是否有打卡时间间隔限制
+                    if(tKqGroup.getDkJgsj() == null){
+                        stringBuffer.append("还没到上班时间，你就要溜了吗？");
+                        isDkr = 1;
+                        resultClock.setIsDkr(isDkr);
+                    }else {
+                        stringBuffer.append("打卡时间限制内无法进行打卡！");
+                        isDkr = 0;
+                        resultClock.setIsDkr(isDkr);
+                        jsonObject.put("clock", resultClock);
+                        return new CommonResult(205, "success", stringBuffer.toString(), jsonObject);
+                    }
+                }
+            }else if((timeSlotMap.get("isTimeSlot")).equals("2")){
+                if(dkType == 1){
+                    //说明为迟到卡
+                    stringBuffer.append("问题不大，你迟到了哦");
+//                    String minute = DateUtil.getminute(beginTime,nowTime);
+//                    resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
+                    //根据打卡规则，判断是否为迟到
+                }else {
+                    //说明为早退卡
+//                    resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
+                    //根据打卡规则，判断是否为早退
+                }
+            }else  if((timeSlotMap.get("isTimeSlot")).equals("3")){
+                if(dkType == 1){
+                    //说明为迟到卡，今天一次都没有打卡
+                    stringBuffer.append("今日未进行上班打卡，记着联系管理员哦！");
+
+//                    resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
+                    //根据打卡规则，判断是否为迟到
+                }else {
+                    //说明该员工还在努力的加班中
+                    stringBuffer.append("加班辛苦了，要不再坚持一下？");
+//                    resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
+                    //根据加班规则，计算加班
+                }
+            }
+            jsonObject.put("isTimeSlot", timeSlotMap);
         }
-        //若不在上下班时间段，说明迟到卡，在判断是否有弹性打卡规则
-        if((timeSlotMap.get("isTimeSlot")).equals("1")){
-            if(dkType == 2){
-                //说明为早退卡,还没到上班时间就已经打了下班卡了
-                //根据打卡规则，判断是否为早退
-//                resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
-            }
-        }else if((timeSlotMap.get("isTimeSlot")).equals("2")){
-            if(dkType == 1){
-                //说明为迟到卡
-                resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
-                //根据打卡规则，判断是否为迟到
-            }else {
-                //说明为早退卡
-                resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
-                //根据打卡规则，判断是否为早退
-            }
-        }else  if((timeSlotMap.get("isTimeSlot")).equals("3")){
-            if(dkType == 1){
-                //说明为迟到卡，今天一次都没有打卡
-                resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
-                //根据打卡规则，判断是否为迟到
-            }else {
-                //说明该员工还在努力的加班中
-                resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
-                //根据加班规则，计算加班
-            }
-        }
-        jsonObject.put("isTimeSlot", timeSlotMap);
+
         jsonObject.put("clock", resultClock);
         return new CommonResult(200, "success", stringBuffer.toString(), jsonObject);
     }
