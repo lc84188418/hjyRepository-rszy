@@ -120,23 +120,19 @@ public class TKqClockServiceImpl implements TKqClockService {
         //1 工作地信息
         TOutfitWorkaddress tOutfitWorkaddress = tKqClockMapper.selectWorkAddressByGroupId(tKqGroup.getPkGroupId());
         jsonObject.put("workAddress", tOutfitWorkaddress);
+        //2 今日该考勤组的班次信息
         TKqBc tKqBc = null;
+        ReGroupWorkingdays selectReGroupWorkingdays = new ReGroupWorkingdays();
+        //displayName今日是周几
+        String displayName = DateUtil.todayIs();
+        selectReGroupWorkingdays.setFkGroupId(tKqGroup.getPkGroupId());
+        selectReGroupWorkingdays.setWorkingDays(displayName);
+        selectReGroupWorkingdays.setKqType(tKqGroup.getKqType());
+        List<ReGroupWorkingdays> resultGroupWorkingdays = tKqClockMapper.selectGroupWorkingDaysByEntity(selectReGroupWorkingdays);
         if(tKqGroup.getKqType() == 1){
             /**
              * 1.说明为固定班次
              */
-            //2 今日该考勤组的班次信息
-            //计算今日是周几
-            Calendar calendar = Calendar.getInstance();
-//        //今日为一周的第几天-2
-//        int day = calendar.get(Calendar.DAY_OF_WEEK);
-            //星期几-星期一
-            String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
-            ReGroupWorkingdays selectReGroupWorkingdays = new ReGroupWorkingdays();
-            selectReGroupWorkingdays.setFkGroupId(tKqGroup.getPkGroupId());
-            selectReGroupWorkingdays.setWorkingDays(displayName);
-            selectReGroupWorkingdays.setKqType(tKqGroup.getKqType());
-            List<ReGroupWorkingdays> resultGroupWorkingdays = tKqClockMapper.selectGroupWorkingDaysByEntity(selectReGroupWorkingdays);
             if(resultGroupWorkingdays == null || resultGroupWorkingdays.size() == 0){
                 //非必须考勤日期
                 if(!bxdkBoolean){
@@ -166,7 +162,9 @@ public class TKqClockServiceImpl implements TKqClockService {
             //排班制
 
         }else {
-            //自由工时
+            //自由工时,打卡时间任意
+
+
         }
         /**
          * 四、查询该考勤组其他相关信息，班制、工作地，班次。

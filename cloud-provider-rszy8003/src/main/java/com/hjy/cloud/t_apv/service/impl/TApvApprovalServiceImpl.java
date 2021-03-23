@@ -670,21 +670,62 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     @Override
     public CommonResult apvProcessDetail(String param) {
         JSONObject jsonObject = JSON.parseObject(param);
+        JSONObject resultJson = new JSONObject();
         String firstApvRecordId = String.valueOf(jsonObject.get("apvId"));
-        List<DApvRecord> dApvRecordList = tApvApprovalMapper.selectByFirstApvRecordId(firstApvRecordId);
-        //将审批流程数据进行处理
-        TempApvEntity apvProcessDetail = this.optimizeApvRecord2(dApvRecordList);
+//        List<DApvRecord> dApvRecordList = tApvApprovalMapper.selectByFirstApvRecordId(firstApvRecordId);
+//        if(dApvRecordList == null || dApvRecordList.size() == 0){
+//            return new CommonResult(444, "error", "该审批流程已被清除！", null);
+//        }
+//        //将审批流程数据进行处理
+//        TempApvEntity apvProcessDetail = this.optimizeApvProcessDetail(dApvRecordList);
+//        resultJson.put("apvProcessDetail", apvProcessDetail);
+        List<DApvRecord> dApvRecordList = this.optimizeApvProcessDetail2(firstApvRecordId);
+        resultJson.put("apvList", dApvRecordList);
+
         /**
          * 处理抄送人,firstApvRecordId
          */
         DCcRecord selectEntity = new DCcRecord();
         selectEntity.setFirstApvrecordId(firstApvRecordId);
         List<DCcRecord> dCcRecords = dCcRecordMapper.selectAllPage(selectEntity);
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("apvProcessDetail", apvProcessDetail);
         resultJson.put("csrList", dCcRecords);
         return new CommonResult(200, "success", "获取审批流程信息成功", resultJson);
 
+    }
+
+    /**
+     * 根据第一级审批id查询出后续流程，并进行处理后返回给前端
+     * @param firstApvRecordId
+     * @return
+     */
+    private List<DApvRecord> optimizeApvProcessDetail2(String firstApvRecordId) {
+        List<DApvRecord> resultList = new ArrayList<>();
+        String pk_apv_id = firstApvRecordId;
+        int num = 1;
+        boolean flag = true;
+        while (flag) {
+            DApvRecord apvRecord = tApvApprovalMapper.selectApvRecordByPkId(pk_apv_id);
+            if (apvRecord != null) {
+                apvRecord.setIsStart(num);
+                //循环次数加1
+                num ++;
+                //
+                pk_apv_id = apvRecord.getNextApproval();
+                /**
+                 * 二、再判断下级审批
+                 */
+                if (pk_apv_id.equals("0")) {
+                    /**
+                     * 说明为最后一级审批，跳出循环
+                     */
+                    flag = false;
+                }
+                resultList.add(apvRecord);
+            }else {
+                flag = false;
+            }
+        }
+        return resultList;
     }
 
     @Override
@@ -802,10 +843,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     }
 
     //将审批流程数据进行处理，但只对查看信息有效
-    private TempApvEntity optimizeApvRecord2(List<DApvRecord> dApvRecords) {
+    private TempApvEntity optimizeApvProcessDetail(List<DApvRecord> dApvRecords) {
         if(dApvRecords == null && dApvRecords.size() == 0){
             return null;
         }
+        System.err.println(dApvRecords);
         TempApvEntity tempApvEntity = new TempApvEntity();
         Iterator<DApvRecord> iterator = dApvRecords.iterator();
         while (iterator.hasNext()){
@@ -814,6 +856,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 //第一级审批人
                 tempApvEntity.setPkApprovalId(first.getPkRecordId());
                 tempApvEntity.setApprovalType(first.getApprovalType());
+                tempApvEntity.setApplyPeople(first.getApplyPeople());
                 tempApvEntity.setApvtypeName(first.getApvtypeName());
                 tempApvEntity.setSponsor(first.getSponsor());
                 tempApvEntity.setStartTime(first.getStartTime());

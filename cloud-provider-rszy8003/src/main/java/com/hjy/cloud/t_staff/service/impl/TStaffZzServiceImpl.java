@@ -162,7 +162,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         //查询自己是否提交过转正申请
         TStaffZz tStaffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
         if(tStaffZz == null){
-            JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,sysToken.getFkUserId(),"转正申请",1);
+            JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"转正申请",1);
             String msg = (String) resultJson.get("msg");
             resultJson.remove("msg");
             return new CommonResult(200, "success", msg, resultJson);
@@ -237,7 +237,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             stringBuffer.append("转正申请已发起成功！");
             //审批类型
             String approvalType = "13";
-            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName());
+//            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName());
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
             return new CommonResult(444, "error","转正申请发起失败！", null);

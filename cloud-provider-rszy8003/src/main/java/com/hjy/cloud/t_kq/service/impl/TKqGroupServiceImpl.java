@@ -117,32 +117,62 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         String pkGroupId = IDUtils.getUUID();
         //实体基本数据
         String groupName = JsonUtil.getStringParam(json, "groupName");
-//        int autoJoin = JsonUtil.getIntegerParam(json, "autoJoin");
+        int autoJoin = JsonUtil.getIntegerParam(json, "autoJoin");
         String kqAddress = JsonUtil.getStringParam(json, "kqAddress");
+        int kqRange = JsonUtil.getIntegerParam(json, "kqRange");
         String groupStewards = JsonUtil.getStringParam(json, "groupStewards");
         int kqType = JsonUtil.getIntegerParam(json, "kqType");
-//        int typeSet = JsonUtil.getIntegerParam(json, "typeSet");
-        int kqRange = JsonUtil.getIntegerParam(json, "kqRange");
+        int isKxbcdk = 0;
+        int isKdk = 0;
+        int typeSet = 0;
+        if(kqType == 2){
+            isKxbcdk = JsonUtil.getIntegerParam(json, "isKxbcdk");
+            isKdk = JsonUtil.getIntegerParam(json, "isKdk");
+        }else if(kqType == 3){
+            typeSet = JsonUtil.getIntegerParam(json, "typeSet");
+        }
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
         Date wxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","wxdkTime");
         int kqWay = JsonUtil.getIntegerParam(json, "kqWay");
+        int isPzdk = JsonUtil.getIntegerParam(json, "isPzdk");
         int isWq = JsonUtil.getIntegerParam(json, "isWq");
+        int wqApv = 0;
+        int wqRemarks = 0;
+        int wqPz = 0;
+        int wqHideaddress = 0;
+        if(isWq == 1){
+            wqApv = JsonUtil.getIntegerParam(json, "wqApv");
+            wqRemarks = JsonUtil.getIntegerParam(json, "wqRemarks");
+            wqPz = JsonUtil.getIntegerParam(json, "wqPz");
+            wqHideaddress = JsonUtil.getIntegerParam(json, "wqHideaddress");
+        }
+        int dkJgsj = JsonUtil.getIntegerParam(json, "dkJgsj");
         StringBuffer stringBuffer = new StringBuffer();
         //开始添加
         TKqGroup tKqGroup = new TKqGroup();
         tKqGroup.setPkGroupId(pkGroupId);
-        tKqGroup.setTurnOn(1);
         tKqGroup.setGroupName(groupName);
+        tKqGroup.setAutoJoin(autoJoin);
         tKqGroup.setKqAddress(kqAddress);
         tKqGroup.setKqRange(kqRange);
         tKqGroup.setGroupStewards(groupStewards);
         tKqGroup.setKqType(kqType);
+        tKqGroup.setIsKxbcdk(isKxbcdk);
+        tKqGroup.setIsKdk(isKdk);
+        tKqGroup.setTypeSet(typeSet);
         tKqGroup.setIsPaixiu(isPaixiu);
         tKqGroup.setBxdkTime(bxdkTime);
         tKqGroup.setWxdkTime(wxdkTime);
         tKqGroup.setKqWay(kqWay);
+        tKqGroup.setIsPzdk(isPzdk);
         tKqGroup.setIsWq(isWq);
+        tKqGroup.setWqApv(wqApv);
+        tKqGroup.setWqRemarks(wqRemarks);
+        tKqGroup.setWqPz(wqPz);
+        tKqGroup.setWqHideaddress(wqHideaddress);
+        tKqGroup.setDkJgsj(dkJgsj);
+        tKqGroup.setTurnOn(1);
         int i = this.tKqGroupMapper.insertSelective(tKqGroup);
         if (i > 0) {
             stringBuffer.append("考勤组数据添加成功！");
@@ -370,7 +400,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             }
         }
         /**
-         * 二、工作日设置,type=1和2时
+         * 二、工作日设置
          */
         List<ReGroupWorkingdays> workingDaysList = new ArrayList<>();
         JSONArray workingDaysArray = json.getJSONArray("workingDays");
@@ -385,12 +415,20 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             }
         }
         if(workingDaysList != null && workingDaysList.size() > 0){
-            Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
-            while (workingdaysIterator.hasNext()){
-                ReGroupWorkingdays workingdays = workingdaysIterator.next();
-                workingdays.setPkGroupworkingdaysId(IDUtils.getUUID());
-                workingdays.setFkGroupId(pkGroupId);
-                //
+            if(kqType == 1){
+
+            }else if(kqType == 2){
+
+            }else if(kqType == 3){
+                Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
+                while (workingdaysIterator.hasNext()){
+                    ReGroupWorkingdays workingdays = workingdaysIterator.next();
+                    workingdays.setPkGroupworkingdaysId(IDUtils.getUUID());
+                    workingdays.setFkGroupId(pkGroupId);
+                    //workingdays前端传过来
+                    workingdays.setFkBcId(null);
+                    workingdays.setKqType(kqType);
+                }
             }
             if("update".equals(addOrUpdate)){
                 //代表修改-先删除

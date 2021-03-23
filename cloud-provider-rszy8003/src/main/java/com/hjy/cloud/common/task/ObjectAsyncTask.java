@@ -173,13 +173,13 @@ public class ObjectAsyncTask {
         return resultMap;
     }
     /**
-     *
+     * 发起审批页面统一方法
      * @param sysToken
      * @param apvName 审批类型名称，如：入职审批
      * @param dataType
      * @return
      */
-    public static JSONObject handleApproval(SysToken sysToken,String currentSourceId, String apvName, int dataType) {
+    public static JSONObject sponsorApprovalPage(SysToken sysToken,String currentSourceId, String apvName, int dataType) {
         JSONObject resultJson = new JSONObject();
         resultJson.put("msg","获取"+apvName+"数据成功");
         /**
@@ -323,12 +323,11 @@ public class ObjectAsyncTask {
      * @param approvalType
      * @return
      */
-    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkSourceId,String applyPeople) {
+    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkSourceId,String applyPeople,String firstApvrecordId) {
         /**
          * 抄送人
          */
         String newPkId = IDUtils.getUUID();
-        String firstApvrecordId = newPkId;
         JSONArray csrArray = json.getJSONArray("csrList");
         if(csrArray != null){
             //说明选择了抄送人
@@ -417,7 +416,11 @@ public class ObjectAsyncTask {
                 for (TApvApproval approval: apvList) {
                     String nextPkId = IDUtils.getUUID();
                     DApvRecord dApvRecord = new DApvRecord();
-                    dApvRecord.setPkRecordId(newPkId);
+                    if(num == 1){
+                        dApvRecord.setPkRecordId(firstApvrecordId);
+                    }else {
+                        dApvRecord.setPkRecordId(newPkId);
+                    }
                     dApvRecord.setApprovalType(approvalType);
                     dApvRecord.setApplyPeople(applyPeople);
                     dApvRecord.setSponsor(sysToken.getFullName());

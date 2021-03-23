@@ -96,6 +96,7 @@ public interface TApvApprovalMapper {
      * @return
      */
     DApvRecord selectApvRecordById(@Param("pkRecordId")String pkRecordId);
+    DApvRecord selectApvRecordByPkId(@Param("pkRecordId")String pkRecordId);
 
     int deleteApvRecordBySourceId(@Param("sourceId")String sourceId);
     /**

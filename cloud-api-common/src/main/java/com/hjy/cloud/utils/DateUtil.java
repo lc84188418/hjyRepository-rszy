@@ -98,6 +98,18 @@ public class DateUtil {
         }
     }
     /**
+     * 计算今日是周几
+     */
+    public static String todayIs(){
+        //计算今日是周几
+        Calendar calendar = Calendar.getInstance();
+//        //今日为一周的第几天-2
+//        int day = calendar.get(Calendar.DAY_OF_WEEK);
+        //星期几-星期一
+        String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+        return displayName;
+    }
+    /**
      * 判断时间是否在时间段内
      *
      * @param nowTime

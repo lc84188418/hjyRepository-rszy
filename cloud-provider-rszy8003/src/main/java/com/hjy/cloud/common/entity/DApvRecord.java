@@ -16,7 +16,6 @@ public class DApvRecord {
     private String pkRecordId;
     //审批类别
     private String approvalType;
-    private String apvtypeName;
     //申请人
     private String applyPeople;
     //发起人
@@ -39,4 +38,8 @@ public class DApvRecord {
     private int isStart;
     //是否处于正在处理的审批流程中
     private int isIng;
+    //------------
+    private String apvtypeName;
+    private String approvalPeopleName;
+    private String positionName;
 }

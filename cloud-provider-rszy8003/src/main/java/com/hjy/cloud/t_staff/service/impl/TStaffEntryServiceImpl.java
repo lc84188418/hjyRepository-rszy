@@ -182,7 +182,6 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TStaffEntry entity = new TStaffEntry();
-
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -267,7 +266,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,tStaffEntry.getPkEntryId(),"入职申请",1);
+        JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,tStaffEntry.getPkEntryId(),"入职申请",1);
         String msg = (String) resultJson.get("msg");
         resultJson.remove("msg");
         return new CommonResult(200, "success", msg, resultJson);
@@ -304,7 +303,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
             stringBuffer.append("入职审批流程记录添加失败！");
         }
         String applyPeople = tStaffEntryMapper.selectApplyPeople(pkEntryId);
-        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,applyPeople);
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,applyPeople,newPkId);
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 

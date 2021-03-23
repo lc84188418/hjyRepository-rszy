@@ -213,7 +213,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
-        JSONObject resultJson = ObjectAsyncTask.handleApproval(sysToken,tStaffReassign.getPkReassignId(),"调动申请",1);
+        JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,tStaffReassign.getPkReassignId(),"调动申请",1);
         String msg = (String) resultJson.get("msg");
         resultJson.remove("msg");
         return new CommonResult(200, "success", msg, resultJson);
@@ -258,7 +258,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             }else {
                 stringBuffer.append("已发起调动申请成功!");
                 String applyPeople = tStaffReassignMapper.selectStaffName(pkReassignId);
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople);
+//                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
