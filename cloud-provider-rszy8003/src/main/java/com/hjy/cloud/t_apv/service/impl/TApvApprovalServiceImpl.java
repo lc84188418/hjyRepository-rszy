@@ -571,7 +571,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //离职申请
         }else if("12".equals(approvalType)){
             //入职申请
-            TStaffEntry tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
+            TStaffEntry tStaffEntry = tStaffEntryMapper.selectByPkId2(sourceId);
             resultJson.put("source", tStaffEntry);
         }else if("13".equals(approvalType)){
             //转正申请
@@ -732,6 +732,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         if("12".equals(approvalType)){
             //且为入职审批即approvalType=12
             TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
+            //先查询该员工是否已被录入过
+            TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId(sourceId);
+            if(selectInfo != null){
+                stringBuffer.append("该员工档案已被录入过系统，无法再次录入！");
+            }
             /**
              * 添加员工信息
              */

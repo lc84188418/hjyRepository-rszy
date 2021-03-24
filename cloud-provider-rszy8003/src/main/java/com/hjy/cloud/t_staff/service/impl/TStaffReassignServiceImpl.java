@@ -258,7 +258,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             }else {
                 stringBuffer.append("已发起调动申请成功!");
                 String applyPeople = tStaffReassignMapper.selectStaffName(pkReassignId);
-//                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople,newPkId);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);

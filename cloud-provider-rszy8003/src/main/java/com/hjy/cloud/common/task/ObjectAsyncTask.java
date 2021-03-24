@@ -10,6 +10,8 @@ import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.DCcRecordService;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
+import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
+import com.hjy.cloud.t_dictionary.service.TDictionaryHtlxService;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
@@ -68,7 +70,8 @@ public class ObjectAsyncTask {
     private TStaffReassignService tStaffReassignService;
     @Resource
     private DCcRecordService dCcRecordService;
-
+    @Resource
+    private TDictionaryHtlxService tDictionaryHtlxService;
     private static ObjectAsyncTask ntClient;
 
     /**
@@ -220,7 +223,7 @@ public class ObjectAsyncTask {
                         }
                         if(deptLeader != null){
                             apv.setApprovalPeople(deptLeader.getPkStaffId());
-                            apv.setPeopleName(deptLeader.getStaffName());
+                            apv.setApprovalPeopleName(deptLeader.getStaffName());
                         }
                         apv.setStationName("部门主管");
                     }else if(apv.getApvStation().equals("financeLeader")){
@@ -230,7 +233,7 @@ public class ObjectAsyncTask {
                         }
                         if(financeLeader != null){
                             apv.setApprovalPeople(financeLeader.getPkStaffId());
-                            apv.setPeopleName(financeLeader.getStaffName());
+                            apv.setApprovalPeopleName(financeLeader.getStaffName());
                         }
                         apv.setStationName("财务主管");
                     }else if(apv.getApvStation().equals("humanResources")){
@@ -240,7 +243,7 @@ public class ObjectAsyncTask {
                         }
                         if(humanResources != null){
                             apv.setApprovalPeople(humanResources.getPkStaffId());
-                            apv.setPeopleName(humanResources.getStaffName());
+                            apv.setApprovalPeopleName(humanResources.getStaffName());
                         }
                         apv.setStationName("人力资源主管");
                     }else if(apv.getApvStation().equals("generalManager")){
@@ -250,7 +253,7 @@ public class ObjectAsyncTask {
                         }
                         if(generalManager != null){
                             apv.setApprovalPeople(generalManager.getPkStaffId());
-                            apv.setPeopleName(generalManager.getStaffName());
+                            apv.setApprovalPeopleName(generalManager.getStaffName());
                         }
                         apv.setStationName("总经理");
                     }
@@ -298,6 +301,8 @@ public class ObjectAsyncTask {
             TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(currentSourceId);
             Map<String,Object> currentSourceMap = ObjectAsyncTask.handleJsonData(tStaffEntry);
             resultJson.put("currentSource",currentSourceMap);
+            List<TDictionaryHtlx> htlxList = ntClient.tDictionaryHtlxService.queryAll();
+            resultJson.put("htlx",htlxList);
         }else if("转正申请".equals(apvName)){
             TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(currentSourceId);
             Map<String,Object> currentSourceMap = ObjectAsyncTask.handleJsonData(tStaffEntry);
@@ -476,5 +481,6 @@ public class ObjectAsyncTask {
         ntClient.tStaffEntryService = this.tStaffEntryService;
         ntClient.dCcRecordService = this.dCcRecordService;
         ntClient.tStaffReassignService = this.tStaffReassignService;
+        ntClient.tDictionaryHtlxService = this.tDictionaryHtlxService;
     }
 }

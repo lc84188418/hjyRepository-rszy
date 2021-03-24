@@ -8,18 +8,20 @@
         <result property="jobId" column="JOB_ID" jdbcType="VARCHAR"/>
         <result property="todayDate" column="TODAY_DATE" jdbcType="DATE"/>
         <result property="onDutyTime" column="ON_DUTY_TIME" jdbcType="TIMESTAMP"/>
-        <result property="onCloudAddress" column="ON_CLOUD_ADDRESS" jdbcType="VARCHAR"/>
-        <result property="onCloudIp" column="ON_CLOUD_IP" jdbcType="VARCHAR"/>
+        <result property="onClockAddress" column="ON_CLOCK_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="onClockIp" column="ON_CLOCK_IP" jdbcType="VARCHAR"/>
         <result property="onIsWq" column="ON_IS_WQ" jdbcType="VARCHAR"/>
         <result property="offDutyTime" column="OFF_DUTY_TIME" jdbcType="TIMESTAMP"/>
-        <result property="offCloudAddress" column="OFF_CLOUD_ADDRESS" jdbcType="VARCHAR"/>
-        <result property="offCloudIp" column="OFF_CLOUD_IP" jdbcType="VARCHAR"/>
+        <result property="offClockAddress" column="OFF_CLOCK_ADDRESS" jdbcType="VARCHAR"/>
+        <result property="offClockIp" column="OFF_CLOCK_IP" jdbcType="VARCHAR"/>
         <result property="offIsWq" column="OFF_IS_WQ" jdbcType="VARCHAR"/>
-        <result property="workingHours" column="WORKING_HOURS" jdbcType="OTHER"/>
+        <result property="workingHours" column="WORKING_HOURS" jdbcType="REAL"/>
         <result property="isCd" column="IS_CD" jdbcType="INTEGER"/>
-        <result property="cdMinute" column="CD_MINUTE" jdbcType="VARCHAR"/>
+        <result property="cdMinute" column="CD_MINUTE" jdbcType="INTEGER"/>
+        <result property="cdDesc" column="CD_DESC" jdbcType="VARCHAR"/>
         <result property="isZt" column="IS_ZT" jdbcType="INTEGER"/>
-        <result property="ztMinute" column="ZT_MINUTE" jdbcType="VARCHAR"/>
+        <result property="ztMinute" column="ZT_MINUTE" jdbcType="INTEGER"/>
+        <result property="ztDesc" column="ZT_DESC" jdbcType="VARCHAR"/>
         <result property="isDkr" column="IS_DKR" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="fkGroupId" column="FK_GROUP_ID" jdbcType="VARCHAR"/>
@@ -62,11 +64,7 @@ WHERE
     </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TKqClockMap">
-        select
-        PK_CLOCK_ID, FK_STAFF_ID, JOB_ID, TODAY_DATE, ON_DUTY_TIME, ON_CLOUD_ADDRESS, ON_CLOUD_IP, ON_IS_WQ,
-        OFF_DUTY_TIME, OFF_CLOUD_ADDRESS, OFF_CLOUD_IP, OFF_IS_WQ, WORKING_HOURS, IS_CD, CD_MINUTE, IS_ZT, ZT_MINUTE,
-        IS_DKR, FK_DEPT_ID, FK_GROUP_ID, FK_POSITION_ID
-        from hjy_cloud.T_KQ_CLOCK
+        select * from hjy_cloud.T_KQ_CLOCK
         <where>
             <if test="pkClockId != null and pkClockId != ''">
                 and PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}
@@ -83,26 +81,26 @@ WHERE
             <if test="onDutyTime != null">
                 and ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP}
             </if>
-            <if test="onCloudAddress != null and onCloudAddress != ''">
-                and ON_CLOUD_ADDRESS = #{onCloudAddress,jdbcType=VARCHAR}
+            <if test="onClockAddress != null and onClockAddress != ''">
+                and ON_CLOCK_ADDRESS = #{onClockAddress,jdbcType=VARCHAR}
             </if>
-            <if test="onCloudIp != null and onCloudIp != ''">
-                and ON_CLOUD_IP = #{onCloudIp,jdbcType=VARCHAR}
+            <if test="onClockIp != null and onClockIp != ''">
+                and ON_CLOCK_IP = #{onClockIp,jdbcType=VARCHAR}
             </if>
             <if test="onIsWq != null and onIsWq != ''">
-                and ON_IS_WQ = #{onIsWq,jdbcType=VARCHAR}
+                and ON_IS_WQ = #{onIsWq,jdbcType=INTEGER}
             </if>
             <if test="offDutyTime != null">
                 and OFF_DUTY_TIME = #{offDutyTime,jdbcType=TIMESTAMP}
             </if>
-            <if test="offCloudAddress != null and offCloudAddress != ''">
-                and OFF_CLOUD_ADDRESS = #{offCloudAddress,jdbcType=VARCHAR}
+            <if test="offClockAddress != null and offClockAddress != ''">
+                and OFF_CLOCK_ADDRESS = #{offClockAddress,jdbcType=VARCHAR}
             </if>
-            <if test="offCloudIp != null and offCloudIp != ''">
-                and OFF_CLOUD_IP = #{offCloudIp,jdbcType=VARCHAR}
+            <if test="offClockIp != null and offClockIp != ''">
+                and OFF_CLOCK_IP = #{offClockIp,jdbcType=VARCHAR}
             </if>
             <if test="offIsWq != null and offIsWq != ''">
-                and OFF_IS_WQ = #{offIsWq,jdbcType=VARCHAR}
+                and OFF_IS_WQ = #{offIsWq,jdbcType=INTEGER}
             </if>
             <if test="isCd != null">
                 and IS_CD = #{isCd,jdbcType=INTEGER}
@@ -149,29 +147,14 @@ WHERE
             <if test="onDutyTime != null">
                 ON_DUTY_TIME,
             </if>
-            <if test="onCloudAddress != null and onCloudAddress != ''">
-                ON_CLOUD_ADDRESS,
+            <if test="onClockAddress != null and onClockAddress != ''">
+                ON_CLOCK_ADDRESS,
             </if>
-            <if test="onCloudIp != null and onCloudIp != ''">
-                ON_CLOUD_IP,
+            <if test="onClockIp != null and onClockIp != ''">
+                ON_CLOCK_IP,
             </if>
-            <if test="onIsWq != null and onIsWq != ''">
+            <if test="onIsWq != null">
                 ON_IS_WQ,
-            </if>
-            <if test="offDutyTime != null">
-                OFF_DUTY_TIME,
-            </if>
-            <if test="offCloudAddress != null and offCloudAddress != ''">
-                OFF_CLOUD_ADDRESS,
-            </if>
-            <if test="offCloudIp != null and offCloudIp != ''">
-                OFF_CLOUD_IP,
-            </if>
-            <if test="offIsWq != null and offIsWq != ''">
-                OFF_IS_WQ,
-            </if>
-            <if test="workingHours != null">
-                WORKING_HOURS,
             </if>
             <if test="isCd != null">
                 IS_CD,
@@ -179,11 +162,8 @@ WHERE
             <if test="cdMinute != null and cdMinute != ''">
                 CD_MINUTE,
             </if>
-            <if test="isZt != null">
-                IS_ZT,
-            </if>
-            <if test="ztMinute != null and ztMinute != ''">
-                ZT_MINUTE,
+            <if test="cdDesc != null and cdDesc != ''">
+                CD_DESC,
             </if>
             <if test="isDkr != null">
                 IS_DKR,
@@ -214,29 +194,14 @@ WHERE
             <if test="onDutyTime != null">
                 #{onDutyTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="onCloudAddress != null and onCloudAddress != ''">
-                #{onCloudAddress,jdbcType=VARCHAR},
+            <if test="onClockAddress != null and onClockAddress != ''">
+                #{onClockAddress,jdbcType=VARCHAR},
             </if>
-            <if test="onCloudIp != null and onCloudIp != ''">
-                #{onCloudIp,jdbcType=VARCHAR},
+            <if test="onClockIp != null and onClockIp != ''">
+                #{onClockIp,jdbcType=VARCHAR},
             </if>
-            <if test="onIsWq != null and onIsWq != ''">
-                #{onIsWq,jdbcType=VARCHAR},
-            </if>
-            <if test="offDutyTime != null">
-                #{offDutyTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="offCloudAddress != null and offCloudAddress != ''">
-                #{offCloudAddress,jdbcType=VARCHAR},
-            </if>
-            <if test="offCloudIp != null and offCloudIp != ''">
-                #{offCloudIp,jdbcType=VARCHAR},
-            </if>
-            <if test="offIsWq != null and offIsWq != ''">
-                #{offIsWq,jdbcType=VARCHAR},
-            </if>
-            <if test="workingHours != null">
-                #{workingHours,jdbcType=OTHER},
+            <if test="onIsWq != null">
+                #{onIsWq,jdbcType=INTEGER},
             </if>
             <if test="isCd != null">
                 #{isCd,jdbcType=INTEGER},
@@ -244,11 +209,8 @@ WHERE
             <if test="cdMinute != null and cdMinute != ''">
                 #{cdMinute,jdbcType=VARCHAR},
             </if>
-            <if test="isZt != null">
-                #{isZt,jdbcType=INTEGER},
-            </if>
-            <if test="ztMinute != null and ztMinute != ''">
-                #{ztMinute,jdbcType=VARCHAR},
+            <if test="cdDesc != null and cdDesc != ''">
+                #{cdDesc,jdbcType=VARCHAR},
             </if>
             <if test="isDkr != null">
                 #{isDkr,jdbcType=INTEGER},
@@ -268,23 +230,17 @@ WHERE
     <update id="updateByPkId">
         update hjy_cloud.T_KQ_CLOCK
         <set>
-            <if test="fkStaffId != null and fkStaffId != ''">
-                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
-            </if>
             <if test="jobId != null and jobId != ''">
                 JOB_ID = #{jobId,jdbcType=VARCHAR},
-            </if>
-            <if test="todayDate != null">
-                TODAY_DATE = #{todayDate,jdbcType=DATE},
             </if>
             <if test="onDutyTime != null">
                 ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="onCloudAddress != null and onCloudAddress != ''">
-                ON_CLOUD_ADDRESS = #{onCloudAddress,jdbcType=VARCHAR},
+            <if test="onClockAddress != null and onClockAddress != ''">
+                ON_CLOCK_ADDRESS = #{onClockAddress,jdbcType=VARCHAR},
             </if>
-            <if test="onCloudIp != null and onCloudIp != ''">
-                ON_CLOUD_IP = #{onCloudIp,jdbcType=VARCHAR},
+            <if test="onClockIp != null and onClockIp != ''">
+                ON_CLOCK_IP = #{onClockIp,jdbcType=VARCHAR},
             </if>
             <if test="onIsWq != null and onIsWq != ''">
                 ON_IS_WQ = #{onIsWq,jdbcType=VARCHAR},
@@ -292,17 +248,17 @@ WHERE
             <if test="offDutyTime != null">
                 OFF_DUTY_TIME = #{offDutyTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="offCloudAddress != null and offCloudAddress != ''">
-                OFF_CLOUD_ADDRESS = #{offCloudAddress,jdbcType=VARCHAR},
+            <if test="offClockAddress != null and offClockAddress != ''">
+                OFF_CLOCK_ADDRESS = #{offClockAddress,jdbcType=VARCHAR},
             </if>
-            <if test="offCloudIp != null and offCloudIp != ''">
-                OFF_CLOUD_IP = #{offCloudIp,jdbcType=VARCHAR},
+            <if test="offClockIp != null and offClockIp != ''">
+                OFF_CLOCK_IP = #{offClockIp,jdbcType=VARCHAR},
             </if>
-            <if test="offIsWq != null and offIsWq != ''">
-                OFF_IS_WQ = #{offIsWq,jdbcType=VARCHAR},
+            <if test="offIsWq != null">
+                OFF_IS_WQ = #{offIsWq,jdbcType=INTEGER},
             </if>
             <if test="workingHours != null">
-                WORKING_HOURS = #{workingHours,jdbcType=OTHER},
+                WORKING_HOURS = #{workingHours,jdbcType=REAL},
             </if>
             <if test="isCd != null">
                 IS_CD = #{isCd,jdbcType=INTEGER},
@@ -315,6 +271,9 @@ WHERE
             </if>
             <if test="ztMinute != null and ztMinute != ''">
                 ZT_MINUTE = #{ztMinute,jdbcType=VARCHAR},
+            </if>
+            <if test="ztDesc != null and ztDesc != ''">
+                ZT_DESC = #{ztDesc,jdbcType=VARCHAR},
             </if>
             <if test="isDkr != null">
                 IS_DKR = #{isDkr,jdbcType=INTEGER},

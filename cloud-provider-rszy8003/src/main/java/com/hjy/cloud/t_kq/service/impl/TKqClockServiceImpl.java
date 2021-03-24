@@ -12,10 +12,14 @@ import com.hjy.cloud.t_kq.dao.TKqGroupMapper;
 import com.hjy.cloud.t_kq.entity.*;
 import com.hjy.cloud.t_kq.service.TKqClockService;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -25,6 +29,7 @@ import com.hjy.cloud.utils.JsonUtil;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -42,6 +47,8 @@ public class TKqClockServiceImpl implements TKqClockService {
     private TKqGroupMapper tKqGroupMapper;
     @Resource
     private TKqBcMapper tKqBcMapper;
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     /**
      * 添加前获取数据
      *
@@ -57,6 +64,8 @@ public class TKqClockServiceImpl implements TKqClockService {
         int isDkr = 1;
         boolean bxdkBoolean = false;
         resultClock.setIsDkr(isDkr);
+        resultClock.setIsCd(0);
+        resultClock.setIsZt(0);
         Date nowDate = new Date();
         /**
          * 获取当前用户打卡相关信息
@@ -75,7 +84,10 @@ public class TKqClockServiceImpl implements TKqClockService {
             //说明该员工无需考勤
             isDkr = 0;
             resultClock.setIsDkr(isDkr);
-            stringBuffer.append("非必须考勤用户，可无需考勤！");
+            stringBuffer.append("非必须考勤用户，无需考勤！");
+            jsonObject.put("clock", resultClock);
+            return new CommonResult(202, "success", stringBuffer.toString(), jsonObject);
+
         }
         /**
          * 二、查询该员工所在考勤组的信息
@@ -89,6 +101,7 @@ public class TKqClockServiceImpl implements TKqClockService {
             jsonObject.put("clock", resultClock);
             return new CommonResult(445, "error", stringBuffer.toString(), jsonObject);
         }
+        resultClock.setFkGroupId(tKqGroup.getPkGroupId());
         jsonObject.put("group", tKqGroup);
         //判断是否为无需打卡日期
         Date wxdkTime = tKqGroup.getWxdkTime();
@@ -99,7 +112,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                 resultClock.setIsDkr(isDkr);
                 stringBuffer.append("今日为无需打卡日期！");
                 jsonObject.put("clock", resultClock);
-                return new CommonResult(202, "success", stringBuffer.toString(), jsonObject);
+                return new CommonResult(203, "success", stringBuffer.toString(), jsonObject);
             }
         }
         if(tKqGroup.getBxdkTime() != null){
@@ -131,7 +144,7 @@ public class TKqClockServiceImpl implements TKqClockService {
         List<ReGroupWorkingdays> resultGroupWorkingdays = tKqClockMapper.selectGroupWorkingDaysByEntity(selectReGroupWorkingdays);
         if(tKqGroup.getKqType() == 1){
             /**
-             * 1.说明为固定班次
+             * 1.tKqGroup.getKqType() == 1说明为固定班次
              */
             if(resultGroupWorkingdays == null || resultGroupWorkingdays.size() == 0){
                 //非必须考勤日期
@@ -155,6 +168,8 @@ public class TKqClockServiceImpl implements TKqClockService {
                     stringBuffer.append("该班次已被违规删除！请尽快联系管理员处理！");
                     jsonObject.put("clock", resultClock);
                     return new CommonResult(446, "error", stringBuffer.toString(), jsonObject);
+                }else {
+                    jsonObject.put("tKqBc", tKqBc);
                 }
             }
         }else if(tKqGroup.getKqType() == 2){
@@ -174,7 +189,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("今日非工作时间，无需考勤");
                     jsonObject.put("clock", resultClock);
-                    return new CommonResult(204, "success", stringBuffer.toString(), jsonObject);
+                    return new CommonResult(205, "success", stringBuffer.toString(), jsonObject);
                 }else {
                     stringBuffer.append("自由工时");
                 }
@@ -192,6 +207,7 @@ public class TKqClockServiceImpl implements TKqClockService {
         List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectTKqCloc);
         resultClock.setTodayDate(nowDate);
         if(kqClockList != null && kqClockList.size() >0){
+            resultClock = kqClockList.get(0);
             //有打卡记录，说明为下班打卡
             dkType = 2;
             resultClock.setOffDutyTime(nowDate);
@@ -205,12 +221,13 @@ public class TKqClockServiceImpl implements TKqClockService {
          */
         if(tKqBc != null){
             //班次信息不为空，说明为固定班次或排班制，非自由工时
-            Map<String,Object> timeSlotMap = new HashMap<>();
+//            Map<String,Object> timeSlotMap = new HashMap<>();
+            int isTimeSlot = 0;
             String timeSlot = tKqBc.getTimeSlot();
             String[] timeSlots = timeSlot.split("&");
             if(timeSlots != null && timeSlots.length > 0){
                 for (String s:timeSlots) {
-                    timeSlotMap = DateUtil.belongCalendar2(nowDate,s,dkType);
+                    isTimeSlot = DateUtil.belongCalendar2(nowDate,s);
                 }
             }
             /**
@@ -218,7 +235,7 @@ public class TKqClockServiceImpl implements TKqClockService {
              * =2代表，当前时间在上下班时间段之中
              * =3代表，当前时间在上下班时间段之后
              */
-            if((timeSlotMap.get("isTimeSlot")).equals("1")){
+            if(isTimeSlot == 1){
                 if(dkType == 2){
                     //说明为早退卡,还没到上班时间就已经打了下班卡了
                     //根据打卡规则，判断是否为早退
@@ -227,30 +244,36 @@ public class TKqClockServiceImpl implements TKqClockService {
                         stringBuffer.append("还没到上班时间，你就要溜了吗？");
                         isDkr = 1;
                         resultClock.setIsDkr(isDkr);
+                        resultClock.setIsZt(1);
                     }else {
                         stringBuffer.append("打卡时间限制内无法进行打卡！");
                         isDkr = 0;
                         resultClock.setIsDkr(isDkr);
                         jsonObject.put("clock", resultClock);
-                        return new CommonResult(205, "success", stringBuffer.toString(), jsonObject);
+                        return new CommonResult(206, "success", stringBuffer.toString(), jsonObject);
                     }
                 }
-            }else if((timeSlotMap.get("isTimeSlot")).equals("2")){
+            }else if(isTimeSlot == 2){
                 if(dkType == 1){
                     //说明为迟到卡
                     stringBuffer.append("问题不大，你迟到了哦");
+                    resultClock.setIsCd(1);
 //                    String minute = DateUtil.getminute(beginTime,nowTime);
 //                    resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
                     //根据打卡规则，判断是否为迟到
                 }else {
                     //说明为早退卡
+                    stringBuffer.append("还未到下班时间，确定要溜吗？");
+                    resultClock.setIsZt(1);
+
 //                    resultClock.setZtMinute((String) timeSlotMap.get("cd_ztMinute"));
                     //根据打卡规则，判断是否为早退
                 }
-            }else  if((timeSlotMap.get("isTimeSlot")).equals("3")){
+            }else  if(isTimeSlot == 3){
                 if(dkType == 1){
                     //说明为迟到卡，今天一次都没有打卡
                     stringBuffer.append("今日未进行上班打卡，记着联系管理员哦！");
+                    resultClock.setIsCd(1);
 
 //                    resultClock.setCdMinute((String) timeSlotMap.get("cd_ztMinute"));
                     //根据打卡规则，判断是否为迟到
@@ -261,7 +284,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                     //根据加班规则，计算加班
                 }
             }
-            jsonObject.put("isTimeSlot", timeSlotMap);
+            jsonObject.put("isTimeSlot", isTimeSlot);
         }
 
         jsonObject.put("clock", resultClock);
@@ -271,18 +294,207 @@ public class TKqClockServiceImpl implements TKqClockService {
     /**
      * 添加数据
      *
-     * @param tKqClock
+     * @param tKqClockParam
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult insert(TKqClock tKqClock) {
-        int i = this.tKqClockMapper.insertSelective(tKqClock);
-        if (i > 0) {
-            return new CommonResult(200, "success", "添加数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "添加数据失败", null);
+    public CommonResult insert(TKqClock tKqClockParam,HttpServletRequest request) throws ParseException {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        if(sysToken == null){
+            return new CommonResult(445, "error", "token不存在或已失效，请重新登录", null);
         }
+        if(tKqClockParam.getIsDkr() == 0){
+            return new CommonResult(201, "success", "今日无需打卡，打卡无效", null);
+        }
+        Date nowDate = new Date();
+        TStaffInfo info = tStaffInfoMapper.selectByPkId(sysToken.getFkUserId());
+        StringBuffer stringBuffer = new StringBuffer();
+        if(!StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
+            //说明上班打卡，新增记录,
+            //前端需传入onCloudAddress,onIsWq,isDkr,fkGroupId
+            tKqClockParam.setPkClockId(IDUtils.getUUID());
+            tKqClockParam.setFkStaffId(sysToken.getFkUserId());
+            tKqClockParam.setTodayDate(nowDate);
+            tKqClockParam.setOnDutyTime(nowDate);
+            tKqClockParam.setOnClockIp(sysToken.getIp());
+            //isCd,cdMinute后端在计算
+            Map<String,Object> map = this.calculationCdZt_minute(sysToken.getFkUserId(),tKqClockParam.getFkGroupId(),tKqClockParam.getIsDkr(),"isCd");
+            int isCd = (int) map.get("isCd");
+            String cdMinute = (String) map.get("cdMinute");
+            tKqClockParam.setIsCd(isCd);
+            tKqClockParam.setCdMinute(cdMinute);
+            String cdDesc = DateUtil.minuteDesc(Integer.valueOf(cdMinute));
+            tKqClockParam.setCdDesc("迟到"+cdDesc);
+            tKqClockParam.setFkDeptId(info.getFkDeptId());
+            tKqClockParam.setFkPositionId(info.getFkPositionId());
+            int i = tKqClockMapper.insertSelective(tKqClockParam);
+            if (i > 0) {
+                stringBuffer.append("上班打卡成功！");
+            }
+        }
+        if(!StringUtils.isEmpty(tKqClockParam.getOffClockAddress())){
+            //说明下班打卡，修改记录,
+            TKqClock selectClock = new TKqClock();
+            selectClock.setFkStaffId(sysToken.getFkUserId());
+            selectClock.setTodayDate(nowDate);
+            List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectClock);
+            if(kqClockList != null && kqClockList.size() > 0){
+                selectClock = kqClockList.get(0);
+                if(selectClock.getOffDutyTime() != null){
+                    stringBuffer.append("更新打卡");
+                }else {
+                    stringBuffer.append("下班打卡");
+                }
+                //前端需传入offCloudAddress，offIsWq
+                selectClock.setOffDutyTime(nowDate);
+                selectClock.setOffClockAddress(tKqClockParam.getOffClockAddress());
+                selectClock.setOffClockIp(sysToken.getIp());
+                selectClock.setOffIsWq(tKqClockParam.getOffIsWq());
+                //计算工时，早退时间
+                Map<String,Object> map = this.calculationCdZt_minute(sysToken.getFkUserId(),tKqClockParam.getFkGroupId(),tKqClockParam.getIsDkr(),"isZt");
+                double workHours = (double) map.get("workHours");
+                selectClock.setWorkingHours(workHours);
+                //是否早退
+                int isZt = (int) map.get("isZt");
+                String ztMinute = (String) map.get("ztMinute");
+                selectClock.setIsZt(isZt);
+                selectClock.setZtMinute(ztMinute);
+                String ztDesc = DateUtil.minuteDesc(Integer.valueOf(ztMinute));
+                tKqClockParam.setZtDesc("早退"+ztDesc);
+                int i = tKqClockMapper.updateByPkId(selectClock);
+                if (i > 0) {
+                    stringBuffer.append("成功！");
+                }
+            }else {
+                stringBuffer.append("下班打卡异常！请联系技术人员！");
+            }
+        }
+        return new CommonResult(200, "success", stringBuffer.toString(), null);
+    }
+
+    private Map<String, Object> calculationCdZt_minute(String fkUserId, String fkGroupId,int isDkr,String cdOrZt) throws ParseException {
+        Map<String, Object> map = new HashMap<>();
+        TKqGroup tKqGroup = tKqGroupMapper.selectByPkId(fkGroupId);
+        //2 今日该考勤组的班次信息
+        TKqBc tKqBc = null;
+        ReGroupWorkingdays selectReGroupWorkingdays = new ReGroupWorkingdays();
+        //displayName今日是周几
+        String displayName = DateUtil.todayIs();
+        selectReGroupWorkingdays.setFkGroupId(tKqGroup.getPkGroupId());
+        selectReGroupWorkingdays.setWorkingDays(displayName);
+        selectReGroupWorkingdays.setKqType(tKqGroup.getKqType());
+        List<ReGroupWorkingdays> resultGroupWorkingdays = tKqClockMapper.selectGroupWorkingDaysByEntity(selectReGroupWorkingdays);
+        if(tKqGroup.getKqType() == 1){
+            /**
+             * 1.tKqGroup.getKqType() == 1说明为固定班次
+             */
+            if(resultGroupWorkingdays == null || resultGroupWorkingdays.size() == 0){
+                if(isDkr == 1){
+                    //代表今日为必须考勤日期，就使用默认的班次设置
+                    tKqBc = tKqBcMapper.selectDefaultBc();
+                }
+            }else {
+                tKqBc = tKqBcMapper.selectByPkId(resultGroupWorkingdays.get(0).getFkBcId());
+            }
+            /**
+             * 开始计算是否迟到或早退
+             */
+            Date nowDate = new Date();
+            int isCdOrZt = DateUtil.belongCalendar2(nowDate,tKqBc.getTimeSlot());
+            // 设置日期格式
+            SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+            //09:00-17:30
+            String[] timeSlots = tKqBc.getTimeSlot().split("-");
+            Date nowTime = df.parse(df.format(nowDate));
+            if(isCdOrZt == 1){
+                if("isZt".equals(cdOrZt)){
+                    //说明是下班，已早退，计算早退时间
+                    map.put("isZt",1);
+                    Date endTime = df.parse(timeSlots[1]);
+                    long total = DateUtil.getMinute(nowTime,endTime);
+                    map.put("ztMinute",String.valueOf(total));
+                    //计算工时
+                    double workHours = this.calculationWorkHours(nowTime,tKqBc);
+                    map.put("workHours",workHours);
+                }else {
+                    map.put("isCd",1);
+                    map.put("cdMinute",null);
+                }
+            }else if(isCdOrZt == 2) {
+                if("isCd".equals(cdOrZt)){
+                    map.put("isCd",1);
+                    //说明是上班，已迟到，计算迟到时间
+                    Date beginTime = df.parse(timeSlots[0]);
+                    long total = DateUtil.getMinute(beginTime,nowTime);
+                    map.put("cdMinute",String.valueOf(total));
+                }else {
+                    //说明是下班，已早退，计算早退时间
+                    map.put("isZt",1);
+                    Date endTime = df.parse(timeSlots[1]);
+                    long total = DateUtil.getMinute(nowTime,endTime);
+                    map.put("ztMinute",String.valueOf(total));
+                    //计算工时
+                    double workHours = this.calculationWorkHours(nowTime,tKqBc);
+                    map.put("workHours",workHours);
+                }
+            }else {
+                if("isCd".equals(cdOrZt)){
+                    map.put("isCd",1);
+                    //说明是上班，已迟到，计算迟到时间
+                    Date beginTime = df.parse(timeSlots[0]);
+                    long total = DateUtil.getMinute(beginTime,nowTime);
+                    map.put("cdMinute",String.valueOf(total));
+                }else {
+                    map.put("isZt",0);
+                    map.put("ztMinute",null);
+                    //计算工时
+                    double workHours = this.calculationWorkHours(nowTime,tKqBc);
+                    map.put("workHours",workHours);
+                }
+            }
+        }else if(tKqGroup.getKqType() == 2){
+            /**
+             * 2.说明为排班制
+             */
+
+        }else {
+            /**
+             * 2.说明为自由工时,打卡时间任意，无班次信息
+             */
+        }
+        return map;
+    }
+
+    /**
+     * 计算工时
+     * @param nowDate
+     * @param tKqBc
+     * @return
+     */
+    private double calculationWorkHours(Date nowDate, TKqBc tKqBc) throws ParseException {
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        //先默认timeSlot只有一个时间段，如09:00-17:30
+        //从上班时间开始计算
+        String timeSlot = tKqBc.getTimeSlot();
+        //09:00-17:30
+        String[] timeSlots = timeSlot.split("-");
+        //时间段开始的时刻
+        Date beginTime = df.parse(timeSlots[0]);
+        //时间段结束的时刻
+        Date endTime = df.parse(df.format(nowDate));
+        long minute = DateUtil.getMinute(beginTime,endTime);
+        if(tKqBc.getIsRest() == 1){
+            String restSlot = tKqBc.getRestSlot();
+            String[] restSlots = restSlot.split("-");
+            //时间段开始的时刻
+            Date beginTime2 = df.parse(restSlots[0]);
+            //时间段结束的时刻
+            Date endTime2 = df.parse(restSlots[1]);
+            long restminute = DateUtil.getMinute(beginTime2,endTime2);
+            minute = minute-restminute;
+        }
+        return minute;
     }
 
     /**

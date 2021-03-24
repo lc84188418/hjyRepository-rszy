@@ -136,12 +136,11 @@ public class DateUtil {
     /**
      *
      * @param nowDate
-     * @param timeSlot
-     * @param dkType
+     * @param timeSlot 时间段
+//     * @param dkType
      * @return
      */
-    public static Map<String,Object> belongCalendar2(Date nowDate, String timeSlot,int dkType) throws ParseException {
-        Map<String,Object> resultMap = new HashMap<>();
+    public static int belongCalendar2(Date nowDate, String timeSlot) throws ParseException {
         // 设置日期格式
         SimpleDateFormat df = new SimpleDateFormat("HH:mm");
         //09:00-17:30
@@ -152,33 +151,8 @@ public class DateUtil {
         //时间段结束的时刻
         Date endTime = df.parse(timeSlots[1]);
         int status = belongCalendar(nowTime, beginTime, endTime);
-        resultMap.put("isTimeSlot",String.valueOf(status));
-//        if(status == 1){
-//            if(dkType == 1){
-//                //说明上班提前打卡，计算提前时间
-//            }else {
-//                //说明为早退卡,还没到上班时间就已经打了下班卡了
-//            }
-//        }else if(status == 2){
-//            if(dkType == 1){
-//                //说明上班迟到打卡，计算迟到时间
-//                String minute = DateUtil.getminute(beginTime,nowTime);
-//                resultMap.put("cd_ztMinute",minute);
-//            }else {
-//                //说明下班早退打卡，计算早退时间
-//                String minute = DateUtil.getminute(nowTime,endTime);
-//                resultMap.put("cd_ztMinute",minute);
-//            }
-//        }else {
-//            //说明下班时间打卡
-//            if(dkType == 1){
-//                //说明为忘记打卡，今天一次都没有打卡
-//            }else {
-//                //说明该员工还在努力的加班中
-//                //根据加班规则，计算加班
-//            }
-//        }
-        return resultMap;
+        System.err.println("status"+status);
+        return status;
     }
     /**
      * 两时间点相差的分钟数
@@ -187,17 +161,18 @@ public class DateUtil {
      * @param endTime
      * @return
      */
-    public static String getminute(Date beginTime, Date endTime) {
+    public static long getMinute(Date beginTime, Date endTime) {
         long beginLong = beginTime.getTime();
         long endLong = endTime.getTime();
         long total = (endLong - beginLong) / (1000 * 60);
-        long hourNum = total / 60;
-        long minuteNum = total % 60;
-        if(hourNum == 0){
-            return minuteNum+"分钟";
-        }else {
-            return hourNum+"小时"+minuteNum+"分钟";
-        }
+//        long hourNum = total / 60;
+//        long minuteNum = total % 60;
+//        if(hourNum == 0){
+//            return minuteNum+"分钟";
+//        }else {
+//            return hourNum+"小时"+minuteNum+"分钟";
+//        }
+        return total;
     }
     /**
      * 两时间点是否为同一时间
@@ -213,6 +188,16 @@ public class DateUtil {
             return true;
         }else {
             return false;
+        }
+    }
+
+    public static String minuteDesc(Integer valueOf) {
+        int hourNum = valueOf / 60;
+        int minuteNum = valueOf % 60;
+        if(hourNum == 0){
+            return minuteNum+"分钟";
+        }else {
+            return hourNum+"小时"+minuteNum+"分钟";
         }
     }
 }

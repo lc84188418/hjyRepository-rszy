@@ -28,7 +28,7 @@ public class TApvApproval implements Comparable<TApvApproval>{
     private int isStart;
     //---------
     //审批人名字
-    private String peopleName;
+    private String approvalPeopleName;
     //岗位名字
     private String stationName;
     @Override

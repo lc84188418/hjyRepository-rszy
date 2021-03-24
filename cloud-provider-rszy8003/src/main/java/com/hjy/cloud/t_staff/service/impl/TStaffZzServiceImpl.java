@@ -199,14 +199,14 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(selectStaffZz != null){
             return new CommonResult(445, "error", "已提交过转正申请，不可再次提交", null);
         }
-        String newPkId = IDUtils.getUUID();
-        String firstApvrecordId = newPkId;
+        String firstApvrecordId = IDUtils.getUUID();
         /**
          * 添加转正信息到数据库表中
          */
         TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
         TStaffZz staffZz = new TStaffZz();
         staffZz.setPkZzId(pkEntryId);
+//        staffZz.setPkZzId(IDUtils.getUUID());
         staffZz.setFkStaffId(pkEntryId);
         staffZz.setFkWordaddressId(entry.getWorkAddress());
         staffZz.setEntryTime(entry.getEntryTime());
@@ -237,7 +237,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             stringBuffer.append("转正申请已发起成功！");
             //审批类型
             String approvalType = "13";
-//            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName());
+            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName(),firstApvrecordId);
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
             return new CommonResult(444, "error","转正申请发起失败！", null);

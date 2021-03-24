@@ -57,9 +57,9 @@ public class TKqClockController {
      */
     @ApiOperation(value = "新增", notes = "参数:打卡详细地址、若要判断外勤计算距离后传入onIsWq或offIsWq，1代表外勤")
     @PostMapping(value = "/kq/clock/add")
-    public CommonResult insert(@ApiParam(name = "Json参数", required = true) @RequestBody TKqClock tKqClock) throws FebsException {
+    public CommonResult insert(@ApiParam(name = "Json参数", required = true) @RequestBody TKqClock tKqClock,HttpServletRequest request) throws FebsException {
         try {
-            return tKqClockService.insert(tKqClock);
+            return tKqClockService.insert(tKqClock,request);
         } catch (Exception e) {
             String message = "失败";
             throw new FebsException(message);

@@ -124,7 +124,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         }
         //审批类型
         String approvalType = "11";
-//        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName());
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName(),IDUtils.getUUID());
 
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }

@@ -290,12 +290,14 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         String pkEntryId = JsonUtil.getStringParam(jsonObject, "pkEntryId");
         //审批类型
         String approvalType = JsonUtil.getStringParam(jsonObject, "approvalType");
+        String fkHtlxId = JsonUtil.getStringParam(jsonObject, "fkHtlxId");
         /**
          * 修改入职信息表中的apvId
          */
         TStaffEntry entry = new TStaffEntry();
         entry.setPkEntryId(pkEntryId);
         entry.setApvId(newPkId);
+        entry.setFkHtlxId(fkHtlxId);
         //状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1代表审批完成
         entry.setStatus(2);
         int i = tStaffEntryMapper.updateByPkId(entry);

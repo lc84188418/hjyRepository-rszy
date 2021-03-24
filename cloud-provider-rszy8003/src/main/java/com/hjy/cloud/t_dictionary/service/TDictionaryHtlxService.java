@@ -3,6 +3,8 @@ package com.hjy.cloud.t_dictionary.service;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.domin.CommonResult;
 
+import java.util.List;
+
 /**
  * (TDictionaryHtlx)表服务接口
  *
@@ -56,4 +58,6 @@ public interface TDictionaryHtlxService {
      * @return
      */
     CommonResult selectById(TDictionaryHtlx tDictionaryHtlx);
+
+    List<TDictionaryHtlx> queryAll();
 }

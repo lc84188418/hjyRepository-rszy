@@ -174,7 +174,7 @@ ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
         and DATA_TYPE = 1
         and APV_STATION != 'csr'
     </select>
-    <select id="selectApvSet" resultMap="TApvApprovalMap">
+    <select id="selectApvSet" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
         SELECT
         T_APV_APPROVAL.PK_APPROVAL_ID,
         T_APV_APVTYPE.APVTYPE_NAME AS APPROVAL_TYPE,
@@ -184,7 +184,7 @@ ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
         T_APV_APPROVAL.APV_STATION,
         T_APV_APPROVAL.IS_ENDING,
         T_APV_APPROVAL.IS_START,
-        T_STAFF_INFO.STAFF_NAME AS peopleName,
+        T_STAFF_INFO.STAFF_NAME AS approvalPeopleName,
         T_DICTIONARY_POSITION.POSITION_NAME AS stationName
         FROM
         T_APV_APPROVAL
@@ -349,7 +349,7 @@ WHERE
     </insert>
     <insert id="insertApvRecordBatch" parameterType="list">
         insert into D_APV_RECORD
-        (PK_RECORD_ID,APPROVAL_TYPE,APPLY_PEOPLE,SPONSOR,START_TIME,APV_APPROVAL,NEXT_APPROVAL,SOURCE_ID,IS_START,IS_ING)
+        (PK_RECORD_ID,APPROVAL_TYPE,APPLY_PEOPLE,SPONSOR,START_TIME,APV_APPROVAL,APPROVAL_PEOPLE_NAME,NEXT_APPROVAL,SOURCE_ID,IS_START,IS_ING)
         values
         <foreach collection="apvRecords" item="item" index="index" separator=",">
             (
@@ -359,6 +359,7 @@ WHERE
             #{item.sponsor, jdbcType=VARCHAR},
             #{item.startTime, jdbcType=TIMESTAMP},
             #{item.apvApproval, jdbcType=VARCHAR},
+            #{item.approvalPeopleName, jdbcType=VARCHAR},
             #{item.nextApproval, jdbcType=VARCHAR},
             #{item.sourceId, jdbcType=VARCHAR},
             #{item.isStart, jdbcType=INTEGER},

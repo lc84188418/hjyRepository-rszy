@@ -10,6 +10,7 @@
         <result property="staffDept" column="STAFF_DEPT" jdbcType="VARCHAR"/>
         <result property="staffPosition" column="STAFF_POSITION" jdbcType="VARCHAR"/>
         <result property="staffTel" column="STAFF_TEL" jdbcType="VARCHAR"/>
+        <result property="fkHtlxId" column="FK_HTLX_ID" jdbcType="VARCHAR"/>
         <result property="workAddress" column="WORK_ADDRESS" jdbcType="VARCHAR"/>
         <result property="recruitWay" column="RECRUIT_WAY" jdbcType="VARCHAR"/>
         <result property="idType" column="ID_TYPE" jdbcType="VARCHAR"/>
@@ -27,7 +28,7 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TStaffEntryMap">
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
         select * from hjy_cloud.T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
@@ -35,7 +36,7 @@
         select STAFF_NAME from hjy_cloud.T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
-    <select id="selectByPkId2" resultMap="TStaffEntryMap">
+    <select id="selectByPkId2" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
         SELECT
         T_STAFF_ENTRY.PK_ENTRY_ID,
         T_STAFF_ENTRY.STAFF_NAME,
@@ -60,15 +61,15 @@
         T_STAFF_ENTRY.APV_ID
         FROM
         T_STAFF_ENTRY
-        INNER JOIN
+        LEFT JOIN
         T_OUTFIT_DEPT
         ON
         T_STAFF_ENTRY.STAFF_DEPT = T_OUTFIT_DEPT.PK_DEPT_ID
-        INNER JOIN
+        LEFT JOIN
         T_DICTIONARY_POSITION
         ON
         T_STAFF_ENTRY.STAFF_POSITION = T_DICTIONARY_POSITION.PK_POSITION_ID
-        INNER JOIN
+        LEFT JOIN
         T_OUTFIT_WORKADDRESS
         ON
         T_STAFF_ENTRY.WORK_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
@@ -113,7 +114,7 @@
         T_OUTFIT_WORKADDRESS
         ON
         T_STAFF_ENTRY.WORK_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
-        <where>
+        where 1=1 and STATUS !=1
             <if test="pkEntryId != null and pkEntryId != ''">
                 and PK_ENTRY_ID = #{pkEntryId}
             </if>
@@ -134,6 +135,9 @@
             </if>
             <if test="staffTel != null and staffTel != ''">
                 and STAFF_TEL = #{staffTel}
+            </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                and FK_HTLX_ID = #{fkHtlxId}
             </if>
             <if test="workAddress != null and workAddress != ''">
                 and WORK_ADDRESS = #{workAddress}
@@ -156,9 +160,6 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 and OPERATED_PEOPLE = #{operatedPeople}
             </if>
-            <if test="status != null">
-                and STATUS = #{status}
-            </if>
             <if test="remarks != null and remarks != ''">
                 and REMARKS = #{remarks}
             </if>
@@ -174,10 +175,7 @@
             <if test="entryDesc != null and entryDesc != ''">
                 and ENTRY_DESC = #{entryDesc}
             </if>
-            <if test="apvId != null and apvId != ''">
-                and APV_ID = #{apvId}
-            </if>
-        </where>
+
     </select>
 
     <!--新增-->
@@ -204,6 +202,9 @@
             </if>
             <if test="staffTel != null and staffTel != ''">
                 STAFF_TEL,
+            </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                FK_HTLX_ID,
             </if>
             <if test="workAddress != null and workAddress != ''">
                 WORK_ADDRESS,
@@ -258,6 +259,9 @@
             <if test="staffTel != null and staffTel != ''">
                 #{staffTel,jdbcType=VARCHAR},
             </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                #{fkHtlxId,jdbcType=VARCHAR},
+            </if>
             <if test="workAddress != null and workAddress != ''">
                 #{workAddress,jdbcType=VARCHAR},
             </if>
@@ -311,6 +315,9 @@
             </if>
             <if test="staffTel != null and staffTel != ''">
                 STAFF_TEL = #{staffTel},
+            </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                FK_HTLX_ID = #{fkHtlxId},
             </if>
             <if test="workAddress != null and workAddress != ''">
                 WORK_ADDRESS = #{workAddress},

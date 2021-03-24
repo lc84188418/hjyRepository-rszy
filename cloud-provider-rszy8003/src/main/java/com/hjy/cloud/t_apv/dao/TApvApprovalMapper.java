@@ -82,7 +82,6 @@ public interface TApvApprovalMapper {
     List<TApvApproval> selectApvByType(@Param("apvType")String pk_apv_type);
 
     TApvApproval selectApvSet(@Param("pkApprovalId")String pkApprovalId,@Param("approvalType")String approvalType,@Param("dataType")int dataType,@Param("isStart")int isStart);
-    TApvApproval selectApvSet(TApvApproval tApvApproval);
     /**
      * 批量添加审批记录
      *

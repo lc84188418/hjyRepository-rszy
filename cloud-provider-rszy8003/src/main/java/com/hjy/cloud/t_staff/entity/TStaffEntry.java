@@ -26,6 +26,8 @@ public class TStaffEntry {
     private String staffPosition;
     //电话
     private String staffTel;
+    //合同类型
+    private String fkHtlxId;
     //工作地点
     private String workAddress;
     //招聘方式

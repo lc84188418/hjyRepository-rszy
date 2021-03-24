@@ -26,7 +26,7 @@ public interface TKqClockService {
      * @param tKqClock
      * @return
      */
-    CommonResult insert(TKqClock tKqClock);
+    CommonResult insert(TKqClock tKqClock,HttpServletRequest request) throws ParseException;
 
     /**
      * 修改数据

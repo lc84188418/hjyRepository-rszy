@@ -143,5 +143,10 @@ public class TDictionaryHtlxServiceImpl implements TDictionaryHtlxService {
         resultJson.put("entity", entity);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
+
+    @Override
+    public List<TDictionaryHtlx> queryAll() {
+        return tDictionaryHtlxMapper.selectAllId_Name();
+    }
 }
     
