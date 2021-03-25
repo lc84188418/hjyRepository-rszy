@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_kq.dao;
 
+import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.ReGroupStaff;
 import com.hjy.cloud.t_kq.entity.ReGroupWorkingdays;
 import com.hjy.cloud.t_kq.entity.TKqClock;
@@ -73,4 +74,6 @@ public interface TKqClockMapper {
      * @return 分组工作日设置信息
      */
     List<ReGroupWorkingdays> selectGroupWorkingDaysByEntity(ReGroupWorkingdays selectReGroupWorkingdays);
+
+    List<TKqClock> statisticsUser(ParamStatistics paramStatistics);
 }

@@ -220,7 +220,7 @@ public class ObjectAsyncTask {
                         }
                         if(deptLeader != null){
                             apv.setApprovalPeople(deptLeader.getPkStaffId());
-                            apv.setPeopleName(deptLeader.getStaffName());
+                            apv.setApprovalPeopleName(deptLeader.getStaffName());
                         }
                         apv.setStationName("部门主管");
                     }else if(apv.getApvStation().equals("financeLeader")){
@@ -230,7 +230,7 @@ public class ObjectAsyncTask {
                         }
                         if(financeLeader != null){
                             apv.setApprovalPeople(financeLeader.getPkStaffId());
-                            apv.setPeopleName(financeLeader.getStaffName());
+                            apv.setApprovalPeopleName(financeLeader.getStaffName());
                         }
                         apv.setStationName("财务主管");
                     }else if(apv.getApvStation().equals("humanResources")){
@@ -240,7 +240,7 @@ public class ObjectAsyncTask {
                         }
                         if(humanResources != null){
                             apv.setApprovalPeople(humanResources.getPkStaffId());
-                            apv.setPeopleName(humanResources.getStaffName());
+                            apv.setApprovalPeopleName(humanResources.getStaffName());
                         }
                         apv.setStationName("人力资源主管");
                     }else if(apv.getApvStation().equals("generalManager")){
@@ -250,7 +250,7 @@ public class ObjectAsyncTask {
                         }
                         if(generalManager != null){
                             apv.setApprovalPeople(generalManager.getPkStaffId());
-                            apv.setPeopleName(generalManager.getStaffName());
+                            apv.setApprovalPeopleName(generalManager.getStaffName());
                         }
                         apv.setStationName("总经理");
                     }

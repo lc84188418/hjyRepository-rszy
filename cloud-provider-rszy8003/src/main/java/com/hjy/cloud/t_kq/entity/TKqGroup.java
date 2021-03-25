@@ -42,7 +42,7 @@ public class TKqGroup {
     private Integer isKdk;
     //类型设置
     @ApiModelProperty("自由工时类型设置")
-    private Integer typeSet;
+    private String typeSet;
     //法定节假日自动排休
     @ApiModelProperty("法定节假日自动排休")
     private Integer isPaixiu;

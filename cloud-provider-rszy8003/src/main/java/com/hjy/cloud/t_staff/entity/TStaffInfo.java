@@ -30,11 +30,12 @@ public class TStaffInfo {
     private String positionName;
     //工作地
     private String fkAddressId;
-
+    private String workAddressName;
     //入职时间
     private Date entryTime;
     //合同类型,在字典中有
     private String fkHtlxId;
+    private String htlxName;
     //招聘形式
     private String recruitWay;
     //试用期到期日
@@ -53,6 +54,7 @@ public class TStaffInfo {
     private String birthday;
     //民族，字典中有
     private String fkNationId;
+    private String nationName;
     //户口所在地
     private String hkszd;
     //政治面貌
@@ -63,6 +65,7 @@ public class TStaffInfo {
     private Integer isMarry;
     //最高学历,字典中有
     private String fkEducationId;
+    private String educationName;
     //最高学历毕业院校
     private String zgxlbyyx;
     //外语等级

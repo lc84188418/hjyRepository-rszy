@@ -5,6 +5,7 @@
     <resultMap type="com.hjy.cloud.t_kq.entity.TKqClock" id="TKqClockMap">
         <result property="pkClockId" column="PK_CLOCK_ID" jdbcType="VARCHAR"/>
         <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
         <result property="jobId" column="JOB_ID" jdbcType="VARCHAR"/>
         <result property="todayDate" column="TODAY_DATE" jdbcType="DATE"/>
         <result property="onDutyTime" column="ON_DUTY_TIME" jdbcType="TIMESTAMP"/>
@@ -22,10 +23,16 @@
         <result property="isZt" column="IS_ZT" jdbcType="INTEGER"/>
         <result property="ztMinute" column="ZT_MINUTE" jdbcType="INTEGER"/>
         <result property="ztDesc" column="ZT_DESC" jdbcType="VARCHAR"/>
+        <result property="isJb" column="IS_JB" jdbcType="INTEGER"/>
+        <result property="jbMinute" column="JB_MINUTE" jdbcType="INTEGER"/>
+        <result property="jbDesc" column="JB_DESC" jdbcType="VARCHAR"/>
         <result property="isDkr" column="IS_DKR" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
+        <result property="deptName" column="DEPT_NAME" jdbcType="VARCHAR"/>
         <result property="fkGroupId" column="FK_GROUP_ID" jdbcType="VARCHAR"/>
+        <result property="groupName" column="GROUP_NAME" jdbcType="VARCHAR"/>
         <result property="fkPositionId" column="FK_POSITION_ID" jdbcType="VARCHAR"/>
+        <result property="positionName" column="POSITION_NAME" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -71,6 +78,9 @@ WHERE
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
             </if>
             <if test="jobId != null and jobId != ''">
                 and JOB_ID = #{jobId,jdbcType=VARCHAR}
@@ -120,13 +130,33 @@ WHERE
             <if test="fkDeptId != null and fkDeptId != ''">
                 and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
             </if>
+            <if test="deptName != null and deptName != ''">
+                and DEPT_NAME = #{deptName,jdbcType=VARCHAR}
+            </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 and FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+            </if>
+            <if test="groupName != null and groupName != ''">
+                and GROUP_NAME = #{groupName,jdbcType=VARCHAR}
             </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 and FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR}
             </if>
+            <if test="positionName != null and positionName != ''">
+                and POSITION_NAME = #{positionName,jdbcType=VARCHAR}
+            </if>
         </where>
+    </select>
+    <select id="statisticsUser" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
+        select * from hjy_cloud.T_KQ_CLOCK
+        where FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        and WORKING_HOURS != ''
+<!--        <if test="weekOrMonth == '周'">-->
+<!--            and 1=1-->
+<!--        </if>-->
+<!--        <if test="weekOrMonth == '月'">-->
+<!--            and DATE_FORMAT(T_KQ_CLOCK.ON_DUTY_TIME,'%Y-%m') = #{monthDate,jdbcType=VARCHAR}-->
+<!--        </if>-->
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqClock">
@@ -137,6 +167,9 @@ WHERE
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
             </if>
             <if test="jobId != null and jobId != ''">
                 JOB_ID,
@@ -171,11 +204,20 @@ WHERE
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID,
             </if>
+            <if test="deptName != null and deptName != ''">
+                DEPT_NAME,
+            </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 FK_GROUP_ID,
             </if>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME,
+            </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 FK_POSITION_ID,
+            </if>
+            <if test="positionName != null and positionName != ''">
+                POSITION_NAME,
             </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -184,6 +226,9 @@ WHERE
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
             </if>
             <if test="jobId != null and jobId != ''">
                 #{jobId,jdbcType=VARCHAR},
@@ -218,11 +263,20 @@ WHERE
             <if test="fkDeptId != null and fkDeptId != ''">
                 #{fkDeptId,jdbcType=VARCHAR},
             </if>
+            <if test="deptName != null and deptName != ''">
+                #{deptName,jdbcType=VARCHAR},
+            </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 #{fkGroupId,jdbcType=VARCHAR},
             </if>
+            <if test="groupName != null and groupName != ''">
+                #{groupName,jdbcType=VARCHAR},
+            </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 #{fkPositionId,jdbcType=VARCHAR},
+            </if>
+            <if test="positionName != null and positionName != ''">
+                #{positionName,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -275,17 +329,35 @@ WHERE
             <if test="ztDesc != null and ztDesc != ''">
                 ZT_DESC = #{ztDesc,jdbcType=VARCHAR},
             </if>
+            <if test="isJb != null">
+                IS_JB = #{isJb,jdbcType=INTEGER},
+            </if>
+            <if test="jbMinute != null">
+                JB_MINUTE = #{jbMinute,jdbcType=INTEGER},
+            </if>
+            <if test="jbDesc != null and jbDesc != ''">
+                JB_DESC = #{jbDesc,jdbcType=VARCHAR},
+            </if>
             <if test="isDkr != null">
                 IS_DKR = #{isDkr,jdbcType=INTEGER},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},
             </if>
+            <if test="deptName != null and deptName != ''">
+                DEPT_NAME = #{deptName,jdbcType=VARCHAR},
+            </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR},
             </if>
+            <if test="groupName != null and groupName != ''">
+                GROUP_NAME = #{groupName,jdbcType=VARCHAR},
+            </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR},
+            </if>
+            <if test="positionName != null and positionName != ''">
+                POSITION_NAME = #{positionName,jdbcType=VARCHAR},
             </if>
         </set>
         where PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}

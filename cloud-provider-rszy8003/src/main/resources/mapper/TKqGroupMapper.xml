@@ -12,7 +12,7 @@
         <result property="kqType" column="KQ_TYPE" jdbcType="INTEGER"/>
         <result property="isKxbcdk" column="IS_KXBCDK" jdbcType="INTEGER"/>
         <result property="isKdk" column="IS_KDK" jdbcType="INTEGER"/>
-        <result property="typeSet" column="TYPE_SET" jdbcType="INTEGER"/>
+        <result property="typeSet" column="TYPE_SET" jdbcType="VARCHAR"/>
         <result property="isPaixiu" column="IS_PAIXIU" jdbcType="INTEGER"/>
         <result property="bxdkTime" column="BXDK_TIME" jdbcType="DATE"/>
         <result property="wxdkTime" column="WXDK_TIME" jdbcType="DATE"/>
@@ -67,7 +67,7 @@ WHERE
                 and KQ_TYPE = #{kqType,jdbcType=INTEGER}
             </if>
             <if test="typeSet != null">
-                and TYPE_SET = #{typeSet,jdbcType=INTEGER}
+                and TYPE_SET = #{typeSet,jdbcType=VARCHAR}
             </if>
             <if test="isPaixiu != null">
                 and IS_PAIXIU = #{isPaixiu,jdbcType=INTEGER}
@@ -228,7 +228,7 @@ WHERE
                 #{isKdk,jdbcType=INTEGER},
             </if>
             <if test="typeSet != null">
-                #{typeSet,jdbcType=INTEGER},
+                #{typeSet,jdbcType=VARCHAR},
             </if>
             <if test="isPaixiu != null">
                 #{isPaixiu,jdbcType=INTEGER},
@@ -372,7 +372,7 @@ WHERE
                 IS_KDK = #{isKdk,jdbcType=INTEGER},
             </if>
             <if test="typeSet != null">
-                TYPE_SET = #{typeSet,jdbcType=INTEGER},
+                TYPE_SET = #{typeSet,jdbcType=VARCHAR},
             </if>
             <if test="isPaixiu != null">
                 IS_PAIXIU = #{isPaixiu,jdbcType=INTEGER},

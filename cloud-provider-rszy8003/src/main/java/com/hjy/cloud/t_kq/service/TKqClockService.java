@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_kq.service;
 
+import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
 
@@ -37,26 +38,12 @@ public interface TKqClockService {
     CommonResult updateByPkId(TKqClock tKqClock);
 
     /**
-     * 删除数据
-     *
-     * @param tKqClock
-     * @return
-     */
-    CommonResult delete(TKqClock tKqClock);
-
-    /**
-     * 查询所有数据
-     *
-     * @param param
-     * @return
-     */
-    CommonResult selectAll(String param);
-
-    /**
      * 获取单个数据
      *
      * @param tKqClock 实体对象
      * @return
      */
     CommonResult selectById(TKqClock tKqClock);
+
+    CommonResult statisticsUser(ParamStatistics param, HttpServletRequest request) throws ParseException;
 }

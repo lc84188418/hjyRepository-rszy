@@ -304,33 +304,29 @@ public class TKqClockServiceImpl implements TKqClockService {
         if(sysToken == null){
             return new CommonResult(445, "error", "token不存在或已失效，请重新登录", null);
         }
-        if(tKqClockParam.getIsDkr() == 0){
-            return new CommonResult(201, "success", "今日无需打卡，打卡无效", null);
-        }
+        JSONObject resultJson = new JSONObject();
         Date nowDate = new Date();
-        TStaffInfo info = tStaffInfoMapper.selectByPkId(sysToken.getFkUserId());
+        TStaffInfo info = tStaffInfoMapper.selectByPkId2(sysToken.getFkUserId());
         StringBuffer stringBuffer = new StringBuffer();
         if(!StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
             //说明上班打卡，新增记录,
             //前端需传入onCloudAddress,onIsWq,isDkr,fkGroupId
             tKqClockParam.setPkClockId(IDUtils.getUUID());
             tKqClockParam.setFkStaffId(sysToken.getFkUserId());
+            tKqClockParam.setStaffName(info.getStaffName());
             tKqClockParam.setTodayDate(nowDate);
             tKqClockParam.setOnDutyTime(nowDate);
             tKqClockParam.setOnClockIp(sysToken.getIp());
             //isCd,cdMinute后端在计算
-            Map<String,Object> map = this.calculationCdZt_minute(sysToken.getFkUserId(),tKqClockParam.getFkGroupId(),tKqClockParam.getIsDkr(),"isCd");
-            int isCd = (int) map.get("isCd");
-            String cdMinute = (String) map.get("cdMinute");
-            tKqClockParam.setIsCd(isCd);
-            tKqClockParam.setCdMinute(cdMinute);
-            String cdDesc = DateUtil.minuteDesc(Integer.valueOf(cdMinute));
-            tKqClockParam.setCdDesc("迟到"+cdDesc);
+            tKqClockParam = this.calculationCdZt_minute(tKqClockParam,"isCd");
             tKqClockParam.setFkDeptId(info.getFkDeptId());
+            tKqClockParam.setDeptName(info.getDeptName());
             tKqClockParam.setFkPositionId(info.getFkPositionId());
+            tKqClockParam.setPositionName(info.getPositionName());
             int i = tKqClockMapper.insertSelective(tKqClockParam);
             if (i > 0) {
                 stringBuffer.append("上班打卡成功！");
+                resultJson.put("clock",tKqClockParam);
             }
         }
         if(!StringUtils.isEmpty(tKqClockParam.getOffClockAddress())){
@@ -351,34 +347,29 @@ public class TKqClockServiceImpl implements TKqClockService {
                 selectClock.setOffClockAddress(tKqClockParam.getOffClockAddress());
                 selectClock.setOffClockIp(sysToken.getIp());
                 selectClock.setOffIsWq(tKqClockParam.getOffIsWq());
-                //计算工时，早退时间
-                Map<String,Object> map = this.calculationCdZt_minute(sysToken.getFkUserId(),tKqClockParam.getFkGroupId(),tKqClockParam.getIsDkr(),"isZt");
-                double workHours = (double) map.get("workHours");
-                selectClock.setWorkingHours(workHours);
-                //是否早退
-                int isZt = (int) map.get("isZt");
-                String ztMinute = (String) map.get("ztMinute");
-                selectClock.setIsZt(isZt);
-                selectClock.setZtMinute(ztMinute);
-                String ztDesc = DateUtil.minuteDesc(Integer.valueOf(ztMinute));
-                tKqClockParam.setZtDesc("早退"+ztDesc);
+                selectClock = this.calculationCdZt_minute(selectClock,"isZt");
                 int i = tKqClockMapper.updateByPkId(selectClock);
                 if (i > 0) {
                     stringBuffer.append("成功！");
+                    resultJson.put("clock",selectClock);
                 }
             }else {
                 stringBuffer.append("下班打卡异常！请联系技术人员！");
             }
         }
-        return new CommonResult(200, "success", stringBuffer.toString(), null);
+        return new CommonResult(200, "success", stringBuffer.toString(), resultJson);
     }
 
-    private Map<String, Object> calculationCdZt_minute(String fkUserId, String fkGroupId,int isDkr,String cdOrZt) throws ParseException {
-        Map<String, Object> map = new HashMap<>();
-        TKqGroup tKqGroup = tKqGroupMapper.selectByPkId(fkGroupId);
+    private TKqClock calculationCdZt_minute(TKqClock tKqClock,String cdOrZt) throws ParseException {
+        TKqGroup tKqGroup = tKqGroupMapper.selectByPkId(tKqClock.getFkGroupId());
+        tKqClock.setGroupName(tKqGroup.getGroupName());
         //2 今日该考勤组的班次信息
         TKqBc tKqBc = null;
         ReGroupWorkingdays selectReGroupWorkingdays = new ReGroupWorkingdays();
+        Date nowDate = new Date();
+        // 设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat("HH:mm");
+        Date nowTime = df.parse(df.format(nowDate));
         //displayName今日是周几
         String displayName = DateUtil.todayIs();
         selectReGroupWorkingdays.setFkGroupId(tKqGroup.getPkGroupId());
@@ -390,7 +381,7 @@ public class TKqClockServiceImpl implements TKqClockService {
              * 1.tKqGroup.getKqType() == 1说明为固定班次
              */
             if(resultGroupWorkingdays == null || resultGroupWorkingdays.size() == 0){
-                if(isDkr == 1){
+                if(tKqClock.getIsDkr() == 1){
                     //代表今日为必须考勤日期，就使用默认的班次设置
                     tKqBc = tKqBcMapper.selectDefaultBc();
                 }
@@ -400,70 +391,99 @@ public class TKqClockServiceImpl implements TKqClockService {
             /**
              * 开始计算是否迟到或早退
              */
-            Date nowDate = new Date();
             int isCdOrZt = DateUtil.belongCalendar2(nowDate,tKqBc.getTimeSlot());
-            // 设置日期格式
-            SimpleDateFormat df = new SimpleDateFormat("HH:mm");
             //09:00-17:30
             String[] timeSlots = tKqBc.getTimeSlot().split("-");
-            Date nowTime = df.parse(df.format(nowDate));
             if(isCdOrZt == 1){
                 if("isZt".equals(cdOrZt)){
                     //说明是下班，已早退，计算早退时间
-                    map.put("isZt",1);
+                    tKqClock.setIsZt(1);
                     Date endTime = df.parse(timeSlots[1]);
                     long total = DateUtil.getMinute(nowTime,endTime);
-                    map.put("ztMinute",String.valueOf(total));
+                    tKqClock.setZtMinute(String.valueOf(total));
                     //计算工时
                     double workHours = this.calculationWorkHours(nowTime,tKqBc);
-                    map.put("workHours",workHours);
+                    tKqClock.setWorkingHours(workHours);
                 }else {
-                    map.put("isCd",1);
-                    map.put("cdMinute",null);
+                    //说明是上班班
+                    tKqClock.setIsCd(0);
                 }
             }else if(isCdOrZt == 2) {
                 if("isCd".equals(cdOrZt)){
-                    map.put("isCd",1);
                     //说明是上班，已迟到，计算迟到时间
+                    tKqClock.setIsCd(1);
                     Date beginTime = df.parse(timeSlots[0]);
                     long total = DateUtil.getMinute(beginTime,nowTime);
-                    map.put("cdMinute",String.valueOf(total));
+                    tKqClock.setCdMinute(String.valueOf(total));
+                    String cdDesc = DateUtil.minuteDesc((int) total);
+                    tKqClock.setCdDesc("迟到"+cdDesc);
                 }else {
                     //说明是下班，已早退，计算早退时间
-                    map.put("isZt",1);
+                    tKqClock.setIsZt(1);
                     Date endTime = df.parse(timeSlots[1]);
                     long total = DateUtil.getMinute(nowTime,endTime);
-                    map.put("ztMinute",String.valueOf(total));
+                    tKqClock.setZtMinute(String.valueOf(total));
                     //计算工时
                     double workHours = this.calculationWorkHours(nowTime,tKqBc);
-                    map.put("workHours",workHours);
+                    tKqClock.setWorkingHours(workHours);
                 }
             }else {
                 if("isCd".equals(cdOrZt)){
-                    map.put("isCd",1);
                     //说明是上班，已迟到，计算迟到时间
+                    tKqClock.setIsCd(1);
                     Date beginTime = df.parse(timeSlots[0]);
                     long total = DateUtil.getMinute(beginTime,nowTime);
-                    map.put("cdMinute",String.valueOf(total));
+                    tKqClock.setCdMinute(String.valueOf(total));
+                    String cdDesc = DateUtil.minuteDesc((int) total);
+                    tKqClock.setCdDesc("迟到"+cdDesc);
                 }else {
-                    map.put("isZt",0);
-                    map.put("ztMinute",null);
+                    tKqClock.setIsZt(0);
                     //计算工时
                     double workHours = this.calculationWorkHours(nowTime,tKqBc);
-                    map.put("workHours",workHours);
+                    tKqClock.setWorkingHours(workHours);
                 }
             }
         }else if(tKqGroup.getKqType() == 2){
             /**
              * 2.说明为排班制
              */
-
         }else {
             /**
              * 2.说明为自由工时,打卡时间任意，无班次信息
              */
+            String typeSet = tKqGroup.getTypeSet();
+            if("isCd".equals(cdOrZt)){
+                tKqClock.setIsCd(0);
+            }else {
+                //说明是下班,计算工时，判断是否早退
+                Date onDutyDate = tKqClock.getOnDutyTime();
+                Date onDutyTime = df.parse(df.format(onDutyDate));
+                int total = (int)DateUtil.getMinute(onDutyTime,nowTime);
+                //减去休息时间,默认12-14点，2小时120分钟
+                int isRestInt = DateUtil.belongCalendar2(nowDate,"12:00-14:00");
+                //计算工时
+                int workHours = 0;
+                if(isRestInt == 1){
+                    workHours = total;
+                }else if(isRestInt == 2){
+                    //重新计算工时
+                    Date restTime = df.parse("12:00");
+                    int total2 = (int)DateUtil.getMinute(onDutyTime,restTime);
+                    workHours = total2;
+                }else {
+                    workHours = total-120;
+                }
+                tKqClock.setWorkingHours(workHours);
+                long workhoursDefault = DateUtil.getLongMinute(typeSet);
+                if(workHours < workhoursDefault){
+                    tKqClock.setIsZt(1);
+                    tKqClock.setZtMinute(String.valueOf(workhoursDefault-workHours));
+                    String ztDesc = DateUtil.minuteDesc((int) (workhoursDefault-workHours));
+                    tKqClock.setZtDesc("早退"+ztDesc);
+                }
+            }
         }
-        return map;
+        return tKqClock;
     }
 
     /**
@@ -515,56 +535,6 @@ public class TKqClockServiceImpl implements TKqClockService {
     }
 
     /**
-     * 删除数据
-     *
-     * @param tKqClock
-     * @return
-     */
-    @Transactional()
-    @Override
-    public CommonResult delete(TKqClock tKqClock) {
-        int i = this.tKqClockMapper.deleteById(tKqClock);
-        if (i > 0) {
-            return new CommonResult(200, "success", "删除数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
-        }
-    }
-
-    /**
-     * 查询所有数据
-     *
-     * @param param
-     * @return
-     */
-    @Override
-    public CommonResult selectAll(String param) {
-        JSONObject json = JSON.parseObject(param);
-        //分页参数
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
-        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
-        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
-        //查询条件
-        TKqClock entity = new TKqClock();
-
-        //分页记录条数
-        int pageNum = 1;
-        int pageSize = 10;
-        if (pageNumStr != null) {
-            pageNum = Integer.parseInt(pageNumStr);
-        }
-        if (pageSizeStr != null) {
-            pageSize = Integer.parseInt(pageSizeStr);
-        }
-        PageHelper.startPage(pageNum, pageSize);
-        List<TKqClock> list = this.tKqClockMapper.selectAllPage(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TKqClock>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
-    }
-
-    /**
      * 获取单个数据
      *
      * @param tKqClock 实例对象
@@ -587,6 +557,83 @@ public class TKqClockServiceImpl implements TKqClockService {
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);
         return resultJson;
+    }
+    /**
+     * 个人打卡统计
+     *
+     * @param paramStatistics
+     * @return
+     */
+    @Override
+    public CommonResult statisticsUser(ParamStatistics paramStatistics,HttpServletRequest request) throws ParseException {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        //分页参数
+        String weekOrMonth = "周";
+        if(StringUtils.isEmpty(paramStatistics.getWeekOrMonth())){
+            paramStatistics.setWeekOrMonth(weekOrMonth);
+        }
+        paramStatistics.setFkStaffId(sysToken.getFkUserId());
+        List<TKqClock> list = this.tKqClockMapper.statisticsUser(paramStatistics);
+        int dataSize = list.size();
+        int cdNum = 0;
+        int cdMinute = 0;
+        int ztNum = 0;
+        int ztMinute = 0;
+        int jbNum = 0;
+        int jbMinute = 0;
+        int wqNum = 0;
+        if(list != null && dataSize > 0){
+            StatisticsUser returnEntity= new StatisticsUser();
+            TKqClock firstClock = list.get(0);
+            returnEntity.setFkStaffId(firstClock.getFkStaffId());
+            returnEntity.setStaffName(firstClock.getStaffName());
+            returnEntity.setJobId(firstClock.getJobId());
+            returnEntity.setFkDeptId(firstClock.getFkDeptId());
+            returnEntity.setDeptName(firstClock.getDeptName());
+            returnEntity.setFkGroupId(firstClock.getFkGroupId());
+            returnEntity.setGroupName(firstClock.getGroupName());
+            returnEntity.setFkPositionId(firstClock.getFkPositionId());
+            returnEntity.setPositionName(firstClock.getPositionName());
+            //
+            double workingHourTotal = 0;
+            Iterator<TKqClock> clockIterator = list.iterator();
+            while (clockIterator.hasNext()){
+                TKqClock obj = clockIterator.next();
+                workingHourTotal += obj.getWorkingHours();
+                if(obj.getIsCd() != null && obj.getIsCd() == 1){
+                    cdNum++;
+                    cdMinute += Integer.valueOf(obj.getCdMinute());
+                }
+                if(obj.getIsZt() != null && obj.getIsZt() == 1){
+                    ztNum++;
+                    ztMinute += Integer.valueOf(obj.getZtMinute());
+                }
+                if(obj.getIsJb() != null && obj.getIsJb() == 1){
+                    jbNum++;
+                    jbMinute += Integer.valueOf(obj.getJbMinute());
+                }
+                //一天只算一次外勤
+                if(obj.getOnIsWq() == 1 ||obj.getOffIsWq() == 1){
+                    wqNum++;
+                }
+            }
+            double workHourAvg = workingHourTotal / dataSize;
+            returnEntity.setWorkingHours(workHourAvg);
+            returnEntity.setOnDutyNum(dataSize);
+            returnEntity.setCdDesc(cdNum+"次 共"+cdMinute+"分钟");
+            returnEntity.setZtDesc(ztNum+"次 共"+ztMinute+"分钟");
+            returnEntity.setJbDesc(jbNum+"次 共"+jbMinute+"分钟");
+            /**
+             * 未计算的
+             * 缺卡、旷工、出勤班次、休息天数
+             */
+            returnEntity.setFieldNum(wqNum);
+            JSONObject resultJson = new JSONObject();
+            resultJson.put("statistics", returnEntity);
+            return new CommonResult(200, "success", "获取数据成功", resultJson);
+        }else {
+            return new CommonResult(201, "success", "当前条件无数据!", null);
+        }
     }
 }
     

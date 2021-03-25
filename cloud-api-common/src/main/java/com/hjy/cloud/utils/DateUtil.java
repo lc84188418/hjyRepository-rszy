@@ -200,4 +200,12 @@ public class DateUtil {
             return hourNum+"小时"+minuteNum+"分钟";
         }
     }
+    public static long getLongMinute(String param) {
+        String[] strings = param.split("-");
+        long total = Integer.valueOf(strings[0]) * 60;
+        if(strings.length == 2){
+            total += Integer.valueOf(strings[1]);
+        }
+        return total;
+    }
 }

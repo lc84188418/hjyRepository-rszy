@@ -1,6 +1,7 @@
 package com.hjy.cloud.utils;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -21,18 +22,19 @@ public class JsonUtil {
     }
     public static Integer getIntegerParam(JSONObject jsonObject,String paramName){
         if(jsonObject.get(paramName)!=null){
-
             String param = String.valueOf(jsonObject.get(paramName));
-            return Integer.parseInt(param);
+            return Integer.valueOf(param);
         }
-        return null;
+        return 0;
     }
     public static Date getDateParam(JSONObject jsonObject, String pattern,String paramName) throws ParseException {
         if(jsonObject.get(paramName)!=null){
             String dateStr = (String) jsonObject.get(paramName);
             SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-            Date parse = sdf.parse(dateStr);
-            return parse;
+            if(!StringUtils.isEmpty(dateStr.trim())){
+                Date parse = sdf.parse(dateStr);
+                return parse;
+            }
         }
         return null;
     }

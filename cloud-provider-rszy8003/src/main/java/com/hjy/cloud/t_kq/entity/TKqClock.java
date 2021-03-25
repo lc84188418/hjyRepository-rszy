@@ -19,6 +19,8 @@ public class TKqClock {
     private String pkClockId;
     @ApiModelProperty("员工id")
     private String fkStaffId;
+    @ApiModelProperty("员工姓名")
+    private String staffName;
     @ApiModelProperty("工号")
     private String jobId;
     @ApiModelProperty("当时日期")
@@ -53,13 +55,24 @@ public class TKqClock {
     private String ztMinute;
     @ApiModelProperty("早退描述")
     private String ztDesc;
+    @ApiModelProperty("是否加班")
+    private Integer isJb;
+    @ApiModelProperty("加班时间")
+    private String jbMinute;
+    @ApiModelProperty("加班描述")
+    private String jbDesc;
     @ApiModelProperty("是否为打卡日,上班时传入")
     private Integer isDkr;
-    @ApiModelProperty("当时所属部门")
+    @ApiModelProperty("当时所属部门id")
     private String fkDeptId;
-    @ApiModelProperty("当时所属考勤组,上班时传入")
+    @ApiModelProperty("当时所属部门")
+    private String deptName;
+    @ApiModelProperty("当时所属考勤组id,上班时传入")
     private String fkGroupId;
-    @ApiModelProperty("当时职位")
+    @ApiModelProperty("当时所属考勤组名称")
+    private String groupName;
+    @ApiModelProperty("当时职位id")
     private String fkPositionId;
-
+    @ApiModelProperty("当时职位名称")
+    private String positionName;
 }
