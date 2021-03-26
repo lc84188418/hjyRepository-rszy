@@ -111,7 +111,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         String quitTime = JsonUtil.getStringParam(json, "quitTime");
         String remarks = JsonUtil.getStringParam(json, "remarks");
         staffQuit.setQuitType(quitType);
-        staffQuit.setQuitTime(DateUtil.formatTime(quitTime));
+        staffQuit.setQuitTime(DateUtil.formatTime(quitTime,"yyyy-MM-dd"));
         staffQuit.setRemarks(remarks);
         //离职类型/离职日期/备注  需要前端传
         int i = this.tStaffQuitMapper.insertSelective(staffQuit);

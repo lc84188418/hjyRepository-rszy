@@ -1,5 +1,7 @@
 package com.hjy.cloud.utils;
 
+import org.apache.commons.lang.StringUtils;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -50,8 +52,8 @@ public class DateUtil {
      * @return （年月日）Date类型的时间
      * @throws ParseException
      */
-    public static Date formatTime(String date) throws ParseException {
-        SimpleDateFormat sdf = new SimpleDateFormat(YEAR_MONTH_DATE_PATTERN);
+    public static Date formatTime(String date, String dateFormatType) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(dateFormatType);
         Date parse = sdf.parse(date);
         return parse;
     }
@@ -107,6 +109,7 @@ public class DateUtil {
 //        int day = calendar.get(Calendar.DAY_OF_WEEK);
         //星期几-星期一
         String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
+        System.err.println("displayName:"+displayName);
         return displayName;
     }
     /**
@@ -151,7 +154,6 @@ public class DateUtil {
         //时间段结束的时刻
         Date endTime = df.parse(timeSlots[1]);
         int status = belongCalendar(nowTime, beginTime, endTime);
-        System.err.println("status"+status);
         return status;
     }
     /**
@@ -165,13 +167,6 @@ public class DateUtil {
         long beginLong = beginTime.getTime();
         long endLong = endTime.getTime();
         long total = (endLong - beginLong) / (1000 * 60);
-//        long hourNum = total / 60;
-//        long minuteNum = total % 60;
-//        if(hourNum == 0){
-//            return minuteNum+"分钟";
-//        }else {
-//            return hourNum+"小时"+minuteNum+"分钟";
-//        }
         return total;
     }
     /**
@@ -207,5 +202,68 @@ public class DateUtil {
             total += Integer.valueOf(strings[1]);
         }
         return total;
+    }
+
+    /**
+     *
+     * @param lastOrNext,weekSlot
+     *  addOrNext =0 当日完整周的时间段
+     *  addOrNext =1 当日上一周完整周的时间段
+     *  addOrNext =-1 当日下一周完整周的时间段
+     * @return
+     */
+    public static String getWeekSlot(int lastOrNext,String weekSlot) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
+        Calendar cal = Calendar.getInstance();
+        //设置一个星期的第一天
+        cal.setFirstDayOfWeek(Calendar.SATURDAY);
+        /**
+         * 计算当前周
+         */
+        String imptimeBegin = "";
+        String imptimeEnd = "";
+        if(StringUtils.isEmpty(weekSlot)){
+            Date nowDate = new Date();
+            cal.setTime(nowDate);
+            // 获得当前日期是一个星期的第几天
+            int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
+            cal.add(Calendar.DATE, - (dayWeek - 1));
+            imptimeBegin = sdf.format(cal.getTime());
+            cal.add(Calendar.DATE, 6);
+            imptimeEnd = sdf.format(cal.getTime());
+        }else {
+            /**
+             * 计算传入周时间段的上周或者下周时间段
+             * 2021.03.21-2021.03.27
+             */
+
+            String [] strings = weekSlot.split("-");
+            if(lastOrNext == 1){
+                //计算下周
+                cal.setTime(sdf.parse(strings[1]));
+                cal.add(Calendar.DATE, 1);
+                imptimeBegin = sdf.format(cal.getTime());
+                cal.add(Calendar.DATE, 6);
+                imptimeEnd = sdf.format(cal.getTime());
+            }else if(lastOrNext == -1){
+                //计算上周
+                cal.setTime(sdf.parse(strings[0]));
+                cal.add(Calendar.DATE, -7);
+                imptimeBegin = sdf.format(cal.getTime());
+                cal.add(Calendar.DATE, 6);
+                imptimeEnd = sdf.format(cal.getTime());
+            }else {
+                //计算本周
+                Date nowDate = new Date();
+                cal.setTime(nowDate);
+                // 获得当前日期是一个星期的第几天
+                int dayWeek = cal.get(Calendar.DAY_OF_WEEK);
+                cal.add(Calendar.DATE, - (dayWeek - 1));
+                imptimeBegin = sdf.format(cal.getTime());
+                cal.add(Calendar.DATE, 6);
+                imptimeEnd = sdf.format(cal.getTime());
+            }
+        }
+        return imptimeBegin+"-"+imptimeEnd;
     }
 }

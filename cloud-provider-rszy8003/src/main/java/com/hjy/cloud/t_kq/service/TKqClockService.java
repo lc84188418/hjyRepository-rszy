@@ -35,7 +35,7 @@ public interface TKqClockService {
      * @param tKqClock
      * @return
      */
-    CommonResult updateByPkId(TKqClock tKqClock);
+    CommonResult updateByPkId(TKqClock tKqClock) throws ParseException;
 
     /**
      * 获取单个数据
@@ -44,6 +44,24 @@ public interface TKqClockService {
      * @return
      */
     CommonResult selectById(TKqClock tKqClock);
-
+    /**
+     * 个人打卡汇总统计
+     * @return 所有数据
+     */
     CommonResult statisticsUser(ParamStatistics param, HttpServletRequest request) throws ParseException;
+    /**
+     * 个人打卡每日记录统计
+     * @return 所有数据
+     */
+    CommonResult userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request);
+    /**
+     * 计算周次
+     * @return 所有数据
+     */
+    CommonResult getWeekSlot(ParamStatistics param) throws ParseException;
+    /**
+     * 管理员查询所有打卡信息
+     * @return 所有数据
+     */
+    CommonResult adminList(String tKqClock) throws ParseException;
 }

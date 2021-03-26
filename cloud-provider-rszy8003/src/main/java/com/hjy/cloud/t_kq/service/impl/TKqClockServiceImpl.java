@@ -87,7 +87,6 @@ public class TKqClockServiceImpl implements TKqClockService {
             stringBuffer.append("非必须考勤用户，无需考勤！");
             jsonObject.put("clock", resultClock);
             return new CommonResult(202, "success", stringBuffer.toString(), jsonObject);
-
         }
         /**
          * 二、查询该员工所在考勤组的信息
@@ -525,7 +524,9 @@ public class TKqClockServiceImpl implements TKqClockService {
      */
     @Transactional()
     @Override
-    public CommonResult updateByPkId(TKqClock tKqClock) {
+    public CommonResult updateByPkId(TKqClock tKqClock) throws ParseException {
+        //1.是否迟到
+//        tKqClockParam = this.calculationCdZt_minute(tKqClock,"isCd");
         int i = this.tKqClockMapper.updateByPkId(tKqClock);
         if (i > 0) {
             return new CommonResult(200, "success", "修改数据成功", null);
@@ -567,13 +568,27 @@ public class TKqClockServiceImpl implements TKqClockService {
     @Override
     public CommonResult statisticsUser(ParamStatistics paramStatistics,HttpServletRequest request) throws ParseException {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
-        //分页参数
+        //默认查询条件按周次
         String weekOrMonth = "周";
         if(StringUtils.isEmpty(paramStatistics.getWeekOrMonth())){
             paramStatistics.setWeekOrMonth(weekOrMonth);
         }
         paramStatistics.setFkStaffId(sysToken.getFkUserId());
-        List<TKqClock> list = this.tKqClockMapper.statisticsUser(paramStatistics);
+        List<TKqClock> list = new ArrayList<>();
+        if("月".equals(paramStatistics.getWeekOrMonth())){
+            paramStatistics.setIsWorkingHours("notnull");
+            list = this.tKqClockMapper.selectAllByMonth(paramStatistics);
+        }else if("周".equals(paramStatistics.getWeekOrMonth())){
+            String weekSlot = paramStatistics.getWeekDate();
+            if(StringUtils.isEmpty(weekSlot)){
+                //默认为当前时间周
+                weekSlot = DateUtil.getWeekSlot(0,null);
+            }
+            String[] weekSlots = weekSlot.split("-");
+            paramStatistics.setStartDate(weekSlots[0]);
+            paramStatistics.setEndDate(weekSlots[1]);
+            list = this.tKqClockMapper.statisticsUser2(paramStatistics);
+        }
         int dataSize = list.size();
         int cdNum = 0;
         int cdMinute = 0;
@@ -634,6 +649,80 @@ public class TKqClockServiceImpl implements TKqClockService {
         }else {
             return new CommonResult(201, "success", "当前条件无数据!", null);
         }
+    }
+    /**
+     * 个人打卡每日记录统计
+     * @return 所有数据
+     */
+    @Override
+    public CommonResult userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request) {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        JSONObject resultJson = new JSONObject();
+        param.setFkStaffId(sysToken.getFkUserId());
+        param.setIsWorkingHours(null);
+        //默认先查询当月的数据
+        Date date = new Date();
+        //默认今日打卡信息
+        TKqClock today = null;
+        if(param.getTodayDate() == null){
+            param.setTodayDate(DateUtil.getDateFormat(date,"yyyy-MM-dd"));
+            String monthDate = "";
+            if(StringUtils.isEmpty(param.getMonthDate())){
+                monthDate = DateUtil.getDateFormat(date,"yyyy-MM");
+                param.setMonthDate(monthDate);
+            }
+            List<TKqClock> monthList = tKqClockMapper.selectAllByMonth(param);
+            resultJson.put("statistics", monthList);
+        }else {
+            //只查询某天的数据
+            today = tKqClockMapper.selectOnDayByTodayDate(param);
+
+        }
+        today = tKqClockMapper.selectOnDayByTodayDate(param);
+        resultJson.put("today", today);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
+
+    @Override
+    public CommonResult getWeekSlot(ParamStatistics param) throws ParseException {
+        //周时间段
+        String weekDate = param.getWeekDate();
+        Integer lastOrNext = param.getLastOrNext();
+        String string = DateUtil.getWeekSlot(lastOrNext,weekDate);
+        return new CommonResult(200, "success", "获取数据成功", string);
+    }
+
+    @Override
+    public CommonResult adminList(String param) throws ParseException {
+        JSONObject json = JSON.parseObject(param);
+        //分页参数
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        //查询条件
+        TKqClock tKqClock = new TKqClock();
+        String staffName = JsonUtil.getStringParam(json, "staffName");
+        String todayDate = JsonUtil.getStringParam(json, "todayDate");
+        String deptName = JsonUtil.getStringParam(json, "deptName");
+        String groupName = JsonUtil.getStringParam(json, "groupName");
+        tKqClock.setStaffName(staffName);
+        tKqClock.setTodayDate(DateUtil.formatTime(todayDate,"yyyy.MM.dd"));
+        tKqClock.setDeptName(deptName);
+        tKqClock.setGroupName(groupName);
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<TKqClock> list = this.tKqClockMapper.selectAllPage(tKqClock);
+        PageResult result = PageUtil.getPageResult(new PageInfo<TKqClock>(list));
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("PageResult", result);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 }
     

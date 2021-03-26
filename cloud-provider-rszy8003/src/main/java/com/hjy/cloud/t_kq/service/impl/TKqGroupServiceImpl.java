@@ -215,26 +215,77 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         String pkGroupId = JsonUtil.getStringParam(json, "pkGroupId");
         //实体基本数据
         String groupName = JsonUtil.getStringParam(json, "groupName");
+//        int autoJoin = JsonUtil.getIntegerParam(json, "autoJoin");
+        int autoJoin = 1;
+        String kqAddress = JsonUtil.getStringParam(json, "kqAddress");
+        int kqRange = 100;
+        int kqRangeParam = JsonUtil.getIntegerParam(json, "kqRange");
+        if(kqRangeParam !=0){
+            kqRange = kqRangeParam;
+        }
         String groupStewards = JsonUtil.getStringParam(json, "groupStewards");
         int kqType = JsonUtil.getIntegerParam(json, "kqType");
+        int isKxbcdk = 0;
+        int isKdk = 0;
+        String typeSet = "";
+        if(kqType == 2){
+            isKxbcdk = JsonUtil.getIntegerParam(json, "isKxbcdk");
+            isKdk = JsonUtil.getIntegerParam(json, "isKdk");
+        }else if(kqType == 3){
+            typeSet = JsonUtil.getStringParam(json, "typeSet");
+        }
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
         Date wxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","wxdkTime");
         int kqWay = JsonUtil.getIntegerParam(json, "kqWay");
-        int isWq = JsonUtil.getIntegerParam(json, "isWq");
+        int isPzdk = JsonUtil.getIntegerParam(json, "isPzdk");
+        int isWq = 0;
+        int isWqParam = JsonUtil.getIntegerParam(json, "isWq");
+        if(isWqParam == 0){
+            isWq = isWqParam;
+        }
+        int wqApv = 0;
+        int wqRemarks = 0;
+        int wqPz = 0;
+        int wqHideaddress = 0;
+        if(isWq == 1){
+            wqApv = JsonUtil.getIntegerParam(json, "wqApv");
+            wqRemarks = JsonUtil.getIntegerParam(json, "wqRemarks");
+            wqPz = JsonUtil.getIntegerParam(json, "wqPz");
+            wqHideaddress = JsonUtil.getIntegerParam(json, "wqHideaddress");
+        }
+        int dkJgsj = JsonUtil.getIntegerParam(json, "dkJgsj");
+
+        int turnOn = 1;
+        int turnOnParam = JsonUtil.getIntegerParam(json, "turnOn");
+        if(turnOnParam == 0){
+            turnOn = turnOnParam;
+        }
         StringBuffer stringBuffer = new StringBuffer();
-        //开始添加实体数据
+        //开始添加
         TKqGroup tKqGroup = new TKqGroup();
         tKqGroup.setPkGroupId(pkGroupId);
-        tKqGroup.setTurnOn(1);
         tKqGroup.setGroupName(groupName);
+        tKqGroup.setAutoJoin(autoJoin);
+        tKqGroup.setKqAddress(kqAddress);
+        tKqGroup.setKqRange(kqRange);
         tKqGroup.setGroupStewards(groupStewards);
         tKqGroup.setKqType(kqType);
+        tKqGroup.setIsKxbcdk(isKxbcdk);
+        tKqGroup.setIsKdk(isKdk);
+        tKqGroup.setTypeSet(typeSet);
         tKqGroup.setIsPaixiu(isPaixiu);
         tKqGroup.setBxdkTime(bxdkTime);
         tKqGroup.setWxdkTime(wxdkTime);
         tKqGroup.setKqWay(kqWay);
+        tKqGroup.setIsPzdk(isPzdk);
         tKqGroup.setIsWq(isWq);
+        tKqGroup.setWqApv(wqApv);
+        tKqGroup.setWqRemarks(wqRemarks);
+        tKqGroup.setWqPz(wqPz);
+        tKqGroup.setWqHideaddress(wqHideaddress);
+        tKqGroup.setDkJgsj(dkJgsj);
+        tKqGroup.setTurnOn(turnOn);
         int i = this.tKqGroupMapper.updateByPkId(tKqGroup);
         if (i > 0) {
             stringBuffer.append("数据提交成功！");

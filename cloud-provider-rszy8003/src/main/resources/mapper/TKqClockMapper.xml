@@ -80,7 +80,7 @@ WHERE
                 and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
             </if>
             <if test="staffName != null and staffName != ''">
-                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+                and STAFF_NAME like '%${staffName}%'
             </if>
             <if test="jobId != null and jobId != ''">
                 and JOB_ID = #{jobId,jdbcType=VARCHAR}
@@ -131,13 +131,13 @@ WHERE
                 and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
             </if>
             <if test="deptName != null and deptName != ''">
-                and DEPT_NAME = #{deptName,jdbcType=VARCHAR}
+                and DEPT_NAME like '%${deptName}%'
             </if>
             <if test="fkGroupId != null and fkGroupId != ''">
                 and FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
             </if>
             <if test="groupName != null and groupName != ''">
-                and GROUP_NAME = #{groupName,jdbcType=VARCHAR}
+                and GROUP_NAME like '%${groupName}%'
             </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 and FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR}
@@ -147,16 +147,64 @@ WHERE
             </if>
         </where>
     </select>
-    <select id="statisticsUser" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
-        select * from hjy_cloud.T_KQ_CLOCK
-        where FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
-        and WORKING_HOURS != ''
-<!--        <if test="weekOrMonth == '周'">-->
-<!--            and 1=1-->
-<!--        </if>-->
-<!--        <if test="weekOrMonth == '月'">-->
-<!--            and DATE_FORMAT(T_KQ_CLOCK.ON_DUTY_TIME,'%Y-%m') = #{monthDate,jdbcType=VARCHAR}-->
-<!--        </if>-->
+    <select id="selectAllByMonth" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
+        SELECT
+	t.FK_STAFF_ID,
+	t.STAFF_NAME,
+	t.JOB_ID,
+	t.TODAY_DATE,
+	t.FK_DEPT_ID,
+	t.DEPT_NAME,
+	t.FK_GROUP_ID,
+	t.GROUP_NAME,
+	t.FK_POSITION_ID,
+	t.POSITION_NAME,
+	t.WORKING_HOURS,
+	t.IS_CD,
+	t.CD_MINUTE,
+	t.IS_ZT,
+	t.ZT_MINUTE,
+	t.IS_JB,
+	t.JB_MINUTE,
+	t.ON_IS_WQ,
+	t.OFF_IS_WQ
+FROM
+	hjy_cloud.T_KQ_CLOCK t
+        where t.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        and DATE_FORMAT(t.ON_DUTY_TIME,'%Y-%m') = #{monthDate,jdbcType=VARCHAR}
+        <if test="isWorkingHours != null and isWorkingHours != ''">
+            and t.WORKING_HOURS != ''
+        </if>
+    </select>
+    <select id="statisticsUser2" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
+                SELECT
+	t.FK_STAFF_ID,
+	t.STAFF_NAME,
+	t.JOB_ID,
+	t.FK_DEPT_ID,
+	t.DEPT_NAME,
+	t.FK_GROUP_ID,
+	t.GROUP_NAME,
+	t.FK_POSITION_ID,
+	t.POSITION_NAME,
+	t.WORKING_HOURS,
+	t.IS_CD,
+	t.CD_MINUTE,
+	t.IS_ZT,
+	t.ZT_MINUTE,
+	t.IS_JB,
+	t.JB_MINUTE,
+	t.ON_IS_WQ,
+	t.OFF_IS_WQ
+FROM
+	hjy_cloud.T_KQ_CLOCK t
+        where t.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        and t.WORKING_HOURS != '' and t.TODAY_DATE >= #{startDate,jdbcType=VARCHAR} and t.TODAY_DATE <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR}
+    </select>
+    <select id="selectOnDayByTodayDate" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
+        select * from T_KQ_CLOCK
+        where T_KQ_CLOCK.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        and T_KQ_CLOCK.TODAY_DATE = #{todayDate,jdbcType=VARCHAR}
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqClock">
@@ -284,9 +332,6 @@ WHERE
     <update id="updateByPkId">
         update hjy_cloud.T_KQ_CLOCK
         <set>
-            <if test="jobId != null and jobId != ''">
-                JOB_ID = #{jobId,jdbcType=VARCHAR},
-            </if>
             <if test="onDutyTime != null">
                 ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP},
             </if>
@@ -340,24 +385,6 @@ WHERE
             </if>
             <if test="isDkr != null">
                 IS_DKR = #{isDkr,jdbcType=INTEGER},
-            </if>
-            <if test="fkDeptId != null and fkDeptId != ''">
-                FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},
-            </if>
-            <if test="deptName != null and deptName != ''">
-                DEPT_NAME = #{deptName,jdbcType=VARCHAR},
-            </if>
-            <if test="fkGroupId != null and fkGroupId != ''">
-                FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR},
-            </if>
-            <if test="groupName != null and groupName != ''">
-                GROUP_NAME = #{groupName,jdbcType=VARCHAR},
-            </if>
-            <if test="fkPositionId != null and fkPositionId != ''">
-                FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR},
-            </if>
-            <if test="positionName != null and positionName != ''">
-                POSITION_NAME = #{positionName,jdbcType=VARCHAR},
             </if>
         </set>
         where PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}
