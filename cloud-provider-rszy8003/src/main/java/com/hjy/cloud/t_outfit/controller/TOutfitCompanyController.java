@@ -7,6 +7,8 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-23 15:33:47
  */
+@Api(tags = "公司控制层")
+@Slf4j
 @RestController
 public class TOutfitCompanyController {
     /**
@@ -35,6 +39,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -53,6 +58,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.insert(tOutfitCompany);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -71,6 +77,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.delete(tOutfitCompany);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -89,6 +96,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -106,6 +114,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.selectById(tOutfitCompany);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -124,6 +133,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.updateByPkId(tOutfitCompany);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -139,6 +149,7 @@ public class TOutfitCompanyController {
 //            return tOutfitCompanyService.distributeDeptUI(tOutfitCompany);
 //        } catch (Exception e) {
 //            String message = "失败";
+//            log.error(message,e);
 //            throw new FebsException(message);
 //        }
 //    }
@@ -155,6 +166,7 @@ public class TOutfitCompanyController {
 //            return tOutfitCompanyService.distributeDept(param);
 //        } catch (Exception e) {
 //            String message = "失败";
+//            log.error(message,e);
 //            throw new FebsException(message);
 //        }
 //    }
@@ -170,6 +182,7 @@ public class TOutfitCompanyController {
             return tOutfitCompanyService.structure();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

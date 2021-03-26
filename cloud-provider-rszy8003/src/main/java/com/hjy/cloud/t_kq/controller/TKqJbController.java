@@ -6,6 +6,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqJb;
 import com.hjy.cloud.t_kq.service.TKqJbService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since 2021-03-16 14:51:00
  */
 @Api(tags = "加班规则控制层")
+@Slf4j
 @RestController
 public class TKqJbController {
     /**
@@ -35,6 +37,7 @@ public class TKqJbController {
             return tKqJbService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -51,6 +54,7 @@ public class TKqJbController {
             return tKqJbService.insert(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -67,6 +71,7 @@ public class TKqJbController {
             return tKqJbService.delete(tKqJb);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -83,6 +88,7 @@ public class TKqJbController {
             return tKqJbService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -98,6 +104,7 @@ public class TKqJbController {
             return tKqJbService.selectById(tKqJb);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -114,6 +121,7 @@ public class TKqJbController {
             return tKqJbService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

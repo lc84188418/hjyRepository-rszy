@@ -4,6 +4,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_system.entity.TSysParam;
 import com.hjy.cloud.t_system.service.TSysParamService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.List;
  * @author liuchun
  * @since 2020-08-11 15:51:59
  */
+@Api(tags = "系统-参数配置-控制层")
 @Slf4j
 @RestController
 public class TSysParamController {

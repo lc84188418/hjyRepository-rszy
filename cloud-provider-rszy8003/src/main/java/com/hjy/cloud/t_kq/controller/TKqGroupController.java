@@ -6,6 +6,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqGroup;
 import com.hjy.cloud.t_kq.service.TKqGroupService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @since 2021-03-16 14:50:59
  */
 @Api(tags = "考勤分组控制层")
+@Slf4j
 @RestController
 public class TKqGroupController {
     /**
@@ -34,6 +36,7 @@ public class TKqGroupController {
             return new CommonResult(200, "success", "这里是提供者8003-group", serverPort);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -47,6 +50,7 @@ public class TKqGroupController {
             return tKqGroupService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -62,6 +66,7 @@ public class TKqGroupController {
             return tKqGroupService.insert(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -78,6 +83,7 @@ public class TKqGroupController {
             return tKqGroupService.delete(tKqGroup);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -94,6 +100,7 @@ public class TKqGroupController {
             return tKqGroupService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -109,6 +116,7 @@ public class TKqGroupController {
             return tKqGroupService.selectById(tKqGroup);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -125,6 +133,7 @@ public class TKqGroupController {
             return tKqGroupService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-02-25 17:06:48
  */
+@Api(tags = "员工管理-员工档案-控制层")
+@Slf4j
 @RestController
 public class TStaffInfoController {
     /**
@@ -40,6 +44,7 @@ public class TStaffInfoController {
             return tStaffInfoService.delete(tStaffInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -59,6 +64,7 @@ public class TStaffInfoController {
             return tStaffInfoService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -76,6 +82,7 @@ public class TStaffInfoController {
             return tStaffInfoService.selectById(tStaffInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -94,6 +101,7 @@ public class TStaffInfoController {
             return tStaffInfoService.updateByPkId(tStaffInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

@@ -6,6 +6,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqBc;
 import com.hjy.cloud.t_kq.service.TKqBcService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @since 2021-03-16 14:50:58
  */
 @Api(tags = "班次控制层")
+@Slf4j
 @RestController
 public class TKqBcController {
     /**
@@ -34,6 +36,7 @@ public class TKqBcController {
             return new CommonResult(200, "success", "这里是提供者8003-bc", serverPort);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -47,6 +50,7 @@ public class TKqBcController {
             return tKqBcService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -63,6 +67,7 @@ public class TKqBcController {
             return tKqBcService.insert(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -79,6 +84,7 @@ public class TKqBcController {
             return tKqBcService.delete(tKqBc);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -95,6 +101,7 @@ public class TKqBcController {
             return tKqBcService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -110,6 +117,7 @@ public class TKqBcController {
             return tKqBcService.selectById(tKqBc);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -126,6 +134,7 @@ public class TKqBcController {
             return tKqBcService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

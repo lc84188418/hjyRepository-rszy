@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffContract;
 import com.hjy.cloud.t_staff.service.TStaffContractService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 15:53:14
  */
+@Api(tags = "员工管理-合同-控制层")
+@Slf4j
 @RestController
 public class TStaffContractController {
     /**
@@ -37,6 +41,7 @@ public class TStaffContractController {
             return tStaffContractService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -55,6 +60,7 @@ public class TStaffContractController {
             return tStaffContractService.insert(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -73,6 +79,7 @@ public class TStaffContractController {
             return tStaffContractService.delete(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -91,6 +98,7 @@ public class TStaffContractController {
             return tStaffContractService.adminList(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -108,6 +116,7 @@ public class TStaffContractController {
             return tStaffContractService.userList(session,request,param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -125,6 +134,7 @@ public class TStaffContractController {
             return tStaffContractService.selectById(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -143,6 +153,7 @@ public class TStaffContractController {
             return tStaffContractService.updateByPkId(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -158,6 +169,7 @@ public class TStaffContractController {
             return tStaffContractService.renewalPage(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -172,6 +184,7 @@ public class TStaffContractController {
             return tStaffContractService.renewal(tStaffContract);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

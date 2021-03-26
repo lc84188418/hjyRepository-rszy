@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_outfit.service.TOutfitWorkaddressService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-24 10:59:42
  */
+@Api(tags = "工作地-控制层")
+@Slf4j
 @RestController
 public class TOutfitWorkaddressController {
     /**
@@ -34,6 +38,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -52,6 +57,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.insert(tOutfitWorkaddress);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -70,6 +76,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.delete(tOutfitWorkaddress);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -88,6 +95,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -105,6 +113,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.selectById(tOutfitWorkaddress);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -122,6 +131,7 @@ public class TOutfitWorkaddressController {
             return tOutfitWorkaddressService.updateByPkId(tOutfitWorkaddress);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

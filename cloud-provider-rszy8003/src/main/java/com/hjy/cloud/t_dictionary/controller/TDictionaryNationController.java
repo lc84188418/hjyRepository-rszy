@@ -6,6 +6,8 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryNation;
 import com.hjy.cloud.t_dictionary.service.TDictionaryNationService;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-25 17:21:53
  */
+@Api(tags = "数据字典-民族-控制层")
+@Slf4j
 @RestController
 public class TDictionaryNationController {
     /**
@@ -34,6 +38,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -52,6 +57,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.insert(tDictionaryNation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -67,6 +73,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.addBatch(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -85,6 +92,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.delete(tDictionaryNation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -103,6 +111,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -120,6 +129,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.selectById(tDictionaryNation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -138,6 +148,7 @@ public class TDictionaryNationController {
             return tDictionaryNationService.updateByPkId(tDictionaryNation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

@@ -6,6 +6,8 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryEducation;
 import com.hjy.cloud.t_dictionary.service.TDictionaryEducationService;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +19,8 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-25 17:21:52
  */
+@Api(tags = "数据字典-学历-控制层")
+@Slf4j
 @RestController
 public class TDictionaryEducationController {
     /**
@@ -34,6 +38,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -52,6 +57,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.insert(tDictionaryEducation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -70,6 +76,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.delete(tDictionaryEducation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -88,6 +95,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -105,6 +113,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.selectById(tDictionaryEducation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -123,6 +132,7 @@ public class TDictionaryEducationController {
             return tDictionaryEducationService.updateByPkId(tDictionaryEducation);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

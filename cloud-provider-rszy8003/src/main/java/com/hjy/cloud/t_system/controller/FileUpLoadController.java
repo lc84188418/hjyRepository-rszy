@@ -3,6 +3,7 @@ package com.hjy.cloud.t_system.controller;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_system.service.fileUpLoadService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author wangdengjun
  * @since 2020-09-28 17:48:11
  */
+@Api(tags = "文件上传-控制层")
 @Slf4j
 @RestController
 public class FileUpLoadController {

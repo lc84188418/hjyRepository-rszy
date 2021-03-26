@@ -7,6 +7,8 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryProvince;
 import com.hjy.cloud.t_dictionary.service.TDictionaryProvinceService;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-25 17:21:54
  */
+@Api(tags = "数据字典-省份-控制层")
+@Slf4j
 @RestController
 public class TDictionaryProvinceController {
     /**
@@ -35,6 +39,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -53,6 +58,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.insert(tDictionaryProvince);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -71,6 +77,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.delete(tDictionaryProvince);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -89,6 +96,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -106,6 +114,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.selectById(tDictionaryProvince);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -124,6 +133,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.updateByPkId(tDictionaryProvince);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -142,6 +152,7 @@ public class TDictionaryProvinceController {
             return tDictionaryProvinceService.addCity(city);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

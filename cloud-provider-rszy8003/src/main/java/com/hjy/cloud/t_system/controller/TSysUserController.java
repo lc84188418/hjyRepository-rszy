@@ -13,6 +13,7 @@ import com.hjy.cloud.t_system.service.TSysRoleService;
 import com.hjy.cloud.t_system.service.TSysUserService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import java.util.Map;
  * @author liuchun
  * @since 2020-07-24 17:05:59
  */
+@Api(tags = "系统-用户-控制层")
 @Slf4j
 @RestController
 public class TSysUserController {

@@ -8,6 +8,7 @@ import com.hjy.cloud.t_system.entity.TSysPerms;
 import com.hjy.cloud.t_system.service.TSysPermsService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,7 @@ import java.util.List;
  * @author liuchun
  * @since 2020-07-24 09:55:41
  */
+@Api(tags = "系统-权限-控制层")
 @Slf4j
 @RestController
 public class TSysPermsController {

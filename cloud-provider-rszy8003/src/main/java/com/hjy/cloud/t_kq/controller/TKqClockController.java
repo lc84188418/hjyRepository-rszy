@@ -45,6 +45,7 @@ public class TKqClockController {
             return tKqClockService.insertPage(request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -64,6 +65,7 @@ public class TKqClockController {
             return tKqClockService.insert(tKqClock,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -85,6 +87,7 @@ public class TKqClockController {
             return tKqClockService.statisticsUser(param,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -103,6 +106,7 @@ public class TKqClockController {
             return tKqClockService.userStatisticsEveryDay(param,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -128,6 +132,7 @@ public class TKqClockController {
             return tKqClockService.getWeekSlot(paramStatistics);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -150,6 +155,7 @@ public class TKqClockController {
             return tKqClockService.adminList(tKqClock);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -168,6 +174,7 @@ public class TKqClockController {
             return tKqClockService.selectById(tKqClock);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -194,6 +201,7 @@ public class TKqClockController {
             return tKqClockService.updateByPkId(tKqClock);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

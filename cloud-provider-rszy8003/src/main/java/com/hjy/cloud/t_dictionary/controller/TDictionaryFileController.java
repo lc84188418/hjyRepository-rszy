@@ -6,6 +6,8 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_dictionary.service.TDictionaryFileService;
 import com.hjy.cloud.t_system.service.fileUpLoadService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +21,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-02 15:16:31
  */
+@Api(tags = "文件-控制层")
+@Slf4j
 @RestController
 public class TDictionaryFileController {
     /**
@@ -36,6 +40,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.iconFileUpload(file, httpRequest);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -48,6 +53,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.otherFileUpload(file, httpRequest);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -63,6 +69,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.insert(tDictionaryFile);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -79,6 +86,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.delete(tDictionaryFile);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -95,6 +103,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -110,6 +119,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.selectById(tDictionaryFile);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -126,6 +136,7 @@ public class TDictionaryFileController {
             return tDictionaryFileService.updateByPkId(tDictionaryFile);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

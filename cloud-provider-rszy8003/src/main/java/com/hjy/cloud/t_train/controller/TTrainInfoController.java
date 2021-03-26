@@ -5,6 +5,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.t_train.service.TTrainInfoService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -16,6 +18,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 16:41:43
  */
+@Api(tags = "培训管理-培训-控制层")
+@Slf4j
 @RestController
 public class TTrainInfoController {
     /**
@@ -33,6 +37,7 @@ public class TTrainInfoController {
             return tTrainInfoService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -49,6 +54,7 @@ public class TTrainInfoController {
             return tTrainInfoService.insert(tTrainInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -65,6 +71,7 @@ public class TTrainInfoController {
             return tTrainInfoService.delete(tTrainInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -81,6 +88,7 @@ public class TTrainInfoController {
             return tTrainInfoService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -96,6 +104,7 @@ public class TTrainInfoController {
             return tTrainInfoService.selectById(tTrainInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -112,6 +121,7 @@ public class TTrainInfoController {
             return tTrainInfoService.updateByPkId(tTrainInfo);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

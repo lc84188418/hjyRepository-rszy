@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffSalary;
 import com.hjy.cloud.t_staff.service.TStaffSalaryService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 15:53:17
  */
+@Api(tags = "员工管理-薪资管理-控制层")
+@Slf4j
 @RestController
 public class TStaffSalaryController {
     /**
@@ -35,6 +39,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -51,6 +56,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.insert(tStaffSalary);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -67,6 +73,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.delete(tStaffSalary);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -83,6 +90,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -98,6 +106,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.selectById(tStaffSalary);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -114,6 +123,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.updateByPkId(tStaffSalary);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -129,6 +139,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.sendPage(tStaffSalary);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -142,6 +153,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.send(tStaffSalary,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -155,6 +167,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.adminSendRecord(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -168,6 +181,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.staffSendRecord(param,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -182,6 +196,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.selectRecordById(salaryRecord);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -196,6 +211,7 @@ public class TStaffSalaryController {
             return tStaffSalaryService.recordConfirm(salaryRecord);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

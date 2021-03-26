@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 15:53:16
  */
+@Api(tags = "员工管理-人员调动-控制层")
+@Slf4j
 @RestController
 public class TStaffReassignController {
     /**
@@ -35,6 +39,7 @@ public class TStaffReassignController {
             return tStaffReassignService.insertPage(tStaffReassign);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -51,6 +56,7 @@ public class TStaffReassignController {
             return tStaffReassignService.insert(tStaffReassign);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -67,6 +73,7 @@ public class TStaffReassignController {
 //            return tStaffReassignService.delete(tStaffReassign);
 //        } catch (Exception e) {
 //            String message = "失败";
+//            log.error(message,e);
 //            throw new FebsException(message);
 //        }
 //    }
@@ -83,6 +90,7 @@ public class TStaffReassignController {
             return tStaffReassignService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -98,6 +106,7 @@ public class TStaffReassignController {
             return tStaffReassignService.selectById(tStaffReassign);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -114,6 +123,7 @@ public class TStaffReassignController {
             return tStaffReassignService.updateByPkId(tStaffReassign);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -129,6 +139,7 @@ public class TStaffReassignController {
             return tStaffReassignService.initiateApvPage(request,tStaffReassign);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -144,6 +155,7 @@ public class TStaffReassignController {
             return tStaffReassignService.initiateApv(request,param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

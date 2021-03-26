@@ -25,7 +25,7 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.Map;
 
-@Api(tags = "登录控制层")
+@Api(tags = "系统-登录控制层")
 @Slf4j
 @RestController
 public class LoginController {

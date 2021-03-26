@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffExperienceGz;
 import com.hjy.cloud.t_staff.service.TStaffExperienceGzService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 15:53:15
  */
+@Api(tags = "员工管理-工作经历-控制层")
+@Slf4j
 @RestController
 public class TStaffExperienceGzController {
     /**
@@ -35,6 +39,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -51,6 +56,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.insert(tStaffExperienceGz);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -67,6 +73,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.delete(tStaffExperienceGz);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -83,6 +90,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -98,6 +106,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.selectById(tStaffExperienceGz);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -114,6 +123,7 @@ public class TStaffExperienceGzController {
             return tStaffExperienceGzService.updateByPkId(tStaffExperienceGz);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

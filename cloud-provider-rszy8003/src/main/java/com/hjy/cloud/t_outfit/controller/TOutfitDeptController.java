@@ -6,6 +6,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +19,7 @@ import javax.annotation.Resource;
  * @author makejava
  * @since 2021-02-24 21:13:39
  */
+@Api(tags = "部门控制层")
 @Slf4j
 @RestController
 public class TOutfitDeptController {
@@ -36,6 +38,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -54,6 +57,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.insert(tOutfitDept);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -72,6 +76,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.delete(tOutfitDept);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -89,6 +94,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.selectAll();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -105,6 +111,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.selectById(tOutfitDept);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -123,6 +130,7 @@ public class TOutfitDeptController {
             return tOutfitDeptService.updateByPkId(tOutfitDept);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

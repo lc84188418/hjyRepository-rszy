@@ -6,6 +6,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqBk;
 import com.hjy.cloud.t_kq.service.TKqBkService;
 import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +19,7 @@ import java.util.List;
  * @since 2021-03-16 14:50:59
  */
 @Api(tags = "补卡控制层")
+@Slf4j
 @RestController
 public class TKqBkController {
     /**
@@ -36,6 +38,7 @@ public class TKqBkController {
             return tKqBkService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -52,6 +55,7 @@ public class TKqBkController {
             return tKqBkService.insert(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -68,6 +72,7 @@ public class TKqBkController {
             return tKqBkService.delete(tKqBk);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -84,6 +89,7 @@ public class TKqBkController {
             return tKqBkService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -99,6 +105,7 @@ public class TKqBkController {
             return tKqBkService.selectById(tKqBk);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -115,6 +122,7 @@ public class TKqBkController {
             return tKqBkService.updateByPkId(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

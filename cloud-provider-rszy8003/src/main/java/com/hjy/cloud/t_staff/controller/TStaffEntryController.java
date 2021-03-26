@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +22,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-02-26 10:55:27
  */
+@Api(tags = "员工管理-入职-控制层")
+@Slf4j
 @RestController
 public class TStaffEntryController {
     /**
@@ -37,6 +41,7 @@ public class TStaffEntryController {
             return tStaffEntryService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -55,6 +60,7 @@ public class TStaffEntryController {
             return tStaffEntryService.insert(tStaffEntry,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -73,6 +79,7 @@ public class TStaffEntryController {
             return tStaffEntryService.delete(tStaffEntry);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -91,6 +98,7 @@ public class TStaffEntryController {
             return tStaffEntryService.adminList(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -106,6 +114,7 @@ public class TStaffEntryController {
             return tStaffEntryService.userGet(servletRequest);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -123,6 +132,7 @@ public class TStaffEntryController {
             return tStaffEntryService.selectById(tStaffEntry);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -141,6 +151,7 @@ public class TStaffEntryController {
             return tStaffEntryService.updateByPkId(tStaffEntry);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -159,6 +170,7 @@ public class TStaffEntryController {
             return tStaffEntryService.giveUp(tStaffEntry);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -174,6 +186,7 @@ public class TStaffEntryController {
             return tStaffEntryService.approvalPage(request,tStaffEntry);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -189,6 +202,7 @@ public class TStaffEntryController {
             return tStaffEntryService.approval(request,param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

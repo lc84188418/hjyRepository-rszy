@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-02-26 14:50:49
  */
+@Api(tags = "审批类型控制层")
+@Slf4j
 @RestController
 public class TApvApvtypeController {
     /**
@@ -35,6 +39,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -53,6 +58,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.insert(tApvApvtype);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -71,6 +77,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.delete(tApvApvtype);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -89,6 +96,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -106,6 +114,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.selectById(tApvApvtype);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -124,6 +133,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.updateByPkId(tApvApvtype);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -141,6 +151,7 @@ public class TApvApvtypeController {
             return tApvApvtypeService.apvProcessDetail(tApvApvtype);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

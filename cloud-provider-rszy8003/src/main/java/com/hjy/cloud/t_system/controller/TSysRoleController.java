@@ -11,6 +11,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.t_system.service.TSysUserService;
+import io.swagger.annotations.Api;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,7 @@ import java.util.List;
  * @author liuchun
  * @since 2020-07-23 12:59:10
  */
+@Api(tags = "系统-角色-控制层")
 @Slf4j
 @RestController
 public class TSysRoleController {

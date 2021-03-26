@@ -6,6 +6,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_log.entity.TLogException;
 import com.hjy.cloud.t_log.service.TLogExceptionService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-02 10:02:00
  */
+@Api(tags = "异常日志控制层")
+@Slf4j
 @RestController
 public class TLogExceptionController {
     /**
@@ -40,6 +44,7 @@ public class TLogExceptionController {
             return tLogExceptionService.delete(tLogException);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -58,6 +63,7 @@ public class TLogExceptionController {
             return tLogExceptionService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -75,6 +81,7 @@ public class TLogExceptionController {
             return tLogExceptionService.selectById(tLogException);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

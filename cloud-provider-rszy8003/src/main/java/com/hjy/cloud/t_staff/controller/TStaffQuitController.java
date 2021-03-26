@@ -6,6 +6,8 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +20,8 @@ import java.util.List;
  * @author makejava
  * @since 2021-03-01 15:53:16
  */
+@Api(tags = "员工管理-离职-控制层")
+@Slf4j
 @RestController
 public class TStaffQuitController {
     /**
@@ -35,6 +39,7 @@ public class TStaffQuitController {
             return tStaffQuitService.insertPage(request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -50,6 +55,7 @@ public class TStaffQuitController {
             return tStaffQuitService.insert(request,param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -66,6 +72,7 @@ public class TStaffQuitController {
             return tStaffQuitService.delete(tStaffQuit);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -82,6 +89,7 @@ public class TStaffQuitController {
             return tStaffQuitService.selectAll(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -97,6 +105,7 @@ public class TStaffQuitController {
             return tStaffQuitService.selectById(tStaffQuit);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -113,6 +122,7 @@ public class TStaffQuitController {
             return tStaffQuitService.updateByPkId(tStaffQuit);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }

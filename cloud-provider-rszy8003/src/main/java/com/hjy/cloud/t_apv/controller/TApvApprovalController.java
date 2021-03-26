@@ -5,6 +5,8 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
+import io.swagger.annotations.Api;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,6 +19,8 @@ import javax.servlet.http.HttpSession;
  * @author makejava
  * @since 2021-02-26 14:50:48
  */
+@Api(tags = "审批流程控制层")
+@Slf4j
 @RestController
 public class TApvApprovalController {
     /**
@@ -34,6 +38,7 @@ public class TApvApprovalController {
             return tApvApprovalService.insertPage();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -49,6 +54,7 @@ public class TApvApprovalController {
             return tApvApprovalService.insert(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -65,6 +71,7 @@ public class TApvApprovalController {
             return tApvApprovalService.delete(tApvApproval);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -80,6 +87,7 @@ public class TApvApprovalController {
             return tApvApprovalService.selectById(tApvApproval);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -96,6 +104,7 @@ public class TApvApprovalController {
             return tApvApprovalService.updateByPkId(tApvApproval);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -111,6 +120,7 @@ public class TApvApprovalController {
             return tApvApprovalService.approvalSet();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -125,6 +135,7 @@ public class TApvApprovalController {
             return tApvApprovalService.waitApv();
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -139,6 +150,7 @@ public class TApvApprovalController {
             return tApvApprovalService.waitApvUser(session,request);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -153,6 +165,7 @@ public class TApvApprovalController {
             return tApvApprovalService.approval(session,request,param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -167,6 +180,7 @@ public class TApvApprovalController {
             return tApvApprovalService.waitApvDetail(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
@@ -181,6 +195,7 @@ public class TApvApprovalController {
             return tApvApprovalService.apvProcessDetail(param);
         } catch (Exception e) {
             String message = "失败";
+            log.error(message,e);
             throw new FebsException(message);
         }
     }
