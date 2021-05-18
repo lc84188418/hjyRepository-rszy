@@ -1,8 +1,10 @@
 package com.hjy.cloud.t_train.entity;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
+import org.apache.poi.ss.formula.functions.T;
 
 /**
  * (TTrainInfo)表实体类
@@ -11,7 +13,7 @@ import lombok.Data;
  * @since 2021-03-01 16:41:40
  */
 @Data
-public class TTrainInfo {
+public class TTrainInfo<User> {
 
     private String pkInfoId;
     //培训活动名称
@@ -28,5 +30,7 @@ public class TTrainInfo {
     private String trainOrganization;
     //培训人ID
     private String trainPeople;
+    //培训人ID
+    private List<User> ourJoin;
 
 }

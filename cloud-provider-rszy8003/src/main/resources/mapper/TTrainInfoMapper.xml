@@ -137,7 +137,7 @@
     </update>
 
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteByPkId">
         delete from hjy_cloud.T_TRAIN_INFO where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
     </delete>
 

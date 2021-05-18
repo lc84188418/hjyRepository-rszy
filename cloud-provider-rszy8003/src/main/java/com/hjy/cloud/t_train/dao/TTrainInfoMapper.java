@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_train.dao;
 
 import com.hjy.cloud.t_train.entity.TTrainInfo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -47,8 +48,7 @@ public interface TTrainInfoMapper {
     /**
      * 通过主键删除数据
      *
-     * @param tTrainInfo 实例对象
      * @return 影响行数
      */
-    int deleteById(TTrainInfo tTrainInfo);
+    int deleteByPkId(@Param("pkInfoId") String pkInfoId);
 }

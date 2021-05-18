@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_train.service;
 
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.domin.CommonResult;
 
@@ -23,7 +24,7 @@ public interface TTrainInfoService {
      * @param tTrainInfo
      * @return
      */
-    CommonResult insert(TTrainInfo tTrainInfo);
+    CommonResult insert(TTrainInfo<User> tTrainInfo);
 
     /**
      * 修改数据
@@ -36,10 +37,9 @@ public interface TTrainInfoService {
     /**
      * 删除数据
      *
-     * @param tTrainInfo
      * @return
      */
-    CommonResult delete(TTrainInfo tTrainInfo);
+    CommonResult delete(String pkInfoId);
 
     /**
      * 查询所有数据

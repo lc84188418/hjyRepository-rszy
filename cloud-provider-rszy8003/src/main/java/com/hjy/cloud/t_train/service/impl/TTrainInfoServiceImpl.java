@@ -5,9 +5,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.t_train.dao.TTrainInfoMapper;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.t_train.service.TTrainInfoService;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +52,15 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
      */
     @Transactional()
     @Override
-    public CommonResult insert(TTrainInfo tTrainInfo) {
+    public CommonResult insert(TTrainInfo<User> tTrainInfo) {
+        tTrainInfo.setPkInfoId(IDUtils.getUUID());
+        StringBuffer stringBuffer = new StringBuffer();
+        if(tTrainInfo.getOurJoin()!= null){
+            for (User o : tTrainInfo.getOurJoin()) {
+                stringBuffer.append(o.getUserId()+",");
+            }
+        }
+        tTrainInfo.setTrainPeople(stringBuffer.toString());
         int i = this.tTrainInfoMapper.insertSelective(tTrainInfo);
         if (i > 0) {
             return new CommonResult(200, "success", "添加数据成功", null);
@@ -79,17 +89,16 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
     /**
      * 删除数据
      *
-     * @param tTrainInfo
      * @return
      */
     @Transactional()
     @Override
-    public CommonResult delete(TTrainInfo tTrainInfo) {
-        int i = this.tTrainInfoMapper.deleteById(tTrainInfo);
+    public CommonResult delete(String pkInfoId) {
+        int i = this.tTrainInfoMapper.deleteByPkId(pkInfoId);
         if (i > 0) {
             return new CommonResult(200, "success", "删除数据成功", null);
         } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
+            return new CommonResult(444, "error", "该数据已被删除，无需再次请求，请刷新后重试！", null);
         }
     }
 

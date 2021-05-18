@@ -68,7 +68,9 @@
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryCity">
         select PK_CITY_ID,CITY_NAME from T_DICTIONARY_CITY where TURN_ON = 1
     </select>
-
+    <select id="selectAllCityName" resultType="java.lang.String">
+        select CITY_NAME from T_DICTIONARY_CITY where TURN_ON = 1
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkCityId" useGeneratedKeys="true">
         insert into hjy_cloud.T_DICTIONARY_CITY(CITY_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, FK_PROVINCE_ID)
@@ -117,6 +119,22 @@
                 #{fkProvinceId},
             </if>
         </trim>
+    </insert>
+    <!--批量添加    -->
+    <insert id="insertBatch" parameterType="list">
+        insert  INTO
+        T_DICTIONARY_CITY(PK_CITY_ID,CITY_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, FK_PROVINCE_ID)
+        values
+        <foreach collection="nameList" item="item" index="index" separator=",">
+            (
+            #{item.pkCityId, jdbcType=VARCHAR},
+            #{item.cityName, jdbcType=VARCHAR},
+            #{item.turnOn, jdbcType=INTEGER},
+            #{item.createTime, jdbcType=TIMESTAMP},
+            #{item.updateTime, jdbcType=TIMESTAMP},
+            #{item.fkProvinceId, jdbcType=VARCHAR}
+            )
+        </foreach>
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
