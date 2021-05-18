@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_system.dao;
 
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import org.apache.ibatis.annotations.Param;
@@ -86,4 +87,6 @@ public interface TSysUserMapper {
     List<String> selectAllUsername();
 
     int addUserRoleByUserRole(ReUserRole userRole);
+
+    List<User> selectId_NameByIds(@Param("ids")String[] ids);
 }

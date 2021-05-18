@@ -8,7 +8,7 @@ import java.util.List;
  * 分页返回结果
  */
 @Data
-public class PageResult {
+public class PageResult<T> {
     //当前页码
     private int pageNum;
     //每页数量
@@ -18,7 +18,7 @@ public class PageResult {
     //页码总数
     private int pages;
     //数据模型
-    private List<?> content;
+    private List<T> content;
     //查询开始行数
     private int startRow;
     //查询结束行数

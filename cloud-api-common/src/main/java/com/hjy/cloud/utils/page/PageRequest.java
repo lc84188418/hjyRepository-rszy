@@ -6,7 +6,7 @@ import lombok.Data;
  * 分页请求
  */
 @Data
-public class PageRequest {
+public class PageRequest<T> {
     /**
      * 当前页码
      */
@@ -18,9 +18,5 @@ public class PageRequest {
     /**
      * 起始行页码
      */
-    private int startRow;
-    /**
-     * 结束行页码
-     */
-    private int endRow;
+    private T param;
 }

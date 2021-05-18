@@ -1,23 +1,26 @@
 package com.hjy.cloud.t_train.service.impl;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
+import com.hjy.cloud.domin.ActiveResult;
+import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_train.dao.TTrainInfoMapper;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.t_train.service.TTrainInfoService;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageUtil;
+import net.sf.json.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -31,6 +34,8 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
 
     @Resource
     private TTrainInfoMapper tTrainInfoMapper;
+    @Resource
+    private TSysUserMapper tSysUserMapper;
 
     /**
      * 添加前获取数据
@@ -54,13 +59,17 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
     @Override
     public CommonResult insert(TTrainInfo<User> tTrainInfo) {
         tTrainInfo.setPkInfoId(IDUtils.getUUID());
+        //1
         StringBuffer stringBuffer = new StringBuffer();
-        if(tTrainInfo.getOurJoin()!= null){
-            for (User o : tTrainInfo.getOurJoin()) {
+        if(tTrainInfo.getJoin()!= null){
+            for (User o : tTrainInfo.getJoin()) {
                 stringBuffer.append(o.getUserId()+",");
             }
         }
-        tTrainInfo.setTrainPeople(stringBuffer.toString());
+        tTrainInfo.setOurJoin(stringBuffer.toString());
+        //2
+//        tTrainInfo.getJoin().toString();
+//        tTrainInfo.setOurJoin(tTrainInfo.getJoin().toString());
         int i = this.tTrainInfoMapper.insertSelective(tTrainInfo);
         if (i > 0) {
             return new CommonResult(200, "success", "添加数据成功", null);
@@ -77,7 +86,14 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
      */
     @Transactional()
     @Override
-    public CommonResult updateByPkId(TTrainInfo tTrainInfo) {
+    public CommonResult updateByPkId(TTrainInfo<User> tTrainInfo) {
+        StringBuffer stringBuffer = new StringBuffer();
+        if(tTrainInfo.getJoin()!= null){
+            for (User o : tTrainInfo.getJoin()) {
+                stringBuffer.append(o.getUserId()+",");
+            }
+        }
+        tTrainInfo.setOurJoin(stringBuffer.toString());
         int i = this.tTrainInfoMapper.updateByPkId(tTrainInfo);
         if (i > 0) {
             return new CommonResult(200, "success", "修改数据成功", null);
@@ -105,57 +121,58 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
     /**
      * 查询所有数据
      *
-     * @param param
      * @return
      */
     @Override
-    public CommonResult selectAll(String param) {
-        JSONObject json = JSON.parseObject(param);
-        //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
-        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
-        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
-        TTrainInfo entity = new TTrainInfo();
-
-        //分页记录条数
-        int pageNum = 1;
-        int pageSize = 10;
-        if (pageNumStr != null) {
-            pageNum = Integer.parseInt(pageNumStr);
+    public CommonResult<PageResult<TTrainInfo>> selectAll(PageRequest<TTrainInfo> pageInfo) {
+        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByEntity(pageInfo.getParam());
+        Iterator<TTrainInfo> infoIterator = list.iterator();
+        while (infoIterator.hasNext()){
+            TTrainInfo next = infoIterator.next();
+            String ourJoin = next.getOurJoin();
+            if(!StringUtils.isEmpty(ourJoin)){
+                ourJoin = ourJoin.substring(0,ourJoin.length()-1);
+                String[] ids = ourJoin.split(",");
+                //查询
+                List<User> userList = this.tSysUserMapper.selectId_NameByIds(ids);
+                next.setJoin(userList);
+                next.setOurJoin(null);
+            }
         }
-        if (pageSizeStr != null) {
-            pageSize = Integer.parseInt(pageSizeStr);
-        }
-        PageHelper.startPage(pageNum, pageSize);
-        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllPage(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
+        return new CommonResult(200, "success", "获取数据成功", result);
     }
 
     /**
      * 获取单个数据
      *
-     * @param tTrainInfo 实例对象
      * @return
      */
     @Override
-    public CommonResult selectById(TTrainInfo tTrainInfo) {
-        String pkId = tTrainInfo.getPkInfoId();
-        TTrainInfo entity = this.tTrainInfoMapper.selectByPkId(pkId);
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("entity", entity);
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    public CommonResult<ActiveResult<TTrainInfo>> selectById(String pkInfoId) {
+        TTrainInfo entity = this.tTrainInfoMapper.selectByPkId(pkInfoId);
+        String ourJoin = entity.getOurJoin();
+        if(!StringUtils.isEmpty(ourJoin)){
+            ourJoin = ourJoin.substring(0,ourJoin.length()-1);
+            String[] ids = ourJoin.split(",");
+            //查询
+            List<User> userList = this.tSysUserMapper.selectId_NameByIds(ids);
+            entity.setJoin(userList);
+            entity.setOurJoin(null);
+        }
+        ActiveResult<TTrainInfo> activeResult = new ActiveResult();
+        activeResult.setEntity(entity);
+        return new CommonResult(200, "success", "获取数据成功", activeResult);
     }
 
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         TTrainInfo entity = new TTrainInfo();
-        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllPage(entity);
+        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByEntity(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
         JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
+        resultJson.put("pageResult", result);
         return resultJson;
     }
 }

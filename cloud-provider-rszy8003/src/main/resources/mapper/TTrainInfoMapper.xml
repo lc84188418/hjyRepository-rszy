@@ -2,28 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.hjy.cloud.t_train.dao.TTrainInfoMapper">
 
-    <resultMap type="com.hjy.cloud.t_train.entity.TTrainInfo" id="TTrainInfoMap">
-        <result property="pkInfoId" column="PK_INFO_ID" jdbcType="VARCHAR"/>
-        <result property="trainName" column="TRAIN_NAME" jdbcType="VARCHAR"/>
-        <result property="trainContent" column="TRAIN_CONTENT" jdbcType="VARCHAR"/>
-        <result property="startTime" column="START_TIME" jdbcType="TIMESTAMP"/>
-        <result property="endTime" column="END_TIME" jdbcType="TIMESTAMP"/>
-        <result property="trainAddress" column="TRAIN_ADDRESS" jdbcType="VARCHAR"/>
-        <result property="trainOrganization" column="TRAIN_ORGANIZATION" jdbcType="VARCHAR"/>
-        <result property="trainPeople" column="TRAIN_PEOPLE" jdbcType="VARCHAR"/>
-    </resultMap>
-
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TTrainInfoMap">
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_train.entity.TTrainInfo">
         select * from hjy_cloud.T_TRAIN_INFO
         where PK_INFO_ID = #{pkInfoId}
     </select>
 
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TTrainInfoMap">
+    <select id="selectAllByEntity" resultType="com.hjy.cloud.t_train.entity.TTrainInfo">
         select
-        PK_INFO_ID, TRAIN_NAME, TRAIN_CONTENT, START_TIME, END_TIME, TRAIN_ADDRESS, TRAIN_ORGANIZATION, TRAIN_PEOPLE
-        from hjy_cloud.T_TRAIN_INFO
+        PK_INFO_ID, TRAIN_NAME, TRAIN_CONTENT, START_TIME, END_TIME, TRAIN_ADDRESS, TRAIN_ORGANIZATION, TRAIN_PEOPLE,OURJOIN
+        from T_TRAIN_INFO
         <where>
             <if test="pkInfoId != null and pkInfoId != ''">
                 and PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
@@ -79,6 +68,9 @@
             <if test="trainPeople != null and trainPeople != ''">
                 TRAIN_PEOPLE,
             </if>
+            <if test="ourJoin != null and ourJoin != ''">
+                OURJOIN,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkInfoId != null and pkInfoId != ''">
@@ -105,11 +97,14 @@
             <if test="trainPeople != null and trainPeople != ''">
                 #{trainPeople,jdbcType=VARCHAR},
             </if>
+            <if test="ourJoin != null and ourJoin != ''">
+                #{ourJoin,jdbcType=VARCHAR},
+            </if>
         </trim>
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_TRAIN_INFO
+        update T_TRAIN_INFO
         <set>
             <if test="trainName != null and trainName != ''">
                 TRAIN_NAME = #{trainName,jdbcType=VARCHAR},
@@ -131,6 +126,9 @@
             </if>
             <if test="trainPeople != null and trainPeople != ''">
                 TRAIN_PEOPLE = #{trainPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="ourJoin != null and ourJoin != ''">
+                OURJOIN = #{ourJoin,jdbcType=VARCHAR},
             </if>
         </set>
         where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}

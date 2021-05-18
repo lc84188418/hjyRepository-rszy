@@ -27,7 +27,7 @@ public interface TTrainInfoMapper {
      * @param tTrainInfo 实例对象
      * @return 对象列表
      */
-    List<TTrainInfo> selectAllPage(TTrainInfo tTrainInfo);
+    List<TTrainInfo> selectAllByEntity(TTrainInfo tTrainInfo);
 
     /**
      * 新增数据

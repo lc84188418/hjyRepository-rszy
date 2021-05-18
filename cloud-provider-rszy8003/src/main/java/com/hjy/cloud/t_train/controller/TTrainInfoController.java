@@ -1,11 +1,15 @@
 package com.hjy.cloud.t_train.controller;
 
 
+import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
+import com.hjy.cloud.domin.ActiveResult;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.t_train.service.TTrainInfoService;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -56,7 +60,7 @@ public class TTrainInfoController {
      * @param tTrainInfo 实体对象
      * @return 新增结果
      */
-    @ApiOperation(value = "1新增培训信息页面-已完成", notes = "")
+    @ApiOperation(value = "2新增培训信息页面-已完成", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "trainName", value = "培训活动名称",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "trainContent", value = "培训内容",required = false, dataType = "string", paramType = "body", example = "1"),
@@ -64,7 +68,8 @@ public class TTrainInfoController {
             @ApiImplicitParam(name = "endTime", value = "培训结束时间",required = false, dataType = "date-time", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "trainAddress", value = "培训地点",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "trainOrganization", value = "培训机构",required = false, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "ourJoin", value = "培训人id",required = false, dataType = "object", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainPeople", value = "培训人，直接输入即可",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "join", value = "参与者集合",required = false, dataType = "object", paramType = "body", example = "1"),
     })
     @PostMapping(value = "/train/info/add")
     public CommonResult insert(@RequestBody TTrainInfo<User> tTrainInfo) throws FebsException {
@@ -83,7 +88,7 @@ public class TTrainInfoController {
      * @param pkInfoId 实体对象主键
      * @return 删除结果
      */
-    @ApiOperation(value = "1新增培训信息页面-已完成", notes = "")
+    @ApiOperation(value = "3新增培训信息页面-已完成", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pkInfoId", value = "培训活动主键",required = true, dataType = "string", paramType = "path", example = "1"),
     })
@@ -101,13 +106,14 @@ public class TTrainInfoController {
     /**
      * 分页查询所有数据
      *
-     * @param param json参数
      * @return 所有数据
      */
+    @ApiOperation(value = "4分页查询所有数据-已完成", notes = "可通过实体条件和分页参数进行查询")
+
     @GetMapping(value = "/train/info/list")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    public CommonResult<PageResult<TTrainInfo>> selectAll(@RequestBody PageRequest<TTrainInfo> pageInfo) throws FebsException {
         try {
-            return tTrainInfoService.selectAll(param);
+            return tTrainInfoService.selectAll(pageInfo);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);
@@ -118,12 +124,15 @@ public class TTrainInfoController {
     /**
      * 通过主键查询单条数据
      *
-     * @param tTrainInfo 实体对象
      */
-    @PostMapping(value = "/train/info/get")
-    public CommonResult selectOne(@RequestBody TTrainInfo tTrainInfo) throws FebsException {
+    @ApiOperation(value = "5详情-已完成", notes = "通过主键查询单条数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkInfoId", value = "培训活动主键",required = true, dataType = "string", paramType = "path", example = "1"),
+    })
+    @GetMapping(value = "/train/info/get/{pkInfoId}")
+    public CommonResult<ActiveResult<TTrainInfo>> selectOne(@PathVariable("pkInfoId") String pkInfoId) throws FebsException {
         try {
-            return tTrainInfoService.selectById(tTrainInfo);
+            return tTrainInfoService.selectById(pkInfoId);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);
@@ -137,8 +146,20 @@ public class TTrainInfoController {
      * @param tTrainInfo 实体对象
      * @return 修改结果
      */
+    @ApiOperation(value = "6修改-已完成", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "trainName", value = "培训活动名称",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainContent", value = "培训内容",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "startTime", value = "培训开始时间",required = false, dataType = "date-time", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "endTime", value = "培训结束时间",required = false, dataType = "date-time", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainAddress", value = "培训地点",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainOrganization", value = "培训机构",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainPeople", value = "培训人，直接输入即可",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "join", value = "参与者集合",required = false, dataType = "object", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "pkInfoId", value = "培训活动主键",required = true, dataType = "string", paramType = "body", example = "1"),
+    })
     @PutMapping(value = "/train/info/update")
-    public CommonResult update(@RequestBody TTrainInfo tTrainInfo) throws FebsException {
+    public CommonResult update(@RequestBody TTrainInfo<User> tTrainInfo) throws FebsException {
         try {
             return tTrainInfoService.updateByPkId(tTrainInfo);
         } catch (Exception e) {
