@@ -106,6 +106,7 @@ public interface TApvApprovalMapper {
      * 待审批,操作用户自己的
      */
     List<DApvRecord> waitApvUser(@Param("apvApproval")String userId);
+    List<DApvRecord> apvRecordListSponsor(@Param("sponsor")String fullName);
 
     List<DApvRecord> selectApvRecordBySourceId_UserId(@Param("approvalType")String approvalType,@Param("sourceId")String sourceId, @Param("userId")String userId);
 
@@ -123,4 +124,10 @@ public interface TApvApprovalMapper {
     int deleteByType(@Param("approvalType")String approvalType);
 
     int updateBatchApvRecord(@Param("apvRecordList")List<DApvRecord> updateList);
+
+    String selectFirstRecordIdsByFkStaffId(@Param("fkStaffId")String fkStaffId);
+
+    String selectSourceIdsByPkRecordId(@Param("pkRecordId")String pkRecordId);
+
+    List<DApvRecord> apvRecordListCCToMe(@Param("sourceId")String source_id);
 }

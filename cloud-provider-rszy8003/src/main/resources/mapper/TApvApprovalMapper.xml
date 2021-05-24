@@ -268,6 +268,26 @@ WHERE
 	D_APV_RECORD.IS_ING = 1 and SOURCE_ID in
         (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
     </select>
+    <select id="apvRecordListSponsor" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        SELECT
+	PK_RECORD_ID,
+	APPROVAL_TYPE,
+	SPONSOR,
+	START_TIME,
+	APV_APPROVAL,
+	APV_DATE,
+	APV_RESULT,
+	APV_REASON,
+	NEXT_APPROVAL,
+	SOURCE_ID,
+	IS_START,
+	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
+FROM
+	D_APV_RECORD
+	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
+WHERE
+	SPONSOR = #{sponsor,jdbcType=VARCHAR}
+    </select>
     <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
         select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND APPROVAL_TYPE = #{approvalType} AND IS_ING = 1
     </select>
@@ -285,6 +305,22 @@ WHERE
             T_APV_APVTYPE
         ON T_APV_APVTYPE.PK_APVTYPE_ID = D_APV_RECORD.APPROVAL_TYPE
         WHERE SOURCE_ID = ( SELECT SOURCE_ID FROM D_APV_RECORD WHERE PK_RECORD_ID = #{firstApvRecordId} )
+    </select>
+<!--    通过用户id查询审批id-->
+    <select id="selectFirstRecordIdsByFkStaffId" resultType="java.lang.String">
+        SELECT group_concat( concat( "'", FIRST_APVRECORD_ID, "'" )) FROM D_CC_RECORD WHERE FK_STAFF_ID = #{fkStaffId}
+    </select>
+    <select id="selectSourceIdsByPkRecordId" resultType="java.lang.String">
+    SELECT
+		group_concat(
+		concat( "'", SOURCE_ID, "'" ))
+	FROM
+		D_APV_RECORD
+	WHERE
+	PK_RECORD_ID IN (${pkRecordId})
+    </select>
+    <select id="apvRecordListCCToMe" resultType="com.hjy.cloud.common.entity.DApvRecord">
+        	select t.* from D_APV_RECORD t where t.SOURCE_ID IN (${sourceId})
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">

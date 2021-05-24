@@ -13,7 +13,7 @@ import java.util.Date;
  * @since 2021-03-23 15:22:25
  */
 @Data
-@ApiModel("-实体类")
+@ApiModel("考勤组-实体类")
 public class TKqGroup {
     private String pkGroupId;
     //考勤组名称

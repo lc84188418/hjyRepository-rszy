@@ -152,7 +152,7 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
         return new CommonResult(200, "success", "获取数据成功", result);
     }
     @Override
-    public CommonResult<PageResult<TTrainInfo>> selectAllByUser(PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request) {
+    public CommonResult<PageResult> selectAllByUser(PageRequest pageInfo, HttpSession session , HttpServletRequest request) {
         if(pageInfo.getPageNum() == 0){
             pageInfo.setPageNum(1);
         }if(pageInfo.getPageSize() == 0){
@@ -163,9 +163,10 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
         if(StringUtils.isEmpty(userId)){
             return new CommonResult(444, "error", "无法获取当前用户信息，请刷新或重新登录后再试", null);
         }
-        pageInfo.getParam().setOurJoin(userId);
+        TTrainInfo trainInfo = new TTrainInfo();
+        trainInfo.setOurJoin(userId);
         PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
-        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByUser(pageInfo.getParam());
+        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByUser(trainInfo);
         Iterator<TTrainInfo> infoIterator = list.iterator();
         while (infoIterator.hasNext()){
             TTrainInfo next = infoIterator.next();

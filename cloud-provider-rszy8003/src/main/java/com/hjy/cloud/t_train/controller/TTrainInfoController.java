@@ -142,7 +142,7 @@ public class TTrainInfoController {
             @ApiImplicitParam(name = "trainPeople", value = "培训人，直接输入即可",required = false, dataType = "string", paramType = "body", example = "1"),
     })
     @PostMapping(value = "/train/info/list/user")
-    public CommonResult<PageResult<TTrainInfo>> selectAllByUser(@RequestBody PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request) throws FebsException {
+    public CommonResult<PageResult> selectAllByUser(@RequestBody PageRequest pageInfo, HttpSession session , HttpServletRequest request) throws FebsException {
         try {
             return tTrainInfoService.selectAllByUser(pageInfo,session,request);
         } catch (Exception e) {

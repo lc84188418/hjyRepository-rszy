@@ -54,7 +54,7 @@ public interface TTrainInfoService {
      * @return
      */
     CommonResult<PageResult<TTrainInfo>> selectAll(PageRequest<TTrainInfo> pageInfo);
-    CommonResult<PageResult<TTrainInfo>> selectAllByUser(PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request);
+    CommonResult<PageResult> selectAllByUser(PageRequest pageInfo, HttpSession session , HttpServletRequest request);
 
     /**
      * 获取单个数据

@@ -4,10 +4,18 @@ package com.hjy.cloud.t_apv.controller;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
+import com.hjy.cloud.t_train.entity.TTrainInfo;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -200,4 +208,49 @@ public class TApvApprovalController {
         }
     }
 
+    /**
+     * 审批记录处理
+     * 一、我发起的审批
+     */
+    @ApiOperation(value = "我发起的审批-已完成", notes = "我发起的审批-暂时未做筛选功能")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "apvResult", value = "审批状态", required = false, dataType = "string", paramType = "body", example = "全部"),
+    })
+    @PostMapping(value = "/apv/approval/list/sponsor")
+    public CommonResult<PageResult<TempApvEntity>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
+        try {
+            return tApvApprovalService.apvRecordListSponsor(session,request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 抄送给我的审批
+     * @param session
+     * @param request
+     * @param param
+     * @return
+     * @throws FebsException
+     */
+    @ApiOperation(value = "抄送给我的审批-已完成", notes = "抄送给我的审批-暂时未做筛选功能")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "条数", required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "apvResult", value = "审批状态", required = false, dataType = "string", paramType = "body", example = "全部"),
+    })
+    @PostMapping(value = "/apv/approval/list/cc_to_me")
+    public CommonResult<PageResult<TempApvEntity>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
+        try {
+            return tApvApprovalService.apvRecordListCCToMe(session,request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
 }

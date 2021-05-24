@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
 import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
@@ -22,7 +23,9 @@ import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.utils.*;
+import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageUtil;
 import javafx.beans.binding.StringBinding;
 import org.apache.commons.lang.StringUtils;
@@ -364,6 +367,96 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         JSONObject resultJson = new JSONObject();
         resultJson.put("waitApvRecords", apvRecords);
         return new CommonResult(200, "success", "获取数据成功！", resultJson);
+
+    }
+    @Override
+    public CommonResult<PageResult<TempApvEntity>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param) {
+        String fullName = UserShiroUtil.getCurrentFullName(session,request);
+        if(StringUtils.isEmpty(fullName)){
+            return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
+        }
+        JSONObject json = JSON.parseObject(param);
+        //实体数据
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        String apvResult = "全部";
+        String apvResult2 = JsonUtil.getStringParam(json, "apvResult");
+        if(!StringUtils.isEmpty(apvResult2)){
+            apvResult = apvResult2;
+        }
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<DApvRecord> waitApvRecords = tApvApprovalMapper.apvRecordListSponsor(fullName);
+        if(waitApvRecords == null || waitApvRecords.size() == 0){
+            return new CommonResult(200, "success", "暂未有你发起的审批流程！", null);
+        }
+        //将审批数据进行处理
+        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
+//        //最后进行筛选，已处理，未处理，全部
+//        Iterator<TempApvEntity> iterator = apvRecords.iterator();
+//        while (iterator.hasNext()) {
+//            TempApvEntity next = iterator.next();
+//        }
+        PageResult<TempApvEntity> result = PageUtil.getPageResult(new PageInfo<TempApvEntity>(apvRecords));
+        return new CommonResult(200, "success", "获取数据成功！", result);
+
+    }
+    @Override
+    public CommonResult<PageResult<TempApvEntity>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param) {
+        String userId = UserShiroUtil.getCurrentUserId(session,request);
+        if(StringUtils.isEmpty(userId)){
+            return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
+        }
+        JSONObject json = JSON.parseObject(param);
+        //实体数据
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        String apvResult = "全部";
+        String apvResult2 = JsonUtil.getStringParam(json, "apvResult");
+        if(!StringUtils.isEmpty(apvResult2)){
+            apvResult = apvResult2;
+        }
+        //1.first_record_id
+        System.out.println("userId:"+userId);
+        String first_record_id = tApvApprovalMapper.selectFirstRecordIdsByFkStaffId(userId);
+        System.out.println("first_record_id:"+first_record_id);
+        //2.source_id
+        String source_id = tApvApprovalMapper.selectSourceIdsByPkRecordId(first_record_id);
+        System.out.println("source_id: "+source_id);
+        //3.结果集
+
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<DApvRecord> waitApvRecords = tApvApprovalMapper.apvRecordListCCToMe(source_id);
+        if(waitApvRecords == null || waitApvRecords.size() == 0){
+            return new CommonResult(200, "success", "暂未有你发起的审批流程！", null);
+        }
+        System.out.println(waitApvRecords);
+        //将审批数据进行处理
+        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
+//        //最后进行筛选，已处理，未处理，全部
+//        Iterator<TempApvEntity> iterator = apvRecords.iterator();
+//        while (iterator.hasNext()) {
+//            TempApvEntity next = iterator.next();
+//        }
+        PageResult<TempApvEntity> result = PageUtil.getPageResult(new PageInfo<TempApvEntity>(apvRecords));
+        return new CommonResult(200, "success", "获取数据成功！", result);
 
     }
     //将待审批数据进行处理

@@ -3,6 +3,9 @@ package com.hjy.cloud.t_apv.service;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.entity.TempApvEntity;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 import org.apache.ibatis.annotations.Param;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,15 +72,20 @@ public interface TApvApprovalService {
     /**
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      *
-     * @return 修改结果
      */
     CommonResult waitApv();
     /**
      * 待审批,操作用户自己的
      *
-     * @return 修改结果
      */
     CommonResult waitApvUser(HttpSession session,HttpServletRequest request);
+    /**
+     * 我发起的申请
+     *
+     */
+    CommonResult<PageResult<TempApvEntity>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param);
+    CommonResult<PageResult<TempApvEntity>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param);
+
     /**
      * 审批设置
      *
@@ -114,4 +122,5 @@ public interface TApvApprovalService {
      * @return 修改结果
      */
     int insertApvRecordBatch(List<DApvRecord> apvRecordList);
+
 }
