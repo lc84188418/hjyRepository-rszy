@@ -311,7 +311,9 @@ public class TKqClockServiceImpl implements TKqClockService {
         Date nowDate = new Date();
         TStaffInfo info = tStaffInfoMapper.selectByPkId2(sysToken.getFkUserId());
         StringBuffer stringBuffer = new StringBuffer();
-        if(!StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
+        //查询今日是否打过卡
+        int count = tKqClockMapper.selectCountByTodayDate_StaffId(sysToken.getFkUserId());
+        if(count <= 0 && !StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
             //说明上班打卡，新增记录,
             //前端需传入onCloudAddress,onIsWq,isDkr,fkGroupId
             tKqClockParam.setPkClockId(IDUtils.getUUID());
@@ -331,8 +333,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                 stringBuffer.append("上班打卡成功！");
                 clockAddPage.setClock(tKqClockParam);
             }
-        }
-        if(!StringUtils.isEmpty(tKqClockParam.getOffClockAddress())){
+        }else if(count > 0 && !StringUtils.isEmpty(tKqClockParam.getOffClockAddress())){
             //说明下班打卡，修改记录,
             TKqClock selectClock = new TKqClock();
             selectClock.setFkStaffId(sysToken.getFkUserId());
@@ -359,6 +360,8 @@ public class TKqClockServiceImpl implements TKqClockService {
             }else {
                 stringBuffer.append("下班打卡异常！请联系技术人员！");
             }
+        }else {
+            return new CommonResult(444, "error", "参数错误，请仔细查看swagger接口！", null);
         }
         return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
     }
@@ -570,7 +573,7 @@ public class TKqClockServiceImpl implements TKqClockService {
      * @return
      */
     @Override
-    public CommonResult statisticsUser(ParamStatistics paramStatistics,HttpServletRequest request) throws ParseException {
+    public CommonResult<ClockStatistics> statisticsUser(ParamStatistics paramStatistics,HttpServletRequest request) throws ParseException {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         //默认查询条件按周次
         String weekOrMonth = "周";
@@ -647,8 +650,8 @@ public class TKqClockServiceImpl implements TKqClockService {
              * 缺卡、旷工、出勤班次、休息天数
              */
             returnEntity.setFieldNum(wqNum);
-            JSONObject resultJson = new JSONObject();
-            resultJson.put("statistics", returnEntity);
+            ClockStatistics resultJson = new ClockStatistics();
+            resultJson.setAllStatistics(returnEntity);
             return new CommonResult(200, "success", "获取数据成功", resultJson);
         }else {
             return new CommonResult(200, "success", "当前条件无数据!", null);
@@ -659,9 +662,9 @@ public class TKqClockServiceImpl implements TKqClockService {
      * @return 所有数据
      */
     @Override
-    public CommonResult userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request) {
+    public CommonResult<ClockStatistics> userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request) {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
-        JSONObject resultJson = new JSONObject();
+        ClockStatistics resultJson = new ClockStatistics();
         param.setFkStaffId(sysToken.getFkUserId());
         param.setIsWorkingHours(null);
         //默认先查询当月的数据
@@ -676,14 +679,10 @@ public class TKqClockServiceImpl implements TKqClockService {
                 param.setMonthDate(monthDate);
             }
             List<TKqClock> monthList = tKqClockMapper.selectAllByMonth(param);
-            resultJson.put("statistics", monthList);
-        }else {
-            //只查询某天的数据
-            today = tKqClockMapper.selectOnDayByTodayDate(param);
-
+            resultJson.setStatistics(monthList);
         }
         today = tKqClockMapper.selectOnDayByTodayDate(param);
-        resultJson.put("today", today);
+        resultJson.setToday(today);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 

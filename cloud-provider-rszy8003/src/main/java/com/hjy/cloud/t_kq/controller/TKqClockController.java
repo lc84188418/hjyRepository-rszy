@@ -4,6 +4,7 @@ package com.hjy.cloud.t_kq.controller;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.ClockAddPage;
+import com.hjy.cloud.t_kq.entity.ClockStatistics;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.t_kq.service.TKqClockService;
@@ -92,9 +93,10 @@ public class TKqClockController {
             "    \"weekOrMonth\": \"月\",\n" +
             "    \"weekDate\":\"2021.03.21-2021.03.27\",\n" +
             "    \"monthDate\":\"2021-03\"\n" +
-            "}")
+            "}\n" +
+            "回参:allStatistics,无其他信息")
     @PostMapping(value = "/kq/clock/user/statistics/collect")
-    public CommonResult userStatisticsCollect(@ApiParam(name = "月份/周", required = true) @RequestBody ParamStatistics param, HttpServletRequest request) throws FebsException {
+    public CommonResult<ClockStatistics> userStatisticsCollect(@ApiParam(name = "月份/周", required = true) @RequestBody ParamStatistics param, HttpServletRequest request) throws FebsException {
         try {
             return tKqClockService.statisticsUser(param,request);
         } catch (Exception e) {
@@ -109,11 +111,11 @@ public class TKqClockController {
      */
     @ApiOperation(value = "个人每日记录-已完成", notes = "")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "monthDate",required = true,dataType = "String",paramType = "form",example = "\"2021-03\""),
-            @ApiImplicitParam(name = "todayDate",required = false,dataType = "String",paramType = "form",example = "\"2021-03-24\"")
+            @ApiImplicitParam(name = "monthDate",value = "查询打卡记录的月份",required = true,dataType = "String",paramType = "form",example = "\"2021-03\""),
+            @ApiImplicitParam(name = "todayDate",value = "今日时间，当不传时，查询当月打卡记录和今日打卡记录",required = false,dataType = "String",paramType = "form",example = "\"2021-03-24\"")
     })
     @PostMapping(value = "/kq/clock/user/statistics/everyDay")
-    public CommonResult userStatisticsEveryDay(@ApiParam(name = "某一天数据", required = true) @RequestBody ParamStatistics param, HttpServletRequest request) throws FebsException {
+    public CommonResult<ClockStatistics> userStatisticsEveryDay(@ApiParam(name = "某一天数据", required = true) @RequestBody ParamStatistics param, HttpServletRequest request) throws FebsException {
         try {
             return tKqClockService.userStatisticsEveryDay(param,request);
         } catch (Exception e) {

@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_kq.service;
 
 import com.hjy.cloud.t_kq.entity.ClockAddPage;
+import com.hjy.cloud.t_kq.entity.ClockStatistics;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
@@ -51,12 +52,12 @@ public interface TKqClockService {
      * 个人打卡汇总统计
      * @return 所有数据
      */
-    CommonResult statisticsUser(ParamStatistics param, HttpServletRequest request) throws ParseException;
+    CommonResult<ClockStatistics> statisticsUser(ParamStatistics param, HttpServletRequest request) throws ParseException;
     /**
      * 个人打卡每日记录统计
      * @return 所有数据
      */
-    CommonResult userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request);
+    CommonResult<ClockStatistics> userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request);
     /**
      * 计算周次
      * @return 所有数据

@@ -206,6 +206,11 @@ FROM
         where T_KQ_CLOCK.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
         and T_KQ_CLOCK.TODAY_DATE = #{todayDate,jdbcType=VARCHAR}
     </select>
+    <select id="selectCountByTodayDate_StaffId" resultType="java.lang.Integer" parameterType="java.lang.String">
+        select count(*) from T_KQ_CLOCK
+        where T_KQ_CLOCK.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        and TO_DAYS(TODAY_DATE) = TO_DAYS(NOW())
+    </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqClock">
         insert into hjy_cloud.T_KQ_CLOCK
