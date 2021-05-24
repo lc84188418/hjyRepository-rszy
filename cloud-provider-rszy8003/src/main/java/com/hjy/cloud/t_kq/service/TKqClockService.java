@@ -1,11 +1,13 @@
 package com.hjy.cloud.t_kq.service;
 
+import com.hjy.cloud.t_kq.entity.ClockAddPage;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.page.PageResult;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 
 /**
@@ -20,7 +22,7 @@ public interface TKqClockService {
      *
      * @return
      */
-    CommonResult insertPage(HttpServletRequest request) throws ParseException;
+    CommonResult<ClockAddPage> insertPage(HttpSession session , HttpServletRequest request) throws ParseException;
 
     /**
      * 添加数据
@@ -28,7 +30,7 @@ public interface TKqClockService {
      * @param tKqClock
      * @return
      */
-    CommonResult insert(TKqClock tKqClock,HttpServletRequest request) throws ParseException;
+    CommonResult<ClockAddPage> insert(TKqClock tKqClock,HttpServletRequest request) throws ParseException;
 
     /**
      * 修改数据

@@ -11,7 +11,7 @@ import lombok.Data;
  * description:
  */
 @Data
-@ApiModel("打卡记录-实体类")
+@ApiModel("打卡记录")
 public class StatisticsUser {
     @ApiModelProperty("员工id")
     private String fkStaffId;

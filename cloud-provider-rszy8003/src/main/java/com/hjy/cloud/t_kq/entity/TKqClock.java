@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @since 2021-03-19 17:26:09
  */
 @Data
-@ApiModel("打卡记录-实体类")
+@ApiModel("打卡记录")
 public class TKqClock {
     @ApiModelProperty("打卡记录主键")
     private String pkClockId;

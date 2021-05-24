@@ -1,5 +1,7 @@
 package com.hjy.cloud.t_outfit.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
@@ -9,22 +11,23 @@ import lombok.Data;
  * @since 2021-02-24 10:59:42
  */
 @Data
+@ApiModel("工作地")
 public class TOutfitWorkaddress {
-
+    @ApiModelProperty("考勤组主键id")
     private String pkWorkadressId;
-    //名称
+    @ApiModelProperty(value = "名称", example = "", required = false)
     private String workadressName;
-    //城市
+    @ApiModelProperty(value = "城市", example = "", required = false)
     private String fkCityId;
-    //地级区
+    @ApiModelProperty(value = "地级区", example = "", required = false)
     private String fkAreaId;
-    //详细地址
+    @ApiModelProperty(value = "详细地址", example = "", required = false)
     private String workadressAddress;
-    //类型
+    @ApiModelProperty(value = "类型", example = "", required = false)
     private String workadressType;
-    //主要负责人
+    @ApiModelProperty(value = "主要负责人", example = "", required = false)
     private String workadressFzr;
-    //负责人联系方式
+    @ApiModelProperty(value = "负责人联系方式", example = "", required = false)
     private String workadressTel;
 
 }

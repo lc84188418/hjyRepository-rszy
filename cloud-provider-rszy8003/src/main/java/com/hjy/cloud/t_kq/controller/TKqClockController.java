@@ -3,6 +3,7 @@ package com.hjy.cloud.t_kq.controller;
 
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import com.hjy.cloud.t_kq.entity.ClockAddPage;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.t_kq.service.TKqClockService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -36,14 +38,15 @@ public class TKqClockController {
      */
     @ApiOperation(value = "打卡前页面-已完成",
             notes = "入参:无\n" +
-                    "回参：\nisKq：true,为true代表需要考勤\n" +
-            "group：员工所属考勤组基本信息\n" +
-            "workAddress：考勤组设置的办公地信息\n" +
-            "todayBc：今日班次信息\n")
+                    "回参：\n" +
+                    "isKq：true,为true代表需要考勤\n" +
+                    "group：员工所属考勤组基本信息\n" +
+                    "workAddress：考勤组设置的办公地信息\n" +
+                    "todayBc：今日班次信息\n")
     @GetMapping(value = "/kq/clock/addPage")
-    public CommonResult insertPage(HttpServletRequest request) throws FebsException {
+    public CommonResult<ClockAddPage> insertPage(HttpSession session , HttpServletRequest request) throws FebsException {
         try {
-            return tKqClockService.insertPage(request);
+            return tKqClockService.insertPage(session,request);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);
@@ -59,7 +62,7 @@ public class TKqClockController {
      */
     @ApiOperation(value = "上下班打卡-已完成",
             notes = "入参:\n上班时:onClockAddress/onIsWq/isDkr/fkGroupId\n" + "下班时:offClockAddress/offIsWq\n" +
-                    "回参:\nclock:上下班打卡后的信息")
+                    "回参:\nclock:上下班打卡后的信息,无其他信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "onClockAddress",value = "上班打卡地址",required = false,dataType = "string",paramType = "body",example = "四川省成都市武侯区交子大道333号中海国际中心E座"),
             @ApiImplicitParam(name = "onIsWq",value = "上班是否外勤",required = false,dataType = "int",paramType = "body",example = "0"),
@@ -69,7 +72,7 @@ public class TKqClockController {
             @ApiImplicitParam(name = "offIsWq",value = "下班是否外勤",required = false,dataType = "int",paramType = "body",example = "0"),
     })
     @PostMapping(value = "/kq/clock/add")
-    public CommonResult insert(@ApiParam(name = "打卡实体", required = true) @RequestBody TKqClock tKqClock,HttpServletRequest request) throws FebsException {
+    public CommonResult<ClockAddPage> insert(@ApiParam(name = "打卡实体", required = true) @RequestBody TKqClock tKqClock,HttpServletRequest request) throws FebsException {
         try {
             return tKqClockService.insert(tKqClock,request);
         } catch (Exception e) {

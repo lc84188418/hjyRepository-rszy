@@ -6,10 +6,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.t_kq.dao.TKqBcMapper;
 import com.hjy.cloud.t_kq.dao.TKqClockMapper;
 import com.hjy.cloud.t_kq.dao.TKqGroupMapper;
 import com.hjy.cloud.t_kq.entity.*;
+import com.hjy.cloud.t_kq.enums.KqTypeEnum;
 import com.hjy.cloud.t_kq.service.TKqClockService;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
@@ -28,6 +30,7 @@ import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -55,9 +58,10 @@ public class TKqClockServiceImpl implements TKqClockService {
      * @return
      */
     @Override
-    public CommonResult insertPage(HttpServletRequest request) throws ParseException {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
-        JSONObject jsonObject = new JSONObject();
+    public CommonResult<ClockAddPage> insertPage(HttpSession session, HttpServletRequest request) throws ParseException {
+        String userId = UserShiroUtil.getCurrentUserId(session,request);
+        ClockAddPage clockAddPage = new ClockAddPage();
+//        JSONObject jsonObject = new JSONObject();
         TKqClock selectTKqCloc = new TKqClock();
         TKqClock resultClock = new TKqClock();
         StringBuffer stringBuffer = new StringBuffer();
@@ -71,13 +75,13 @@ public class TKqClockServiceImpl implements TKqClockService {
          * 获取当前用户打卡相关信息
          * 一、当前用户考勤组信息
          */
-        ReGroupStaff reGroupStaff = tKqClockMapper.selectGroupStaffByStaffId(sysToken.getFkUserId());
+        ReGroupStaff reGroupStaff = tKqClockMapper.selectGroupStaffByStaffId(userId);
         if(reGroupStaff == null){
             isDkr = 0;
             resultClock.setIsDkr(isDkr);
             stringBuffer.append("该用户还未分配考勤组，请联系管理员！");
-            jsonObject.put("clock", resultClock);
-            return new CommonResult(201, "success", stringBuffer.toString(), jsonObject);
+            clockAddPage.setClock(resultClock);
+            return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
         }
         //判断是否需要考勤
         if(reGroupStaff.getIsKq()==0){
@@ -85,8 +89,8 @@ public class TKqClockServiceImpl implements TKqClockService {
             isDkr = 0;
             resultClock.setIsDkr(isDkr);
             stringBuffer.append("非必须考勤用户，无需考勤！");
-            jsonObject.put("clock", resultClock);
-            return new CommonResult(202, "success", stringBuffer.toString(), jsonObject);
+            clockAddPage.setClock(resultClock);
+            return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
         }
         /**
          * 二、查询该员工所在考勤组的信息
@@ -97,11 +101,12 @@ public class TKqClockServiceImpl implements TKqClockService {
             isDkr = 0;
             resultClock.setIsDkr(isDkr);
             stringBuffer.append("该考勤组已被违规删除，请联系管理员！");
-            jsonObject.put("clock", resultClock);
-            return new CommonResult(445, "error", stringBuffer.toString(), jsonObject);
+            clockAddPage.setClock(resultClock);
+            return new CommonResult(444, "error", stringBuffer.toString(), clockAddPage);
         }
         resultClock.setFkGroupId(tKqGroup.getPkGroupId());
-        jsonObject.put("group", tKqGroup);
+        clockAddPage.setGroup(tKqGroup);
+
         //判断是否为无需打卡日期
         Date wxdkTime = tKqGroup.getWxdkTime();
         if(wxdkTime != null){
@@ -110,8 +115,8 @@ public class TKqClockServiceImpl implements TKqClockService {
                 isDkr = 0;
                 resultClock.setIsDkr(isDkr);
                 stringBuffer.append("今日为无需打卡日期！");
-                jsonObject.put("clock", resultClock);
-                return new CommonResult(203, "success", stringBuffer.toString(), jsonObject);
+                clockAddPage.setClock(resultClock);
+                return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
             }
         }
         if(tKqGroup.getBxdkTime() != null){
@@ -131,7 +136,7 @@ public class TKqClockServiceImpl implements TKqClockService {
          */
         //1 工作地信息
         TOutfitWorkaddress tOutfitWorkaddress = tKqClockMapper.selectWorkAddressByGroupId(tKqGroup.getPkGroupId());
-        jsonObject.put("workAddress", tOutfitWorkaddress);
+        clockAddPage.setWorkAddress(tOutfitWorkaddress);
         //2 今日该考勤组的班次信息
         TKqBc tKqBc = null;
         ReGroupWorkingdays selectReGroupWorkingdays = new ReGroupWorkingdays();
@@ -141,7 +146,7 @@ public class TKqClockServiceImpl implements TKqClockService {
         selectReGroupWorkingdays.setWorkingDays(displayName);
         selectReGroupWorkingdays.setKqType(tKqGroup.getKqType());
         List<ReGroupWorkingdays> resultGroupWorkingdays = tKqClockMapper.selectGroupWorkingDaysByEntity(selectReGroupWorkingdays);
-        if(tKqGroup.getKqType() == 1){
+        if(tKqGroup.getKqType() == KqTypeEnum.Type_2.getStatus()){
             /**
              * 1.tKqGroup.getKqType() == 1说明为固定班次
              */
@@ -152,8 +157,8 @@ public class TKqClockServiceImpl implements TKqClockService {
                     isDkr = 0;
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("今日非工作时间，无需考勤");
-                    jsonObject.put("clock", resultClock);
-                    return new CommonResult(204, "success", stringBuffer.toString(), jsonObject);
+                    clockAddPage.setClock(resultClock);
+                    return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
                 }else {
                     //必须考勤日期，就使用默认的班次设置
                     tKqBc = tKqBcMapper.selectDefaultBc();
@@ -165,13 +170,13 @@ public class TKqClockServiceImpl implements TKqClockService {
                     isDkr = 0;
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("该班次已被违规删除！请尽快联系管理员处理！");
-                    jsonObject.put("clock", resultClock);
-                    return new CommonResult(446, "error", stringBuffer.toString(), jsonObject);
+                    clockAddPage.setClock(resultClock);
+                    return new CommonResult(444, "error", stringBuffer.toString(), clockAddPage);
                 }else {
-                    jsonObject.put("tKqBc", tKqBc);
+                    clockAddPage.setTKqBc(tKqBc);
                 }
             }
-        }else if(tKqGroup.getKqType() == 2){
+        }else if(tKqGroup.getKqType() == KqTypeEnum.Type_3.getStatus()){
             /**
              * 2.说明为排班制
              */
@@ -187,8 +192,8 @@ public class TKqClockServiceImpl implements TKqClockService {
                     isDkr = 0;
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("今日非工作时间，无需考勤");
-                    jsonObject.put("clock", resultClock);
-                    return new CommonResult(205, "success", stringBuffer.toString(), jsonObject);
+                    clockAddPage.setClock(resultClock);
+                    return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
                 }else {
                     stringBuffer.append("自由工时");
                 }
@@ -201,7 +206,7 @@ public class TKqClockServiceImpl implements TKqClockService {
          */
         //打卡类型，1代表上班打卡，2代表下班打卡
         int dkType = 1;
-        selectTKqCloc.setFkStaffId(sysToken.getFkUserId());
+        selectTKqCloc.setFkStaffId(userId);
         selectTKqCloc.setTodayDate(nowDate);
         List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectTKqCloc);
         resultClock.setTodayDate(nowDate);
@@ -248,8 +253,8 @@ public class TKqClockServiceImpl implements TKqClockService {
                         stringBuffer.append("打卡时间限制内无法进行打卡！");
                         isDkr = 0;
                         resultClock.setIsDkr(isDkr);
-                        jsonObject.put("clock", resultClock);
-                        return new CommonResult(206, "success", stringBuffer.toString(), jsonObject);
+                        clockAddPage.setClock(resultClock);
+                        return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
                     }
                 }
             }else if(isTimeSlot == 2){
@@ -283,11 +288,10 @@ public class TKqClockServiceImpl implements TKqClockService {
                     //根据加班规则，计算加班
                 }
             }
-            jsonObject.put("isTimeSlot", isTimeSlot);
+            clockAddPage.setIsTimeSlot(isTimeSlot);
         }
-
-        jsonObject.put("clock", resultClock);
-        return new CommonResult(200, "success", stringBuffer.toString(), jsonObject);
+        clockAddPage.setClock(resultClock);
+        return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
     }
 
     /**
@@ -298,12 +302,12 @@ public class TKqClockServiceImpl implements TKqClockService {
      */
     @Transactional()
     @Override
-    public CommonResult insert(TKqClock tKqClockParam,HttpServletRequest request) throws ParseException {
+    public CommonResult<ClockAddPage> insert(TKqClock tKqClockParam,HttpServletRequest request) throws ParseException {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         if(sysToken == null){
             return new CommonResult(445, "error", "token不存在或已失效，请重新登录", null);
         }
-        JSONObject resultJson = new JSONObject();
+        ClockAddPage clockAddPage = new ClockAddPage();
         Date nowDate = new Date();
         TStaffInfo info = tStaffInfoMapper.selectByPkId2(sysToken.getFkUserId());
         StringBuffer stringBuffer = new StringBuffer();
@@ -325,7 +329,7 @@ public class TKqClockServiceImpl implements TKqClockService {
             int i = tKqClockMapper.insertSelective(tKqClockParam);
             if (i > 0) {
                 stringBuffer.append("上班打卡成功！");
-                resultJson.put("clock",tKqClockParam);
+                clockAddPage.setClock(tKqClockParam);
             }
         }
         if(!StringUtils.isEmpty(tKqClockParam.getOffClockAddress())){
@@ -350,13 +354,13 @@ public class TKqClockServiceImpl implements TKqClockService {
                 int i = tKqClockMapper.updateByPkId(selectClock);
                 if (i > 0) {
                     stringBuffer.append("成功！");
-                    resultJson.put("clock",selectClock);
+                    clockAddPage.setClock(selectClock);
                 }
             }else {
                 stringBuffer.append("下班打卡异常！请联系技术人员！");
             }
         }
-        return new CommonResult(200, "success", stringBuffer.toString(), resultJson);
+        return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
     }
 
     private TKqClock calculationCdZt_minute(TKqClock tKqClock,String cdOrZt) throws ParseException {
@@ -647,7 +651,7 @@ public class TKqClockServiceImpl implements TKqClockService {
             resultJson.put("statistics", returnEntity);
             return new CommonResult(200, "success", "获取数据成功", resultJson);
         }else {
-            return new CommonResult(201, "success", "当前条件无数据!", null);
+            return new CommonResult(200, "success", "当前条件无数据!", null);
         }
     }
     /**
