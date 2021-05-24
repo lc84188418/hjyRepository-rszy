@@ -28,6 +28,7 @@ public interface TTrainInfoMapper {
      * @return 对象列表
      */
     List<TTrainInfo> selectAllByEntity(TTrainInfo tTrainInfo);
+    List<TTrainInfo> selectAllByUser(TTrainInfo tTrainInfo);
 
     /**
      * 新增数据

@@ -8,6 +8,9 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 /**
  * (TTrainInfo)表服务接口
  *
@@ -51,6 +54,7 @@ public interface TTrainInfoService {
      * @return
      */
     CommonResult<PageResult<TTrainInfo>> selectAll(PageRequest<TTrainInfo> pageInfo);
+    CommonResult<PageResult<TTrainInfo>> selectAllByUser(PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request);
 
     /**
      * 获取单个数据

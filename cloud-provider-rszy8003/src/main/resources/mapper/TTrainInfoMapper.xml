@@ -40,6 +40,27 @@
             </if>
         </where>
     </select>
+    <select id="selectAllByUser" resultType="com.hjy.cloud.t_train.entity.TTrainInfo">
+        select
+        PK_INFO_ID, TRAIN_NAME, TRAIN_CONTENT, START_TIME, END_TIME, TRAIN_ADDRESS, TRAIN_ORGANIZATION, TRAIN_PEOPLE,OURJOIN
+        from T_TRAIN_INFO
+        where OURJOIN like '%${ourJoin}%'
+        <if test="trainName != null and trainName != ''">
+            and TRAIN_NAME = #{trainName,jdbcType=VARCHAR}
+        </if>
+        <if test="trainContent != null and trainContent != ''">
+            and TRAIN_CONTENT = #{trainContent,jdbcType=VARCHAR}
+        </if>
+        <if test="trainAddress != null and trainAddress != ''">
+            and TRAIN_ADDRESS = #{trainAddress,jdbcType=VARCHAR}
+        </if>
+        <if test="trainOrganization != null and trainOrganization != ''">
+            and TRAIN_ORGANIZATION = #{trainOrganization,jdbcType=VARCHAR}
+        </if>
+        <if test="trainPeople != null and trainPeople != ''">
+            and TRAIN_PEOPLE = #{trainPeople,jdbcType=VARCHAR}
+        </if>
+    </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_train.entity.TTrainInfo">
         insert into hjy_cloud.T_TRAIN_INFO

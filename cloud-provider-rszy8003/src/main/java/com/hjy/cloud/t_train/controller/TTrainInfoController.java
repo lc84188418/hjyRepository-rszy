@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -108,9 +110,17 @@ public class TTrainInfoController {
      *
      * @return 所有数据
      */
-    @ApiOperation(value = "4分页查询所有数据-已完成", notes = "可通过实体条件和分页参数进行查询")
-
-    @GetMapping(value = "/train/info/list")
+    @ApiOperation(value = "4管理员-分页查询所有数据-已完成", notes = "可通过实体条件和分页参数进行查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码",required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "条数",required = false, dataType = "int", paramType = "body", example = "10"),
+            @ApiImplicitParam(name = "trainName", value = "培训活动名称",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainContent", value = "培训内容",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainAddress", value = "培训地点",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainOrganization", value = "培训机构",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainPeople", value = "培训人，直接输入即可",required = false, dataType = "string", paramType = "body", example = "1"),
+    })
+    @PostMapping(value = "/train/info/list")
     public CommonResult<PageResult<TTrainInfo>> selectAll(@RequestBody PageRequest<TTrainInfo> pageInfo) throws FebsException {
         try {
             return tTrainInfoService.selectAll(pageInfo);
@@ -121,11 +131,31 @@ public class TTrainInfoController {
         }
     }
 
+    @ApiOperation(value = "5用户 分页查询所有数据-已完成", notes = "可通过实体条件和分页参数进行查询")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum", value = "页码",required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "pageSize", value = "条数",required = false, dataType = "int", paramType = "body", example = "10"),
+            @ApiImplicitParam(name = "trainName", value = "培训活动名称",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainContent", value = "培训内容",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainAddress", value = "培训地点",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainOrganization", value = "培训机构",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "trainPeople", value = "培训人，直接输入即可",required = false, dataType = "string", paramType = "body", example = "1"),
+    })
+    @PostMapping(value = "/train/info/list/user")
+    public CommonResult<PageResult<TTrainInfo>> selectAllByUser(@RequestBody PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request) throws FebsException {
+        try {
+            return tTrainInfoService.selectAllByUser(pageInfo,session,request);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
     /**
      * 通过主键查询单条数据
      *
      */
-    @ApiOperation(value = "5详情-已完成", notes = "通过主键查询单条数据")
+    @ApiOperation(value = "6详情-已完成", notes = "通过主键查询单条数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pkInfoId", value = "培训活动主键",required = true, dataType = "string", paramType = "path", example = "1"),
     })
@@ -146,7 +176,7 @@ public class TTrainInfoController {
      * @param tTrainInfo 实体对象
      * @return 修改结果
      */
-    @ApiOperation(value = "6修改-已完成", notes = "")
+    @ApiOperation(value = "7修改-已完成", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "trainName", value = "培训活动名称",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "trainContent", value = "培训内容",required = false, dataType = "string", paramType = "body", example = "1"),

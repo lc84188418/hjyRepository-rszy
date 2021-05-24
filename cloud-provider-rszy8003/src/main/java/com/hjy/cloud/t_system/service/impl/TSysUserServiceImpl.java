@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_system.entity.ActiveUser;
@@ -114,7 +115,10 @@ public class TSysUserServiceImpl implements TSysUserService {
     public List<TSysUser> selectAllByEntity(TSysUser tSysUser) throws Exception {
         return this.tSysUserMapper.selectAllByEntity(tSysUser);
     }
-
+    @Override
+    public List<User> selectAllId_NameByEntity(TSysUser tSysUser) throws Exception {
+        return this.tSysUserMapper.selectAllId_NameByEntity(tSysUser);
+    }
     @Override
     public String selectUserRoleByUserId(String fk_user_id) {
         return tSysUserMapper.selectUserRoleByUserId(fk_user_id);

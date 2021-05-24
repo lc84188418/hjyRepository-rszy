@@ -16,7 +16,7 @@ public class PageRequest<T> {
      */
     private int pageSize;
     /**
-     * 起始行页码
+     * 其他查询参数
      */
     private T param;
 }

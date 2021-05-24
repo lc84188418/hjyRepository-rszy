@@ -60,6 +60,7 @@ public interface TSysUserMapper {
      * @return 对象列表
      */
     List<TSysUser> selectAllByEntity(TSysUser tSysUser);
+    List<User> selectAllId_NameByEntity(TSysUser tSysUser);
     /**
      * 通过userid查询用户角色信息
      * @param fk_user_id

@@ -3,6 +3,7 @@ package com.hjy.cloud.t_kq.service;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.utils.page.PageResult;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
@@ -63,5 +64,5 @@ public interface TKqClockService {
      * 管理员查询所有打卡信息
      * @return 所有数据
      */
-    CommonResult adminList(String tKqClock) throws ParseException;
+    CommonResult<PageResult<TKqClock>> adminList(String tKqClock) throws ParseException;
 }

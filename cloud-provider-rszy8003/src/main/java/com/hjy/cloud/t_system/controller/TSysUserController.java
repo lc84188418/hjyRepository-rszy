@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_system.controller;
 
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
@@ -14,11 +15,15 @@ import com.hjy.cloud.t_system.service.TSysUserService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpSession;
 import java.util.Date;
@@ -109,7 +114,22 @@ public class TSysUserController {
             throw new FebsException(message);
         }
     }
-
+    @ApiOperation(value = "模糊查询所有用户-已完成", notes = "可通过实体条件进行查询，未分页")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fullName", value = "姓名",required = false, dataType = "string", paramType = "body", example = "1"),
+    })
+    @PostMapping("/system/user")
+    public CommonResult<List<User>> tSysUserList2(@ApiIgnore()@RequestBody TSysUser param) throws FebsException{
+        try {
+            //
+            List<User> list = tSysUserService.selectAllId_NameByEntity(param);
+            return new CommonResult(200,"success","查询数据成功!",list);
+        } catch (Exception e) {
+            String message = "查询数据失败";
+            log.error(message, e);
+            throw new FebsException(message);
+        }
+    }
     /**
      * 3 删除数据
      * @return 删除结果

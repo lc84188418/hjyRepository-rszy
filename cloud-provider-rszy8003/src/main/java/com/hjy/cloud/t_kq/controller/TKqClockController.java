@@ -6,6 +6,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.ParamStatistics;
 import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.t_kq.service.TKqClockService;
+import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
@@ -150,7 +151,7 @@ public class TKqClockController {
             @ApiImplicitParam(name = "pageSize",required = false,dataType = "String",paramType = "form",example = "10")
     })
     @PostMapping(value = "/kq/clock/admin/list")
-    public CommonResult adminList(@ApiParam(name = "实体参数", required = true) @RequestBody String tKqClock) throws FebsException {
+    public CommonResult<PageResult<TKqClock>> adminList(@ApiParam(name = "实体参数", required = true) @RequestBody String tKqClock) throws FebsException {
         try {
             return tKqClockService.adminList(tKqClock);
         } catch (Exception e) {

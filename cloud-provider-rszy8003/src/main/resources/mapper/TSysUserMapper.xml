@@ -21,23 +21,20 @@
             <if test="enableStatus != null">
                 and ENABLE_STATUS = #{enableStatus,jdbcType=VARCHAR}
             </if>
-            <if test="IDcard != null and IDcard != ''">
-                and IDCARD like '%${IDcard}%'
+            <if test="idcard != null and idcard != ''">
+                and IDCARD like '%${idcard}%'
             </if>
             <if test="fullName != null and fullName != ''">
                 and FULL_NAME like '%${fullName}%'
             </if>
-            <if test="unit != null and unit != ''">
-                and UNIT = #{unit,jdbcType=VARCHAR}
-            </if>
-            <if test="onLine != null">
-                and ON_LINE = #{onLine,jdbcType=VARCHAR}
-            </if>
-            <if test="ip != null and ip != '' and ip != 'null'">
-                and IP = #{ip,jdbcType=VARCHAR}
-            </if>
-            <if test="address != null and address != ''">
-                and ADDRESS like '%${address}%'
+        </where>
+    </select>
+    <!--No problem 通过实体作为筛选条件查询-->
+    <select id="selectAllId_NameByEntity" resultType="com.hjy.cloud.common.entity.User" parameterType="com.hjy.cloud.t_system.entity.TSysUser">
+        select PK_USER_ID as userId,FULL_NAME as fullName from T_SYS_USER
+        <where>
+            <if test="fullName != null and fullName != ''">
+                and FULL_NAME like '%${fullName}%'
             </if>
         </where>
     </select>

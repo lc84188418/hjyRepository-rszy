@@ -3,6 +3,7 @@ package com.hjy.cloud.t_train.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
+import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.ActiveResult;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_train.dao.TTrainInfoMapper;
@@ -20,6 +21,8 @@ import com.hjy.cloud.domin.CommonResult;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Iterator;
 import java.util.List;
 
@@ -125,6 +128,11 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
      */
     @Override
     public CommonResult<PageResult<TTrainInfo>> selectAll(PageRequest<TTrainInfo> pageInfo) {
+        if(pageInfo.getPageNum() == 0){
+            pageInfo.setPageNum(1);
+        }if(pageInfo.getPageSize() == 0){
+            pageInfo.setPageSize(10);
+        }
         PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
         List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByEntity(pageInfo.getParam());
         Iterator<TTrainInfo> infoIterator = list.iterator();
@@ -140,10 +148,40 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
                 next.setOurJoin(null);
             }
         }
-        PageResult result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
+        PageResult<TTrainInfo> result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
         return new CommonResult(200, "success", "获取数据成功", result);
     }
-
+    @Override
+    public CommonResult<PageResult<TTrainInfo>> selectAllByUser(PageRequest<TTrainInfo> pageInfo, HttpSession session , HttpServletRequest request) {
+        if(pageInfo.getPageNum() == 0){
+            pageInfo.setPageNum(1);
+        }if(pageInfo.getPageSize() == 0){
+            pageInfo.setPageSize(10);
+        }
+        //登录用户信息
+        String userId = UserShiroUtil.getCurrentUserId(session,request);
+        if(StringUtils.isEmpty(userId)){
+            return new CommonResult(444, "error", "无法获取当前用户信息，请刷新或重新登录后再试", null);
+        }
+        pageInfo.getParam().setOurJoin(userId);
+        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByUser(pageInfo.getParam());
+        Iterator<TTrainInfo> infoIterator = list.iterator();
+        while (infoIterator.hasNext()){
+            TTrainInfo next = infoIterator.next();
+            String ourJoin = next.getOurJoin();
+            if(!StringUtils.isEmpty(ourJoin)){
+                ourJoin = ourJoin.substring(0,ourJoin.length()-1);
+                String[] ids = ourJoin.split(",");
+                //查询
+                List<User> userList = this.tSysUserMapper.selectId_NameByIds(ids);
+                next.setJoin(userList);
+                next.setOurJoin(null);
+            }
+        }
+        PageResult<TTrainInfo> result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
+        return new CommonResult(200, "success", "获取数据成功", result);
+    }
     /**
      * 获取单个数据
      *
@@ -166,14 +204,5 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
         return new CommonResult(200, "success", "获取数据成功", activeResult);
     }
 
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        TTrainInfo entity = new TTrainInfo();
-        List<TTrainInfo> list = this.tTrainInfoMapper.selectAllByEntity(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TTrainInfo>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("pageResult", result);
-        return resultJson;
-    }
 }
     

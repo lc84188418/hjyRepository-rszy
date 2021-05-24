@@ -693,7 +693,7 @@ public class TKqClockServiceImpl implements TKqClockService {
     }
 
     @Override
-    public CommonResult adminList(String param) throws ParseException {
+    public CommonResult<PageResult<TKqClock>> adminList(String param) throws ParseException {
         JSONObject json = JSON.parseObject(param);
         //分页参数
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
@@ -719,10 +719,8 @@ public class TKqClockServiceImpl implements TKqClockService {
         }
         PageHelper.startPage(pageNum, pageSize);
         List<TKqClock> list = this.tKqClockMapper.selectAllPage(tKqClock);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TKqClock>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return new CommonResult(200, "success", "获取数据成功", resultJson);
+        PageResult<TKqClock> result = PageUtil.getPageResult(new PageInfo<TKqClock>(list));
+        return new CommonResult(200, "success", "获取数据成功", result);
     }
 }
     

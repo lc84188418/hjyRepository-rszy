@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_system.service;
 
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.utils.page.PageResult;
@@ -56,6 +57,7 @@ public interface TSysUserService {
      * @return list
      */
     List<TSysUser> selectAllByEntity(TSysUser tSysUser)throws Exception;
+    List<User> selectAllId_NameByEntity(TSysUser tSysUser)throws Exception;
     /**
      * 通过userId查询已分配角色数据
      */
