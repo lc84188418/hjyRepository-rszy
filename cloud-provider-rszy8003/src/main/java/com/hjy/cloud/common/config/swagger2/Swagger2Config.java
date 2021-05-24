@@ -16,6 +16,10 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 /**
  * @author liuchun
  * @Package com.hjy.cloud.common.config.swagger2
@@ -32,6 +36,7 @@ public class Swagger2Config {
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo())
+                .ignoredParameterTypes(HttpSession.class, HttpServletRequest.class, HttpServletResponse.class)
                 // 是否开启
                 .enable(swaggerEnabled).select()
                 // 扫描的路径包
