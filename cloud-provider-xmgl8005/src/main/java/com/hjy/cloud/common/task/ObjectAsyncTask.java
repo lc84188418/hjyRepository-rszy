@@ -3,14 +3,12 @@ package com.hjy.cloud.common.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.common.entity.DApvRecord;
-import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.DCcRecordService;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
@@ -19,16 +17,9 @@ import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import com.hjy.cloud.t_system.entity.SysToken;
-import com.hjy.cloud.t_system.service.TSysTokenService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
-import com.hjy.cloud.t_system.entity.ReUserRole;
-import com.hjy.cloud.t_system.service.TSysParamService;
-import com.hjy.cloud.t_system.service.TSysRoleService;
-import com.hjy.cloud.t_system.service.TSysUserService;
-import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.TokenUtil;
-import javafx.beans.binding.StringBinding;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -46,14 +37,6 @@ import java.util.*;
 @Component
 @Async
 public class ObjectAsyncTask {
-    @Autowired
-    private TSysParamService tSysParamService;
-    @Autowired
-    private TSysUserService tSysUserService;
-    @Autowired
-    private TSysRoleService tSysRoleService;
-    @Autowired
-    private TSysTokenService tSysTokenService;
     @Autowired
     private TOutfitDeptService tOutfitDeptService;
     @Autowired
@@ -76,39 +59,30 @@ public class ObjectAsyncTask {
      * @param pkUserId 用户ID
      * @param roleId 角色ID
      */
-    public static void addUserRoleByUserRole(String pkUserId, String roleId) {
-        ReUserRole userRole = new ReUserRole();
-        userRole.setPk_userRole_id(IDUtils.getUUID());
-        userRole.setFk_user_id(pkUserId);
-        userRole.setFk_role_id(roleId);
-        ntClient.tSysUserService.addUserRoleByUserRole(userRole);
-    }
+//    public static void addUserRoleByUserRole(String pkUserId, String roleId) {
+//        ReUserRole userRole = new ReUserRole();
+//        userRole.setPk_userRole_id(IDUtils.getUUID());
+//        userRole.setFk_user_id(pkUserId);
+//        userRole.setFk_role_id(roleId);
+//        ntClient.tSysUserService.addUserRoleByUserRole(userRole);
+//    }
 
     /**
      * 删除角色的所有权限
      * @param fk_role_id 角色ID
      */
-    public static void deleteRolePermsByRoleId(String fk_role_id) {
-        ntClient.tSysRoleService.deleteRolePermsByRoleId(fk_role_id);
-    }
-
-    //添加角色默认的权限-即主页的3个
-    public static void addDefultRoelPerms(String fk_role_id) {
-        List<String> idList = new ArrayList<String>();
-        idList.add("1596706636946");
-        idList.add("1596706882298");
-        idList.add("1596707062416");
-        ntClient.tSysRoleService.distributeMenu(fk_role_id,idList);
-    }
-    //从请求中获取token
-    public static SysToken getSysToken(HttpServletRequest request) {
-        String tokenId = TokenUtil.getRequestToken(request);
-        if(StringUtils.isEmpty(tokenId)){
-            return null;
-        }else {
-            return ntClient.tSysTokenService.selectPkId(tokenId);
-        }
-    }
+//    public static void deleteRolePermsByRoleId(String fk_role_id) {
+//        ntClient.tSysRoleService.deleteRolePermsByRoleId(fk_role_id);
+//    }
+//    //从请求中获取token
+//    public static SysToken getSysToken(HttpServletRequest request) {
+//        String tokenId = TokenUtil.getRequestToken(request);
+//        if(StringUtils.isEmpty(tokenId)){
+//            return null;
+//        }else {
+//            return ntClient.tSysTokenService.selectPkId(tokenId);
+//        }
+//    }
     /**
      * 向部门-用户关联表中添加一条部门-用户信息
      * @param pkUserId 用户ID
@@ -453,10 +427,6 @@ public class ObjectAsyncTask {
     @PostConstruct
     public void init() {
         ntClient = this;
-        ntClient.tSysParamService = this.tSysParamService;
-        ntClient.tSysUserService = this.tSysUserService;
-        ntClient.tSysRoleService = this.tSysRoleService;
-        ntClient.tSysTokenService = this.tSysTokenService;
         ntClient.tOutfitDeptService = this.tOutfitDeptService;
         ntClient.tApvApprovalService = this.tApvApprovalService;
         ntClient.tApvApvtypeService = this.tApvApvtypeService;
