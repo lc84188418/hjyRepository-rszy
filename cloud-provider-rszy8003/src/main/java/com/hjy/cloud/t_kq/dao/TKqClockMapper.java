@@ -76,7 +76,7 @@ public interface TKqClockMapper {
     List<ReGroupWorkingdays> selectGroupWorkingDaysByEntity(ReGroupWorkingdays selectReGroupWorkingdays);
 
     List<TKqClock> selectAllByMonth(ParamStatistics paramStatistics);
-    List<TKqClock> statisticsUser2(ParamStatistics paramStatistics);
+    List<TKqClock> selectAllByWeek(ParamStatistics paramStatistics);
 
     TKqClock selectOnDayByTodayDate(ParamStatistics param);
     int selectCountByTodayDate_StaffId(@Param("fkStaffId")String fkStaffId);

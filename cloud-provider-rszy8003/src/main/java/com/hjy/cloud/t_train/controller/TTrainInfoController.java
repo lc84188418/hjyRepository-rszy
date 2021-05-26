@@ -1,7 +1,6 @@
 package com.hjy.cloud.t_train.controller;
 
 
-import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.domin.ActiveResult;
 import com.hjy.cloud.domin.CommonResult;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * (TTrainInfo)表控制层
@@ -90,7 +88,7 @@ public class TTrainInfoController {
      * @param pkInfoId 实体对象主键
      * @return 删除结果
      */
-    @ApiOperation(value = "3新增培训信息页面-已完成", notes = "")
+    @ApiOperation(value = "3删除-已完成", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pkInfoId", value = "培训活动主键",required = true, dataType = "string", paramType = "path", example = "1"),
     })

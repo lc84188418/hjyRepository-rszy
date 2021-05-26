@@ -53,7 +53,7 @@ public class TStaffContractController {
      * @return 新增结果
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "添加",operDesc = "添加员工合同信息")
-    @RequiresPermissions({"contract:add"})
+    //@RequiresPermissions({"contract:add"})
     @PostMapping(value = "/staff/contract/add")
     public CommonResult insert(@RequestBody TStaffContract tStaffContract) throws FebsException {
         try {
@@ -72,7 +72,7 @@ public class TStaffContractController {
      * @return 删除结果
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "删除",operDesc = "删除员工合同信息")
-    @RequiresPermissions({"contract:del"})
+    //@RequiresPermissions({"contract:del"})
     @DeleteMapping(value = "/staff/contract/del")
     public CommonResult delete(@RequestBody TStaffContract tStaffContract) throws FebsException {
         try {
@@ -91,7 +91,7 @@ public class TStaffContractController {
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "查看",operDesc = "管理员查看员工合同信息列表")
-    @RequiresPermissions({"contract:adminView"})
+    //@RequiresPermissions({"contract:adminView"})
     @PostMapping(value = "/staff/contract/admin/list")
     public CommonResult adminList(@RequestBody String param) throws FebsException {
         try {
@@ -109,7 +109,7 @@ public class TStaffContractController {
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "查看",operDesc = "个人查看自己合同信息")
-    @RequiresPermissions({"contract:userView"})
+    //@RequiresPermissions({"contract:userView"})
     @PostMapping(value = "/staff/contract/user/list")
     public CommonResult userList(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
         try {
@@ -127,7 +127,7 @@ public class TStaffContractController {
      * @param tStaffContract 实体对象
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "查看",operDesc = "查看单条合同信息")
-    @RequiresPermissions({"contract:get"})
+    //@RequiresPermissions({"contract:get"})
     @PostMapping(value = "/staff/contract/get")
     public CommonResult selectOne(@RequestBody TStaffContract tStaffContract) throws FebsException {
         try {
@@ -146,7 +146,7 @@ public class TStaffContractController {
      * @return 修改结果
      */
     @OperLog(operModul = "人员管理-合同管理",operType = "修改",operDesc = "修改单条合同信息")
-    @RequiresPermissions({"contract:update"})
+    //@RequiresPermissions({"contract:update"})
     @PutMapping(value = "/staff/contract/update")
     public CommonResult update(@RequestBody TStaffContract tStaffContract) throws FebsException {
         try {

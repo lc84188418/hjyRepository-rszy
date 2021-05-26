@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * shiro配置
  */
-//@Configuration
+@Configuration
 public class ShiroConfig {
     @Bean("securityManager")
     public SecurityManager securityManager(AuthRealm authRealm) {
@@ -44,9 +44,12 @@ public class ShiroConfig {
          * shiro自带过滤器
          */
         // anno匿名访问  auth验证
-        filterMap.put("/login", "anon");
         filterMap.put("/", "anon");
+        filterMap.put("/login", "anon");
         filterMap.put("/logout", "anon");
+        //swagger接口权限 开放
+        filterMap.put("/swagger-ui.html", "anon");
+        filterMap.put("/doc.html", "anon");
         // 除了以上路径，其他都需要权限验证
         filterMap.put("/**", "auth");
         shiroFilter.setFilterChainDefinitionMap(filterMap);
@@ -58,7 +61,7 @@ public class ShiroConfig {
         return new LifecycleBeanPostProcessor();
     }
     /**
-     *  开启Shiro的注解(如@RequiresRoles,@RequiresPermissions)
+     *  开启Shiro的注解(如@RequiresRoles,//@RequiresPermissions)
      * @return
      */
     @Bean

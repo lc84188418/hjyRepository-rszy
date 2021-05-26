@@ -167,8 +167,20 @@
     <select id="selectAll" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
         select * from T_SYS_PERMS
     </select>
+    <!--获取所有权限码-->
+    <select id="selectAllPermsCode" resultType="java.lang.String">
+        select distinct (PERMS_CODE) from T_SYS_PERMS
+    </select>
     <select id="selectAllIdAndName" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
         select PK_PERMS_ID,MENU_NAME from T_SYS_PERMS
+    </select>
+    <!--    获取所有一级菜单-->
+    <select id="selectAllFirstLevel" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
+        select * from T_SYS_PERMS where MENU_TYPE = 1
+    </select>
+    <!--    通过pid查询所有菜单-->
+    <select id="selectByPId" resultType="com.hjy.cloud.t_system.entity.TSysPerms">
+        select * from T_SYS_PERMS where P_ID = #{pkPermsId,jdbcType=VARCHAR}
     </select>
     <!--No problem 分页-模糊查询用户列表-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_system.entity.TSysPerms">

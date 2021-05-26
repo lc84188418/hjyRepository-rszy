@@ -2,10 +2,12 @@ package com.hjy.cloud.t_system.service;
 
 import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.t_system.entity.ActiveUser;
-import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.t_system.entity.ReUserRole;
+import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
+
 import java.util.List;
 import java.util.Map;
 
@@ -70,11 +72,12 @@ public interface TSysUserService {
      * 分页查询所有数据
      * @return list
      */
-    PageResult selectAllPage(String param);
+    CommonResult<PageResult<TSysUser>> tSysUserList(PageRequest<TSysUser> pageInfo);
+
     /**
      * 修改密码
      */
-    int updatePassword(String parm, ActiveUser activeUser) throws Exception;
+    int updatePassword(String parm, SysToken token) throws Exception;
     /**
      * 添加用户且添加角色
      */

@@ -36,7 +36,7 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TKqClockMap">
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_kq.entity.TKqClock">
         select * from hjy_cloud.T_KQ_CLOCK
         where PK_CLOCK_ID = #{pkClockId}
     </select>
@@ -160,6 +160,7 @@ WHERE
 	t.FK_POSITION_ID,
 	t.POSITION_NAME,
 	t.WORKING_HOURS,
+	t.WORKING_MINUTES,
 	t.IS_CD,
 	t.CD_MINUTE,
 	t.IS_ZT,
@@ -176,7 +177,7 @@ FROM
             and t.WORKING_HOURS != ''
         </if>
     </select>
-    <select id="statisticsUser2" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
+    <select id="selectAllByWeek" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
                 SELECT
 	t.FK_STAFF_ID,
 	t.STAFF_NAME,
@@ -188,6 +189,7 @@ FROM
 	t.FK_POSITION_ID,
 	t.POSITION_NAME,
 	t.WORKING_HOURS,
+	t.WORKING_MINUTES,
 	t.IS_CD,
 	t.CD_MINUTE,
 	t.IS_ZT,
@@ -363,6 +365,9 @@ FROM
             </if>
             <if test="workingHours != null">
                 WORKING_HOURS = #{workingHours,jdbcType=REAL},
+            </if>
+            <if test="workingMinutes != null">
+                WORKING_MINUTES = #{workingMinutes,jdbcType=REAL},
             </if>
             <if test="isCd != null">
                 IS_CD = #{isCd,jdbcType=INTEGER},

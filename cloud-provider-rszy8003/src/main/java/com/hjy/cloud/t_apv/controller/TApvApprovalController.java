@@ -6,16 +6,14 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
-import com.hjy.cloud.t_train.entity.TTrainInfo;
-import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -56,6 +54,7 @@ public class TApvApprovalController {
      *
      * @return 新增结果
      */
+    //@RequiresPermissions({"approval:add"})
     @PostMapping(value = "/apv/approval/add")
     public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
@@ -73,6 +72,7 @@ public class TApvApprovalController {
      * @param tApvApproval 实体对象
      * @return 删除结果
      */
+    //@RequiresPermissions({"approval:del"})
     @DeleteMapping(value = "/apv/approval/del")
     public CommonResult delete(@RequestBody TApvApproval tApvApproval) throws FebsException {
         try {
@@ -89,6 +89,7 @@ public class TApvApprovalController {
      *
      * @param tApvApproval 实体对象
      */
+    //@RequiresPermissions({"approval:get"})
     @PostMapping(value = "/apv/approval/get")
     public CommonResult selectOne(@RequestBody TApvApproval tApvApproval) throws FebsException {
         try {
@@ -106,6 +107,7 @@ public class TApvApprovalController {
      * @param tApvApproval 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"approval:update"})
     @PutMapping(value = "/apv/approval/update")
     public CommonResult update(@RequestBody TApvApproval tApvApproval) throws FebsException {
         try {
@@ -122,6 +124,7 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    //@RequiresPermissions({"approval:set"})
     @GetMapping(value = "/apv/approval/set")
     public CommonResult approvalSet() throws FebsException {
         try {
@@ -137,6 +140,7 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    //@RequiresPermissions({"admin:waitApv"})
     @GetMapping(value = "/apv/approval/waitApv")
     public CommonResult adminWaitApv() throws FebsException {
         try {
@@ -152,6 +156,7 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    //@RequiresPermissions({"user:waitApv"})
     @GetMapping(value = "/apv/approval/waitApvUser")
     public CommonResult waitApv(HttpSession session, HttpServletRequest request) throws FebsException {
         try {
@@ -167,6 +172,7 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    //@RequiresPermissions({"user:approval"})
     @PostMapping(value = "/apv/approval/approvalUser")
     public CommonResult approval(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {
         try {

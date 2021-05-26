@@ -4,9 +4,9 @@ import org.apache.commons.lang.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * 时间工具类
@@ -53,6 +53,7 @@ public class DateUtil {
      * @throws ParseException
      */
     public static Date formatTime(String date, String dateFormatType) throws ParseException {
+
         SimpleDateFormat sdf = new SimpleDateFormat(dateFormatType);
         Date parse = sdf.parse(date);
         return parse;

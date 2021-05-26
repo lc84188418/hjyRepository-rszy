@@ -5,9 +5,13 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_system.entity.TSysParam;
 import com.hjy.cloud.t_system.service.TSysParamService;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -34,7 +38,7 @@ public class TSysParamController {
      * 2 查询所有数据
      * @return 所有数据
      */
-
+    //@RequiresPermissions({"param:view"})
     @GetMapping("/system/param/list")
     public CommonResult tSysParamList() throws FebsException{
         try {
@@ -53,6 +57,7 @@ public class TSysParamController {
      * @param tSysParam 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"param:update"})
     @PutMapping("/system/param/update")
     public CommonResult tSysParamUpdate(@RequestBody TSysParam tSysParam, HttpSession session, HttpServletRequest request) throws FebsException, IOException {
         try {

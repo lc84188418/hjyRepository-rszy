@@ -37,7 +37,7 @@ public class TLogRecordController {
      * @return 删除结果
      */
     @OperLog(operModul = "日志管理-操作日志",operType = "删除",operDesc = "删除日志信息")
-    @RequiresPermissions({"logRecord:del"})
+    //@RequiresPermissions({"logRecord:del"})
     @DeleteMapping(value = "/log/record/del")
     public CommonResult delete(@RequestBody TLogRecord tLogRecord) throws FebsException {
         try {
@@ -56,7 +56,7 @@ public class TLogRecordController {
      * @return 所有数据
      */
     @OperLog(operModul = "日志管理-操作日志",operType = "查看",operDesc = "查看日志信息列表")
-    @RequiresPermissions({"logRecord:view"})
+    //@RequiresPermissions({"logRecord:view"})
     @PostMapping(value = "/log/record/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -74,7 +74,7 @@ public class TLogRecordController {
      * @param tLogRecord 实体对象
      */
     @OperLog(operModul = "日志管理-操作日志",operType = "查看",operDesc = "查看单个日志信息")
-    @RequiresPermissions({"logRecord:get"})
+    //@RequiresPermissions({"logRecord:get"})
     @PostMapping(value = "/log/record/get")
     public CommonResult selectOne(@RequestBody TLogRecord tLogRecord) throws FebsException {
         try {

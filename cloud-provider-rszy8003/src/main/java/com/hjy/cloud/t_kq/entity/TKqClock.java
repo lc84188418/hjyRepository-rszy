@@ -1,10 +1,10 @@
 package com.hjy.cloud.t_kq.entity;
 
-import java.util.Date;
-
-import lombok.Data;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TKqClock)表实体类
@@ -41,8 +41,10 @@ public class TKqClock {
     private String offClockIp;
     @ApiModelProperty("下班打卡是否外勤")
     private Integer offIsWq;
-    @ApiModelProperty("工时")
+    @ApiModelProperty("工时,按时")
     private double workingHours;
+    @ApiModelProperty("工时,按分")
+    private double workingMinutes;
     @ApiModelProperty("是否迟到")
     private Integer isCd;
     @ApiModelProperty("迟到时间")

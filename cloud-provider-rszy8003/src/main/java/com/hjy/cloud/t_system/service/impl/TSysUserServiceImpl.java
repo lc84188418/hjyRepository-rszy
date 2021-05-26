@@ -5,21 +5,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
-import com.hjy.cloud.t_system.entity.ActiveUser;
-import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.t_system.dao.TSysRoleMapper;
+import com.hjy.cloud.t_system.dao.TSysUserMapper;
+import com.hjy.cloud.t_system.entity.ReDeptUser;
+import com.hjy.cloud.t_system.entity.ReUserRole;
+import com.hjy.cloud.t_system.entity.SysToken;
+import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysUserService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.PasswordEncryptUtils;
 import com.hjy.cloud.utils.StringUtil;
+import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.t_system.dao.TSysRoleMapper;
-import com.hjy.cloud.t_system.entity.ReDeptUser;
-import com.hjy.cloud.t_system.entity.ReUserRole;
-import com.hjy.cloud.t_system.dao.TSysUserMapper;
-import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,40 +130,13 @@ public class TSysUserServiceImpl implements TSysUserService {
         return tSysUserMapper.deleteUserRoleByUserId(fk_user_id);
     }
 
-    @Override
-    public PageResult selectAllPage(String param) {
-        JSONObject json = JSON.parseObject(param);
-        //实体数据
-        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
-        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
-        String fullName = JsonUtil.getStringParam(json, "fullName");
-        String idcard = JsonUtil.getStringParam(json, "idcard");
-        String workPosition = JsonUtil.getStringParam(json, "workPosition");
-        TSysUser user = new TSysUser();
-        user.setFullName(fullName);
-        user.setIdcard(idcard);
-        user.setWorkPosition(workPosition);
-        //分页记录条数
-        int pageNum = 1;
-        int pageSize = 10;
-        if (pageNumStr != null) {
-            pageNum = Integer.parseInt(pageNumStr);
-        }
-        if (pageSizeStr != null) {
-            pageSize = Integer.parseInt(pageSizeStr);
-        }
-        PageHelper.startPage(pageNum, pageSize);
-        List<TSysUser> users = tSysUserMapper.selectAllPage(user);
-        return PageUtil.getPageResult(new PageInfo<TSysUser>(users));
-
-    }
 
     @Override
-    public int updatePassword(String parm, ActiveUser activeUser) throws Exception {
+    public int updatePassword(String parm, SysToken token) throws Exception {
         //用户名
-        String username = activeUser.getUsername();
+        String username = token.getUsername();
         //数据库旧密码
-        String oldPasswordMd5 = activeUser.getPassword();
+        String oldPasswordMd5 = token.getPassword();
         JSONObject json = JSON.parseObject(parm);
         //输入的旧密码
         String inputOldPassword = String.valueOf(json.get("oldPassword"));
@@ -176,7 +150,7 @@ public class TSysUserServiceImpl implements TSysUserService {
         //输入的新密码加密
         String inputNewPasswordMd5 = PasswordEncryptUtils.MyPasswordEncryptUtil(username, inputNewPassword);
         TSysUser user = new TSysUser();
-        user.setPkUserId(activeUser.getUserId());
+        user.setPkUserId(token.getFkUserId());
         user.setPassword(inputNewPasswordMd5);
         user.setModifyTime(new Date());
         return tSysUserMapper.updateById(user);
@@ -317,23 +291,34 @@ public class TSysUserServiceImpl implements TSysUserService {
     }
 
     @Override
-    public CommonResult tSysUserDel(String param) {
-        JSONObject jsonObject = JSON.parseObject(param);
-        String idStr = String.valueOf(jsonObject.get("pk_id"));
-        if ("1597387976992".equals(idStr)) {
+    public CommonResult tSysUserDel(String pkUserId) {
+        if ("1597387976992".equals(pkUserId)) {
             return new CommonResult(445, "error", "超级管理员不可删除!", null);
         }
         //删除用户表里的用户
-        int i = tSysUserMapper.deleteById(idStr);
+        int i = tSysUserMapper.deleteById(pkUserId);
         //删除用户角色表里的用户
-        int j = tSysUserMapper.deleteUserRoleByUserId(idStr);
-        //删除用户角色表里的用户
-        int k = tOutfitDeptMapper.deleteDeptUserByUserId(idStr);
+        int j = tSysUserMapper.deleteUserRoleByUserId(pkUserId);
+        //删除用户部门表里的用户
+        int k = tOutfitDeptMapper.deleteDeptUserByUserId(pkUserId);
         if (i > 0) {
             return new CommonResult(200, "success", "数据删除成功!", null);
         } else {
-            return new CommonResult(444, "error", "数据删除失败!", null);
+            return new CommonResult(444, "error", "数据已被删除，无需再次请求!", null);
         }
+    }
+
+    @Override
+    public CommonResult<PageResult<TSysUser>> tSysUserList(PageRequest<TSysUser> pageInfo) {
+        if(pageInfo.getPageNum() == 0){
+            pageInfo.setPageNum(1);
+        }if(pageInfo.getPageSize() == 0){
+            pageInfo.setPageNum(10);
+        }
+        PageHelper.startPage(pageInfo.getPageNum(), pageInfo.getPageSize());
+        List<TSysUser> list = tSysUserMapper.selectAllByEntity(pageInfo.getParam());
+        PageResult<TSysUser> result = PageUtil.getPageResult(new PageInfo<TSysUser>(list));
+        return new CommonResult(200,"success","查询用户数据成功!",result);
     }
 
     public int addDeptUserByDeptUser(String pkUserId, String deptId) {

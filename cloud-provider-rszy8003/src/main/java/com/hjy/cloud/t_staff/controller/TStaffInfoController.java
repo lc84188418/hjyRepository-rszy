@@ -37,7 +37,7 @@ public class TStaffInfoController {
      * @return 删除结果
      */
     @OperLog(operModul = "人员管理-名单管理",operType = "删除",operDesc = "删除入职员工信息记录")
-    @RequiresPermissions({"staffInfo:del"})
+    //@RequiresPermissions({"staffInfo:del"})
     @DeleteMapping(value = "/staff/info/del")
     public CommonResult delete(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {
@@ -57,7 +57,7 @@ public class TStaffInfoController {
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看入职员工信息列表")
-    @RequiresPermissions({"staffInfo:adminView"})
+    //@RequiresPermissions({"staffInfo:adminView"})
     @PostMapping(value = "/staff/info/adminList")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -75,7 +75,7 @@ public class TStaffInfoController {
      * @param tStaffInfo 实体对象
      */
     @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看单个入职员工信息详情")
-    @RequiresPermissions({"staffInfo:get"})
+    //@RequiresPermissions({"staffInfo:get"})
     @PostMapping(value = "/staff/info/get")
     public CommonResult selectOne(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {
@@ -94,7 +94,7 @@ public class TStaffInfoController {
      * @return 修改结果
      */
     @OperLog(operModul = "人员管理-名单管理",operType = "修改",operDesc = "修改入职员工信息")
-    @RequiresPermissions({"staffInfo:update"})
+    //@RequiresPermissions({"staffInfo:update"})
     @PutMapping(value = "/staff/info/update")
     public CommonResult update(@RequestBody TStaffInfo tStaffInfo) throws FebsException {
         try {

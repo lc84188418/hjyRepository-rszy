@@ -35,7 +35,6 @@ public interface TSysUserMapper {
 
     /**
      * 修改数据
-     *
      * @param tSysUser 实例对象
      * @return 影响行数
      */

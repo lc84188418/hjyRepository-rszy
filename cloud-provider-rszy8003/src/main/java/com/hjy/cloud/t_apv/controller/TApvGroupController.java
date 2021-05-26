@@ -51,7 +51,7 @@ public class TApvGroupController {
      * @return 新增结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批分组",operType = "添加",operDesc = "新增审批分组")
-    @RequiresPermissions({"apvGroup:add"})
+    //@RequiresPermissions({"apvGroup:add"})
     @PostMapping(value = "/apv/group/add")
     public CommonResult insert(@RequestBody TApvGroup tApvGroup) throws FebsException {
         try {
@@ -70,7 +70,7 @@ public class TApvGroupController {
      * @return 删除结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批分组",operType = "删除",operDesc = "删除审批分组")
-    @RequiresPermissions({"apvGroup:del"})
+    //@RequiresPermissions({"apvGroup:del"})
     @DeleteMapping(value = "/apv/group/del")
     public CommonResult delete(@RequestBody TApvGroup tApvGroup) throws FebsException {
         try {
@@ -89,7 +89,7 @@ public class TApvGroupController {
      * @return 所有数据
      */
     @OperLog(operModul = "审批管理-审批设置-审批分组",operType = "查看",operDesc = "查看审批分组列表")
-    @RequiresPermissions({"apvGroup:view"})
+    //@RequiresPermissions({"apvGroup:view"})
     @PostMapping(value = "/apv/group/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -107,7 +107,7 @@ public class TApvGroupController {
      * @param tApvGroup 实体对象
      */
     @OperLog(operModul = "审批管理-审批设置-审批分组",operType = "查看",operDesc = "查看单个审批分组详情")
-    @RequiresPermissions({"apvGroup:get"})
+    //@RequiresPermissions({"apvGroup:get"})
     @PostMapping(value = "/apv/group/get")
     public CommonResult selectOne(@RequestBody TApvGroup tApvGroup) throws FebsException {
         try {
@@ -126,7 +126,7 @@ public class TApvGroupController {
      * @return 修改结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批分组",operType = "修改",operDesc = "修改审批分组信息")
-    @RequiresPermissions({"apvGroup:update"})
+    //@RequiresPermissions({"apvGroup:update"})
     @PutMapping(value = "/apv/group/update")
     public CommonResult update(@RequestBody TApvGroup tApvGroup) throws FebsException {
         try {

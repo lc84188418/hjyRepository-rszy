@@ -1,24 +1,25 @@
 package com.hjy.cloud.t_system.controller;
 
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.exception.FebsException;
-import com.hjy.cloud.utils.*;
+import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.ShiroService;
+import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.IPUtil;
+import com.hjy.cloud.utils.PasswordEncryptUtils;
+import com.hjy.cloud.utils.TokenUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.net.SocketException;
@@ -46,9 +47,9 @@ public class LoginController {
         if (user == null) {
             return new CommonResult(444,"error","账号不存在");
         } else if(!user.getPassword().equals(password)) {
-            return new CommonResult(445,"error","密码错误");
+            return new CommonResult(444,"error","密码错误");
         }else if(user.getEnableStatus().equals("0")){
-            return new CommonResult(446,"error","该账户已被管理员禁用，请联系管理员");
+            return new CommonResult(444,"error","该账户已被管理员禁用，请联系管理员");
         }else {
             //获取ip
             String ip= IPUtil.getIpAddress(request);
@@ -87,13 +88,13 @@ public class LoginController {
     @PostMapping("/logout")
     public CommonResult logout(HttpSession session, HttpServletRequest request) throws FebsException {
         ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
-        //清空缓存
-        //取出当前验证主体
-        Subject subject = SecurityUtils.getSubject();
-        //不为空，执行一次logout的操作，将session全部清空
-        if (subject != null) {
-            subject.logout();
-        }
+//        //清空缓存
+//        //取出当前验证主体
+//        Subject subject = SecurityUtils.getSubject();
+//        //不为空，执行一次logout的操作，将session全部清空
+//        if (subject != null) {
+//            subject.logout();
+//        }
         try{
             //删除token
             String tokenId = TokenUtil.getRequestToken(request);

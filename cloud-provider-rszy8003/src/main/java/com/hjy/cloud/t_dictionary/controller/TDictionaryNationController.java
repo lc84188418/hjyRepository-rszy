@@ -50,7 +50,7 @@ public class TDictionaryNationController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-民族管理",operType = "添加",operDesc = "新增名族基本信息")
-    @RequiresPermissions({"nation:add"})
+    //@RequiresPermissions({"nation:add"})
     @PostMapping(value = "/dictionary/nation/add")
     public CommonResult insert(@RequestBody TDictionaryNation tDictionaryNation) throws FebsException {
         try {
@@ -85,7 +85,7 @@ public class TDictionaryNationController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-民族管理",operType = "删除",operDesc = "删除名族基本信息")
-    @RequiresPermissions({"nation:del"})
+    //@RequiresPermissions({"nation:del"})
     @DeleteMapping(value = "/dictionary/nation/del")
     public CommonResult delete(@RequestBody TDictionaryNation tDictionaryNation) throws FebsException {
         try {
@@ -104,7 +104,7 @@ public class TDictionaryNationController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-民族管理",operType = "查看",operDesc = "查看名族信息列表")
-    @RequiresPermissions({"nation:view"})
+    //@RequiresPermissions({"nation:view"})
     @PostMapping(value = "/dictionary/nation/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -122,7 +122,7 @@ public class TDictionaryNationController {
      * @param tDictionaryNation 实体对象
      */
     @OperLog(operModul = "字典管理-民族管理",operType = "查看",operDesc = "查看单个名族信息")
-    @RequiresPermissions({"nation:get"})
+    //@RequiresPermissions({"nation:get"})
     @PostMapping(value = "/dictionary/nation/get")
     public CommonResult selectOne(@RequestBody TDictionaryNation tDictionaryNation) throws FebsException {
         try {
@@ -141,7 +141,7 @@ public class TDictionaryNationController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-民族管理",operType = "修改",operDesc = "修改名族基本信息")
-    @RequiresPermissions({"nation:update"})
+    //@RequiresPermissions({"nation:update"})
     @PutMapping(value = "/dictionary/nation/update")
     public CommonResult update(@RequestBody TDictionaryNation tDictionaryNation) throws FebsException {
         try {

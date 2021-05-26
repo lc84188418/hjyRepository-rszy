@@ -8,11 +8,14 @@ import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * (TStaffReassign)表控制层
@@ -50,6 +53,7 @@ public class TStaffReassignController {
      * @param tStaffReassign 实体对象
      * @return 新增结果
      */
+    //@RequiresPermissions({"reassign:add"})
     @PostMapping(value = "/staff/reassign/add")
     public CommonResult insert(@RequestBody TStaffReassign tStaffReassign) throws FebsException {
         try {
@@ -84,6 +88,7 @@ public class TStaffReassignController {
      * @param param json参数
      * @return 所有数据
      */
+    //@RequiresPermissions({"reassign:view"})
     @PostMapping(value = "/staff/reassign/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -117,6 +122,7 @@ public class TStaffReassignController {
      * @param tStaffReassign 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"reassign:update"})
     @PutMapping(value = "/staff/reassign/update")
     public CommonResult update(@RequestBody TStaffReassign tStaffReassign) throws FebsException {
         try {
@@ -149,6 +155,7 @@ public class TStaffReassignController {
      * @return 修改结果
      */
     @OperLog(operModul = "人员管理-人员变动",operType = "发起调动",operDesc = "发起调动申请")
+    //@RequiresPermissions({"reassign:initiateApv"})
     @PostMapping(value = "/staff/reassign/initiateApv")
     public CommonResult initiateApv(HttpServletRequest request,@RequestBody String param) throws FebsException {
         try {

@@ -54,7 +54,7 @@ public class TStaffZzController {
      * @return 所有数据
      */
     @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看员工转正信息列表")
-    @RequiresPermissions({"Zz:adminView"})
+    //@RequiresPermissions({"Zz:adminView"})
     @PostMapping(value = "/staff/Zz/adminList")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {

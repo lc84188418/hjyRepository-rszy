@@ -50,6 +50,8 @@ public interface TSysPermsMapper {
      */
     List<TSysPerms> selectAll();
     List<TSysPerms> selectAllIdAndName();
+    //获取所有权限码
+    List<String> selectAllPermsCode();
      /**
      * 通过实体作为筛选条件查询
      *
@@ -61,4 +63,9 @@ public interface TSysPermsMapper {
     List<String> selectDistributeByrole_id(@Param("fk_role_id") String fk_role_id);
 
     List<TSysPerms> selectAllPage(TSysPerms tSysPerms);
+
+    //获取所有一级菜单
+    List<TSysPerms> selectAllFirstLevel();
+    //通过pid查询所有菜单
+    List<TSysPerms> selectByPId(@Param("pkPermsId")String pkPermsId);
 }

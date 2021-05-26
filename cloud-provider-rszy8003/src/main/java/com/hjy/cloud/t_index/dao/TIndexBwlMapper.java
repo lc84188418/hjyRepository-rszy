@@ -48,10 +48,9 @@ public interface TIndexBwlMapper {
     /**
      * 通过主键删除数据
      *
-     * @param tIndexBwl 实例对象
      * @return 影响行数
      */
-    int deleteById(TIndexBwl tIndexBwl);
+    int deleteById(String pkBwlId);
     /**
      * 查询还有效的备忘录
      *

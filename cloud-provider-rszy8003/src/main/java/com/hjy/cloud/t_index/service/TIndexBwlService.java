@@ -1,8 +1,11 @@
 package com.hjy.cloud.t_index.service;
 
-import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_index.entity.TIndexBwl;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -25,7 +28,7 @@ public interface TIndexBwlService {
      * @param tIndexBwl
      * @return
      */
-    CommonResult insert(HttpSession session, TIndexBwl tIndexBwl);
+    CommonResult insert(HttpSession session,HttpServletRequest request, TIndexBwl tIndexBwl);
 
     /**
      * 修改数据
@@ -38,25 +41,22 @@ public interface TIndexBwlService {
     /**
      * 删除数据
      *
-     * @param tIndexBwl
      * @return
      */
-    CommonResult delete(TIndexBwl tIndexBwl);
+    CommonResult delete(String param);
 
     /**
      * 查询所有数据
      *
-     * @param param
      * @return
      */
-    CommonResult selectAll(String param);
-    CommonResult selectAll(HttpSession session,String param);
+    CommonResult<PageResult<TIndexBwl>> selectAll(PageRequest<TIndexBwl> pageRequest);
+    CommonResult<PageResult<TIndexBwl>> selectAll(HttpSession session, HttpServletRequest request,PageRequest<TIndexBwl> pageRequest);
 
     /**
      * 获取单个数据
      *
-     * @param tIndexBwl 实体对象
      * @return
      */
-    CommonResult selectById(TIndexBwl tIndexBwl);
+    CommonResult<TIndexBwl> selectById(String pkBwlId);
 }

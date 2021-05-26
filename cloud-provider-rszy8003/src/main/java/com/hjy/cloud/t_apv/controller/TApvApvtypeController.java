@@ -51,7 +51,7 @@ public class TApvApvtypeController {
      * @return 新增结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "添加",operDesc = "添加审批类型")
-    @RequiresPermissions({"apvType:add"})
+    //@RequiresPermissions({"apvType:add"})
     @PostMapping(value = "/apv/apvType/add")
     public CommonResult insert(@RequestBody TApvApvtype tApvApvtype) throws FebsException {
         try {
@@ -70,7 +70,7 @@ public class TApvApvtypeController {
      * @return 删除结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "删除",operDesc = "删除审批类型")
-    @RequiresPermissions({"apvType:del"})
+    //@RequiresPermissions({"apvType:del"})
     @DeleteMapping(value = "/apv/apvType/del")
     public CommonResult delete(@RequestBody TApvApvtype tApvApvtype) throws FebsException {
         try {
@@ -89,7 +89,7 @@ public class TApvApvtypeController {
      * @return 所有数据
      */
     @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "查看",operDesc = "查看审批类型列表")
-    @RequiresPermissions({"apvType:view"})
+    //@RequiresPermissions({"apvType:view"})
     @PostMapping(value = "/apv/apvType/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -107,7 +107,7 @@ public class TApvApvtypeController {
      * @param tApvApvtype 实体对象
      */
     @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "查看",operDesc = "查看审批类型详情")
-    @RequiresPermissions({"apvType:get"})
+    //@RequiresPermissions({"apvType:get"})
     @PostMapping(value = "/apv/apvType/get")
     public CommonResult selectOne(@RequestBody TApvApvtype tApvApvtype) throws FebsException {
         try {
@@ -126,7 +126,7 @@ public class TApvApvtypeController {
      * @return 修改结果
      */
     @OperLog(operModul = "审批管理-审批设置-审批类型",operType = "修改",operDesc = "修改审批类型")
-    @RequiresPermissions({"apvType:update"})
+    //@RequiresPermissions({"apvType:update"})
     @PutMapping(value = "/apv/apvType/update")
     public CommonResult update(@RequestBody TApvApvtype tApvApvtype) throws FebsException {
         try {

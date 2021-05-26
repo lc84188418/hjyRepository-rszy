@@ -5,17 +5,16 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
-import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
-import com.hjy.cloud.t_system.entity.TSysUser;
-import com.hjy.cloud.t_system.service.TSysUserService;
-import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_system.dao.TSysRoleMapper;
 import com.hjy.cloud.t_system.entity.ReRolePerms;
 import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.entity.TSysRole;
-import com.hjy.cloud.t_system.dao.TSysRoleMapper;
+import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysRoleService;
+import com.hjy.cloud.t_system.service.TSysUserService;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
@@ -304,8 +303,8 @@ public class TSysRoleServiceImpl implements TSysRoleService {
     public CommonResult roleDel(String param) {
         JSONObject jsonObject = JSON.parseObject(param);
         String idStr=String.valueOf(jsonObject.get("pkRoleId"));
-        if(idStr.equals("1595564064909") || idStr.equals("1598010216782")){
-            return new CommonResult(445,"error","超级管理员和普通用户不可删除!",null);
+        if(idStr.equals("1") || idStr.equals("2")){
+            return new CommonResult(445,"error","超级管理员和普通角色不可删除!",null);
         }
         //删除角色表里的数据
         int i = tSysRoleMapper.deleteById(idStr);

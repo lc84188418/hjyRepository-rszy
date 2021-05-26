@@ -1,29 +1,27 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffQuitMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
-import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -159,7 +157,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         if (i > 0) {
             return new CommonResult(200, "success", "删除数据成功", null);
         } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
+            return new CommonResult(444, "error", "数据已被删除，无需再次请求！", null);
         }
     }
 

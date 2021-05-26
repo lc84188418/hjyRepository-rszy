@@ -31,8 +31,10 @@ public class StatisticsUser {
     private String fkPositionId;
     @ApiModelProperty("当时职位名称")
     private String positionName;
-    @ApiModelProperty("平均工时")
+    @ApiModelProperty("工时,按时")
     private double workingHours;
+    @ApiModelProperty("工时,按分")
+    private double workingMinutes;
     @ApiModelProperty("出勤天数")
     private double onDutyNum;
     @ApiModelProperty("出勤班次")

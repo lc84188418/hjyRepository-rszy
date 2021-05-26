@@ -2,7 +2,6 @@ package com.hjy.cloud.common.auth;
 
 import com.hjy.cloud.t_system.entity.*;
 import com.hjy.cloud.t_system.service.ShiroService;
-import com.hjy.cloud.t_system.service.TSysRoleService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
@@ -24,8 +23,6 @@ public class AuthRealm extends AuthorizingRealm {
 
     @Autowired
     private ShiroService shiroService;
-    @Autowired
-    private TSysRoleService tSysRoleService;
 
     /**
      * 认证 判断token的有效性
@@ -80,42 +77,49 @@ public class AuthRealm extends AuthorizingRealm {
         TSysUser user = (TSysUser) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         //从数据库获取角色信息
-        try{
-            String roleId = shiroService.selectRoleIdByUserId(user.getPkUserId());
-            TSysRole role = tSysRoleService.selectById(roleId);
-            //2.添加角色
-            simpleAuthorizationInfo.addRole(role.getRoleName());
-            //从数据库获取权限码信息
-            List<String> perms = new ArrayList<String>();
-            try {
-                perms = shiroService.selectPermsCodeByRole(role.getPkRoleId());
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-            //3.添加权限
-            List<String> percodes = perms;
-            simpleAuthorizationInfo.addStringPermissions(percodes);
-            ActiveUser activeUser = (ActiveUser) SecurityUtils.getSubject().getSession().getAttribute("activeUser");
-            activeUser.setRoleName(role.getRoleName());
-            //权限类型,1代表角色权限，0代表自由权限
-            if(role != null){
-                activeUser.setPermsType("0");
-            }
-            activeUser.setPermsType("1");
-            //从数据库获取权限信息
-            List<TSysPerms> permsList = new ArrayList<TSysPerms>();
-            try {
-                permsList = shiroService.selectPermsByRole(role.getPkRoleId());
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-            //设置菜单和权限
-            activeUser.setMenu(permsList);
-            activeUser.setPermsCode(percodes);
-            SecurityUtils.getSubject().getSession().setAttribute("activeUser",activeUser);
-        }catch (Exception e){
-
+        TSysRole role = shiroService.selectRoleByUserId(user.getPkUserId());
+        if(role == null){
+            TSysRole newRole = new TSysRole();
+            //创建一个默认角色
+            newRole.setPkRoleId("2");
+            newRole.setRoleName("普通角色");
+            newRole.setRoleDesc("系统默认角色");
+            newRole.setEnableStatus(1);
+            role = newRole;
         }
+        //2.添加角色
+        simpleAuthorizationInfo.addRole(role.getRoleName());
+        //判断部门→职位是否属于系统管理→系统管理员
+        /**
+         * 该用户是否属于超级管理员
+         */
+        //3.添加菜单
+        List<TSysPerms> permsList = new ArrayList<TSysPerms>();
+        //4.添加权限码
+        List<String> percodes = new ArrayList<>();
+        if ("1".equals(role.getPkRoleId())) {
+            //代表未超级管理员
+            //直接查询所有的
+            permsList = shiroService.selectAllperms();
+            percodes = shiroService.selectAllPermsCode();
+        } else {
+            permsList = shiroService.selectPermsByRole(role.getPkRoleId());
+            percodes = shiroService.selectPermsCodeByRole(role.getPkRoleId());
+        }
+        //所有用户都要添加index权限
+        percodes.add("index");
+        simpleAuthorizationInfo.addStringPermissions(percodes);
+        ActiveUser activeUser = (ActiveUser) SecurityUtils.getSubject().getSession().getAttribute("activeUser");
+        activeUser.setRoleName(role.getRoleName());
+        //权限类型,1代表角色权限，0代表自由权限
+        if(role != null){
+            activeUser.setPermsType("0");
+        }
+        activeUser.setPermsType("1");
+        //设置菜单和权限
+        activeUser.setMenu(permsList);
+        activeUser.setPermsCode(percodes);
+        SecurityUtils.getSubject().getSession().setAttribute("activeUser",activeUser);
         return simpleAuthorizationInfo;
     }
 }

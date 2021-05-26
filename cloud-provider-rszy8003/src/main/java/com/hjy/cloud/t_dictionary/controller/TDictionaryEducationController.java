@@ -50,7 +50,7 @@ public class TDictionaryEducationController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-学历管理",operType = "添加",operDesc = "新增学历基本信息")
-    @RequiresPermissions({"education:add"})
+    //@RequiresPermissions({"education:add"})
     @PostMapping(value = "/dictionary/education/add")
     public CommonResult insert(@RequestBody TDictionaryEducation tDictionaryEducation) throws FebsException {
         try {
@@ -69,7 +69,7 @@ public class TDictionaryEducationController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-学历管理",operType = "删除",operDesc = "删除学历基本信息")
-    @RequiresPermissions({"education:del"})
+    //@RequiresPermissions({"education:del"})
     @DeleteMapping(value = "/dictionary/education/del")
     public CommonResult delete(@RequestBody TDictionaryEducation tDictionaryEducation) throws FebsException {
         try {
@@ -88,7 +88,7 @@ public class TDictionaryEducationController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-学历管理",operType = "查看",operDesc = "查看学历信息列表")
-    @RequiresPermissions({"education:view"})
+    //@RequiresPermissions({"education:view"})
     @PostMapping(value = "/dictionary/education/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -106,7 +106,7 @@ public class TDictionaryEducationController {
      * @param tDictionaryEducation 实体对象
      */
     @OperLog(operModul = "字典管理-学历管理",operType = "查看",operDesc = "查看单个学历信息")
-    @RequiresPermissions({"education:get"})
+    //@RequiresPermissions({"education:get"})
     @PostMapping(value = "/dictionary/education/get")
     public CommonResult selectOne(@RequestBody TDictionaryEducation tDictionaryEducation) throws FebsException {
         try {
@@ -125,7 +125,7 @@ public class TDictionaryEducationController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-学历管理",operType = "修改",operDesc = "修改学历基本信息")
-    @RequiresPermissions({"education:update"})
+    //@RequiresPermissions({"education:update"})
     @PutMapping(value = "/dictionary/education/update")
     public CommonResult update(@RequestBody TDictionaryEducation tDictionaryEducation) throws FebsException {
         try {

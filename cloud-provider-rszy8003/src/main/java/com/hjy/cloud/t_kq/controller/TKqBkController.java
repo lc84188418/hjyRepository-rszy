@@ -7,10 +7,10 @@ import com.hjy.cloud.t_kq.entity.TKqBk;
 import com.hjy.cloud.t_kq.service.TKqBkService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * (TKqBk)表控制层
@@ -49,6 +49,7 @@ public class TKqBkController {
      * @param param 实体对象
      * @return 新增结果
      */
+    //@RequiresPermissions({"bk:add"})
     @PostMapping(value = "/kq/bk/add")
     public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
@@ -66,6 +67,7 @@ public class TKqBkController {
      * @param tKqBk 实体对象
      * @return 删除结果
      */
+    //@RequiresPermissions({"bk:del"})
     @DeleteMapping(value = "/kq/bk/del")
     public CommonResult delete(@RequestBody TKqBk tKqBk) throws FebsException {
         try {
@@ -83,6 +85,7 @@ public class TKqBkController {
      * @param param json参数
      * @return 所有数据
      */
+    //@RequiresPermissions({"bk:view"})
     @PostMapping(value = "/kq/bk/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -99,6 +102,7 @@ public class TKqBkController {
      *
      * @param tKqBk 实体对象
      */
+    //@RequiresPermissions({"bk:get"})
     @PostMapping(value = "/kq/bk/get")
     public CommonResult selectOne(@RequestBody TKqBk tKqBk) throws FebsException {
         try {
@@ -116,6 +120,7 @@ public class TKqBkController {
      * @param param 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"bk:update"})
     @PutMapping(value = "/kq/bk/update")
     public CommonResult update(@RequestBody String param) throws FebsException {
         try {

@@ -2,24 +2,18 @@ package com.hjy.cloud.t_system.service.impl;
 
 
 import com.hjy.cloud.common.auth.TokenGenerator;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.DateUtil;
+import com.hjy.cloud.t_system.dao.TSysPermsMapper;
 import com.hjy.cloud.t_system.dao.TSysRoleMapper;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.*;
 import com.hjy.cloud.t_system.service.ShiroService;
-import com.hjy.cloud.utils.file.FileUtil;
+import com.hjy.cloud.utils.DateUtil;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @Author liuchun
@@ -36,28 +30,32 @@ public class ShiroServiceImpl implements ShiroService {
     @Resource
     private TSysRoleMapper tSysRoleMapper;
     @Resource
+    private TSysPermsMapper tSysPermsMapper;
+    @Resource
     private TSysTokenMapper tSysTokenMapper;
+
     /**
-     * 根据userid查找角色
-     *
-     * @return User
+     * 通过用户id库获取角色信息
+     * @param pkUserId
+     * @return
      */
     @Override
     public TSysRole selectRoleByUserId(String pkUserId) {
         return tSysRoleMapper.selectRoleByUserId(pkUserId);
     }
 
-    @Override
-    public String selectRoleIdByUserId(String fkUserId) {
-        return tSysRoleMapper.selectRoleIdByUserId(fkUserId);
-    }
-
+    /**
+     * 删除token
+     * @param tokenId
+     */
     @Override
     public void deleteToken(String tokenId) {
         tSysTokenMapper.deleteToken(tokenId);
     }
+
     /**
      * 更新最后一次登录时间
+     * @param userId
      */
     @Override
     public void updateLoginTime(String userId) {
@@ -68,37 +66,67 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     @Override
-    public Map<String, Object> selectIndexData(HttpServletResponse resp) {
-        return null;
-    }
-
-    @Override
     public String selectIpByUsername(String username) {
         return tSysTokenMapper.selectIpByUsername(username);
     }
 
+    /**
+     * 获取所有菜单
+     * @return
+     */
     @Override
-    public CommonResult insertFile(String username, MultipartFile[] files) {
-        if(files != null){
-            String [] strings = FileUtil.FileUtil(username,files);
+    public List<TSysPerms> selectAllperms() {
+        List<TSysPerms> firstLevelList = tSysPermsMapper.selectAllFirstLevel();
+        //二级菜单
+        Iterator<TSysPerms> firstIterator = firstLevelList.iterator();
+        while (firstIterator.hasNext()){
+            TSysPerms first = firstIterator.next();
+            List<TSysPerms> secondLevelList = tSysPermsMapper.selectByPId(first.getPkPermsId());
+            //三级菜单
+            Iterator<TSysPerms> secondIterator = secondLevelList.iterator();
+            while (secondIterator.hasNext()) {
+                TSysPerms second = secondIterator.next();
+                List<TSysPerms> thirdLevelList = tSysPermsMapper.selectByPId(second.getPkPermsId());
+                second.setChild(thirdLevelList);
+            }
+            first.setChild(secondLevelList);
         }
-        return null;
+        return firstLevelList;
     }
 
     /**
-     * 通过roleid查找权限码
+     * 通过角色id从数据库获取权限码
+     * @param fkRoleId
+     * @return
      */
     @Override
     public List<String> selectPermsCodeByRole(String fkRoleId){
         return tSysRoleMapper.selectPermsCodeByRole(fkRoleId);
     }
+
+    /**
+     * 获取所有权限码
+     * @return
+     */
+    @Override
+    public List<String> selectAllPermsCode() {
+        return tSysPermsMapper.selectAllPermsCode();
+    }
+
+    /**
+     * 通过角色id查询菜单
+     * @param fkRoleId
+     * @return
+     */
     @Override
     public List<TSysPerms> selectPermsByRole(String fkRoleId) {
         return tSysRoleMapper.selectPermsByRole(fkRoleId);
     }
+
     /**
-     * 根据username查找用户
-     * @return User
+     * find user by username
+     * @param username
+     * @return
      */
     @Override
     public TSysUser selectUserByUsername(String username) {
@@ -106,8 +134,10 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     /**
-     * 生成一个token
-     *@return Result
+     * 登录时创建一个token，并保持数据库
+     * @param tSysUser
+     * @param session
+     * @return
      */
     @Override
     public Map<String, Object> createToken(TSysUser tSysUser, HttpSession session) {
@@ -116,7 +146,6 @@ public class ShiroServiceImpl implements ShiroService {
         String token = TokenGenerator.generateValue();
         //当前时间
         Date now = new Date();
-        //过期时间
         //过期时间
         Date expireTime = DateUtil.addTime(now,1);
         //先删除
@@ -152,6 +181,11 @@ public class ShiroServiceImpl implements ShiroService {
         return result;
     }
 
+    /**
+     * find token by tokenid
+     * @param accessToken
+     * @return
+     */
     @Override
     public SysToken findByToken(String accessToken) {
         return tSysTokenMapper.findByToken(accessToken);

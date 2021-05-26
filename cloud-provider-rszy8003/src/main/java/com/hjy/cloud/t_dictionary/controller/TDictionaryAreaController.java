@@ -50,7 +50,7 @@ public class TDictionaryAreaController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-区域管理",operType = "添加",operDesc = "新增地级区域信息")
-    @RequiresPermissions({"area:add"})
+    //@RequiresPermissions({"area:add"})
     @PostMapping(value = "/dictionary/area/add")
     public CommonResult insert(@RequestBody TDictionaryArea tDictionaryArea) throws FebsException {
         try {
@@ -69,7 +69,7 @@ public class TDictionaryAreaController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-区域管理",operType = "删除",operDesc = "删除地级区域信息")
-    @RequiresPermissions({"area:del"})
+    //@RequiresPermissions({"area:del"})
     @DeleteMapping(value = "/dictionary/area/del")
     public CommonResult delete(@RequestBody TDictionaryArea tDictionaryArea) throws FebsException {
         try {
@@ -88,7 +88,7 @@ public class TDictionaryAreaController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-区域管理",operType = "查看",operDesc = "查看地级区域信息列表")
-    @RequiresPermissions({"area:view"})
+    //@RequiresPermissions({"area:view"})
     @PostMapping(value = "/dictionary/area/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -106,7 +106,7 @@ public class TDictionaryAreaController {
      * @param tDictionaryArea 实体对象
      */
     @OperLog(operModul = "字典管理-区域管理",operType = "查看",operDesc = "查看单个地级区域信息")
-    @RequiresPermissions({"area:get"})
+    //@RequiresPermissions({"area:get"})
     @PostMapping(value = "/dictionary/area/get")
     public CommonResult selectOne(@RequestBody TDictionaryArea tDictionaryArea) throws FebsException {
         try {
@@ -125,7 +125,7 @@ public class TDictionaryAreaController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-区域管理",operType = "修改",operDesc = "修改地级区域基本信息")
-    @RequiresPermissions({"area:update"})
+    //@RequiresPermissions({"area:update"})
     @PutMapping(value = "/dictionary/area/update")
     public CommonResult update(@RequestBody TDictionaryArea tDictionaryArea) throws FebsException {
         try {

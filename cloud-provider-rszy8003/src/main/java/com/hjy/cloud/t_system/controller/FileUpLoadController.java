@@ -29,7 +29,7 @@ public class FileUpLoadController {
     /**
      * 单个上传视频
      */
-    @RequiresPermissions({"upload:video"})
+    //@RequiresPermissions({"upload:video"})
     @PostMapping("/file/upload/video")
     public CommonResult singleVideoUpLoad(MultipartFile file, HttpServletRequest httpRequest) throws FebsException {
         try {
@@ -45,7 +45,7 @@ public class FileUpLoadController {
     /**
      * 单个上传图片
      */
-    @RequiresPermissions({"upload:pic"})
+    //@RequiresPermissions({"upload:pic"})
     @PostMapping("/file/upload/pic")
     public CommonResult singlePicUpLoad(MultipartFile file, HttpServletRequest httpRequest) throws FebsException {
         try {
@@ -61,7 +61,7 @@ public class FileUpLoadController {
     /**
      * 单个上传文档
      */
-    @RequiresPermissions({"upload:doc"})
+    //@RequiresPermissions({"upload:doc"})
     @PostMapping("/file/upload/doc")
     public CommonResult singleDocUpLoad(MultipartFile file, HttpServletRequest httpRequest) throws FebsException {
         try {
@@ -76,7 +76,7 @@ public class FileUpLoadController {
     /**
      * 批量上传视频
      */
-    @RequiresPermissions({"upload:video"})
+    //@RequiresPermissions({"upload:video"})
     @PostMapping("/file/upload/batch/video")
     public CommonResult batchVideoUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) throws FebsException {
         try {
@@ -91,7 +91,7 @@ public class FileUpLoadController {
     /**
      * 批量上传图片
      */
-    @RequiresPermissions({"upload:pic"})
+    //@RequiresPermissions({"upload:pic"})
     @PostMapping("/file/upload/batch/pic")
     public CommonResult batchPicUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) throws FebsException {
         try {
@@ -106,7 +106,7 @@ public class FileUpLoadController {
     /**
      * 批量上传文档
      */
-    @RequiresPermissions({"upload:doc"})
+    //@RequiresPermissions({"upload:doc"})
     @PostMapping("/file/upload/batch/doc")
     public CommonResult batchDocUpLoad(MultipartFile[] file, HttpServletRequest httpRequest) throws FebsException {
         try {

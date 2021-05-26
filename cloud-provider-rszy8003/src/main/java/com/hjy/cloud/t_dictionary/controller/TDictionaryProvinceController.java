@@ -51,7 +51,7 @@ public class TDictionaryProvinceController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "添加",operDesc = "新增省份基本信息")
-    @RequiresPermissions({"province:add"})
+    //@RequiresPermissions({"province:add"})
     @PostMapping(value = "/dictionary/province/add")
     public CommonResult insert(@RequestBody TDictionaryProvince tDictionaryProvince) throws FebsException {
         try {
@@ -70,7 +70,7 @@ public class TDictionaryProvinceController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "删除",operDesc = "删除省份信息")
-    @RequiresPermissions({"province:del"})
+    //@RequiresPermissions({"province:del"})
     @DeleteMapping(value = "/dictionary/province/del")
     public CommonResult delete(@RequestBody TDictionaryProvince tDictionaryProvince) throws FebsException {
         try {
@@ -89,7 +89,7 @@ public class TDictionaryProvinceController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "查看",operDesc = "查看省份信息列表")
-    @RequiresPermissions({"province:view"})
+    //@RequiresPermissions({"province:view"})
     @PostMapping(value = "/dictionary/province/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -107,7 +107,7 @@ public class TDictionaryProvinceController {
      * @param tDictionaryProvince 实体对象
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "查看",operDesc = "查看单个省份基本信息")
-    @RequiresPermissions({"province:get"})
+    //@RequiresPermissions({"province:get"})
     @PostMapping(value = "/dictionary/province/get")
     public CommonResult selectOne(@RequestBody TDictionaryProvince tDictionaryProvince) throws FebsException {
         try {
@@ -126,7 +126,7 @@ public class TDictionaryProvinceController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "修改",operDesc = "修改省份基本信息")
-    @RequiresPermissions({"province:update"})
+    //@RequiresPermissions({"province:update"})
     @PutMapping(value = "/dictionary/province/update")
     public CommonResult update(@RequestBody TDictionaryProvince tDictionaryProvince) throws FebsException {
         try {
@@ -145,7 +145,7 @@ public class TDictionaryProvinceController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-省份管理",operType = "添加",operDesc = "给该省份添加城市信息")
-    @RequiresPermissions({"province:addCity"})
+    //@RequiresPermissions({"province:addCity"})
     @PostMapping(value = "/dictionary/province/addCity")
     public CommonResult addCity(@RequestBody TDictionaryCity city) throws FebsException {
         try {

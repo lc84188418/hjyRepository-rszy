@@ -50,7 +50,7 @@ public class TDictionarySurveyController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-概括管理",operType = "添加",operDesc = "新增员工基本信息")
-    @RequiresPermissions({"survey:add"})
+    //@RequiresPermissions({"survey:add"})
     @PostMapping(value = "/dictionary/survey/add")
     public CommonResult insert(@RequestBody TDictionarySurvey tDictionarySurvey) throws FebsException {
         try {
@@ -69,7 +69,7 @@ public class TDictionarySurveyController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-概括管理",operType = "删除",operDesc = "删除员工基本信息")
-    @RequiresPermissions({"survey:del"})
+    //@RequiresPermissions({"survey:del"})
     @DeleteMapping(value = "/dictionary/survey/del")
     public CommonResult delete(@RequestBody TDictionarySurvey tDictionarySurvey) throws FebsException {
         try {
@@ -88,7 +88,7 @@ public class TDictionarySurveyController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-概括管理",operType = "查看",operDesc = "查看员工信息列表")
-    @RequiresPermissions({"survey:view"})
+    //@RequiresPermissions({"survey:view"})
     @PostMapping(value = "/dictionary/survey/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -106,7 +106,7 @@ public class TDictionarySurveyController {
      * @param tDictionarySurvey 实体对象
      */
     @OperLog(operModul = "字典管理-概括管理",operType = "查看",operDesc = "查看单个员工信息")
-    @RequiresPermissions({"survey:get"})
+    //@RequiresPermissions({"survey:get"})
     @PostMapping(value = "/dictionary/survey/get")
     public CommonResult selectOne(@RequestBody TDictionarySurvey tDictionarySurvey) throws FebsException {
         try {
@@ -125,7 +125,7 @@ public class TDictionarySurveyController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-概括管理",operType = "修改",operDesc = "修改员工基本信息")
-    @RequiresPermissions({"survey:update"})
+    //@RequiresPermissions({"survey:update"})
     @PutMapping(value = "/dictionary/survey/update")
     public CommonResult update(@RequestBody TDictionarySurvey tDictionarySurvey) throws FebsException {
         try {

@@ -7,11 +7,11 @@ import com.hjy.cloud.t_kq.entity.TKqGroup;
 import com.hjy.cloud.t_kq.service.TKqGroupService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * (TKqGroup)表控制层
@@ -60,6 +60,7 @@ public class TKqGroupController {
      * 已上传
      * @return 新增结果
      */
+    //@RequiresPermissions({"group:add"})
     @PostMapping(value = "/kq/group/add")
     public CommonResult insert(@RequestBody String param) throws FebsException {
         try {
@@ -77,6 +78,7 @@ public class TKqGroupController {
      * @param tKqGroup 实体对象
      * @return 删除结果
      */
+    //@RequiresPermissions({"group:del"})
     @DeleteMapping(value = "/kq/group/del")
     public CommonResult delete(@RequestBody TKqGroup tKqGroup) throws FebsException {
         try {
@@ -94,6 +96,7 @@ public class TKqGroupController {
      * @param param json参数
      * @return 所有数据
      */
+    //@RequiresPermissions({"group:view"})
     @PostMapping(value = "/kq/group/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -110,6 +113,7 @@ public class TKqGroupController {
      * 已上传
      * @param tKqGroup 实体对象
      */
+    //@RequiresPermissions({"group:get"})
     @PostMapping(value = "/kq/group/get")
     public CommonResult selectOne(@RequestBody TKqGroup tKqGroup) throws FebsException {
         try {
@@ -127,6 +131,7 @@ public class TKqGroupController {
      * @param param 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"group:update"})
     @PutMapping(value = "/kq/group/update")
     public CommonResult update(@RequestBody String param) throws FebsException {
         try {

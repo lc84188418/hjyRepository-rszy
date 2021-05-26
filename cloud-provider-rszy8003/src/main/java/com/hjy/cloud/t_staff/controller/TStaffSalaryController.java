@@ -8,11 +8,11 @@ import com.hjy.cloud.t_staff.entity.TStaffSalary;
 import com.hjy.cloud.t_staff.service.TStaffSalaryService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * (TStaffSalary)表控制层
@@ -50,6 +50,7 @@ public class TStaffSalaryController {
      * @param tStaffSalary 实体对象
      * @return 新增结果
      */
+    //@RequiresPermissions({"salary:add"})
     @PostMapping(value = "/staff/salary/add")
     public CommonResult insert(@RequestBody TStaffSalary tStaffSalary) throws FebsException {
         try {
@@ -67,6 +68,7 @@ public class TStaffSalaryController {
      * @param tStaffSalary 实体对象
      * @return 删除结果
      */
+    //@RequiresPermissions({"salary:del"})
     @DeleteMapping(value = "/staff/salary/del")
     public CommonResult delete(@RequestBody TStaffSalary tStaffSalary) throws FebsException {
         try {
@@ -84,6 +86,7 @@ public class TStaffSalaryController {
      * @param param json参数
      * @return 所有数据
      */
+    //@RequiresPermissions({"salary:view"})
     @PostMapping(value = "/staff/salary/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -100,6 +103,7 @@ public class TStaffSalaryController {
      *
      * @param tStaffSalary 实体对象
      */
+    //@RequiresPermissions({"salary:get"})
     @PostMapping(value = "/staff/salary/get")
     public CommonResult selectOne(@RequestBody TStaffSalary tStaffSalary) throws FebsException {
         try {
@@ -117,6 +121,7 @@ public class TStaffSalaryController {
      * @param tStaffSalary 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"salary:update"})
     @PutMapping(value = "/staff/salary/update")
     public CommonResult update(@RequestBody TStaffSalary tStaffSalary) throws FebsException {
         try {
@@ -147,6 +152,7 @@ public class TStaffSalaryController {
      * 发送工资明细
      * @param tStaffSalary 实体对象
      */
+    //@RequiresPermissions({"salary:send"})
     @PostMapping(value = "/staff/salary/send")
     public CommonResult send(@RequestBody DSalaryRecord tStaffSalary, HttpServletRequest request) throws FebsException {
         try {
@@ -161,6 +167,7 @@ public class TStaffSalaryController {
      * 工资明细发送记录
      * 管理员
      */
+    //@RequiresPermissions({"admin:sendRecord"})
     @PostMapping(value = "/staff/salary/admin/sendRecord")
     public CommonResult adminSendRecord(@RequestBody String param) throws FebsException {
         try {

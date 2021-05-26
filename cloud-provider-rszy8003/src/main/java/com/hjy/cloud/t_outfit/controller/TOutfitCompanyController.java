@@ -51,7 +51,7 @@ public class TOutfitCompanyController {
      * @return 新增结果
      */
     @OperLog(operModul = "机构管理-公司管理",operType = "添加",operDesc = "添加公司基本信息")
-    @RequiresPermissions({"company:add"})
+    //@RequiresPermissions({"company:add"})
     @PostMapping(value = "/outfit/company/add")
     public CommonResult insert(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -70,7 +70,7 @@ public class TOutfitCompanyController {
      * @return 删除结果
      */
     @OperLog(operModul = "机构管理-公司管理",operType = "删除",operDesc = "删除公司基本信息")
-    @RequiresPermissions({"company:del"})
+    //@RequiresPermissions({"company:del"})
     @DeleteMapping(value = "/outfit/company/del")
     public CommonResult delete(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -89,7 +89,7 @@ public class TOutfitCompanyController {
      * @return 所有数据
      */
     @OperLog(operModul = "机构管理-公司管理",operType = "查看",operDesc = "查看公司信息列表")
-    @RequiresPermissions({"company:view"})
+    //@RequiresPermissions({"company:view"})
     @PostMapping(value = "/outfit/company/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -107,7 +107,7 @@ public class TOutfitCompanyController {
      * @param tOutfitCompany
      */
     @OperLog(operModul = "机构管理-公司管理",operType = "查看",operDesc = "查看单个公司信息")
-    @RequiresPermissions({"company:get"})
+    //@RequiresPermissions({"company:get"})
     @PostMapping(value = "/outfit/company/get")
     public CommonResult selectOne(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -126,7 +126,7 @@ public class TOutfitCompanyController {
      * @return 修改结果
      */
     @OperLog(operModul = "机构管理-公司管理",operType = "修改",operDesc = "修改公司基本信息")
-    @RequiresPermissions({"company:update"})
+    //@RequiresPermissions({"company:update"})
     @PutMapping(value = "/outfit/company/update")
     public CommonResult update(@RequestBody TOutfitCompany tOutfitCompany) throws FebsException {
         try {
@@ -159,7 +159,7 @@ public class TOutfitCompanyController {
 //     * @return 修改结果
 //     */
 //    @OperLog(operModul = "机构管理-公司管理",operType = "添加部门",operDesc = "为该公司新分配部门")
-//    @RequiresPermissions({"company:distributeDept"})
+//    //@RequiresPermissions({"company:distributeDept"})
 //    @PostMapping("/outfit/company/distributeDept")
 //    public CommonResult distributeDeptUI(@RequestBody String param) throws FebsException{
 //        try {

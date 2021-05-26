@@ -10,13 +10,13 @@ import com.hjy.cloud.t_kq.entity.TKqClock;
 import com.hjy.cloud.t_kq.service.TKqClockService;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.*;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * (TKqClock)表控制层
@@ -62,15 +62,13 @@ public class TKqClockController {
      * @return 新增结果
      */
     @ApiOperation(value = "上下班打卡-已完成",
-            notes = "入参:\n上班时:onClockAddress/onIsWq/isDkr/fkGroupId\n" + "下班时:offClockAddress/offIsWq\n" +
+            notes = "入参:\n上班时:onClockAddress/onIsWq/isDkr/fkGroupId\n" + "下班时:onClockAddress/onIsWq\n" +
                     "回参:\nclock:上下班打卡后的信息,无其他信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "onClockAddress",value = "上班打卡地址",required = false,dataType = "string",paramType = "body",example = "四川省成都市武侯区交子大道333号中海国际中心E座"),
             @ApiImplicitParam(name = "onIsWq",value = "上班是否外勤",required = false,dataType = "int",paramType = "body",example = "0"),
             @ApiImplicitParam(name = "isDkr",value = "今日是否为打卡日",required = false,dataType = "int",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "fkGroupId",value = "所属考勤组的id",required = false,dataType = "string",paramType = "body",example = "5517661032d94e0d9df327a08e155aa7"),
-            @ApiImplicitParam(name = "offClockAddress",value = "下班打卡地址",required = false,dataType = "string",paramType = "body",example = "四川省成都市武侯区交子大道333号中海国际中心E座"),
-            @ApiImplicitParam(name = "offIsWq",value = "下班是否外勤",required = false,dataType = "int",paramType = "body",example = "0"),
     })
     @PostMapping(value = "/kq/clock/add")
     public CommonResult<ClockAddPage> insert(@ApiParam(name = "打卡实体", required = true) @RequestBody TKqClock tKqClock,HttpServletRequest request) throws FebsException {
@@ -163,6 +161,7 @@ public class TKqClockController {
             @ApiImplicitParam(name = "pageNum",required = false,dataType = "String",paramType = "form",example = "1"),
             @ApiImplicitParam(name = "pageSize",required = false,dataType = "String",paramType = "form",example = "10")
     })
+    //@RequiresPermissions({"admin:clockView"})
     @PostMapping(value = "/kq/clock/admin/list")
     public CommonResult<PageResult<TKqClock>> adminList(@ApiParam(name = "实体参数", required = true) @RequestBody String tKqClock) throws FebsException {
         try {
@@ -209,6 +208,7 @@ public class TKqClockController {
             @ApiImplicitParam(name = "offClockAddress",required = false,dataType = "String",paramType = "form",example = "四川省成都市武侯区交子大道333号中海国际中心E座"),
             @ApiImplicitParam(name = "offIsWq",required = false,dataType = "Integer",paramType = "form",example = "0")
     })
+    //@RequiresPermissions({"admin:updateClock"})
     @PutMapping(value = "/kq/clock/update")
     public CommonResult update(@ApiParam(name = "某些可修改项", required = true) @RequestBody TKqClock tKqClock) throws FebsException {
         try {

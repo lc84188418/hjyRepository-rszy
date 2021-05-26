@@ -1,21 +1,19 @@
 package com.hjy.cloud.t_system.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_system.entity.TSysPerms;
 import com.hjy.cloud.t_system.entity.TSysRole;
-import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysPermsService;
 import com.hjy.cloud.t_system.service.TSysRoleService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.t_system.service.TSysUserService;
 import io.swagger.annotations.Api;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -58,7 +56,7 @@ public class TSysRoleController {
      * @param tSysRole 实体对象
      * @return 新增结果
      */
-    @RequiresPermissions({"role:add"})
+    //@RequiresPermissions({"role:add"})
     @PostMapping("/outfit/role/add")
     public CommonResult tSysRoleAdd(@RequestBody TSysRole tSysRole) throws FebsException{
         try {
@@ -74,7 +72,7 @@ public class TSysRoleController {
      * 2 查询所有数据
      * @return 所有数据
      */
-    @RequiresPermissions({"role:view"})
+    //@RequiresPermissions({"role:view"})
     @PostMapping("/outfit/role/list")
     public CommonResult tSysRoleList(@RequestBody String param) throws FebsException {
         try {
@@ -91,7 +89,7 @@ public class TSysRoleController {
      * 3 删除数据
      * @return 删除结果
      */
-    @RequiresPermissions({"role:del"})
+    //@RequiresPermissions({"role:del"})
     @DeleteMapping("/outfit/role/del")
     public CommonResult tSysRoleDel(@RequestBody String param) throws FebsException{
         try {
@@ -108,6 +106,7 @@ public class TSysRoleController {
      * 4 通过主键查询单条数据
      * @return 单条数据
      */
+    //@RequiresPermissions({"role:get"})
     @PostMapping("/outfit/role/get")
     public CommonResult tSysRoleGetOne(@RequestBody TSysRole tSysRole) throws FebsException{
         try {
@@ -125,7 +124,7 @@ public class TSysRoleController {
      * @param tSysRole 实体对象
      * @return 修改结果
      */
-    @RequiresPermissions({"role:update"})
+    //@RequiresPermissions({"role:update"})
     @PutMapping("/outfit/role/update")
     public CommonResult tSysRoleUpdate(@RequestBody TSysRole tSysRole) throws FebsException{
         try {
@@ -165,12 +164,12 @@ public class TSysRoleController {
     /**
      * 5 给角色分配菜单权限
      */
-    @RequiresPermissions({"role:distributePerms"})
+    //@RequiresPermissions({"role:distributePerms"})
     @PostMapping("/outfit/role/distribute")
     public CommonResult FPRoleMenu(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
         String fk_role_id=String.valueOf(json.get("fk_role_id"));
-        if(fk_role_id.equals("1595564064909")){
+        if(fk_role_id.equals("1")){
             return new CommonResult(444,"error","超级管理员的权限不可更改!",null);
         }
         JSONArray jsonArray = json.getJSONArray("ids");
@@ -201,7 +200,7 @@ public class TSysRoleController {
     /**
      * 6 给角色下发用户
      */
-    @RequiresPermissions({"role:addUser"})
+    //@RequiresPermissions({"role:addUser"})
     @PostMapping("/outfit/role/addUser")
     public CommonResult systemRoleAddUser(@RequestBody String parm) throws FebsException{
         try {

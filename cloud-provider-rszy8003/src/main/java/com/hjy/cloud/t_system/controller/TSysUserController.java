@@ -1,31 +1,36 @@
 package com.hjy.cloud.t_system.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.common.entity.User;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
-import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.PasswordEncryptUtils;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.t_system.entity.*;
+import com.hjy.cloud.t_system.entity.ReUserRole;
+import com.hjy.cloud.t_system.entity.SysToken;
+import com.hjy.cloud.t_system.entity.TSysRole;
+import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysPermsService;
 import com.hjy.cloud.t_system.service.TSysRoleService;
 import com.hjy.cloud.t_system.service.TSysUserService;
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.PasswordEncryptUtils;
+import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import lombok.extern.slf4j.Slf4j;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -79,11 +84,10 @@ public class TSysUserController {
      * @param param
      * @return 新增结果
      */
-    @RequiresPermissions({"user:add"})
+    //@RequiresPermissions({"user:add"})
     @PostMapping("/system/user/add")
     public Map<String,Object> tSysUserAdd(@RequestBody String param) throws FebsException{
         try {
-            //
             Map<String,Object> result = tSysUserService.insertUserAndRoleAndDept(param);
             return result;
         } catch (Exception e) {
@@ -96,25 +100,24 @@ public class TSysUserController {
      * 2 查询所有数据
      * @return 所有数据
      */
-    @RequiresPermissions({"user:view"})
+    @ApiOperation(value = "用户列表-已完成", notes = "查询所有用户列表,支持条件username、enableStatus、idcard、fullName")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
+            @ApiImplicitParam(name = "param",value = "查询参数里面才是放的条件",required = false,dataType = "object",paramType = "body",example = "param:{\"username\":\"admin\"}")
+    })
+    //@RequiresPermissions({"user:view"})
     @PostMapping("/system/user/list")
-    public CommonResult tSysUserList(@RequestBody String param) throws FebsException{
+    public CommonResult<PageResult<TSysUser>> tSysUserList(PageRequest<TSysUser> pageInfo) throws FebsException{
         try {
-            //
-            PageResult pageResult= tSysUserService.selectAllPage(param);
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("PageResult",pageResult);
-            //部门
-            List<String> deptName = tOutfitDeptService.selectAllDeptName();
-            jsonObject.put("depts",deptName);
-            return new CommonResult(200,"success",serverPort+"查询数据成功!",jsonObject);
+            return tSysUserService.tSysUserList(pageInfo);
         } catch (Exception e) {
             String message = "查询数据失败";
             log.error(message, e);
             throw new FebsException(message);
         }
     }
-    @ApiOperation(value = "模糊查询所有用户-已完成", notes = "可通过实体条件进行查询，未分页")
+    @ApiOperation(value = "模糊查询所有用户-已完成", notes = "可通过姓名进行查询，未分页，仅返回姓名和id")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fullName", value = "姓名",required = false, dataType = "string", paramType = "body", example = "1"),
     })
@@ -134,39 +137,45 @@ public class TSysUserController {
      * 3 删除数据
      * @return 删除结果
      */
-    @RequiresPermissions({"user:del"})
-    @DeleteMapping("/system/user/del")
-    public CommonResult tSysUserDel(@RequestBody String param) throws FebsException{
-        try {
-            CommonResult commonResult = tSysUserService.tSysUserDel(param);
-            return commonResult;
-        } catch (Exception e) {
-            String message = "数据删除失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
+//    @ApiOperation(value = "删除-已完成", notes = "")
+//    @ApiImplicitParams({
+//            @ApiImplicitParam(name = "pkUserId", value = "用户id",required = true, dataType = "string", paramType = "path", example = "1"),
+//    })
+//    //@RequiresPermissions({"user:del"})
+//    @DeleteMapping("/system/user/del/{pkUserId}")
+//    public CommonResult tSysUserDel(@PathVariable("pkUserId")String pkUserId) throws FebsException{
+//        try {
+//            CommonResult commonResult = tSysUserService.tSysUserDel(pkUserId);
+//            return commonResult;
+//        } catch (Exception e) {
+//            String message = "数据删除失败";
+//            log.error(message, e);
+//            throw new FebsException(message);
+//        }
+//    }
 
     /**
      * 4 通过主键查询单条数据
      * @return 单条数据
      */
-    @PostMapping("/system/user/getOne")
-    public CommonResult tSysUsergetOne(@RequestBody String param) throws FebsException{
-        JSONObject jsonObject = JSON.parseObject(param);
-        String idStr=String.valueOf(jsonObject.get("pk_id"));
+    @ApiOperation(value = "获取单个用户-已完成", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkUserId", value = "用户id",required = true, dataType = "string", paramType = "path", example = "1"),
+    })
+    @GetMapping("/system/user/getOne/{pkUserId}")
+    public CommonResult tSysUsergetOne(@PathVariable("pkUserId")String pkUserId) throws FebsException{
         try {
             //
-            TSysUser tSysUser = tSysUserService.selectById(idStr);
+            TSysUser tSysUser = tSysUserService.selectById(pkUserId);
             JSONObject jsonObject2 = new JSONObject();
             jsonObject2.put("tSysUser",tSysUser);
             List<TSysRole> roles = tSysRoleService.selectAll();
             jsonObject2.put("roles",roles);
-            String role = tSysRoleService.selectRoleIdByUserId(idStr);
+            String role = tSysRoleService.selectRoleIdByUserId(pkUserId);
             jsonObject2.put("roleId",role);
 //            List<TOutfitDept> depts = tOutfitDeptService.selectAll(param);
 //            jsonObject2.put("depts",depts);
-            String deptId = tOutfitDeptService.selectDeptIdByUserId(idStr);
+            String deptId = tOutfitDeptService.selectDeptIdByUserId(pkUserId);
             jsonObject2.put("deptId",deptId);
             return new CommonResult(200,"success","数据获取成功!",jsonObject2);
         } catch (Exception e) {
@@ -181,7 +190,7 @@ public class TSysUserController {
      * @param param 实体对象
      * @return 修改结果
      */
-    @RequiresPermissions({"user:update"})
+    //@RequiresPermissions({"user:update"})
     @PutMapping("/system/user/admin/update")
     public CommonResult tSysUserAdminUpdate(@RequestBody String param) throws FebsException{
         try {
@@ -243,7 +252,7 @@ public class TSysUserController {
     /**
      * 5 分配角色
      */
-    @RequiresPermissions({"user:distributeRole"})
+    //@RequiresPermissions({"user:distributeRole"})
     @PostMapping(value = "/system/user/distributeRole")
     public CommonResult roleDistribute(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
@@ -270,7 +279,7 @@ public class TSysUserController {
      * @param parm 参数
      * @return 修改结果
      */
-    @RequiresPermissions({"user:resetPassword"})
+    //@RequiresPermissions({"user:resetPassword"})
     @PutMapping("/system/user/resetPassword")
     public CommonResult resetPassword(@RequestBody String parm) throws FebsException{
         JSONObject json = JSON.parseObject(parm);
@@ -294,12 +303,17 @@ public class TSysUserController {
      * 7 修改密码
      * @return 修改结果
      */
+    @ApiOperation(value = "修改密码-已完成", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "oldPassword", value = "旧密码",required = true, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "newPassword", value = "新密码",required = true, dataType = "string", paramType = "body", example = "1"),
+    })
     @PutMapping("/system/user/updatePassword")
-    public CommonResult updatePassword(HttpSession session,@RequestBody String parm) throws FebsException{
-        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
+    public CommonResult updatePassword(HttpServletRequest request,@ApiIgnore() @RequestBody String parm) throws FebsException{
+        SysToken token = ObjectAsyncTask.getSysToken(request);
         try {
             //
-            int i = tSysUserService.updatePassword(parm,activeUser);
+            int i = tSysUserService.updatePassword(parm,token);
             if (i==2) {
                 return new CommonResult(444,"error","旧密码错误!",null);
             }else {

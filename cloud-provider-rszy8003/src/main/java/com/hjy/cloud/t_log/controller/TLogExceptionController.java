@@ -37,7 +37,7 @@ public class TLogExceptionController {
      * @return 删除结果
      */
     @OperLog(operModul = "日志管理-异常日志",operType = "删除",operDesc = "删除异常日志")
-    @RequiresPermissions({"logException:del"})
+    //@RequiresPermissions({"logException:del"})
     @DeleteMapping(value = "/log/exception/del")
     public CommonResult delete(@RequestBody TLogException tLogException) throws FebsException {
         try {
@@ -56,7 +56,7 @@ public class TLogExceptionController {
      * @return 所有数据
      */
     @OperLog(operModul = "日志管理-异常日志",operType = "查看",operDesc = "查看异常日志")
-    @RequiresPermissions({"logException:view"})
+    //@RequiresPermissions({"logException:view"})
     @PostMapping(value = "/log/exception/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -74,7 +74,7 @@ public class TLogExceptionController {
      * @param tLogException 实体对象
      */
     @OperLog(operModul = "日志管理-异常日志",operType = "查看",operDesc = "查看单个异常日志")
-    @RequiresPermissions({"logException:get"})
+    //@RequiresPermissions({"logException:get"})
     @PostMapping(value = "/log/exception/get")
     public CommonResult selectOne(@RequestBody TLogException tLogException) throws FebsException {
         try {

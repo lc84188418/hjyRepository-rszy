@@ -1,7 +1,6 @@
 package com.hjy.cloud.t_staff.controller;
 
 
-import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffExperienceGz;
@@ -12,7 +11,6 @@ import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * (TStaffExperienceGz)表控制层
@@ -50,6 +48,7 @@ public class TStaffExperienceGzController {
      * @param tStaffExperienceGz 实体对象
      * @return 新增结果
      */
+    //@RequiresPermissions({"experienceGz:add"})
     @PostMapping(value = "/staff/experienceGz/add")
     public CommonResult insert(@RequestBody TStaffExperienceGz tStaffExperienceGz) throws FebsException {
         try {
@@ -67,6 +66,7 @@ public class TStaffExperienceGzController {
      * @param tStaffExperienceGz 实体对象
      * @return 删除结果
      */
+    //@RequiresPermissions({"experienceGz:del"})
     @DeleteMapping(value = "/staff/experienceGz/del")
     public CommonResult delete(@RequestBody TStaffExperienceGz tStaffExperienceGz) throws FebsException {
         try {
@@ -84,6 +84,7 @@ public class TStaffExperienceGzController {
      * @param param json参数
      * @return 所有数据
      */
+    //@RequiresPermissions({"experienceGz:view"})
     @PostMapping(value = "/staff/experienceGz/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -100,6 +101,7 @@ public class TStaffExperienceGzController {
      *
      * @param tStaffExperienceGz 实体对象
      */
+    //@RequiresPermissions({"experienceGz:get"})
     @PostMapping(value = "/staff/experienceGz/get")
     public CommonResult selectOne(@RequestBody TStaffExperienceGz tStaffExperienceGz) throws FebsException {
         try {
@@ -117,6 +119,7 @@ public class TStaffExperienceGzController {
      * @param tStaffExperienceGz 实体对象
      * @return 修改结果
      */
+    //@RequiresPermissions({"experienceGz:update"})
     @PutMapping(value = "/staff/experienceGz/update")
     public CommonResult update(@RequestBody TStaffExperienceGz tStaffExperienceGz) throws FebsException {
         try {

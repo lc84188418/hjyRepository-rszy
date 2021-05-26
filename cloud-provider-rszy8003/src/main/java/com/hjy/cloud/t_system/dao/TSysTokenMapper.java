@@ -14,7 +14,7 @@ public interface TSysTokenMapper {
     int updateToken(SysToken tokenEntity);
 
     void deleteAll();
-
+    //删除token
     void deleteToken(@Param("tokenId") String tokenId);
 
     String selectIpByUsername(@Param("username") String username);

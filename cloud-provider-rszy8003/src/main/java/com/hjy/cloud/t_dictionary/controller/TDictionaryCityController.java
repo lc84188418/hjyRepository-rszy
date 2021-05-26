@@ -50,7 +50,7 @@ public class TDictionaryCityController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-城市管理",operType = "添加",operDesc = "新增城市基本信息")
-    @RequiresPermissions({"city:add"})
+    //@RequiresPermissions({"city:add"})
     @PostMapping(value = "/dictionary/city/add")
     public CommonResult insert(@RequestBody TDictionaryCity tDictionaryCity) throws FebsException {
         try {
@@ -69,7 +69,7 @@ public class TDictionaryCityController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-城市管理",operType = "删除",operDesc = "删除城市基本信息")
-    @RequiresPermissions({"city:del"})
+    //@RequiresPermissions({"city:del"})
     @DeleteMapping(value = "/dictionary/city/del")
     public CommonResult delete(@RequestBody TDictionaryCity tDictionaryCity) throws FebsException {
         try {
@@ -88,7 +88,7 @@ public class TDictionaryCityController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-城市管理",operType = "查看",operDesc = "查看城市信息列表")
-    @RequiresPermissions({"city:view"})
+    //@RequiresPermissions({"city:view"})
     @PostMapping(value = "/dictionary/city/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -106,7 +106,7 @@ public class TDictionaryCityController {
      * @param tDictionaryCity 实体对象
      */
     @OperLog(operModul = "字典管理-城市管理",operType = "查看",operDesc = "查看单个城市基本信息")
-    @RequiresPermissions({"city:get"})
+    //@RequiresPermissions({"city:get"})
     @PostMapping(value = "/dictionary/city/get")
     public CommonResult selectOne(@RequestBody TDictionaryCity tDictionaryCity) throws FebsException {
         try {
@@ -125,7 +125,7 @@ public class TDictionaryCityController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-城市管理",operType = "修改",operDesc = "修改城市基本信息")
-    @RequiresPermissions({"city:update"})
+    //@RequiresPermissions({"city:update"})
     @PutMapping(value = "/dictionary/city/update")
     public CommonResult update(@RequestBody TDictionaryCity tDictionaryCity) throws FebsException {
         try {

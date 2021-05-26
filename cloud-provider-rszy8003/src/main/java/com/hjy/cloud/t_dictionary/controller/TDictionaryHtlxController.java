@@ -51,7 +51,7 @@ public class TDictionaryHtlxController {
      * @return 新增结果
      */
     @OperLog(operModul = "字典管理-合同类型",operType = "添加",operDesc = "新增合同类型基本信息")
-    @RequiresPermissions({"htlx:add"})
+    //@RequiresPermissions({"htlx:add"})
     @PostMapping(value = "/dictionary/htlx/add")
     public CommonResult insert(@RequestBody TDictionaryHtlx tDictionaryHtlx) throws FebsException {
         try {
@@ -70,7 +70,7 @@ public class TDictionaryHtlxController {
      * @return 删除结果
      */
     @OperLog(operModul = "字典管理-合同类型",operType = "删除",operDesc = "删除合同类型基本信息")
-    @RequiresPermissions({"htlx:del"})
+    //@RequiresPermissions({"htlx:del"})
     @DeleteMapping(value = "/dictionary/htlx/del")
     public CommonResult delete(@RequestBody TDictionaryHtlx tDictionaryHtlx) throws FebsException {
         try {
@@ -89,7 +89,7 @@ public class TDictionaryHtlxController {
      * @return 所有数据
      */
     @OperLog(operModul = "字典管理-合同类型",operType = "查看",operDesc = "查看合同类型列表")
-    @RequiresPermissions({"htlx:view"})
+    //@RequiresPermissions({"htlx:view"})
     @PostMapping(value = "/dictionary/htlx/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
         try {
@@ -107,7 +107,7 @@ public class TDictionaryHtlxController {
      * @param tDictionaryHtlx 实体对象
      */
     @OperLog(operModul = "字典管理-合同类型",operType = "查看",operDesc = "查看单个合同类型基本信息")
-    @RequiresPermissions({"htlx:get"})
+    //@RequiresPermissions({"htlx:get"})
     @PostMapping(value = "/dictionary/htlx/get")
     public CommonResult selectOne(@RequestBody TDictionaryHtlx tDictionaryHtlx) throws FebsException {
         try {
@@ -126,7 +126,7 @@ public class TDictionaryHtlxController {
      * @return 修改结果
      */
     @OperLog(operModul = "字典管理-合同类型",operType = "修改",operDesc = "修改合同类型基本信息")
-    @RequiresPermissions({"htlx:update"})
+    //@RequiresPermissions({"htlx:update"})
     @PutMapping(value = "/dictionary/htlx/update")
     public CommonResult update(@RequestBody TDictionaryHtlx tDictionaryHtlx) throws FebsException {
         try {

@@ -173,24 +173,7 @@
     </select>
     <!--No Problem-->
     <select id="selectRoleByUserId" resultType="com.hjy.cloud.t_system.entity.TSysRole">
-    SELECT
-	t_sys_role.PK_ROLE_ID as pkRoleId,
-	t_sys_role.ROLE_NAME as roleName,
-	t_sys_role.ROLE_DESC as roleDesc,
-	t_sys_role.CREATE_DATE as createDate,
-	t_sys_role.ENABLE_STATUS as enableStatus,
-	t_sys_role.MODIFY_TIME as modifyTime
-    FROM
-	RE_USER_ROLE
-	INNER JOIN
-	T_SYS_USER
-	ON
-		RE_USER_ROLE.FK_USER_ID = T_SYS_USER.PK_USER_ID
-	INNER JOIN
-	T_SYS_ROLE
-	ON
-		RE_USER_ROLE.FK_ROLE_ID = T_SYS_ROLE.PK_ROLE_ID
-    where PK_USER_ID = #{pkUserId,jdbcType=VARCHAR}
+SELECT * FROM T_SYS_ROLE where PK_ROLE_ID =(select FK_ROLE_ID from RE_USER_ROLE where FK_USER_ID = #{pkUserId,jdbcType=VARCHAR})
     </select>
     <!--No Problem-->
     <select id="selectPermsCodeByRole" resultType="string" parameterType="java.lang.String">
