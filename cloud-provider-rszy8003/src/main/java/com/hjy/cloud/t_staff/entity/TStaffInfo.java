@@ -1,108 +1,117 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffInfo)表实体类
  *
  * @author makejava
- * @since 2021-02-25 17:06:45
+ * @since 2021-06-03 15:42:54
  */
 @Data
+@ApiModel("员工档案")
 public class TStaffInfo {
-
+    @ApiModelProperty(value = "员工主键id", example = "", required = false)
     private String pkStaffId;
-    //姓名
+    @ApiModelProperty(value = "姓名", example = "", required = false)
     private String staffName;
-    //性别
+    @ApiModelProperty(value = "性别", example = "", required = false)
     private Integer staffSex;
-    //年龄
+    @ApiModelProperty(value = "年龄", example = "", required = false)
     private Integer staffAge;
-    //员工状态,1代表在职，0代表离职
+    @ApiModelProperty(value = "员工状态,1代表在职，0代表离职", example = "", required = false)
     private Integer staffStatus;
-    //部门
+    @ApiModelProperty(value = "部门id", example = "", required = false)
     private String fkDeptId;
+    @ApiModelProperty(value = "部门名称，只做查询展示用", example = "", hidden = true)
     private String deptName;
-    //职位
+    @ApiModelProperty(value = "职位id", example = "", required = false)
     private String fkPositionId;
+    @ApiModelProperty(value = "职位名称，只做查询展示用", example = "", hidden = true)
     private String positionName;
-    //工作地
-    private String fkAddressId;
+    @ApiModelProperty(value = "工作地id", example = "", required = false)
+    private String fkWorkaddressId;
+    @ApiModelProperty(value = "工作地名称，只做查询展示用", example = "", hidden = true)
     private String workAddressName;
-    //入职时间
+    @ApiModelProperty(value = "入职时间", example = "", required = false)
     private Date entryTime;
-    //合同类型,在字典中有
+    @ApiModelProperty(value = "合同类型id,在字典中有", example = "", required = false)
     private String fkHtlxId;
+    @ApiModelProperty(value = "合同类型名称，只做查询展示用", example = "", hidden = true)
     private String htlxName;
-    //招聘形式
+    @ApiModelProperty(value = "招聘形式", example = "", required = false)
     private String recruitWay;
-    //试用期到期日
+    @ApiModelProperty(value = "试用期到期日", example = "", required = false)
     private Date syqdqTime;
-    //证件类型
+    @ApiModelProperty(value = "证件类型", example = "", required = false)
     private String idType;
-    //证件号
+    @ApiModelProperty(value = "证件号", example = "", required = false)
     private String idCard;
-    //个人邮箱
+    @ApiModelProperty(value = "员工邮箱", example = "", required = false)
     private String staffEmail;
-    //电话
+    @ApiModelProperty(value = "员工电话", example = "", required = false)
     private String staffTel;
-    //籍贯
+    @ApiModelProperty(value = "籍贯", example = "", required = false)
     private String nativePlace;
-    //出生日期
+    @ApiModelProperty(value = "出生日期", example = "", required = false)
     private String birthday;
-    //民族，字典中有
+    @ApiModelProperty(value = "民族id，字典中有", example = "", required = false)
     private String fkNationId;
+    @ApiModelProperty(value = "民族名称，只做查询展示用", example = "", hidden = true)
     private String nationName;
-    //户口所在地
+    @ApiModelProperty(value = "户口所在地", example = "", required = false)
     private String hkszd;
-    //政治面貌
+    @ApiModelProperty(value = "政治面貌", example = "", required = false)
     private String politivalOutlook;
-    //现住地址
+    @ApiModelProperty(value = "现住地址", example = "", required = false)
     private String currentAddress;
-    //婚姻状况
+    @ApiModelProperty(value = "婚姻状况", example = "", required = false)
     private Integer isMarry;
-    //最高学历,字典中有
+    @ApiModelProperty(value = "学历id,字典中有", example = "", required = false)
     private String fkEducationId;
+    @ApiModelProperty(value = "学历名称，只做查询展示用", example = "", hidden = true)
     private String educationName;
-    //最高学历毕业院校
+    @ApiModelProperty(value = "最高学历毕业院校", example = "", required = false)
     private String zgxlbyyx;
-    //外语等级
+    @ApiModelProperty(value = "外语等级", example = "", required = false)
     private String wyDj;
-    //计算机等级
+    @ApiModelProperty(value = "计算机等级", example = "", required = false)
     private String jsjDj;
-    //所学专业
+    @ApiModelProperty(value = "所学专业", example = "", required = false)
     private String major;
-    //工资开银行
+    @ApiModelProperty(value = "工资开银行", example = "", required = false)
     private String bankName;
-    //工资卡银行账户
+    @ApiModelProperty(value = "工资卡银行账户", example = "", required = false)
     private String bankId;
-    //所属支行
+    @ApiModelProperty(value = "所属支行", example = "", required = false)
     private String branchBank;
-    //所有人
+    @ApiModelProperty(value = "所有人", example = "", required = false)
     private String syr;
-    //银行卡图片路径
+    @ApiModelProperty(value = "银行卡图片路径", example = "", required = false)
     private String picturePath;
-    //汇报类型名称1
+    @ApiModelProperty(value = "汇报类型名称1", example = "", required = false)
     private String hblxName1;
-    //汇报对象-业务,放员工ID
+    @ApiModelProperty(value = "汇报对象-业务,放员工ID", example = "", required = false)
     private String object1;
-    //汇报类型名称2
+    @ApiModelProperty(value = "汇报类型名称2", example = "", required = false)
     private String hblxName2;
-    //汇报对象-行政,放员工ID
+    @ApiModelProperty(value = "汇报对象-行政,放员工ID", example = "", required = false)
     private String object2;
-    //汇报类型名称3
+    @ApiModelProperty(value = "汇报类型名称3", example = "", required = false)
     private String hblxName3;
-    //汇报对象-人事,放员工ID
+    @ApiModelProperty(value = "汇报对象-人事,放员工ID", example = "", required = false)
     private String object3;
-    //汇报类型名称4
+    @ApiModelProperty(value = "汇报类型名称4", example = "", required = false)
     private String hblxName4;
-    //汇报对象-财务,放员工ID
+    @ApiModelProperty(value = "汇报对象-财务,放员工ID", example = "", required = false)
     private String object4;
-    //汇报类型名称5，备用的
+    @ApiModelProperty(value = "汇报类型名称5，备用的", example = "", required = false)
     private String hblxName5;
-    //汇报对象-备用,放员工ID
+    @ApiModelProperty(value = "汇报对象-备用,放员工ID", example = "", required = false)
     private String object5;
 
 }

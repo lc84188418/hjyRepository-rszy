@@ -1,10 +1,12 @@
 package com.hjy.cloud.t_apv.controller;
 
 
+import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
+import com.hjy.cloud.t_apv.result.ApprovalAddResult;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
@@ -12,7 +14,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -39,7 +40,7 @@ public class TApvApprovalController {
      * 1 跳转到新增页面
      */
     @GetMapping(value = "/apv/approval/addPage")
-    public CommonResult insertPage() throws FebsException {
+    public CommonResult<ApprovalAddResult> insertPage() throws FebsException {
         try {
             return tApvApprovalService.insertPage();
         } catch (Exception e) {
@@ -129,6 +130,22 @@ public class TApvApprovalController {
     public CommonResult approvalSet() throws FebsException {
         try {
             return tApvApprovalService.approvalSet();
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+    @ApiOperation(value = "审批已处理-已完成", notes = "管理员查询所有已处理完成的审批")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
+    })
+    //@RequiresPermissions({"admin:waitApv"})
+    @GetMapping(value = "/apv/approval/ApvComplete")
+    public CommonResult<PageResult<DApvRecord>> adminWaitApv(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) throws FebsException {
+        try {
+            return tApvApprovalService.ApvComplete(pageNum,pageSize);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);

@@ -403,6 +403,9 @@ public class TKqClockServiceImpl implements TKqClockService {
             }else {
                 tKqBc = tKqBcMapper.selectByPkId(resultGroupWorkingdays.get(0).getFkBcId());
             }
+            if(tKqBc == null){
+                tKqBc = tKqBcMapper.selectDefaultBc();
+            }
             /**
              * 开始计算是否迟到或早退
              */

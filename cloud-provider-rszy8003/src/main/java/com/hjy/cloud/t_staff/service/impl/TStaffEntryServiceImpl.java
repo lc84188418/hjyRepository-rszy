@@ -1,14 +1,15 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
-import com.hjy.cloud.t_apv.entity.DCcRecord;
+import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryNationMapper;
@@ -17,33 +18,28 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryEducation;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryNation;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
-import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
-import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
-import com.hjy.cloud.t_apv.entity.TApvApproval;
-import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.result.EntryApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.List;
 
 /**
  * (TStaffEntry)表服务实现类
@@ -259,7 +255,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
      * @return 修改结果
      */
     @Override
-    public CommonResult approvalPage(HttpServletRequest request,TStaffEntry tStaffEntry) {
+    public CommonResult<EntryApprovalResult> approvalPage(HttpServletRequest request, TStaffEntry tStaffEntry) {
         String token = TokenUtil.getRequestToken(request);
         if (StringUtils.isEmpty(token)){
             return new CommonResult(444, "error", "请在请求头中传入token", null);
@@ -268,6 +264,23 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         SysToken sysToken = tSysTokenMapper.findByToken(token);
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
+        }
+        /**
+         * 先判断是否已发起过入职审批
+         */
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(ApprovaltypeEnum.Type_12.getCode());
+        /**
+         * 查询该员工入职信息
+         */
+        String applyPeople = this.tStaffEntryMapper.selectApplyPeople(tStaffEntry.getPkEntryId());
+        if(StringUtils.isEmpty(applyPeople)){
+            throw new RuntimeException("该员工入职信息已不存在，请刷新后再试！");
+        }
+        select.setApplyPeople(applyPeople);
+        int count = this.tApvApprovalMapper.selectCountByEntity(select);
+        if(count > 0){
+            return new CommonResult().ErrorResult("该员工已存在入职申请信息，无需再次发起,请刷新后重试！",null);
         }
         JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,tStaffEntry.getPkEntryId(),"入职申请",1);
         String msg = (String) resultJson.get("msg");
@@ -286,11 +299,31 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String newPkId = IDUtils.getUUID();
         JSONObject jsonObject = JSON.parseObject(param);
+        String fkHtlxId = JsonUtil.getStringParam(jsonObject, "fkHtlxId");
+        if(StringUtils.isEmpty(fkHtlxId)){
+            return new CommonResult().ErrorResult("请传入合同类型 fkHtlxId，必填项需判断",null);
+        }
         //入职申请信息主键
         String pkEntryId = JsonUtil.getStringParam(jsonObject, "pkEntryId");
         //审批类型
-        String approvalType = JsonUtil.getStringParam(jsonObject, "approvalType");
-        String fkHtlxId = JsonUtil.getStringParam(jsonObject, "fkHtlxId");
+        String approvalType = ApprovaltypeEnum.Type_12.getCode();
+        /**
+         * 先判断是否已发起过入职审批
+         */
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        /**
+         * 查询该员工入职信息
+         */
+        String applyPeople = this.tStaffEntryMapper.selectApplyPeople(pkEntryId);
+        if(StringUtils.isEmpty(applyPeople)){
+            throw new RuntimeException("该员工入职信息已不存在，请刷新后再试！");
+        }
+        select.setApplyPeople(applyPeople);
+        int count = this.tApvApprovalMapper.selectCountByEntity(select);
+        if(count > 0){
+            return new CommonResult().ErrorResult("该员工已存在入职申请信息，无需再次发起",null);
+        }
         /**
          * 修改入职信息表中的apvId
          */
@@ -307,7 +340,6 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }else {
             stringBuffer.append("入职审批流程记录添加失败！");
         }
-        String applyPeople = tStaffEntryMapper.selectApplyPeople(pkEntryId);
         stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,applyPeople,newPkId);
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }

@@ -272,7 +272,7 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffInfo">
-        insert into hjy_cloud.T_STAFF_INFO
+        insert into T_STAFF_INFO
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkStaffId != null and pkStaffId != ''">
                 PK_STAFF_ID,
@@ -294,6 +294,9 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
             </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 FK_POSITION_ID,
+            </if>
+            <if test="fkWorkaddressId != null and fkWorkaddressId != ''">
+                FK_WORKADDRESS_ID,
             </if>
             <if test="entryTime != null">
                 ENTRY_TIME,
@@ -422,6 +425,9 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
             </if>
             <if test="fkPositionId != null and fkPositionId != ''">
                 #{fkPositionId},
+            </if>
+            <if test="fkWorkaddressId != null and fkWorkaddressId != ''">
+                #{fkWorkaddressId},
             </if>
             <if test="entryTime != null">
                 #{entryTime},

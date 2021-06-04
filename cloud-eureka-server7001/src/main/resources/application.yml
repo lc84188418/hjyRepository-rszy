@@ -2,7 +2,7 @@ server:
   port: 7001
 eureka:
   instance:
-#    hostname: 114.55.102.249
+#    hostname: iZbp1et2qekjwoii5gbc3fZ
     hostname: localhost
 #    hostname: eureka7001.com #集群版
   client:

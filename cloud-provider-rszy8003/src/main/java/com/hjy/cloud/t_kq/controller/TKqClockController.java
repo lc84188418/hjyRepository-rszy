@@ -11,7 +11,6 @@ import com.hjy.cloud.t_kq.service.TKqClockService;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -152,7 +151,7 @@ public class TKqClockController {
      * 管理员查询所有打卡信息
      * @param tKqClock 实体对象
      */
-    @ApiOperation(value = "查询所有打卡信息-已完成", notes = "已下方查询条件所有打卡信息")
+    @ApiOperation(value = "查询所有打卡信息-已对接", notes = "已下方查询条件所有打卡信息")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "staffName",required = false,dataType = "String",paramType = "form",example = "马"),
             @ApiImplicitParam(name = "todayDate",required = false,dataType = "String",paramType = "form",example = "2021-03-18"),

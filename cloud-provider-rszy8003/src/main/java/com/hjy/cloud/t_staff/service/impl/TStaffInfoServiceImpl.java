@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryNationMapper;
@@ -11,21 +12,22 @@ import com.hjy.cloud.t_dictionary.dao.TDictionaryPositionMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryEducation;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryNation;
-import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
+import com.hjy.cloud.t_system.dao.TSysUserMapper;
+import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.PasswordEncryptUtils;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -39,6 +41,8 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
 
     @Resource
     private TStaffInfoMapper tStaffInfoMapper;
+    @Resource
+    private TSysUserMapper tSysUserMapper;
     @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
     @Resource
@@ -78,24 +82,43 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
 //        return new CommonResult(200, "success", "获取数据成功", jsonObject);
 //    }
 
-//    /**
-//     * 添加数据
-//     *
-//     * @param tStaffInfo
-//     * @return
-//     */
-//    @Transactional()
-//    @Override
-//    public CommonResult insert(TStaffInfo tStaffInfo) {
-//        tStaffInfo.setPkStaffId(IDUtils.getUUID());
-//        int i = this.tStaffInfoMapper.insertSelective(tStaffInfo);
-//        if (i > 0) {
-//            JSONObject jsonObject = this.getListInfo();
-//            return new CommonResult(200, "success", "添加数据成功", jsonObject);
-//        } else {
-//            return new CommonResult(444, "error", "添加数据失败", null);
-//        }
-//    }
+    /**
+     * 添加数据
+     *
+     * @param tStaffInfo
+     * @return
+     */
+    @Transactional()
+    @Override
+    public CommonResult insert(TStaffInfo tStaffInfo) {
+        tStaffInfo.setPkStaffId(IDUtils.getUUID());
+        tStaffInfo.setStaffStatus(1);
+        tStaffInfo.setEntryTime(new Date());
+        int i = this.tStaffInfoMapper.insertSelective(tStaffInfo);
+        if (i > 0) {
+            //添加成功后添加该员工的系统用户
+            /**
+             * 添加系统用户
+             */
+            TSysUser tSysUser = new TSysUser();
+            tSysUser.setPkUserId(tStaffInfo.getPkStaffId());
+            tSysUser.setUsername(tStaffInfo.getStaffName());
+            String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
+            tSysUser.setPassword(password);
+            tSysUser.setEmail(tStaffInfo.getStaffEmail());
+            tSysUser.setTel(tStaffInfo.getStaffTel());
+            tSysUser.setIdcard(tStaffInfo.getIdCard());
+            tSysUser.setFullName(tStaffInfo.getStaffName());
+            tSysUser.setWorkPosition(tStaffInfo.getFkPositionId());
+            tSysUser.setEnableStatus("1");
+            tSysUser.setCreateTime(new Date());
+            tSysUser.setModifyTime(new Date());
+            int j = tSysUserMapper.insertSelective(tSysUser);
+            return new CommonResult(200, "success", "添加员工成功！已创建系统账户！",null);
+        } else {
+            return new CommonResult(444, "error", "添加数据失败", null);
+        }
+    }
 
 
 

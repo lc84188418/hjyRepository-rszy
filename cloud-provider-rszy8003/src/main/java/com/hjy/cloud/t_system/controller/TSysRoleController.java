@@ -40,17 +40,17 @@ public class TSysRoleController {
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/outfit/role/addPage")
-    public CommonResult tSysRoleAddPage() throws FebsException{
-        try {
-            //
-            return new CommonResult(200,"success","成功!",null);
-        } catch (Exception e) {
-            String message = "失败";
-            log.error(message, e);
-            throw new FebsException(message);
-        }
-    }
+//    @GetMapping(value = "/outfit/role/addPage")
+//    public CommonResult tSysRoleAddPage() throws FebsException{
+//        try {
+//            //
+//            return new CommonResult(200,"success","成功!",null);
+//        } catch (Exception e) {
+//            String message = "失败";
+//            log.error(message, e);
+//            throw new FebsException(message);
+//        }
+//    }
     /**
      * 1 新增数据
      * @param tSysRole 实体对象

@@ -3,7 +3,6 @@ package com.hjy.cloud.common.task;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.common.entity.DApvRecord;
-import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
@@ -12,7 +11,6 @@ import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_dictionary.service.TDictionaryHtlxService;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
@@ -20,17 +18,15 @@ import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
-import com.hjy.cloud.t_system.entity.SysToken;
-import com.hjy.cloud.t_system.service.TSysTokenService;
-import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.ReUserRole;
+import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.service.TSysParamService;
 import com.hjy.cloud.t_system.service.TSysRoleService;
+import com.hjy.cloud.t_system.service.TSysTokenService;
 import com.hjy.cloud.t_system.service.TSysUserService;
-import com.hjy.cloud.utils.StringUtil;
+import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.TokenUtil;
-import javafx.beans.binding.StringBinding;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -339,16 +335,16 @@ public class ObjectAsyncTask {
             String csrIdsStr = csrArray.toString();
             if(!csrIdsStr.equals("[]")){
                 //说明选择了抄送人
-                List<DCcRecord> csrpxqList = JSONObject.parseArray(csrIdsStr,DCcRecord.class);
-                List<DCcRecord> csrList = new ArrayList<>();
+                List<TApvApproval> csrpxqList = JSONObject.parseArray(csrIdsStr,TApvApproval.class);
+                List<TApvApproval> csrList = new ArrayList<>();
                 /**
                  * 抄送人去重
                  */
                 //创建新集合
                 //遍历旧集合，获得每一个元素
-                Iterator<DCcRecord> it = csrpxqList.iterator();
+                Iterator<TApvApproval> it = csrpxqList.iterator();
                 while(it.hasNext()) {
-                    DCcRecord s = it.next();
+                    TApvApproval s = it.next();
                     //那这个集合去找新集合，看看有没有
                     if(!csrList.contains(s)) {
                         csrList.add(s);
@@ -358,11 +354,11 @@ public class ObjectAsyncTask {
                 List<DCcRecord> ccRecordList = new ArrayList<>();
                 //添加抄送记录
                 if(csrList != null && csrList.size() > 0){
-                    for (DCcRecord ccRecord:csrList) {
+                    for (TApvApproval ccRecord:csrList) {
                         DCcRecord dCcRecord = new DCcRecord();
                         dCcRecord.setPkCcId(IDUtils.getUUID());
-                        dCcRecord.setFkStaffId(ccRecord.getFkStaffId());
-                        dCcRecord.setStaffName(ccRecord.getStaffName());
+                        dCcRecord.setFkStaffId(ccRecord.getApprovalPeople());
+                        dCcRecord.setStaffName(ccRecord.getApprovalPeopleName());
                         dCcRecord.setFirstApvrecordId(firstApvrecordId);
                         ccRecordList.add(dCcRecord);
                     }
@@ -398,6 +394,8 @@ public class ObjectAsyncTask {
                                 isquchong = 1;
                                 apvList1.remove(n);
                             }
+                        }else {
+                            throw new RuntimeException("审批人为空了");
                         }
                     }
                 }

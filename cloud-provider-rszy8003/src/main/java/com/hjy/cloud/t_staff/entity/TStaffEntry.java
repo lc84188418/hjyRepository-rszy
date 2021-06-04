@@ -1,60 +1,63 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffEntry)表实体类
  *
  * @author makejava
- * @since 2021-02-26 10:55:26
+ * @since 2021-06-03 15:17:55
  */
 @Data
+@ApiModel("入职信息-实体类")
 public class TStaffEntry {
-    //入职信息主键
+    @ApiModelProperty(value = "入职信息主键", example = "", required = false)
     private String pkEntryId;
-    //姓名,必填
+    @ApiModelProperty(value = "姓名", example = "", required = false)
     private String staffName;
-    //性别
+    @ApiModelProperty(value = "性别", example = "", required = false)
     private Integer staffSex;
-    //年龄
+    @ApiModelProperty(value = "年龄", example = "", required = false)
     private Integer staffAge;
-    //部门
+    @ApiModelProperty(value = "部门", example = "", required = false)
     private String staffDept;
-    //职位
+    @ApiModelProperty(value = "职位", example = "", required = false)
     private String staffPosition;
-    //电话
+    @ApiModelProperty(value = "电话", example = "", required = false)
     private String staffTel;
-    //合同类型
+    @ApiModelProperty(value = "合同类型", example = "", required = true)
     private String fkHtlxId;
-    //工作地点
+    @ApiModelProperty(value = "工作地点", example = "", required = false)
     private String workAddress;
-    //招聘方式
+    @ApiModelProperty(value = "招聘方式", example = "", required = false)
     private String recruitWay;
-    //证件类型
+    @ApiModelProperty(value = "证件类型", example = "", required = false)
     private String idType;
-    //证件号
+    @ApiModelProperty(value = "证件号", example = "", required = false)
     private String idCard;
-    //入职日期-页面上添加,必填
+    @ApiModelProperty(value = "入职日期", example = "", required = false)
     private Date entryTime;
-    //个人邮箱
+    @ApiModelProperty(value = "个人邮箱", example = "", required = false)
     private String email;
-    //操作人
+    @ApiModelProperty(value = "操作人", example = "", required = false)
     private String operatedPeople;
-    //状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1审批完成
+    @ApiModelProperty(value = "状态,0代表刚添加完成入职信息，2代表已发起入职审批，正在审批中，1代表审批完成", example = "", required = false)
     private Integer status;
-    //备用
+    @ApiModelProperty(value = "备注", example = "", required = false)
     private String remarks;
-    //是否弃职
+    @ApiModelProperty(value = "是否弃职", example = "", required = false)
     private Integer isAbandon;
-    //弃职时间
+    @ApiModelProperty(value = "弃职时间", example = "", required = false)
     private Date abandonTime;
-    //弃职原因
+    @ApiModelProperty(value = "弃职原因", example = "", required = false)
     private String abandonReason;
-    //入职说明
+    @ApiModelProperty(value = "入职说明", example = "", required = false)
     private String entryDesc;
-    //第一级审批ID
+    @ApiModelProperty(value = "第一级审批ID", example = "", required = false)
     private String apvId;
 
 }

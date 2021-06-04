@@ -1,7 +1,8 @@
 package com.hjy.cloud.t_kq.service;
 
-import com.hjy.cloud.t_kq.entity.TKqGroup;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_kq.entity.TKqGroup;
+import com.hjy.cloud.t_kq.result.KqGroupResult;
 
 import java.text.ParseException;
 
@@ -57,5 +58,5 @@ public interface TKqGroupService {
      * @param tKqGroup 实体对象
      * @return
      */
-    CommonResult selectById(TKqGroup tKqGroup);
+    CommonResult<KqGroupResult<TKqGroup>> selectById(TKqGroup tKqGroup);
 }

@@ -8,7 +8,6 @@ import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,16 +31,16 @@ public class TOutfitDeptController {
     /**
      * 1 跳转到新增页面
      */
-    @GetMapping(value = "/outfit/dept/addPage")
-    public CommonResult insertPage() throws FebsException {
-        try {
-            return tOutfitDeptService.insertPage();
-        } catch (Exception e) {
-            String message = "失败";
-            log.error(message,e);
-            throw new FebsException(message);
-        }
-    }
+//    @GetMapping(value = "/outfit/dept/addPage")
+//    public CommonResult insertPage() throws FebsException {
+//        try {
+//            return tOutfitDeptService.insertPage();
+//        } catch (Exception e) {
+//            String message = "失败";
+//            log.error(message,e);
+//            throw new FebsException(message);
+//        }
+//    }
 
     /**
      * 新增数据

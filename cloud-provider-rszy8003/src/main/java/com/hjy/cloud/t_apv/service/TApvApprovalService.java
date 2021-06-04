@@ -1,10 +1,10 @@
 package com.hjy.cloud.t_apv.service;
 
 import com.hjy.cloud.common.entity.DApvRecord;
-import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
-import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.t_apv.result.ApprovalAddResult;
 import com.hjy.cloud.utils.page.PageResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,7 +24,7 @@ public interface TApvApprovalService {
      *
      * @return
      */
-    CommonResult insertPage();
+    CommonResult<ApprovalAddResult> insertPage();
 
     /**
      * 添加数据
@@ -74,6 +74,8 @@ public interface TApvApprovalService {
      *
      */
     CommonResult waitApv();
+    //审批已处理
+    CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize);
     /**
      * 待审批,操作用户自己的
      *

@@ -4,10 +4,10 @@ package com.hjy.cloud.t_kq.controller;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_kq.entity.TKqGroup;
+import com.hjy.cloud.t_kq.result.KqGroupResult;
 import com.hjy.cloud.t_kq.service.TKqGroupService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
@@ -115,7 +115,7 @@ public class TKqGroupController {
      */
     //@RequiresPermissions({"group:get"})
     @PostMapping(value = "/kq/group/get")
-    public CommonResult selectOne(@RequestBody TKqGroup tKqGroup) throws FebsException {
+    public CommonResult<KqGroupResult<TKqGroup>> selectOne(@RequestBody TKqGroup tKqGroup) throws FebsException {
         try {
             return tKqGroupService.selectById(tKqGroup);
         } catch (Exception e) {

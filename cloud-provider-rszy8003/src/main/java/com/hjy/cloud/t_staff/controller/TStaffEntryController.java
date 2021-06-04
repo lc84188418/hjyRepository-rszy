@@ -5,10 +5,13 @@ import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.result.EntryApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -50,6 +53,23 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象
      * @return 新增结果
      */
+    @ApiOperation(value = "新增待入职-已完成", notes = "测试完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "staffName", value = "姓名",required = true, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffSex", value = "性别",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffAge", value = "年龄",required = false, dataType = "int", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffDept", value = "部门",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffPosition", value = "职位",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffTel", value = "电话",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "fkHtlxId", value = "合同类型",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "workAddress", value = "工作地点",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "recruitWay", value = "招聘方式",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "idType", value = "证件类型",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "idCard", value = "证件号",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "entryTime", value = "入职日期",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "email", value = "个人邮箱",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "entryDesc", value = "入职说明",required = false, dataType = "string", paramType = "body", example = "1"),
+    })
     @OperLog(operModul = "人员管理-入职管理",operType = "添加",operDesc = "新增入职基本信息")
     //@RequiresPermissions({"entry:add"})
     @PostMapping(value = "/staff/entry/add")
@@ -177,8 +197,12 @@ public class TStaffEntryController {
      * @param tStaffEntry 实体对象中的pkEntryId
      * @return 修改结果
      */
+    @ApiOperation(value = "发起入职审批页面-已完成", notes = "发起入职审批前获取数据")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkEntryId",value = "入职信息主键",required = true,dataType = "string",paramType = "body",example = "1"),
+    })
     @PostMapping(value = "/staff/entry/approvalPage")
-    public CommonResult approvalPage(HttpServletRequest request,@RequestBody TStaffEntry tStaffEntry) throws FebsException {
+    public CommonResult<EntryApprovalResult> approvalPage(HttpServletRequest request, @RequestBody TStaffEntry tStaffEntry) throws FebsException {
         try {
             return tStaffEntryService.approvalPage(request,tStaffEntry);
         } catch (Exception e) {

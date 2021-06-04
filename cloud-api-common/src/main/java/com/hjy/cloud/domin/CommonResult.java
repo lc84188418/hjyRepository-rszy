@@ -1,6 +1,5 @@
 package com.hjy.cloud.domin;
 
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,5 +30,11 @@ public class CommonResult<T>{
     //,String timestamp
     public CommonResult(int code, String status,String msg) {
         this(code,status,msg,null);
+    }
+    public CommonResult SuccessResult(String msg,T data) {
+        return new CommonResult(200,"success",msg,data);
+    }
+    public CommonResult ErrorResult(String msg,T data) {
+        return new CommonResult(444,"error",msg,data);
     }
 }

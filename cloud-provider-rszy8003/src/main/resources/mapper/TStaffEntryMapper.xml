@@ -26,7 +26,77 @@
         <result property="entryDesc" column="ENTRY_DESC" jdbcType="VARCHAR"/>
         <result property="apvId" column="APV_ID" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <!--根据实体信息查询记录条数-->
+    <select id="selectCountByEntity" resultType="java.lang.Integer">
+        select count(*) from T_STAFF_ENTRY
+        where 1 = 1
+            <if test="pkEntryId != null and pkEntryId != ''">
+                and PK_ENTRY_ID = #{pkEntryId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+            </if>
+            <if test="staffSex != null">
+                and STAFF_SEX = #{staffSex,jdbcType=INTEGER}
+            </if>
+            <if test="staffAge != null">
+                and STAFF_AGE = #{staffAge,jdbcType=INTEGER}
+            </if>
+            <if test="staffDept != null and staffDept != ''">
+                and STAFF_DEPT = #{staffDept,jdbcType=VARCHAR}
+            </if>
+            <if test="staffPosition != null and staffPosition != ''">
+                and STAFF_POSITION = #{staffPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                and STAFF_TEL = #{staffTel,jdbcType=VARCHAR}
+            </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                and FK_HTLX_ID = #{fkHtlxId,jdbcType=VARCHAR}
+            </if>
+            <if test="workAddress != null and workAddress != ''">
+                and WORK_ADDRESS = #{workAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                and RECRUIT_WAY = #{recruitWay,jdbcType=VARCHAR}
+            </if>
+            <if test="idType != null and idType != ''">
+                and ID_TYPE = #{idType,jdbcType=VARCHAR}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and ID_CARD = #{idCard,jdbcType=VARCHAR}
+            </if>
+            <if test="entryTime != null">
+                and ENTRY_TIME = #{entryTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="email != null and email != ''">
+                and EMAIL = #{email,jdbcType=VARCHAR}
+            </if>
+            <if test="operatedPeople != null and operatedPeople != ''">
+                and OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                and STATUS = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="remarks != null and remarks != ''">
+                and REMARKS = #{remarks,jdbcType=VARCHAR}
+            </if>
+            <if test="isAbandon != null">
+                and IS_ABANDON = #{isAbandon,jdbcType=INTEGER}
+            </if>
+            <if test="abandonTime != null">
+                and ABANDON_TIME = #{abandonTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="abandonReason != null and abandonReason != ''">
+                and ABANDON_REASON = #{abandonReason,jdbcType=VARCHAR}
+            </if>
+            <if test="entryDesc != null and entryDesc != ''">
+                and ENTRY_DESC = #{entryDesc,jdbcType=VARCHAR}
+            </if>
+            <if test="apvId != null and apvId != ''">
+                and APV_ID = #{apvId,jdbcType=VARCHAR}
+            </if>
+    </select>
     <!--查询单个-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
         select * from hjy_cloud.T_STAFF_ENTRY

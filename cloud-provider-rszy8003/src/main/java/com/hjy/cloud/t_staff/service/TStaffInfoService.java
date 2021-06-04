@@ -12,6 +12,13 @@ import java.util.List;
  * @since 2021-02-25 17:06:47
  */
 public interface TStaffInfoService {
+    /**
+     * 直接添加
+     * @param tStaffInfo
+     * @return
+     */
+    CommonResult insert(TStaffInfo tStaffInfo);
+
 
     /**
      * 修改数据

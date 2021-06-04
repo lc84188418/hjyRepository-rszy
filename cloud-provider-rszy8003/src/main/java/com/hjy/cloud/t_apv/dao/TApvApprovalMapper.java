@@ -102,6 +102,8 @@ public interface TApvApprovalMapper {
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      */
     List<DApvRecord> waitApv();
+
+    List<DApvRecord> ApvComplete();
     /**
      * 待审批,操作用户自己的
      */
@@ -113,6 +115,7 @@ public interface TApvApprovalMapper {
     int updateIsIngBySourceId(@Param("sourceId")String sourceId);
 
     int updateApvRecord(DApvRecord apvRecord);
+    int selectCountByEntity(DApvRecord apvRecord);
 
     /**
      * 通过第一审批记录的ID查询整个审批流程记录信息

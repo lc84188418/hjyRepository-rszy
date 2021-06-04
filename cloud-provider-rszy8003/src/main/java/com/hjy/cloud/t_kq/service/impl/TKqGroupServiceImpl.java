@@ -5,24 +5,24 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.common.utils.KqUtil;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_kq.dao.TKqBcMapper;
 import com.hjy.cloud.t_kq.dao.TKqGroupMapper;
 import com.hjy.cloud.t_kq.dao.TKqJbMapper;
 import com.hjy.cloud.t_kq.entity.*;
+import com.hjy.cloud.t_kq.result.KqGroupResult;
 import com.hjy.cloud.t_kq.service.TKqGroupService;
 import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import java.text.ParseException;
@@ -70,28 +70,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         List<TKqBc> bcList = tKqBcMapper.selectAllPage(selectBc);
         jsonObject.put("bcList", bcList);
         //工作日
-        List<ReGroupWorkingdays> workingdaysList = new ArrayList<>();
-        ReGroupWorkingdays workingdays1 = new ReGroupWorkingdays();
-        workingdays1.setWorkingDays("星期一");
-        workingdaysList.add(workingdays1);
-        ReGroupWorkingdays workingdays2 = new ReGroupWorkingdays();
-        workingdays2.setWorkingDays("星期二");
-        workingdaysList.add(workingdays2);
-        ReGroupWorkingdays workingdays3 = new ReGroupWorkingdays();
-        workingdays3.setWorkingDays("星期三");
-        workingdaysList.add(workingdays3);
-        ReGroupWorkingdays workingdays4 = new ReGroupWorkingdays();
-        workingdays4.setWorkingDays("星期四");
-        workingdaysList.add(workingdays4);
-        ReGroupWorkingdays workingdays5 = new ReGroupWorkingdays();
-        workingdays5.setWorkingDays("星期五");
-        workingdaysList.add(workingdays5);
-        ReGroupWorkingdays workingdays6 = new ReGroupWorkingdays();
-        workingdays6.setWorkingDays("星期六");
-        workingdaysList.add(workingdays6);
-        ReGroupWorkingdays workingdays7 = new ReGroupWorkingdays();
-        workingdays7.setWorkingDays("星期日");
-        workingdaysList.add(workingdays7);
+        List<ReGroupWorkingdays> workingdaysList = KqUtil.getGroupWorkingdays();
         jsonObject.put("workingdaysList", workingdaysList);
         //办公地
         List<TOutfitWorkaddress> workaddressList = tOutfitWorkaddressMapper.selectAllId_Name();
@@ -364,7 +343,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
      * @return
      */
     @Override
-    public CommonResult selectById(TKqGroup tKqGroup) {
+    public CommonResult<KqGroupResult<TKqGroup>> selectById(TKqGroup tKqGroup) {
         String pkId = tKqGroup.getPkGroupId();
         JSONObject resultJson = new JSONObject();
         //当前考勤组信息
@@ -384,6 +363,9 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         selectBc.setTurnOn(1);
         List<TKqBc> bcList = tKqBcMapper.selectAllPage(selectBc);
         resultJson.put("bcList", bcList);
+        //所有工作日
+        List<ReGroupWorkingdays> workingdaysList = KqUtil.getGroupWorkingdays();
+        resultJson.put("workingDaysList", workingdaysList);
         //已选工作日设置
         List<ReGroupWorkingdays> workingDays = tKqGroupMapper.select_YX_workingdaysByGroup(pkId);
         resultJson.put("workingDays", workingDays);
@@ -480,6 +462,11 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                 workingDaysList = JSONObject.parseArray(workingDaysStr,ReGroupWorkingdays.class);
             }
         }
+        //先删除
+        if("update".equals(addOrUpdate)){
+            //代表修改-先删除
+            tKqGroupMapper.deleteGroupBcByGroupId(pkGroupId);
+        }
         if(workingDaysList != null && workingDaysList.size() > 0){
             Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
             if(kqType == 1){
@@ -504,10 +491,6 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                     workingdays.setKqType(kqType);
                 }
             }
-            if("update".equals(addOrUpdate)){
-                //代表修改-先删除
-                tKqGroupMapper.deleteGroupBcByGroupId(pkGroupId);
-            }
             //批量添加分组班次设置
             int k = tKqGroupMapper.insertGroupBcBatch(workingDaysList);
             if (k > 0) {
@@ -516,6 +499,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                 stringBuffer.append("班次设置失败！");
             }
         }
+
         /**
          * 三、工作地设置
          */

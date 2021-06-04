@@ -107,11 +107,11 @@ public class TDictionaryPositionServiceImpl implements TDictionaryPositionServic
     public CommonResult selectAll(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
-        String pkId = JsonUtil.getStringParam(json, "pk_id");
+        String positionName = JsonUtil.getStringParam(json, "positionName");
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
         TDictionaryPosition entity = new TDictionaryPosition();
-
+        entity.setPositionName(positionName);
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;

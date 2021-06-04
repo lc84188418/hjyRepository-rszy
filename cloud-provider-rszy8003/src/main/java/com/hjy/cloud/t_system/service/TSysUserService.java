@@ -93,6 +93,8 @@ public interface TSysUserService {
     void addUserRoleByUserRole(ReUserRole userRole);
     //删除用户
     CommonResult tSysUserDel(String param);
+    //重置密码
+    CommonResult resetPassword(TSysUser tSysUser);
 
 //    CommonResult distributeRole(String parm);
 //

@@ -308,6 +308,19 @@ public class TSysUserServiceImpl implements TSysUserService {
         }
     }
 
+    /**
+     *
+     * @param tSysUser
+     * @return
+     */
+    @Override
+    public CommonResult resetPassword(TSysUser tSysUser) {
+        tSysUser.setModifyTime(new Date());
+        tSysUser.setPassword(PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456"));
+        tSysUserMapper.updateById(tSysUser);
+        return new CommonResult(200,"success","重置密码成功!",null);
+    }
+
     @Override
     public CommonResult<PageResult<TSysUser>> tSysUserList(PageRequest<TSysUser> pageInfo) {
         if(pageInfo.getPageNum() == 0){

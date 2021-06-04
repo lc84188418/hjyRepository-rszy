@@ -1,8 +1,8 @@
 package com.hjy.cloud.t_staff.service;
 
-import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.domin.CommonResult;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.result.EntryApprovalResult;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -75,7 +75,7 @@ public interface TStaffEntryService {
      * @param tStaffEntry 实体对象
      * @return 修改结果
      */
-    CommonResult approvalPage(HttpServletRequest request,TStaffEntry tStaffEntry);
+    CommonResult<EntryApprovalResult> approvalPage(HttpServletRequest request, TStaffEntry tStaffEntry);
     /**
      * 发起入职审批
      *

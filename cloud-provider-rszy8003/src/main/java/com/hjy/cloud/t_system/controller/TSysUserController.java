@@ -16,7 +16,6 @@ import com.hjy.cloud.t_system.service.TSysPermsService;
 import com.hjy.cloud.t_system.service.TSysRoleService;
 import com.hjy.cloud.t_system.service.TSysUserService;
 import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.PasswordEncryptUtils;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
@@ -24,14 +23,12 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -276,23 +273,17 @@ public class TSysUserController {
     }
     /**
      * 6 重置密码
-     * @param parm 参数
      * @return 修改结果
      */
+    @ApiOperation(value = "获取单个用户-已完成", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkUserId", value = "用户id",required = true, dataType = "string", paramType = "path", example = "1"),
+    })
     //@RequiresPermissions({"user:resetPassword"})
     @PutMapping("/system/user/resetPassword")
-    public CommonResult resetPassword(@RequestBody String parm) throws FebsException{
-        JSONObject json = JSON.parseObject(parm);
-        String pkUserId=String.valueOf(json.get("pk_id"));
-        String username=String.valueOf(json.get("username"));
+    public CommonResult resetPassword(@RequestBody TSysUser tSysUser) throws FebsException{
         try {
-            //
-            TSysUser tSysUser = new TSysUser();
-            tSysUser.setPkUserId(pkUserId);
-            tSysUser.setModifyTime(new Date());
-            tSysUser.setPassword(PasswordEncryptUtils.MyPasswordEncryptUtil(username,"123456"));
-            tSysUserService.updateById(tSysUser);
-            return new CommonResult(200,"success","重置密码成功!",null);
+            return tSysUserService.resetPassword(tSysUser);
         } catch (Exception e) {
             String message = "重置密码失败";
             log.error(message, e);
@@ -303,7 +294,7 @@ public class TSysUserController {
      * 7 修改密码
      * @return 修改结果
      */
-    @ApiOperation(value = "修改密码-已完成", notes = "")
+    @ApiOperation(value = "修改密码-已完成", notes = "测试完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "oldPassword", value = "旧密码",required = true, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "newPassword", value = "新密码",required = true, dataType = "string", paramType = "body", example = "1"),
