@@ -109,6 +109,9 @@
             <if test="pkContrctId != null">
                 PK_CONTRCT_ID,
             </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME,
             </if>
@@ -158,6 +161,9 @@
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkContrctId != null">
                 #{pkContrctId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                #{fkStaffId,jdbcType=VARCHAR},
             </if>
             <if test="staffName != null and staffName != ''">
                 #{staffName,jdbcType=VARCHAR},

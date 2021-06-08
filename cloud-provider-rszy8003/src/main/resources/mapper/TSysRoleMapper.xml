@@ -157,6 +157,14 @@
     <delete id="deleteUserRoleByRoleId" parameterType="java.lang.String">
         delete from RE_USER_ROLE where FK_ROLE_ID =#{fkRoleId,jdbcType=VARCHAR}
     </delete>
+    <delete id="deleteUserRoleByUsers">
+        delete from RE_USER_ROLE where FK_USER_ID in (
+
+        <foreach collection="idList" item="item" separator=",">
+            #{item, jdbcType=VARCHAR}
+        </foreach>
+        )
+    </delete>
     <!--No Problem查询所有行数据 -->
     <select id="selectAll" resultType="com.hjy.cloud.t_system.entity.TSysRole">
         select * from T_SYS_ROLE

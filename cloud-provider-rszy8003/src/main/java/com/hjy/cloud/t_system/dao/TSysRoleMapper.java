@@ -117,4 +117,6 @@ public interface TSysRoleMapper {
     void insertRolePerms(ReRolePerms rolePerms);
     //查询所有用户名
     List<String> selectAllUsername();
+
+    int deleteUserRoleByUsers(@Param("idList")List<String> idList);
 }

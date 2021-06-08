@@ -108,6 +108,13 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffEntry tStaffEntry,HttpServletRequest request) {
+        //必填项的判断
+        if(StringUtils.isEmpty(tStaffEntry.getStaffDept())
+                || StringUtils.isEmpty(tStaffEntry.getStaffPosition())
+                || StringUtils.isEmpty(tStaffEntry.getWorkAddress())
+        ){
+            return new CommonResult().ErrorResult("部门、职位、工作地信息不能为空！",null);
+        }
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String pkId = IDUtils.getUUID();
         tStaffEntry.setPkEntryId(pkId);

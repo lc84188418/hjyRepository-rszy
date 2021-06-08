@@ -7,14 +7,15 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffContract;
 import com.hjy.cloud.t_staff.service.TStaffContractService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.List;
 
 /**
  * (TStaffContract)表控制层
@@ -178,6 +179,18 @@ public class TStaffContractController {
      *
      * @param tStaffContract 实体对象
      */
+    @ApiOperation(value = "发起续签合同-已完成", notes = "发起续签合同")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkContrctId",value = "合同信息主键",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "contractAttribute",value = "合同属性",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "contractQx",value = "合同期限",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "startTime",value = "合同开始日期",required = true,dataType = "date-time",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "endTime",value = "合同结束日期",required = true,dataType = "date-time",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "signTime",value = "合同签订日期",required = true,dataType = "date-time",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "fkContractCompany",value = "合同公司ID",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "fkContractType",value = "合同类型ID",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "fkStaffId",value = "员工关联主键id",required = true,dataType = "string",paramType = "body",example = "1"),
+    })
     @PostMapping(value = "/staff/contract/renewal")
     public CommonResult renewal(@RequestBody TStaffContract tStaffContract) throws FebsException {
         try {

@@ -116,6 +116,9 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
     @Transactional()
     @Override
     public CommonResult delete(TOutfitDept tOutfitDept) {
+        if("1".equals(tOutfitDept.getPkDeptId())){
+            return new CommonResult().ErrorResult("分公司部门不可删除!",null);
+        }
         int i = this.tOutfitDeptMapper.deleteById(tOutfitDept);
         String msg = "部门数据删除成功!";
         if (i > 0) {

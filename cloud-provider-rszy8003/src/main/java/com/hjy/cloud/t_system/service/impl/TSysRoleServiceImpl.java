@@ -286,9 +286,13 @@ public class TSysRoleServiceImpl implements TSysRoleService {
             msg = "未选择用户，请选择后添加！";
         }else {
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
-            //添加用户角色
-            int j = this.addUserRoleByList(pkRoleId,idList);
-            msg = msg.replace("0",String.valueOf(idList.size()));
+            if(idList != null && idList.size() > 0){
+                //将这些用户原来的角色删除
+                int j = tSysRoleMapper.deleteUserRoleByUsers(idList);
+                //添加用户角色
+                int k = this.addUserRoleByList(pkRoleId,idList);
+                msg = msg.replace("0",String.valueOf(idList.size()));
+            }
         }
         if(i>0){
             code = 200;

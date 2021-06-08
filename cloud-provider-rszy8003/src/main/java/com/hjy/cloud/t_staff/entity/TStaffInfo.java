@@ -23,7 +23,7 @@ public class TStaffInfo {
     private Integer staffSex;
     @ApiModelProperty(value = "年龄", example = "", required = false)
     private Integer staffAge;
-    @ApiModelProperty(value = "员工状态,1代表在职，0代表离职", example = "", required = false)
+    @ApiModelProperty(value = "员工状态，0离职1入职2转正", example = "", required = false)
     private Integer staffStatus;
     @ApiModelProperty(value = "部门id", example = "", required = false)
     private String fkDeptId;

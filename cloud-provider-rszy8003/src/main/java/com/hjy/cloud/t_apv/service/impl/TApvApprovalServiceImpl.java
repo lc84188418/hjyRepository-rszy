@@ -959,6 +959,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 tStaffInfo.setStaffName(tStaffEntry.getStaffName());
                 tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
                 tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
+                //员工状态，0离职1入职2转正，入职审批通过后状态为1
                 tStaffInfo.setStaffStatus(1);
                 tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
                 tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
@@ -990,7 +991,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 tSysUser.setTel(tStaffEntry.getStaffTel());
                 tSysUser.setIdcard(tStaffEntry.getIdCard());
                 tSysUser.setFullName(tStaffEntry.getStaffName());
-                tSysUser.setWorkPosition(tStaffEntry.getStaffPosition());
                 tSysUser.setEnableStatus("1");
                 tSysUser.setCreateTime(new Date());
                 tSysUser.setModifyTime(new Date());
@@ -1010,6 +1010,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(i > 0){
                 stringBuffer.append("转正审批通过，已录入员工转正信息！");
             }
+            //修改员工档案中的员工状态
+            TStaffInfo tStaffInfo = new TStaffInfo();
+            tStaffInfo.setPkStaffId(sourceId);
+            tStaffInfo.setStaffStatus(2);
+            int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
         }else if ("11".equals(approvalType)){
             //离职申请
             //修改审批状态-离职信息和员工信息里

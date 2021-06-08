@@ -131,6 +131,10 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     @Transactional()
     @Override
     public CommonResult updateByPkId(TStaffInfo tStaffInfo) {
+        //不能直接修改部门,岗位，工作地
+        tStaffInfo.setFkDeptId(null);
+        tStaffInfo.setFkPositionId(null);
+        tStaffInfo.setFkWorkaddressId(null);
         int i = this.tStaffInfoMapper.updateByPkId(tStaffInfo);
         if (i > 0) {
             JSONObject jsonObject = this.getListInfo();

@@ -1,10 +1,10 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
@@ -18,12 +18,11 @@ import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.service.TStaffContractService;
 import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -243,6 +242,14 @@ public class TStaffContractServiceImpl implements TStaffContractService {
         tStaffContract.setContrctStatus(0);
         //合同签订类型，1代表正签，0代表续签
         tStaffContract.setSignStatus(0);
+        TStaffInfo query = new TStaffInfo();
+        query.setPkStaffId(tStaffContract.getFkStaffId());
+        TStaffInfo selectInfo = this.tStaffInfoMapper.selectByPkId2(query);
+        if(selectInfo == null){
+            return new CommonResult().ErrorResult("续签员工信息已不存在，请刷新后再试！",null);
+        }
+        tStaffContract.setStaffName(selectInfo.getStaffName());
+        tStaffContract.setIdcard(selectInfo.getIdCard());
         int i = this.tStaffContractMapper.insertSelective(tStaffContract);
         if (i > 0) {
             JSONObject listInfo = this.getListInfo();

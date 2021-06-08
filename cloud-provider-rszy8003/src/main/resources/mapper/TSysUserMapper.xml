@@ -201,7 +201,17 @@
     <!--No problem 通过用户名查询用户信息-->
     <select id="selectUserByUsername" resultType="com.hjy.cloud.t_system.entity.TSysUser"
             parameterType="java.lang.String">
-        SELECT * FROM T_SYS_USER WHERE USERNAME = #{username,jdbcType=VARCHAR}
+        SELECT
+	t.*,
+	if(userRole.FK_ROLE_ID is null,'2','1') as FK_ROLE_ID,
+	role.ROLE_NAME
+FROM
+	T_SYS_USER t
+LEFT JOIN
+	RE_USER_ROLE userRole on userRole.FK_USER_ID = t.PK_USER_ID
+LEFT JOIN
+	T_SYS_ROLE role on role.PK_ROLE_ID = userRole.FK_ROLE_ID
+	WHERE USERNAME = #{username,jdbcType=VARCHAR}
     </select>
     <!--No problem 分页-模糊查询用户列表-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_system.entity.TSysUser">
