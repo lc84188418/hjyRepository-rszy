@@ -1,7 +1,7 @@
 package com.hjy.cloud.t_staff.service;
 
-import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_staff.entity.TStaffReassign;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -59,14 +59,13 @@ public interface TStaffReassignService {
      * @return
      */
     CommonResult selectById(TStaffReassign tStaffReassign);
-    /**
-     * 发起调动审批页面
-     * 管理员
-     * @return 修改结果
-     */
-    CommonResult initiateApvPage(HttpServletRequest request, TStaffReassign tStaffReassign);
-
-    CommonResult initiateApv(HttpServletRequest request, String param);
 
     List<TStaffReassign> selectAllPage(TStaffReassign selectEntity);
+
+    //管理员操作调动
+    CommonResult initiateApvPage(HttpServletRequest request, TStaffReassign tStaffReassign);
+    CommonResult initiateApv(HttpServletRequest request, String param);
+    //员工操作调动
+    CommonResult userInitiateApvPage(HttpServletRequest request);
+    CommonResult userInitiateApv(HttpServletRequest request, String param);
 }

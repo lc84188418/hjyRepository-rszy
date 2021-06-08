@@ -8,7 +8,6 @@ import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,10 +33,10 @@ public class TStaffReassignController {
     private TStaffReassignService tStaffReassignService;
 
     /**
-     * 1 跳转到新增页面
+     * 管理员添加调动信息页面
      */
     @PostMapping(value = "/staff/reassign/addPage")
-    public CommonResult insertPage(@RequestBody TStaffReassign tStaffReassign) throws FebsException {
+    public CommonResult insertPage(TStaffReassign tStaffReassign) throws FebsException {
         try {
             return tStaffReassignService.insertPage(tStaffReassign);
         } catch (Exception e) {
@@ -48,8 +47,7 @@ public class TStaffReassignController {
     }
 
     /**
-     * 新增数据
-     *
+     * 管理员添加调动信息
      * @param tStaffReassign 实体对象
      * @return 新增结果
      */
@@ -160,6 +158,40 @@ public class TStaffReassignController {
     public CommonResult initiateApv(HttpServletRequest request,@RequestBody String param) throws FebsException {
         try {
             return tStaffReassignService.initiateApv(request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+
+    /**
+     * 发起调动审批页面
+     * 员工
+     * @return 修改结果
+     */
+    @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请页面")
+    @PostMapping(value = "/staff/reassign/initiateApvPage/user")
+    public CommonResult userInitiateApvPage(HttpServletRequest request) throws FebsException {
+        try {
+            return tStaffReassignService.userInitiateApvPage(request);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+    /**
+     * 发起调动审批
+     * 员工
+     * @return 修改结果
+     */
+    @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请")
+    //@RequiresPermissions({"reassign:initiateApv"})
+    @PostMapping(value = "/staff/reassign/initiateApv/user")
+    public CommonResult userInitiateApv(HttpServletRequest request,@RequestBody String param) throws FebsException {
+        try {
+            return tStaffReassignService.userInitiateApv(request,param);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);

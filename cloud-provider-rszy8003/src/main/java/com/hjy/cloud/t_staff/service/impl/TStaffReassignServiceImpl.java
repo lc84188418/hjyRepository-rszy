@@ -200,7 +200,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
     /**
-     * 发起转正审批页面
+     * 管理员发起转正审批页面
      *
      * @return 修改结果
      */
@@ -216,7 +216,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         return new CommonResult(200, "success", msg, resultJson);
     }
     /**
-     * 发起调动审批
+     * 管理员发起调动审批
      *
      * @return 修改结果
      */
@@ -260,6 +260,18 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
+
+    @Override
+    public CommonResult userInitiateApvPage(HttpServletRequest request) {
+
+        return null;
+    }
+
+    @Override
+    public CommonResult userInitiateApv(HttpServletRequest request, String param) {
+        return null;
+    }
+
     @Override
     public List<TStaffReassign> selectAllPage(TStaffReassign selectEntity) {
         return tStaffReassignMapper.selectAllPage(selectEntity);
