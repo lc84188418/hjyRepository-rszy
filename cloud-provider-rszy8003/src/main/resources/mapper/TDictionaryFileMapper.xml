@@ -14,7 +14,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryFileMap">
-        select * from hjy_cloud.T_DICTIONARY_FILE
+        select * from T_DICTIONARY_FILE
         where PK_FILE_ID = #{pkFileId}
     </select>
 
@@ -22,7 +22,7 @@
     <select id="selectAllPage" resultMap="TDictionaryFileMap">
         select
         PK_FILE_ID, FILE_NAME, FILE_PATH, CREATE_TIME, UPDATE_TIME, TURN_ON, FILE_TYPE
-        from hjy_cloud.T_DICTIONARY_FILE
+        from T_DICTIONARY_FILE
         <where>
             <if test="pkFileId != null and pkFileId != ''">
                 and PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
@@ -48,11 +48,11 @@
         </where>
     </select>
     <select id="selectAll" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryFile">
-        select PK_FILE_ID, FILE_NAME, FILE_PATH,FILE_TYPE from hjy_cloud.T_DICTIONARY_FILE where TURN_ON = 1
+        select PK_FILE_ID, FILE_NAME, FILE_PATH,FILE_TYPE from T_DICTIONARY_FILE where TURN_ON = 1
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryFile">
-        insert into hjy_cloud.T_DICTIONARY_FILE
+        insert into T_DICTIONARY_FILE
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkFileId != null and pkFileId != ''">
                 PK_FILE_ID,
@@ -102,7 +102,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_FILE
+        update T_DICTIONARY_FILE
         <set>
             <if test="fileName != null and fileName != ''">
                 FILE_NAME = #{fileName,jdbcType=VARCHAR},
@@ -128,7 +128,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_FILE where PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
+        delete from T_DICTIONARY_FILE where PK_FILE_ID = #{pkFileId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

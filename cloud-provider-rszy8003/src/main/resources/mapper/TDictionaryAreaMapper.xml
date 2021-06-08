@@ -13,13 +13,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryAreaMap">
-        select * from hjy_cloud.T_DICTIONARY_AREA
+        select * from T_DICTIONARY_AREA
         where PK_AREA_ID = #{pkAreaId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_AREA
+        select count(*) from T_DICTIONARY_AREA
         where 1 = 1
         <if test="pkAreaId != null and pkAreaId != ''">
             and PK_AREA_ID = #{pkAreaId}
@@ -43,7 +43,7 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TDictionaryAreaMap">
-        select * from hjy_cloud.T_DICTIONARY_AREA
+        select * from T_DICTIONARY_AREA
         <where>
             <if test="pkAreaId != null and pkAreaId != ''">
                 and PK_AREA_ID = #{pkAreaId}
@@ -70,12 +70,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkAreaId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_AREA(AREA_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, FK_CITY_ID)
+        insert into T_DICTIONARY_AREA(AREA_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, FK_CITY_ID)
         values (#{areaName}, #{turnOn}, #{createTime}, #{updateTime}, #{fkCityId})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryArea">
-        insert into hjy_cloud.T_DICTIONARY_AREA
+        insert into T_DICTIONARY_AREA
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkAreaId != null and pkAreaId != ''">
                 PK_AREA_ID,
@@ -119,7 +119,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_AREA
+        update T_DICTIONARY_AREA
         <set>
             <if test="areaName != null and areaName != ''">
                 AREA_NAME = #{areaName},
@@ -139,7 +139,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_AREA where PK_AREA_ID = #{pkAreaId}
+        delete from T_DICTIONARY_AREA where PK_AREA_ID = #{pkAreaId}
     </delete>
 
 </mapper>

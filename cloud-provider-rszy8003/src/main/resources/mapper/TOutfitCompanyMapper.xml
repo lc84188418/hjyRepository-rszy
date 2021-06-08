@@ -28,13 +28,13 @@
     <select id="selectByPkId" resultMap="TOutfitCompanyMap">
         select
           PK_COMPANY_ID, COMPANY_NAME, COMPANY_ADDRESS, SHXYDM, CLSJ, FRDB, FRZJH, TEL, KHYH, YHZH, SJGS, INTRODUCTION, INDUSTRY, LABEL, ENTERPRISE_HONOR, REGISTERED_CAPITAL, OPERATION_STATUS, OPERATION_AREA, REMARKS
-        from hjy_cloud.T_OUTFIT_COMPANY
+        from T_OUTFIT_COMPANY
         where PK_COMPANY_ID = #{pkCompanyId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_OUTFIT_COMPANY
+        select count(*) from T_OUTFIT_COMPANY
         where 1 = 1
         <if test="pkCompanyId != null and pkCompanyId != ''">
             and PK_COMPANY_ID = #{pkCompanyId}
@@ -97,7 +97,7 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TOutfitCompanyMap">
-        select * from hjy_cloud.T_OUTFIT_COMPANY
+        select * from T_OUTFIT_COMPANY
         <where>
             <if test="pkCompanyId != null and pkCompanyId != ''">
                 and PK_COMPANY_ID = #{pkCompanyId}
@@ -159,7 +159,7 @@
         </where>
     </select>
     <select id="select_PkId_name" resultType="com.hjy.cloud.t_outfit.entity.TOutfitCompany">
-        select PK_COMPANY_ID,COMPANY_NAME from hjy_cloud.T_OUTFIT_COMPANY
+        select PK_COMPANY_ID,COMPANY_NAME from T_OUTFIT_COMPANY
     </select>
 <!--    获取该公司已经分配的部门ID-->
     <select id="selectFPDeptId" resultType="java.lang.String">
@@ -191,7 +191,7 @@ FROM
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkCompanyId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_OUTFIT_COMPANY(PK_COMPANY_ID,COMPANY_NAME, COMPANY_ADDRESS, SHXYDM, CLSJ, FRDB, FRZJH, TEL, KHYH, YHZH, SJGS, INTRODUCTION, INDUSTRY, LABEL, ENTERPRISE_HONOR, REGISTERED_CAPITAL, OPERATION_STATUS, OPERATION_AREA, REMARKS)
+        insert into T_OUTFIT_COMPANY(PK_COMPANY_ID,COMPANY_NAME, COMPANY_ADDRESS, SHXYDM, CLSJ, FRDB, FRZJH, TEL, KHYH, YHZH, SJGS, INTRODUCTION, INDUSTRY, LABEL, ENTERPRISE_HONOR, REGISTERED_CAPITAL, OPERATION_STATUS, OPERATION_AREA, REMARKS)
         values (#{companyName}, #{companyAddress}, #{shxydm}, #{clsj}, #{frdb}, #{frzjh}, #{tel}, #{khyh}, #{yhzh}, #{sjgs}, #{introduction}, #{industry}, #{label}, #{enterpriseHonor}, #{registeredCapital}, #{operationStatus}, #{operationArea}, #{remarks})
     </insert>
     <!--新增-->
@@ -331,7 +331,7 @@ FROM
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_OUTFIT_COMPANY
+        update T_OUTFIT_COMPANY
         <set>
             <if test="companyName != null and companyName != ''">
                 COMPANY_NAME = #{companyName},
@@ -393,7 +393,7 @@ FROM
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
+        delete from T_OUTFIT_COMPANY where PK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}
     </delete>
     <delete id="deleteCompanyDeptByCompanyId">
         delete from RE_COMPANY_DEPT where FK_COMPANY_ID =#{fkCompanyId,jdbcType=VARCHAR}

@@ -12,13 +12,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryPositionMap">
-        select * from hjy_cloud.T_DICTIONARY_POSITION
+        select * from T_DICTIONARY_POSITION
         where PK_POSITION_ID = #{pkPositionId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_POSITION
+        select count(*) from T_DICTIONARY_POSITION
         where 1 = 1
         <if test="pkPositionId != null and pkPositionId != ''">
             and PK_POSITION_ID = #{pkPositionId}
@@ -64,12 +64,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkPositionId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_POSITION(POSITION_NAME, CREATE_TIME, UPDATE_TIME, TURN_ON)
+        insert into T_DICTIONARY_POSITION(POSITION_NAME, CREATE_TIME, UPDATE_TIME, TURN_ON)
         values (#{positionName}, #{createTime}, #{updateTime}, #{turnOn})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryPosition">
-        insert into hjy_cloud.T_DICTIONARY_POSITION
+        insert into T_DICTIONARY_POSITION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkPositionId != null and pkPositionId != ''">
                 PK_POSITION_ID,
@@ -107,7 +107,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_POSITION
+        update T_DICTIONARY_POSITION
         <set>
             <if test="positionName != null and positionName != ''">
                 POSITION_NAME = #{positionName},
@@ -124,7 +124,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_POSITION where PK_POSITION_ID = #{pkPositionId}
+        delete from T_DICTIONARY_POSITION where PK_POSITION_ID = #{pkPositionId}
     </delete>
 
 </mapper>

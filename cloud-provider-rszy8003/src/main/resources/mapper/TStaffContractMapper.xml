@@ -22,7 +22,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffContractMap">
-        select * from hjy_cloud.T_STAFF_CONTRACT
+        select * from T_STAFF_CONTRACT
         where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
     </select>
 
@@ -47,7 +47,7 @@
         T_DICTIONARY_HTLX.CONTRAC_TYPE as typeName,
         T_OUTFIT_COMPANY.COMPANY_NAME
         FROM
-        hjy_cloud.T_STAFF_CONTRACT
+        T_STAFF_CONTRACT
         LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_CONTRACT.FK_CONTRACT_TYPE
         LEFT JOIN T_OUTFIT_COMPANY ON T_OUTFIT_COMPANY.PK_COMPANY_ID = T_STAFF_CONTRACT.FK_CONTRACT_COMPANY
         <where>
@@ -104,7 +104,7 @@
     <select id="selectAllHandlePage" resultType="com.hjy.cloud.t_staff.entity.TStaffContract"></select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffContract">
-        insert into hjy_cloud.T_STAFF_CONTRACT
+        insert into T_STAFF_CONTRACT
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkContrctId != null">
                 PK_CONTRCT_ID,
@@ -208,7 +208,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_CONTRACT
+        update T_STAFF_CONTRACT
         <set>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME = #{staffName,jdbcType=VARCHAR},
@@ -258,7 +258,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_CONTRACT where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
+        delete from T_STAFF_CONTRACT where PK_CONTRCT_ID = #{pkContrctId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

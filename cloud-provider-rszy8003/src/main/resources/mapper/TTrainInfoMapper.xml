@@ -4,7 +4,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_train.entity.TTrainInfo">
-        select * from hjy_cloud.T_TRAIN_INFO
+        select * from T_TRAIN_INFO
         where PK_INFO_ID = #{pkInfoId}
     </select>
 
@@ -63,7 +63,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_train.entity.TTrainInfo">
-        insert into hjy_cloud.T_TRAIN_INFO
+        insert into T_TRAIN_INFO
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkInfoId != null and pkInfoId != ''">
                 PK_INFO_ID,
@@ -157,7 +157,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteByPkId">
-        delete from hjy_cloud.T_TRAIN_INFO where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
+        delete from T_TRAIN_INFO where PK_INFO_ID = #{pkInfoId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

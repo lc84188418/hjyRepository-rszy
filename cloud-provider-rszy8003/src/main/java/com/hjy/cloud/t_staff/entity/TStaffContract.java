@@ -1,8 +1,9 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
+import io.swagger.annotations.ApiModel;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffContract)表实体类
@@ -11,8 +12,8 @@ import lombok.Data;
  * @since 2021-03-01 15:53:13
  */
 @Data
+@ApiModel("合同")
 public class TStaffContract {
-
     private String pkContrctId;
     //员工关联主键
     private String fkStaffId;

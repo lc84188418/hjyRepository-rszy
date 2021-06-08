@@ -1,11 +1,11 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryPositionMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
 import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
@@ -15,19 +15,16 @@ import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffReassignMapper;
-import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -103,7 +100,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
          */
         TStaffReassign temp = tStaffReassignMapper.selectByStaffId_ApvStatus(tStaffReassign.getFkStaffId());
         if(temp != null){
-            return new CommonResult(445, "error", "当前还有审批中的调动申请，请等待审批，无需再次提交", null);
+            return new CommonResult().ErrorResult("当前还有审批中的调动申请，请等待审批，无需再次提交!",null);
         }
         tStaffReassign.setPkReassignId(IDUtils.getUUID());
         tStaffReassign.setStartTime(new Date());

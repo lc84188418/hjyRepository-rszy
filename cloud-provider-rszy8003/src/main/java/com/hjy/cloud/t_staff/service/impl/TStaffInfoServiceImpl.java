@@ -201,8 +201,7 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
      */
     @Override
     public CommonResult selectById(TStaffInfo tStaffInfo) {
-        String pkId = tStaffInfo.getPkStaffId();
-        TStaffInfo entity = this.tStaffInfoMapper.selectByPkId2(pkId);
+        TStaffInfo entity = this.tStaffInfoMapper.selectByPkId2(tStaffInfo);
         JSONObject resultJson = new JSONObject();
         resultJson.put("staffInfo", entity);
         //合同类型
@@ -234,7 +233,9 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
 
     @Override
     public TStaffInfo selectByPkId2(String currentSourceId) {
-        return tStaffInfoMapper.selectByPkId2(currentSourceId);
+        TStaffInfo info = new TStaffInfo();
+        info.setPkStaffId(currentSourceId);
+        return tStaffInfoMapper.selectByPkId2(info);
     }
 
     private JSONObject getListInfo() {

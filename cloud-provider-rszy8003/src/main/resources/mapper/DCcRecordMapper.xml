@@ -11,7 +11,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="DCcRecordMap">
-        select * from hjy_cloud.D_CC_RECORD
+        select * from D_CC_RECORD
         where PK_CC_ID = #{pkCcId}
     </select>
     <!--通过实体作为筛选条件查询-->
@@ -21,7 +21,7 @@
         T_STAFF_INFO.FK_POSITION_ID,
         T_DICTIONARY_POSITION.POSITION_NAME AS stationName
         FROM
-        hjy_cloud.D_CC_RECORD t
+        D_CC_RECORD t
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.FK_STAFF_ID
         LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
         <where>
@@ -41,7 +41,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.DCcRecord">
-        insert into hjy_cloud.D_CC_RECORD
+        insert into D_CC_RECORD
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkCcId != null and pkCcId != ''">
                 PK_CC_ID,
@@ -86,7 +86,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.D_CC_RECORD
+        update D_CC_RECORD
         <set>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
@@ -103,7 +103,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.D_CC_RECORD where PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}
+        delete from D_CC_RECORD where PK_CC_ID = #{pkCcId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

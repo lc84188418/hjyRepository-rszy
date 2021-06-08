@@ -315,7 +315,9 @@ public class TKqClockServiceImpl implements TKqClockService {
         }
         ClockAddPage clockAddPage = new ClockAddPage();
         Date nowDate = new Date();
-        TStaffInfo info = tStaffInfoMapper.selectByPkId2(sysToken.getFkUserId());
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(sysToken.getFkUserId());
+        TStaffInfo info = tStaffInfoMapper.selectByPkId2(queryInfo);
         StringBuffer stringBuffer = new StringBuffer();
         //查询今日是否打过卡
         int count = tKqClockMapper.selectCountByTodayDate_StaffId(sysToken.getFkUserId());

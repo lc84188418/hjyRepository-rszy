@@ -12,13 +12,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryEducationMap">
-        select * from hjy_cloud.T_DICTIONARY_EDUCATION
+        select * from T_DICTIONARY_EDUCATION
         where PK_EDUCATION_ID = #{pkEducationId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_EDUCATION
+        select count(*) from T_DICTIONARY_EDUCATION
         where 1 = 1
         <if test="pkEducationId != null and pkEducationId != ''">
             and PK_EDUCATION_ID = #{pkEducationId}
@@ -39,7 +39,7 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TDictionaryEducationMap">
-        select * from hjy_cloud.T_DICTIONARY_EDUCATION
+        select * from T_DICTIONARY_EDUCATION
         <where>
             <if test="pkEducationId != null and pkEducationId != ''">
                 and PK_EDUCATION_ID = #{pkEducationId}
@@ -63,12 +63,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkEducationId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_EDUCATION(EDUCATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        insert into T_DICTIONARY_EDUCATION(EDUCATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
         values (#{educationName}, #{turnOn}, #{createTime}, #{updateTime})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryEducation">
-        insert into hjy_cloud.T_DICTIONARY_EDUCATION
+        insert into T_DICTIONARY_EDUCATION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkEducationId != null and pkEducationId != ''">
                 PK_EDUCATION_ID,
@@ -106,7 +106,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_EDUCATION
+        update T_DICTIONARY_EDUCATION
         <set>
             <if test="educationName != null and educationName != ''">
                 EDUCATION_NAME = #{educationName},
@@ -123,7 +123,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_EDUCATION where PK_EDUCATION_ID = #{pkEducationId}
+        delete from T_DICTIONARY_EDUCATION where PK_EDUCATION_ID = #{pkEducationId}
     </delete>
 
 </mapper>

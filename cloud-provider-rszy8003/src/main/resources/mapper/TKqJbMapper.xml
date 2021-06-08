@@ -19,7 +19,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TKqJbMap">
-        select * from hjy_cloud.T_KQ_JB
+        select * from T_KQ_JB
         where PK_JB_ID = #{pkJbId}
     </select>
 
@@ -89,7 +89,7 @@
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqJb">
-        insert into hjy_cloud.T_KQ_JB
+        insert into T_KQ_JB
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkJbId != null and pkJbId != ''">
                 PK_JB_ID,
@@ -163,7 +163,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_KQ_JB
+        update T_KQ_JB
         <set>
             <if test="jbName != null and jbName != ''">
                 JB_NAME = #{jbName,jdbcType=VARCHAR},
@@ -201,10 +201,10 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR} and IS_DEFAULT !=1
+        delete from T_KQ_JB where PK_JB_ID = #{pkJbId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteJbGroupByJbId">
-        delete from hjy_cloud.RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}
+        delete from RE_JB_GROUP where FK_JB_ID = #{fkJbId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

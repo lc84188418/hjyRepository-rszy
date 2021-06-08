@@ -141,14 +141,13 @@ public class TKqBkServiceImpl implements TKqBkService {
         String bkStewards = JsonUtil.getStringParam(json, "bkStewards");
         int bkNum = JsonUtil.getIntegerParam(json, "bkNum");
         int bkDate = JsonUtil.getIntegerParam(json, "bkDate");
-//        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
+        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
         tKqBk.setPkBkId(pkBkId);
         tKqBk.setBkName(bkName);
         tKqBk.setBkStewards(bkStewards);
         tKqBk.setBkNum(bkNum);
         tKqBk.setBkDate(bkDate);
-//        tKqBk.setTurnOn(turnOn);
-        tKqBk.setTurnOn(1);
+        tKqBk.setTurnOn(turnOn);
         int i = this.tKqBkMapper.updateByPkId(tKqBk);
         StringBuffer stringBuffer = new StringBuffer();
         if (i > 0) {

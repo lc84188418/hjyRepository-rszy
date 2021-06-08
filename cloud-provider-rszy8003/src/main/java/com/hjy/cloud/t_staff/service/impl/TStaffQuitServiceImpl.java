@@ -86,7 +86,9 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     public CommonResult insert(HttpServletRequest request,String param) throws ParseException {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         //离职人基本信息
-        TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId(sysToken.getFkUserId());
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(sysToken.getFkUserId());
+        TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
         //查询是否已添加过离职申请
         TStaffQuit selectEntity = new TStaffQuit();
         selectEntity.setFkStaffId(staffInfo.getPkStaffId());

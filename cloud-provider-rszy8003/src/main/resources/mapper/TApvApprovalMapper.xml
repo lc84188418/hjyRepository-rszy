@@ -3,13 +3,13 @@
 <mapper namespace="com.hjy.cloud.t_apv.dao.TApvApprovalMapper">
     <!--查询单个-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
-        select * from hjy_cloud.T_APV_APPROVAL
+        select * from T_APV_APPROVAL
         where PK_APPROVAL_ID = #{pkApprovalId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_APV_APPROVAL
+        select count(*) from T_APV_APPROVAL
         where 1 = 1
         <if test="pkApprovalId != null and pkApprovalId != ''">
             and PK_APPROVAL_ID = #{pkApprovalId}
@@ -42,7 +42,7 @@
         T_STAFF_INFO.FK_POSITION_ID,
         T_DICTIONARY_POSITION.POSITION_NAME AS stationName
         FROM
-        hjy_cloud.T_APV_APPROVAL t
+        T_APV_APPROVAL t
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.APPROVAL_PEOPLE
         LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
         <where>
@@ -149,7 +149,7 @@ WHERE
     <select id="selectApvByType" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
         SELECT
         PK_APPROVAL_ID,APPROVAL_TYPE,NEXT_APPROVAL,DATA_TYPE,APV_STATION,IS_ENDING,IS_START,APPROVAL_PEOPLE,
-        T_STAFF_INFO.STAFF_NAME AS peopleName,
+        T_STAFF_INFO.STAFF_NAME AS approvalPeopleName,
         T_DICTIONARY_POSITION.POSITION_NAME AS stationName
 FROM T_APV_APPROVAL
 LEFT JOIN
@@ -375,12 +375,12 @@ WHERE
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApprovalId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_APV_APPROVAL(APPROVAL_TYPE, APPROVAL_PEOPLE, NEXT_APPROVAL, DATA_TYPE, APV_STATION)
+        insert into T_APV_APPROVAL(APPROVAL_TYPE, APPROVAL_PEOPLE, NEXT_APPROVAL, DATA_TYPE, APV_STATION)
         values (#{approvalType}, #{approvalPeople}, #{nextApproval}, #{dataType}, #{apvStation})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.TApvApproval">
-        insert into hjy_cloud.T_APV_APPROVAL
+        insert into T_APV_APPROVAL
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkApprovalId != null and pkApprovalId != ''">
                 PK_APPROVAL_ID,
@@ -455,7 +455,7 @@ WHERE
         </foreach>
     </insert>
     <insert id="insertApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
-        insert into hjy_cloud.D_APV_RECORD
+        insert into D_APV_RECORD
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkRecordId != null and pkRecordId != ''">
                 PK_RECORD_ID,
@@ -506,7 +506,7 @@ WHERE
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_APV_APPROVAL
+        update T_APV_APPROVAL
         <set>
             <if test="approvalType != null and approvalType != ''">
                 APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR},
@@ -533,7 +533,7 @@ WHERE
         where PK_APPROVAL_ID = #{pkApprovalId,jdbcType=VARCHAR}
     </update>
     <update id="updateIsIngBySourceId">
-        update hjy_cloud.D_APV_RECORD set IS_ING = 0
+        update D_APV_RECORD set IS_ING = 0
         where SOURCE_ID = #{sourceId,jdbcType=VARCHAR}
     </update>
     <update id="updateApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
@@ -557,13 +557,13 @@ WHERE
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_APV_APPROVAL where PK_APPROVAL_ID = #{pkApprovalId}
+        delete from T_APV_APPROVAL where PK_APPROVAL_ID = #{pkApprovalId}
     </delete>
     <delete id="deleteByType">
-        delete from hjy_cloud.T_APV_APPROVAL where APPROVAL_TYPE = #{approvalType}
+        delete from T_APV_APPROVAL where APPROVAL_TYPE = #{approvalType}
     </delete>
     <delete id="deleteApvRecordBySourceId">
-        delete from hjy_cloud.D_APV_RECORD where SOURCE_ID = #{sourceId}
+        delete from D_APV_RECORD where SOURCE_ID = #{sourceId}
     </delete>
 
 

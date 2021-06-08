@@ -12,6 +12,10 @@ import java.util.List;
  * description:
  */
 public class ApvUtil {
+    /**
+     * 添加5个默认的审批岗位
+     * @return
+     */
     public static List<TApvApproval> getApprovalProgress(){
         List<TApvApproval> apvApprovals = new LinkedList<>();
         TApvApproval obj1 = new TApvApproval();
@@ -35,5 +39,23 @@ public class ApvUtil {
         obj5.setStationName("总经理");
         apvApprovals.add(obj5);
         return apvApprovals;
+    }
+
+    /**
+     *
+     * @param apvList 需要去重的审批流
+     * @return
+     */
+    public static List<TApvApproval> removeDuplicate(List<TApvApproval> apvList){
+        for (int m = 0; m < apvList.size()-1; m++) {
+            for (int n = apvList.size()-1; n > m; n--) {
+                if(apvList.get(n).getApprovalPeople()!= null && apvList.get(m).getApprovalPeople()!= null){
+                    if (apvList.get(n).getApprovalPeople().equals(apvList.get(m).getApprovalPeople())) {
+                        apvList.remove(n);
+                    }
+                }
+            }
+        }
+        return apvList;
     }
 }

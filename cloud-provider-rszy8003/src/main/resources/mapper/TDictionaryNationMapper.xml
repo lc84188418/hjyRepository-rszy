@@ -12,13 +12,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryNationMap">
-        select * from hjy_cloud.T_DICTIONARY_NATION
+        select * from T_DICTIONARY_NATION
         where PK_NATION_ID = #{pkNationId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_NATION
+        select count(*) from T_DICTIONARY_NATION
         where 1 = 1
         <if test="pkNationId != null and pkNationId != ''">
             and PK_NATION_ID = #{pkNationId}
@@ -41,7 +41,7 @@
     <select id="selectAllPage" resultMap="TDictionaryNationMap">
         select
         PK_NATION_ID, NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME
-        from hjy_cloud.T_DICTIONARY_NATION
+        from T_DICTIONARY_NATION
         <where>
             <if test="pkNationId != null and pkNationId != ''">
                 and PK_NATION_ID = #{pkNationId}
@@ -65,12 +65,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkNationId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_NATION(NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        insert into T_DICTIONARY_NATION(NATION_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME)
         values (#{nationName}, #{turnOn}, #{createTime}, #{updateTime})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryNation">
-        insert into hjy_cloud.T_DICTIONARY_NATION
+        insert into T_DICTIONARY_NATION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkNationId != null and pkNationId != ''">
                 PK_NATION_ID,
@@ -123,7 +123,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_NATION
+        update T_DICTIONARY_NATION
         <set>
             <if test="nationName != null and nationName != ''">
                 NATION_NAME = #{nationName},
@@ -143,7 +143,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_NATION where PK_NATION_ID = #{pkNationId}
+        delete from T_DICTIONARY_NATION where PK_NATION_ID = #{pkNationId}
     </delete>
 
 </mapper>

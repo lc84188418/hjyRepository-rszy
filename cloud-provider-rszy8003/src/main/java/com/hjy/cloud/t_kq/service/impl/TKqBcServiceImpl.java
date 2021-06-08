@@ -5,24 +5,21 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_kq.dao.TKqBcMapper;
-import com.hjy.cloud.t_kq.entity.ReGroupStaff;
 import com.hjy.cloud.t_kq.entity.TKqBc;
 import com.hjy.cloud.t_kq.service.TKqBcService;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -168,6 +165,7 @@ public class TKqBcServiceImpl implements TKqBcService {
         }
         int txdk = JsonUtil.getIntegerParam(json, "txdk");
         String bcStewards = JsonUtil.getStringParam(json, "bcStewards");
+        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
         TKqBc tKqBc = new TKqBc();
         tKqBc.setPkBcId(pkBcId);
         tKqBc.setDkNum(timeSlots.size());
@@ -176,7 +174,7 @@ public class TKqBcServiceImpl implements TKqBcService {
         tKqBc.setRestSlot(restSlot);
         tKqBc.setTxdk(txdk);
         tKqBc.setBcStewards(bcStewards);
-        tKqBc.setTurnOn(1);
+        tKqBc.setTurnOn(turnOn);
         int i = this.tKqBcMapper.updateByPkId(tKqBc);
         if (i > 0) {
             stringBuffer.append("班次数据修改成功！");

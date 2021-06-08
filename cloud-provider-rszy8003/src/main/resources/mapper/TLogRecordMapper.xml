@@ -21,7 +21,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TLogRecordMap">
-        select * from hjy_cloud.T_LOG_RECORD
+        select * from T_LOG_RECORD
         where PK_RECORD_ID = #{pkRecordId}
     </select>
 
@@ -30,7 +30,7 @@
         select
         PK_RECORD_ID, RECORD_MODULE, RECORD_TYPE, RECORD_DESC, RECORD_REQU_PARAM, RECORD_RESP_PARAM, RECORD_USER_ID,
         RECORD_USER_NAME, RECORD_FULL_NAME, RECORD_METHOD, RECORD_URL, RECORD_IP, RECORD_TIME, RECORD_VERSION
-        from hjy_cloud.T_LOG_RECORD
+        from T_LOG_RECORD
         <where>
             <if test="pkRecordId != null and pkRecordId != ''">
                 and PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
@@ -78,7 +78,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_log.entity.TLogRecord">
-        insert into hjy_cloud.T_LOG_RECORD
+        insert into T_LOG_RECORD
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkRecordId != null and pkRecordId != ''">
                 PK_RECORD_ID,
@@ -170,7 +170,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_LOG_RECORD
+        update T_LOG_RECORD
         <set>
             <if test="recordModule != null and recordModule != ''">
                 RECORD_MODULE = #{recordModule,jdbcType=VARCHAR},
@@ -217,7 +217,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_LOG_RECORD where PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
+        delete from T_LOG_RECORD where PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

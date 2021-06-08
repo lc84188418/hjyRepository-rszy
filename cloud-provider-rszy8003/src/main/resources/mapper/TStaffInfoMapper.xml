@@ -48,10 +48,6 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TStaffInfoMap">
-        select * from hjy_cloud.T_STAFF_INFO
-        where PK_STAFF_ID = #{pkStaffId}
-    </select>
     <select id="selectByPkId2" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         SELECT
         PK_STAFF_ID,
@@ -111,7 +107,25 @@
         LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_INFO.FK_HTLX_ID
         LEFT JOIN T_DICTIONARY_NATION ON T_STAFF_INFO.FK_NATION_ID = T_DICTIONARY_NATION.PK_NATION_ID
         LEFT JOIN T_DICTIONARY_EDUCATION ON T_STAFF_INFO.FK_EDUCATION_ID = T_DICTIONARY_EDUCATION.PK_EDUCATION_ID
-        where PK_STAFF_ID = #{pkStaffId}
+        where 1 = 1
+        <if test="pkStaffId != null and pkStaffId != ''">
+            and PK_STAFF_ID = #{pkStaffId}
+        </if>
+        <if test="staffName != null and staffName != ''">
+            and STAFF_NAME = #{staffName}
+        </if>
+        <if test="staffSex != null">
+            and STAFF_SEX = #{staffSex}
+        </if>
+        <if test="fkDeptId != null and fkDeptId != ''">
+            and FK_DEPT_ID = #{fkDeptId}
+        </if>
+        <if test="fkPositionId != null and fkPositionId != ''">
+            and FK_POSITION_ID = #{fkPositionId}
+        </if>
+        <if test="idCard != null and idCard != ''">
+            and ID_CARD = #{idCard}
+        </if>
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -240,20 +254,64 @@ WHERE
     </select>
     <select id="selectByIdCard" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
 SELECT
-	STAFF_NAME,
-	STAFF_SEX,
-	STAFF_AGE,
-	T_OUTFIT_DEPT.DEPT_NAME AS FK_DEPT_ID,
-	T_DICTIONARY_POSITION.POSITION_NAME AS FK_POSITION_ID,
-	ID_CARD,
-	ENTRY_TIME
-FROM
-	T_STAFF_INFO
-	LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
-	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
-WHERE
-	T_STAFF_INFO.ID_CARD = #{idcard}
-
+        PK_STAFF_ID,
+        STAFF_NAME,
+        STAFF_SEX,
+        STAFF_AGE,
+        STAFF_STATUS,
+        T_STAFF_INFO.FK_DEPT_ID,
+        T_OUTFIT_DEPT.DEPT_NAME AS deptName,
+        T_STAFF_INFO.FK_POSITION_ID,
+        T_DICTIONARY_POSITION.POSITION_NAME AS positionName,
+        T_STAFF_INFO.FK_WORKADDRESS_ID,
+        T_OUTFIT_WORKADDRESS.WORKADRESS_NAME AS workAddressName,
+        ENTRY_TIME,
+        T_STAFF_INFO.FK_HTLX_ID,
+        T_DICTIONARY_HTLX.CONTRAC_TYPE AS htlxName,
+        RECRUIT_WAY,
+        SYQDQ_TIME,
+        ID_TYPE,
+        ID_CARD,
+        STAFF_EMAIL,
+        STAFF_TEL,
+        NATIVE_PLACE,
+        BIRTHDAY,
+        T_STAFF_INFO.FK_NATION_ID,
+        T_DICTIONARY_NATION.NATION_NAME AS nationName,
+        HKSZD,
+        POLITIVAL_OUTLOOK,
+        CURRENT_ADDRESS,
+        IS_MARRY,
+        T_STAFF_INFO.FK_EDUCATION_ID,
+        T_DICTIONARY_EDUCATION.EDUCATION_NAME AS educationName,
+        T_STAFF_INFO.ZGXLBYYX,
+        T_STAFF_INFO.WY_DJ,
+        T_STAFF_INFO.JSJ_DJ,
+        T_STAFF_INFO.MAJOR,
+        T_STAFF_INFO.BANK_NAME,
+        T_STAFF_INFO.BANK_ID,
+        T_STAFF_INFO.BRANCH_BANK,
+        T_STAFF_INFO.SYR,
+        T_STAFF_INFO.PICTURE_PATH,
+        T_STAFF_INFO.HBLX_NAME1,
+        T_STAFF_INFO.OBJECT1,
+        T_STAFF_INFO.HBLX_NAME2,
+        T_STAFF_INFO.OBJECT2,
+        T_STAFF_INFO.HBLX_NAME3,
+        T_STAFF_INFO.OBJECT3,
+        T_STAFF_INFO.HBLX_NAME4,
+        T_STAFF_INFO.OBJECT4,
+        T_STAFF_INFO.HBLX_NAME5,
+        T_STAFF_INFO.OBJECT5
+        FROM
+        T_STAFF_INFO
+        LEFT JOIN T_OUTFIT_DEPT ON T_STAFF_INFO.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_STAFF_INFO.FK_POSITION_ID = T_DICTIONARY_POSITION.PK_POSITION_ID
+        LEFT JOIN T_OUTFIT_WORKADDRESS ON T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID = T_STAFF_INFO.FK_WORKADDRESS_ID
+        LEFT JOIN T_DICTIONARY_HTLX ON T_DICTIONARY_HTLX.PK_HTLX_ID = T_STAFF_INFO.FK_HTLX_ID
+        LEFT JOIN T_DICTIONARY_NATION ON T_STAFF_INFO.FK_NATION_ID = T_DICTIONARY_NATION.PK_NATION_ID
+        LEFT JOIN T_DICTIONARY_EDUCATION ON T_STAFF_INFO.FK_EDUCATION_ID = T_DICTIONARY_EDUCATION.PK_EDUCATION_ID
+        where T_STAFF_INFO.ID_CARD = #{idcard}
     </select>
 <!--查询还没添加工资条的员工列表，不包括已经添加过的员工-->
     <select id="selectEnableAddSalary" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
@@ -265,9 +323,21 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(T_STAFF_SALARY.FK_ST
 SELECT T_STAFF_INFO.PK_STAFF_ID,T_STAFF_INFO.STAFF_NAME
 FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_STAFF_ID) FROM RE_GROUP_STAFF)
     </select>
+    <select id="selectUserIdByDept" resultType="java.lang.String">
+        select distinct (PK_STAFF_ID) from T_STAFF_INFO where FK_DEPT_ID = #{fkDeptId}
+    </select>
+    <select id="selectByIds" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+        select *
+        from T_STAFF_INFO
+        where PK_STAFF_ID in
+        <foreach item="item" collection="ids" separator="," open="(" close=")" index="">
+            #{item, jdbcType=VARCHAR}
+        </foreach>
+        order by ENTRY_TIME DESC
+    </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_STAFF_INFO(STAFF_NAME, STAFF_SEX, STAFF_AGE, FK_DEPT_ID, FK_POSITION_ID, ENTRY_TIME, FK_HTLX_ID, RECRUIT_WAY, SYQDQ_TIME, ID_TYPE, ID_CARD, NATIVE_PLACE, BIRTHDAY, FK_NATION_ID, HKSZD, POLITIVAL_OUTLOOK, CURRENT_ADDRESS, IS_MARRY, FK_EDUCATION_ID, ZGXLBYYX, WY_DJ, JSJ_DJ, MAJOR, BANK_NAME, BANK_ID, BRANCH_BANK, SYR, PICTURE_PATH, HBLX_NAME1, OBJECT1, HBLX_NAME2, OBJECT2, HBLX_NAME3, OBJECT3, HBLX_NAME4, OBJECT4, HBLX_NAME5, OBJECT5)
+        insert into T_STAFF_INFO(STAFF_NAME, STAFF_SEX, STAFF_AGE, FK_DEPT_ID, FK_POSITION_ID, ENTRY_TIME, FK_HTLX_ID, RECRUIT_WAY, SYQDQ_TIME, ID_TYPE, ID_CARD, NATIVE_PLACE, BIRTHDAY, FK_NATION_ID, HKSZD, POLITIVAL_OUTLOOK, CURRENT_ADDRESS, IS_MARRY, FK_EDUCATION_ID, ZGXLBYYX, WY_DJ, JSJ_DJ, MAJOR, BANK_NAME, BANK_ID, BRANCH_BANK, SYR, PICTURE_PATH, HBLX_NAME1, OBJECT1, HBLX_NAME2, OBJECT2, HBLX_NAME3, OBJECT3, HBLX_NAME4, OBJECT4, HBLX_NAME5, OBJECT5)
         values (#{staffName}, #{staffSex}, #{staffAge}, #{fkDeptId}, #{fkPositionId}, #{entryTime}, #{fkHtlxId}, #{recruitWay}, #{syqdqTime}, #{idType}, #{idCard}, #{nativePlace}, #{birthday}, #{fkNationId}, #{hkszd}, #{politivalOutlook}, #{currentAddress}, #{isMarry}, #{fkEducationId}, #{zgxlbyyx}, #{wyDj}, #{jsjDj}, #{major}, #{bankName}, #{bankId}, #{branchBank}, #{syr}, #{picturePath}, #{hblxName1}, #{object1}, #{hblxName2}, #{object2}, #{hblxName3}, #{object3}, #{hblxName4}, #{object4}, #{hblxName5}, #{object5})
     </insert>
     <!--新增-->
@@ -538,7 +608,7 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_INFO
+        update T_STAFF_INFO
         <set>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME = #{staffName},
@@ -663,7 +733,10 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_INFO where PK_STAFF_ID = #{pkStaffId}
+        delete from T_STAFF_INFO where PK_STAFF_ID = #{pkStaffId}
+    </delete>
+    <delete id="deleteDeptUserByDeptId">
+        update T_STAFF_INFO set FK_DEPT_ID = null where FK_DEPT_ID= #{fkDeptId}
     </delete>
 
 </mapper>

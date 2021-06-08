@@ -18,7 +18,7 @@
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TOutfitDeptMap">
         select PK_DEPT_ID,DEPT_NAME,DEPT_ADDRESS,CREATE_TIME,SUPERIOR_DEPT,DEPT_LEADER,REMARKS,MODIFY_TIME,LEADER_CARD,MAX_NUM,T_STAFF_INFO.STAFF_NAME AS leaderName
-        from hjy_cloud.T_OUTFIT_DEPT
+        from T_OUTFIT_DEPT
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_OUTFIT_DEPT.DEPT_LEADER
         where PK_DEPT_ID = #{pkDeptId}
     </select>
@@ -26,7 +26,7 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TOutfitDeptMap">
-        select * from hjy_cloud.T_OUTFIT_DEPT
+        select * from T_OUTFIT_DEPT
         <where>
             <if test="pkDeptId != null and pkDeptId != ''">
                 and PK_DEPT_ID = #{pkDeptId}
@@ -106,7 +106,7 @@ FROM
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkDeptId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_OUTFIT_DEPT(DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME, LEADER_CARD, MAX_NUM)
+        insert into T_OUTFIT_DEPT(DEPT_NAME, DEPT_ADDRESS, CREATE_TIME, SUPERIOR_DEPT, DEPT_LEADER, REMARKS, MODIFY_TIME, LEADER_CARD, MAX_NUM)
         values (#{deptName}, #{deptAddress}, #{createTime}, #{superiorDept}, #{deptLeader}, #{remarks}, #{modifyTime}, #{leaderCard}, #{maxNum})
     </insert>
     <!--No problem 新增数据-->
@@ -212,7 +212,7 @@ FROM
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_OUTFIT_DEPT
+        update T_OUTFIT_DEPT
         <set>
             <if test="deptName != null and deptName != ''">
                 DEPT_NAME = #{deptName},
@@ -248,7 +248,7 @@ FROM
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId}
+        delete from T_OUTFIT_DEPT where PK_DEPT_ID = #{pkDeptId}
     </delete>
     <delete id="deleteDeptUserByDeptId_CompanyId">
         delete from RE_DEPT_USER

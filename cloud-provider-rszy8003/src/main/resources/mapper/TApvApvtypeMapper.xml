@@ -16,13 +16,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TApvApvtypeMap">
-        select * from hjy_cloud.T_APV_APVTYPE
+        select * from T_APV_APVTYPE
         where PK_APVTYPE_ID = #{pkApvtypeId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_APV_APVTYPE
+        select count(*) from T_APV_APVTYPE
         where 1 = 1
         <if test="pkApvtypeId != null and pkApvtypeId != ''">
             and PK_APVTYPE_ID = #{pkApvtypeId}
@@ -52,7 +52,7 @@
 
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TApvApvtypeMap">
-        select * from hjy_cloud.T_APV_APVTYPE
+        select * from T_APV_APVTYPE
         <where>
             <if test="apvtypeName != null and apvtypeName != ''">
                 and APVTYPE_NAME = #{apvtypeName}
@@ -80,12 +80,12 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkApvtypeId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_APV_APVTYPE(APVTYPE_NAME, CREATE_TIME, UPDATE_TIME, TURN_ON, OPERATE_PEOPLE, PROCESS_DESC, FK_GROUP_ID)
+        insert into T_APV_APVTYPE(APVTYPE_NAME, CREATE_TIME, UPDATE_TIME, TURN_ON, OPERATE_PEOPLE, PROCESS_DESC, FK_GROUP_ID)
         values (#{apvtypeName}, #{createTime}, #{updateTime}, #{turnOn}, #{operatePeople}, #{processDesc}, #{fkGroupId})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.TApvApvtype">
-        insert into hjy_cloud.T_APV_APVTYPE
+        insert into T_APV_APVTYPE
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkApvtypeId != null and pkApvtypeId != ''">
                 PK_APVTYPE_ID,
@@ -147,7 +147,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_APV_APVTYPE
+        update T_APV_APVTYPE
         <set>
             <if test="apvtypeName != null and apvtypeName != ''">
                 APVTYPE_NAME = #{apvtypeName},
@@ -176,7 +176,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_APV_APVTYPE where PK_APVTYPE_ID = #{pkApvtypeId}
+        delete from T_APV_APVTYPE where PK_APVTYPE_ID = #{pkApvtypeId}
     </delete>
 
 </mapper>

@@ -19,11 +19,11 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffQuitMap">
-        select * from hjy_cloud.T_STAFF_QUIT
+        select * from T_STAFF_QUIT
         where PK_QUIT_ID = #{pkQuitId}
     </select>
     <select id="selectByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffQuit">
-        select * from hjy_cloud.T_STAFF_QUIT
+        select * from T_STAFF_QUIT
         where FK_STAFF_ID = #{fkStaffId}
     </select>
     <!--通过实体作为筛选条件查询-->
@@ -44,7 +44,7 @@
         T_STAFF_INFO.STAFF_NAME,
         T_OUTFIT_DEPT.DEPT_NAME,
         T_DICTIONARY_POSITION.POSITION_NAME
-        from hjy_cloud.T_STAFF_QUIT
+        from T_STAFF_QUIT
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_STAFF_QUIT.FK_STAFF_ID
         LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_QUIT.FK_DEPT_ID
         LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_QUIT.POSITION
@@ -89,7 +89,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffQuit">
-        insert into hjy_cloud.T_STAFF_QUIT
+        insert into T_STAFF_QUIT
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkQuitId != null and pkQuitId != ''">
                 PK_QUIT_ID,
@@ -169,7 +169,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_QUIT
+        update T_STAFF_QUIT
         <set>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
@@ -210,7 +210,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_QUIT where PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
+        delete from T_STAFF_QUIT where PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

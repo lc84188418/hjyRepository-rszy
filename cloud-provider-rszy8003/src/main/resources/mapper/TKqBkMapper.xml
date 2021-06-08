@@ -73,7 +73,7 @@ GROUP BY
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBk">
-        insert into hjy_cloud.T_KQ_BK
+        insert into T_KQ_BK
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkBkId != null and pkBkId != ''">
                 PK_BK_ID,
@@ -135,7 +135,7 @@ GROUP BY
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_KQ_BK
+        update T_KQ_BK
         <set>
             <if test="bkName != null and bkName != ''">
                 BK_NAME = #{bkName,jdbcType=VARCHAR},
@@ -161,10 +161,10 @@ GROUP BY
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR} and IS_DEFAULT !=1
+        delete from T_KQ_BK where PK_BK_ID = #{pkBkId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteBkGroupByBkId">
-        delete from hjy_cloud.RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}
+        delete from RE_BK_GROUP where FK_BK_ID = #{fkBkId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

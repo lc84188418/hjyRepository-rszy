@@ -18,7 +18,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TLogExceptionMap">
-        select * from hjy_cloud.T_LOG_EXCEPTION
+        select * from T_LOG_EXCEPTION
         where PK_EXC_ID = #{pkExcId}
     </select>
 
@@ -27,7 +27,7 @@
         select
         PK_EXC_ID, EXC_REQU_PARAM, EXC_NAME, EXC_MSG, OPER_USER_ID, OPER_USER_NAME, OPER_METHOD, OPER_URL, OPER_IP,
         OPER_VERSION, EXC_TIME
-        from hjy_cloud.T_LOG_EXCEPTION
+        from T_LOG_EXCEPTION
         <where>
             <if test="pkExcId != null and pkExcId != ''">
                 and PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
@@ -66,7 +66,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_log.entity.TLogException">
-        insert into hjy_cloud.T_LOG_EXCEPTION
+        insert into T_LOG_EXCEPTION
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkExcId != null and pkExcId != ''">
                 PK_EXC_ID,
@@ -140,7 +140,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_LOG_EXCEPTION
+        update T_LOG_EXCEPTION
         <set>
             <if test="excRequParam != null and excRequParam != ''">
                 EXC_REQU_PARAM = #{excRequParam,jdbcType=VARCHAR},
@@ -178,7 +178,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_LOG_EXCEPTION where PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
+        delete from T_LOG_EXCEPTION where PK_EXC_ID = #{pkExcId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

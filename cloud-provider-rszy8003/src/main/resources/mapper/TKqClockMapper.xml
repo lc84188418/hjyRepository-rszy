@@ -37,7 +37,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_kq.entity.TKqClock">
-        select * from hjy_cloud.T_KQ_CLOCK
+        select * from T_KQ_CLOCK
         where PK_CLOCK_ID = #{pkClockId}
     </select>
     <select id="selectGroupStaffByStaffId" resultType="com.hjy.cloud.t_kq.entity.ReGroupStaff">
@@ -71,7 +71,7 @@ WHERE
     </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TKqClockMap">
-        select * from hjy_cloud.T_KQ_CLOCK
+        select * from T_KQ_CLOCK
         <where>
             <if test="pkClockId != null and pkClockId != ''">
                 and PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}
@@ -170,7 +170,7 @@ WHERE
 	t.ON_IS_WQ,
 	t.OFF_IS_WQ
 FROM
-	hjy_cloud.T_KQ_CLOCK t
+	T_KQ_CLOCK t
         where t.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
         and DATE_FORMAT(t.ON_DUTY_TIME,'%Y-%m') = #{monthDate,jdbcType=VARCHAR}
         <if test="isWorkingHours != null and isWorkingHours != ''">
@@ -199,7 +199,7 @@ FROM
 	t.ON_IS_WQ,
 	t.OFF_IS_WQ
 FROM
-	hjy_cloud.T_KQ_CLOCK t
+	T_KQ_CLOCK t
         where t.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
         and t.WORKING_HOURS != '' and t.TODAY_DATE >= #{startDate,jdbcType=VARCHAR} and t.TODAY_DATE <![CDATA[<=]]> #{endDate,jdbcType=VARCHAR}
     </select>
@@ -215,7 +215,7 @@ FROM
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqClock">
-        insert into hjy_cloud.T_KQ_CLOCK
+        insert into T_KQ_CLOCK
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkClockId != null and pkClockId != ''">
                 PK_CLOCK_ID,
@@ -337,7 +337,7 @@ FROM
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_KQ_CLOCK
+        update T_KQ_CLOCK
         <set>
             <if test="onDutyTime != null">
                 ON_DUTY_TIME = #{onDutyTime,jdbcType=TIMESTAMP},
@@ -402,7 +402,7 @@ FROM
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_CLOCK where PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}
+        delete from T_KQ_CLOCK where PK_CLOCK_ID = #{pkClockId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

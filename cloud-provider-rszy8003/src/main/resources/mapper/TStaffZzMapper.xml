@@ -17,11 +17,11 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffZzMap">
-        select * from hjy_cloud.T_STAFF_ZZ
+        select * from T_STAFF_ZZ
         where PK_ZZ_ID = #{pkZzId}
     </select>
     <select id="selectByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffZz">
-        select * from hjy_cloud.T_STAFF_ZZ
+        select * from T_STAFF_ZZ
         where FK_STAFF_ID = #{fkStaffId}
     </select>
 
@@ -82,7 +82,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffZz">
-        insert into hjy_cloud.T_STAFF_ZZ
+        insert into T_STAFF_ZZ
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkZzId != null and pkZzId != ''">
                 PK_ZZ_ID,
@@ -150,7 +150,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_ZZ
+        update T_STAFF_ZZ
         <set>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
@@ -185,7 +185,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_ZZ where PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
+        delete from T_STAFF_ZZ where PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

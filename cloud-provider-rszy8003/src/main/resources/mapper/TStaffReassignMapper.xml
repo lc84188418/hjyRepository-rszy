@@ -27,7 +27,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffReassignMap">
-        select * from hjy_cloud.T_STAFF_REASSIGN
+        select * from T_STAFF_REASSIGN
         where PK_REASSIGN_ID = #{pkReassignId}
     </select>
 
@@ -146,7 +146,7 @@ FROM
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffReassign">
-        insert into hjy_cloud.T_STAFF_REASSIGN
+        insert into T_STAFF_REASSIGN
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkReassignId != null and pkReassignId != ''">
                 PK_REASSIGN_ID,
@@ -262,7 +262,7 @@ FROM
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_REASSIGN
+        update T_STAFF_REASSIGN
         <set>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
@@ -324,7 +324,7 @@ FROM
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+        delete from T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

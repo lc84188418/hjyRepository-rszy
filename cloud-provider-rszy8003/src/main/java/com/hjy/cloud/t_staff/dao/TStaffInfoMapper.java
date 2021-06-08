@@ -15,12 +15,11 @@ public interface TStaffInfoMapper {
 
     /**
      * 通过ID查询单条数据
-     *
-     * @param pkStaffId 主键
+     *  但是该方法的参数，必须能保证该结果的唯一性，否则就是多结果用List接收了
      * @return 实例对象
      */
-    TStaffInfo selectByPkId(@Param("pkStaffId")String pkStaffId);
-    TStaffInfo selectByPkId2(@Param("pkStaffId")String pkStaffId);
+//    TStaffInfo selectByPkId2(@Param("pkStaffId")String pkStaffId);
+    TStaffInfo selectByPkId2(TStaffInfo tStaffInfo);
 
     /**
      * 通过实体作为筛选条件查询
@@ -76,4 +75,10 @@ public interface TStaffInfoMapper {
      * 查询还没添加考勤组的员工列表，不包括已经添加过的员工
      */
     List<TStaffInfo> selectAll_KX_StaffId_Name();
+
+    List<TStaffInfo> selectByIds(@Param("ids") List<String> deptUserList);
+    //通过部门查询该部门下的所属员工id
+    List<String> selectUserIdByDept(String fkDeptId);
+    //
+    int deleteDeptUserByDeptId(@Param("fkDeptId")String pkDeptId);
 }

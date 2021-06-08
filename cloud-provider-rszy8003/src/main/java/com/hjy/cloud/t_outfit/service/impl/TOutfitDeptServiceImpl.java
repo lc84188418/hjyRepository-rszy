@@ -16,15 +16,11 @@ import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
-import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -133,7 +129,9 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
             /**
              * 再删除公司-员工关联表中数据
              */
-            int k = tOutfitDeptMapper.deleteDeptUserByDeptId(tOutfitDept.getPkDeptId());
+//            int k = tOutfitDeptMapper.deleteDeptUserByDeptId(tOutfitDept.getPkDeptId());
+            //现在的版本是员工表中
+            int k = tStaffInfoMapper.deleteDeptUserByDeptId(tOutfitDept.getPkDeptId());
             if(k > 0){
                 msg = "部门数据删除成功!已将该部门下的员工移除！";
             }
@@ -194,15 +192,14 @@ public class TOutfitDeptServiceImpl implements TOutfitDeptService {
         //通过deptIdStr查找部门
         TOutfitDept tOutfitDept = tOutfitDeptMapper.selectByPkId(fkDeptId);
         jsonObject.put("dept",tOutfitDept);
-        //查找所有用户
-        List<TStaffInfo> tStaffInfos = tStaffInfoMapper.selectAll();
-        jsonObject.put("tStaffInfos",tStaffInfos);
-        //查询可进行配置的员工ID
-        List<String> deptUserList = tOutfitDeptMapper.selectDeptUser_userIded(fkDeptId);
-        jsonObject.put("ids",deptUserList);
+        List<String> deptUserList = tStaffInfoMapper.selectUserIdByDept(fkDeptId);
         //查询已分配的用户部门并进行回显
-        List<String> deptUserList2 = tOutfitDeptMapper.selectDeptUserByDept(fkDeptId);
-        jsonObject.put("idsFP",deptUserList2);
+        if(deptUserList != null && deptUserList.size() > 0){
+            List<TStaffInfo> deptUserList2 = tStaffInfoMapper.selectByIds(deptUserList);
+            jsonObject.put("idsFP",deptUserList2);
+        }else {
+            jsonObject.put("idsFP",null);
+        }
         return new CommonResult(200,"success","获取部门已分配用户成功!",jsonObject);
     }
     /**

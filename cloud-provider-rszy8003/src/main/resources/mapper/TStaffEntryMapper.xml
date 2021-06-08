@@ -99,11 +99,11 @@
     </select>
     <!--查询单个-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
-        select * from hjy_cloud.T_STAFF_ENTRY
+        select * from T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
     <select id="selectApplyPeople" resultType="java.lang.String">
-        select STAFF_NAME from hjy_cloud.T_STAFF_ENTRY
+        select STAFF_NAME from T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
     <select id="selectByPkId2" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">
@@ -250,7 +250,7 @@
 
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffEntry">
-        insert into hjy_cloud.T_STAFF_ENTRY
+        insert into T_STAFF_ENTRY
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkEntryId != null and pkEntryId != ''">
                 PK_ENTRY_ID,
@@ -366,7 +366,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_ENTRY
+        update T_STAFF_ENTRY
         <set>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME = #{staffName},
@@ -434,7 +434,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_ENTRY where PK_ENTRY_ID = #{pkEntryId}
+        delete from T_STAFF_ENTRY where PK_ENTRY_ID = #{pkEntryId}
     </delete>
 
 </mapper>

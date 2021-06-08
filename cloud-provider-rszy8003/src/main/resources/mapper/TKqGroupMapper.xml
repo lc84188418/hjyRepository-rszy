@@ -33,7 +33,7 @@ SELECT
 	T_KQ_GROUP.*,
 	T_STAFF_INFO.STAFF_NAME AS stewardsName
 FROM
-	hjy_cloud.T_KQ_GROUP
+	T_KQ_GROUP
 	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_GROUP.GROUP_STEWARDS
 WHERE
 	T_KQ_GROUP.PK_GROUP_ID = #{pkGroupId}
@@ -45,7 +45,7 @@ WHERE
         T_KQ_GROUP.*,
         T_STAFF_INFO.STAFF_NAME AS stewardsName
         FROM
-        hjy_cloud.T_KQ_GROUP
+        T_KQ_GROUP
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_GROUP.GROUP_STEWARDS
         <where>
             <if test="pkGroupId != null and pkGroupId != ''">
@@ -126,11 +126,11 @@ WHERE
 	RE_JB_GROUP.FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </select>
     <select id="selectAllId_name" resultType="com.hjy.cloud.t_kq.entity.TKqGroup">
-        SELECT PK_GROUP_ID,GROUP_NAME FROM hjy_cloud.T_KQ_GROUP where TURN_ON = 1
+        SELECT PK_GROUP_ID,GROUP_NAME FROM T_KQ_GROUP where TURN_ON = 1
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqGroup">
-        insert into hjy_cloud.T_KQ_GROUP
+        insert into T_KQ_GROUP
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkGroupId != null and pkGroupId != ''">
                 PK_GROUP_ID,
@@ -341,11 +341,11 @@ WHERE
         delete from RE_JB_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </delete>
     <delete id="deleteBkGroupByGroupId">
-        delete from hjy_cloud.RE_BK_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
+        delete from RE_BK_GROUP where FK_GROUP_ID = #{fkGroupId,jdbcType=VARCHAR}
     </delete>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_KQ_GROUP
+        update T_KQ_GROUP
         <set>
             <if test="groupName != null and groupName != ''">
                 GROUP_NAME = #{groupName,jdbcType=VARCHAR},
@@ -416,7 +416,7 @@ WHERE
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+        delete from T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

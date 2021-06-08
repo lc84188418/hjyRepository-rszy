@@ -17,7 +17,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffExperienceJyMap">
-        select * from hjy_cloud.T_STAFF_EXPERIENCE_JY
+        select * from T_STAFF_EXPERIENCE_JY
         where PK_EXPERIENCE_ID = #{pkExperienceId}
     </select>
 
@@ -26,7 +26,7 @@
         select
         PK_EXPERIENCE_ID, SCHOOL_NAME, MAJOR_NAME, ADMISSION_TIME, GRADUATION_TIME, FK_EDUCATION_ID, IS_DEGREE,
         CARD1_PATH, CARD2_PATH, FK_STAFF_ID
-        from hjy_cloud.T_STAFF_EXPERIENCE_JY
+        from T_STAFF_EXPERIENCE_JY
         <where>
             <if test="pkExperienceId != null and pkExperienceId != ''">
                 and PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
@@ -62,7 +62,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffExperienceJy">
-        insert into hjy_cloud.T_STAFF_EXPERIENCE_JY
+        insert into T_STAFF_EXPERIENCE_JY
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkExperienceId != null and pkExperienceId != ''">
                 PK_EXPERIENCE_ID,
@@ -130,7 +130,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_STAFF_EXPERIENCE_JY
+        update T_STAFF_EXPERIENCE_JY
         <set>
             <if test="schoolName != null and schoolName != ''">
                 SCHOOL_NAME = #{schoolName,jdbcType=VARCHAR},
@@ -165,7 +165,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_STAFF_EXPERIENCE_JY where PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
+        delete from T_STAFF_EXPERIENCE_JY where PK_EXPERIENCE_ID = #{pkExperienceId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

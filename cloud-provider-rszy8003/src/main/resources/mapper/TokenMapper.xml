@@ -120,7 +120,7 @@
     </delete>
     <!--No problem    通过tokenid查找token-->
     <select id="findByToken" resultType="com.hjy.cloud.t_system.entity.SysToken" parameterType="java.lang.String">
-        select * from hjy_cloud.T_SYS_TOKEN where PK_TOKEN_ID = #{accessToken,jdbcType=VARCHAR}
+        select * from T_SYS_TOKEN where PK_TOKEN_ID = #{accessToken,jdbcType=VARCHAR}
     </select>
     <!--No problem    通过userid查找token-->
     <select id="selectByUserId" resultType="com.hjy.cloud.t_system.entity.SysToken" parameterType="java.lang.String">

@@ -16,7 +16,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TKqBcMap">
-        select * from hjy_cloud.T_KQ_BC
+        select * from T_KQ_BC
         where PK_BC_ID = #{pkBcId}
     </select>
 
@@ -24,7 +24,7 @@
     <select id="selectAllPage" resultType="com.hjy.cloud.t_kq.entity.TKqBc">
         select T_KQ_BC.*,
         T_STAFF_INFO.STAFF_NAME AS stewardsName
-        from hjy_cloud.T_KQ_BC
+        from T_KQ_BC
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_BC.BC_STEWARDS
         <where>
             <if test="pkBcId != null and pkBcId != ''">
@@ -59,13 +59,13 @@
     <select id="selectDefaultBc" resultType="com.hjy.cloud.t_kq.entity.TKqBc">
         select T_KQ_BC.*,
         T_STAFF_INFO.STAFF_NAME AS stewardsName
-        from hjy_cloud.T_KQ_BC
+        from T_KQ_BC
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_KQ_BC.BC_STEWARDS
         where IS_DEFAULT = 1
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_kq.entity.TKqBc">
-        insert into hjy_cloud.T_KQ_BC
+        insert into T_KQ_BC
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkBcId != null and pkBcId != ''">
                 PK_BC_ID,
@@ -127,7 +127,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_KQ_BC
+        update T_KQ_BC
         <set>
             <if test="dkNum != null">
                 DK_NUM = #{dkNum,jdbcType=INTEGER},
@@ -159,7 +159,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_KQ_BC where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR} and IS_DEFAULT !=1
+        delete from T_KQ_BC where PK_BC_ID = #{pkBcId,jdbcType=VARCHAR} and IS_DEFAULT !=1
     </delete>
     <delete id="deleteGroupBcByBcId">
         delete from RE_GROUP_WORKINGDAYS where FK_BC_ID = #{fkBcId,jdbcType=VARCHAR}

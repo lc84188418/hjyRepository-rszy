@@ -947,52 +947,57 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //且为入职审批即approvalType=12
             TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
             //先查询该员工是否已被录入过
-            TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId(sourceId);
-            if(selectInfo != null){
-                stringBuffer.append("该员工档案已被录入过系统，无法再次录入！");
+            TStaffInfo queryInfo = new TStaffInfo();
+            queryInfo.setPkStaffId(sourceId);
+            TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId2(queryInfo);
+            if(selectInfo == null){
+                /**
+                 * 添加员工信息
+                 */
+                TStaffInfo tStaffInfo = new TStaffInfo();
+                tStaffInfo.setPkStaffId(tStaffEntry.getPkEntryId());
+                tStaffInfo.setStaffName(tStaffEntry.getStaffName());
+                tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
+                tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
+                tStaffInfo.setStaffStatus(1);
+                tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
+                tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
+                tStaffInfo.setFkWorkaddressId(tStaffEntry.getWorkAddress());
+                tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
+                tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
+                tStaffInfo.setIdType(tStaffEntry.getIdType());
+                tStaffInfo.setIdCard(tStaffEntry.getIdCard());
+                tStaffInfo.setStaffEmail(tStaffEntry.getEmail());
+                tStaffInfo.setStaffTel(tStaffEntry.getStaffTel());
+                //其他信息需要后期添加
+                int i = tStaffInfoMapper.insertSelective(tStaffInfo);
+                if(i > 0){
+                    stringBuffer.append("入职审批通过，已录入员工信息！");
+                }
             }
-            /**
-             * 添加员工信息
-             */
-            TStaffInfo tStaffInfo = new TStaffInfo();
-            tStaffInfo.setPkStaffId(tStaffEntry.getPkEntryId());
-            tStaffInfo.setStaffName(tStaffEntry.getStaffName());
-            tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
-            tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
-            tStaffInfo.setStaffStatus(1);
-            tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
-            tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
-            tStaffInfo.setFkWorkaddressId(tStaffEntry.getWorkAddress());
-            tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
-            tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
-            tStaffInfo.setIdType(tStaffEntry.getIdType());
-            tStaffInfo.setIdCard(tStaffEntry.getIdCard());
-            tStaffInfo.setStaffEmail(tStaffEntry.getEmail());
-            tStaffInfo.setStaffTel(tStaffEntry.getStaffTel());
-            //其他信息需要后期添加
-            int i = tStaffInfoMapper.insertSelective(tStaffInfo);
-            if(i > 0){
-                stringBuffer.append("入职审批通过，已录入员工信息！");
-            }
-            /**
-             * 添加系统用户
-             */
-            TSysUser tSysUser = new TSysUser();
-            tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
-            tSysUser.setUsername(tStaffEntry.getStaffName());
-            String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
-            tSysUser.setPassword(password);
-            tSysUser.setEmail(tStaffEntry.getEmail());
-            tSysUser.setTel(tStaffEntry.getStaffTel());
-            tSysUser.setIdcard(tStaffEntry.getIdCard());
-            tSysUser.setFullName(tStaffEntry.getStaffName());
-            tSysUser.setWorkPosition(tStaffEntry.getStaffPosition());
-            tSysUser.setEnableStatus("1");
-            tSysUser.setCreateTime(new Date());
-            tSysUser.setModifyTime(new Date());
-            int j = tSysUserMapper.insertSelective(tSysUser);
-            if(j > 0){
-                stringBuffer.append("已创建系统账户！");
+            //先查询该员工是否已有系统账户
+            TSysUser selectUser = tSysUserMapper.selectById(tStaffEntry.getPkEntryId());
+            if(selectUser == null){
+                /**
+                 * 添加系统用户
+                 */
+                TSysUser tSysUser = new TSysUser();
+                tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
+                tSysUser.setUsername(tStaffEntry.getStaffName());
+                String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
+                tSysUser.setPassword(password);
+                tSysUser.setEmail(tStaffEntry.getEmail());
+                tSysUser.setTel(tStaffEntry.getStaffTel());
+                tSysUser.setIdcard(tStaffEntry.getIdCard());
+                tSysUser.setFullName(tStaffEntry.getStaffName());
+                tSysUser.setWorkPosition(tStaffEntry.getStaffPosition());
+                tSysUser.setEnableStatus("1");
+                tSysUser.setCreateTime(new Date());
+                tSysUser.setModifyTime(new Date());
+                int j = tSysUserMapper.insertSelective(tSysUser);
+                if(j > 0){
+                    stringBuffer.append("已创建系统账户！");
+                }
             }
         }else if ("13".equals(approvalType)){
             //转正申请
@@ -1042,16 +1047,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             }
         }
         return stringBuffer;
-    }
-
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        TApvApproval entity = new TApvApproval();
-        List<TApvApproval> list = this.tApvApprovalMapper.selectAllPage(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TApvApproval>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return resultJson;
     }
 
 }

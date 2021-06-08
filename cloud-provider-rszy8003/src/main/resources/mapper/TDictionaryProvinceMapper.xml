@@ -14,13 +14,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryProvinceMap">
-        select * from hjy_cloud.T_DICTIONARY_PROVINCE
+        select * from T_DICTIONARY_PROVINCE
         where PK_PROVINCE_ID = #{pkProvinceId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_PROVINCE
+        select count(*) from T_DICTIONARY_PROVINCE
         where 1 = 1
         <if test="pkProvinceId != null and pkProvinceId != ''">
             and PK_PROVINCE_ID = #{pkProvinceId}
@@ -49,7 +49,7 @@
     <select id="selectAllPage" resultMap="TDictionaryProvinceMap">
         select
         PK_PROVINCE_ID, PROVINCE_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, ABBREVIATION, PROVINCE_CAPITAL
-        from hjy_cloud.T_DICTIONARY_PROVINCE
+        from T_DICTIONARY_PROVINCE
         <where>
             <if test="pkProvinceId != null and pkProvinceId != ''">
                 and PK_PROVINCE_ID = #{pkProvinceId}
@@ -82,12 +82,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkProvinceId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_PROVINCE(PROVINCE_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, ABBREVIATION, PROVINCE_CAPITAL)
+        insert into T_DICTIONARY_PROVINCE(PROVINCE_NAME, TURN_ON, CREATE_TIME, UPDATE_TIME, ABBREVIATION, PROVINCE_CAPITAL)
         values (#{provinceName}, #{turnOn}, #{createTime}, #{updateTime}, #{abbreviation}, #{provinceCapital})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryProvince">
-        insert into hjy_cloud.T_DICTIONARY_PROVINCE
+        insert into T_DICTIONARY_PROVINCE
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkProvinceId != null and pkProvinceId != ''">
                 PK_PROVINCE_ID,
@@ -137,7 +137,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_PROVINCE
+        update T_DICTIONARY_PROVINCE
         <set>
             <if test="provinceName != null and provinceName != ''">
                 PROVINCE_NAME = #{provinceName},
@@ -160,7 +160,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_PROVINCE where PK_PROVINCE_ID = #{pkProvinceId}
+        delete from T_DICTIONARY_PROVINCE where PK_PROVINCE_ID = #{pkProvinceId}
     </delete>
 
 </mapper>

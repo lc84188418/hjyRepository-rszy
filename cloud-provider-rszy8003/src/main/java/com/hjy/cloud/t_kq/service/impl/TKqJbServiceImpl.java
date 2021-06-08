@@ -5,21 +5,19 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.t_kq.dao.TKqBcMapper;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_kq.dao.TKqGroupMapper;
 import com.hjy.cloud.t_kq.dao.TKqJbMapper;
-import com.hjy.cloud.t_kq.entity.ReGroupStaff;
 import com.hjy.cloud.t_kq.entity.ReJbGroup;
 import com.hjy.cloud.t_kq.entity.TKqGroup;
 import com.hjy.cloud.t_kq.entity.TKqJb;
 import com.hjy.cloud.t_kq.service.TKqJbService;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -152,6 +150,8 @@ public class TKqJbServiceImpl implements TKqJbService {
 //        int isTxJbf = JsonUtil.getIntegerParam(json, "isTxJbf");
         String txRule = JsonUtil.getStringParam(json, "txRule");
         String jbfRule = JsonUtil.getStringParam(json, "jbfRule");
+        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
+
         tKqJb.setPkJbId(pkJbId);
         tKqJb.setJbName(jbName);
         tKqJb.setJsWay(jsWay);
@@ -161,7 +161,7 @@ public class TKqJbServiceImpl implements TKqJbService {
         tKqJb.setIsTxJbf(1);
         tKqJb.setTxRule(txRule);
         tKqJb.setJbfRule(jbfRule);
-        tKqJb.setTurnOn(1);
+        tKqJb.setTurnOn(turnOn);
         int i = this.tKqJbMapper.updateByPkId(tKqJb);
         StringBuffer stringBuffer = new StringBuffer();
         if (i > 0) {

@@ -12,13 +12,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionarySurveyMap">
-        select * from hjy_cloud.T_DICTIONARY_SURVEY
+        select * from T_DICTIONARY_SURVEY
         where PK_SURVEY_ID = #{pkSurveyId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_SURVEY
+        select count(*) from T_DICTIONARY_SURVEY
         where 1 = 1
         <if test="pkSurveyId != null and pkSurveyId != ''">
             and PK_SURVEY_ID = #{pkSurveyId}
@@ -41,7 +41,7 @@
     <select id="selectAllPage" resultMap="TDictionarySurveyMap">
         select
         PK_SURVEY_ID, STAFF_SURVEY, CREATE_TIME, UPDATE_TIME, TURN_ON
-        from hjy_cloud.T_DICTIONARY_SURVEY
+        from T_DICTIONARY_SURVEY
         <where>
             <if test="pkSurveyId != null and pkSurveyId != ''">
                 and PK_SURVEY_ID = #{pkSurveyId}
@@ -65,12 +65,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkSurveyId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_SURVEY(STAFF_SURVEY, CREATE_TIME, UPDATE_TIME, TURN_ON)
+        insert into T_DICTIONARY_SURVEY(STAFF_SURVEY, CREATE_TIME, UPDATE_TIME, TURN_ON)
         values (#{staffSurvey}, #{createTime}, #{updateTime}, #{turnOn})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionarySurvey">
-        insert into hjy_cloud.T_DICTIONARY_SURVEY
+        insert into T_DICTIONARY_SURVEY
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkSurveyId != null and pkSurveyId != ''">
                 PK_SURVEY_ID,
@@ -108,7 +108,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_SURVEY
+        update T_DICTIONARY_SURVEY
         <set>
             <if test="staffSurvey != null and staffSurvey != ''">
                 STAFF_SURVEY = #{staffSurvey},
@@ -125,7 +125,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_SURVEY where PK_SURVEY_ID = #{pkSurveyId}
+        delete from T_DICTIONARY_SURVEY where PK_SURVEY_ID = #{pkSurveyId}
     </delete>
 
 </mapper>

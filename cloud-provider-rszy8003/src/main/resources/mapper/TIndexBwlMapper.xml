@@ -11,7 +11,7 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TIndexBwlMap">
-        select * from hjy_cloud.T_INDEX_BWL
+        select * from T_INDEX_BWL
         where PK_BWL_ID = #{pkBwlId}
     </select>
 
@@ -19,7 +19,7 @@
     <select id="selectAllPage" resultMap="TIndexBwlMap">
         select
         PK_BWL_ID, BWL_NAME, BWL_CONTENT, REMIND_TIME
-        from hjy_cloud.T_INDEX_BWL
+        from T_INDEX_BWL
         <where>
             <if test="pkBwlId != null and pkBwlId != ''">
                 and PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
@@ -43,7 +43,7 @@
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_index.entity.TIndexBwl">
-        insert into hjy_cloud.T_INDEX_BWL
+        insert into T_INDEX_BWL
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkBwlId != null and pkBwlId != ''">
                 PK_BWL_ID,
@@ -87,7 +87,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_INDEX_BWL
+        update T_INDEX_BWL
         <set>
             <if test="bwlName != null and bwlName != ''">
                 BWL_NAME = #{bwlName,jdbcType=VARCHAR},
@@ -105,7 +105,7 @@
         where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
     </update>
     <update id="updateSendStatusBatch">
-       update hjy_cloud.T_INDEX_BWL set IS_SEND = 1
+       update T_INDEX_BWL set IS_SEND = 1
        where PK_BWL_ID in(
         <foreach collection="bwls" item="item" index="index" separator=",">
             #{item.pkBwlId, jdbcType=VARCHAR}
@@ -116,7 +116,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_INDEX_BWL where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
+        delete from T_INDEX_BWL where PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
     </delete>
 
 </mapper>

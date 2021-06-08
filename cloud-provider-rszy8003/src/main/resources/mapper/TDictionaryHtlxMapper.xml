@@ -12,13 +12,13 @@
 
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TDictionaryHtlxMap">
-        select * from hjy_cloud.T_DICTIONARY_HTLX
+        select * from T_DICTIONARY_HTLX
         where PK_HTLX_ID = #{pkHtlxId}
     </select>
 
     <!--No problem 分页时查询总记录条数-->
     <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from hjy_cloud.T_DICTIONARY_HTLX
+        select count(*) from T_DICTIONARY_HTLX
         where 1 = 1
         <if test="pkHtlxId != null and pkHtlxId != ''">
             and PK_HTLX_ID = #{pkHtlxId}
@@ -41,7 +41,7 @@
     <select id="selectAllPage" resultMap="TDictionaryHtlxMap">
         select
         PK_HTLX_ID, CONTRAC_TYPE, TURN_ON, CREATE_TIME, UPDATE_TIME
-        from hjy_cloud.T_DICTIONARY_HTLX
+        from T_DICTIONARY_HTLX
         <where>
             <if test="pkHtlxId != null and pkHtlxId != ''">
                 and PK_HTLX_ID = #{pkHtlxId}
@@ -65,12 +65,12 @@
     </select>
     <!--新增所有列-->
     <insert id="insert" keyProperty="pkHtlxId" useGeneratedKeys="true">
-        insert into hjy_cloud.T_DICTIONARY_HTLX(CONTRAC_TYPE, TURN_ON, CREATE_TIME, UPDATE_TIME)
+        insert into T_DICTIONARY_HTLX(CONTRAC_TYPE, TURN_ON, CREATE_TIME, UPDATE_TIME)
         values (#{contracType}, #{turnOn}, #{createTime}, #{updateTime})
     </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx">
-        insert into hjy_cloud.T_DICTIONARY_HTLX
+        insert into T_DICTIONARY_HTLX
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkHtlxId != null and pkHtlxId != ''">
                 PK_HTLX_ID,
@@ -108,7 +108,7 @@
     </insert>
     <!--通过主键修改数据-->
     <update id="updateByPkId">
-        update hjy_cloud.T_DICTIONARY_HTLX
+        update T_DICTIONARY_HTLX
         <set>
             <if test="contracType != null and contracType != ''">
                 CONTRAC_TYPE = #{contracType},
@@ -125,7 +125,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from hjy_cloud.T_DICTIONARY_HTLX where PK_HTLX_ID = #{pkHtlxId}
+        delete from T_DICTIONARY_HTLX where PK_HTLX_ID = #{pkHtlxId}
     </delete>
 
 </mapper>
