@@ -1,4 +1,4 @@
-package com.hjy.cloud.common.entity;
+package com.hjy.cloud.t_apv.entity;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

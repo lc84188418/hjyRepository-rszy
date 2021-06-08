@@ -174,16 +174,22 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         //查询条件
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        String staffStatusStr = JsonUtil.getStringParam(json, "staffStatus");
         TStaffInfo entity = new TStaffInfo();
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
+        int staffStatus = 1;
         if (pageNumStr != null) {
             pageNum = Integer.parseInt(pageNumStr);
         }
         if (pageSizeStr != null) {
             pageSize = Integer.parseInt(pageSizeStr);
         }
+        if (staffStatusStr != null) {
+            staffStatus = Integer.parseInt(staffStatusStr);
+        }
+        entity.setStaffStatus(staffStatus);
         PageHelper.startPage(pageNum, pageSize);
         List<TStaffInfo> list = this.tStaffInfoMapper.selectAllPage(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffInfo>(list));

@@ -198,10 +198,10 @@ ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
             </if>
         </where>
     </select>
-    <select id="selectApvRecordById" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="selectApvRecordById" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT SOURCE_ID from D_APV_RECORD where PK_RECORD_ID = #{pkRecordId}
     </select>
-    <select id="selectApvRecordByPkId" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="selectApvRecordByPkId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	t.PK_RECORD_ID,
 	t.APPROVAL_TYPE,
@@ -225,7 +225,7 @@ FROM
 where PK_RECORD_ID = #{pkRecordId}
     </select>
 <!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
-    <select id="waitApv" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="waitApv" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	PK_RECORD_ID,
 	APPROVAL_TYPE,
@@ -246,7 +246,7 @@ WHERE
 	D_APV_RECORD.IS_ING = 1
     </select>
     <!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
-    <select id="ApvComplete" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="ApvComplete" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	PK_RECORD_ID,
 	APPROVAL_TYPE,
@@ -266,7 +266,7 @@ FROM
 WHERE
 	D_APV_RECORD.IS_ING = 0
     </select>
-    <select id="waitApvUser" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="waitApvUser" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	PK_RECORD_ID,
 	APPROVAL_TYPE,
@@ -287,7 +287,7 @@ WHERE
 	D_APV_RECORD.IS_ING = 1 and SOURCE_ID in
         (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
     </select>
-    <select id="apvRecordListSponsor" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="apvRecordListSponsor" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	PK_RECORD_ID,
 	APPROVAL_TYPE,
@@ -307,11 +307,11 @@ FROM
 WHERE
 	SPONSOR = #{sponsor,jdbcType=VARCHAR}
     </select>
-    <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND APPROVAL_TYPE = #{approvalType} AND IS_ING = 1
     </select>
 <!--    通过第一审批记录的ID查询整个审批流程记录信息-->
-    <select id="selectByFirstApvRecordId" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="selectByFirstApvRecordId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
         PK_RECORD_ID,APPROVAL_TYPE,APPLY_PEOPLE,SPONSOR,START_TIME,APV_DATE,APV_RESULT,APV_REASON,NEXT_APPROVAL,SOURCE_ID,
         IS_START,IS_ING,T_STAFF_INFO.STAFF_NAME AS apvApproval,APPROVAL_TYPE,T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
@@ -338,7 +338,7 @@ WHERE
 	WHERE
 	PK_RECORD_ID IN (${pkRecordId})
     </select>
-    <select id="apvRecordListCCToMe" resultType="com.hjy.cloud.common.entity.DApvRecord">
+    <select id="apvRecordListCCToMe" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         	select t.* from D_APV_RECORD t where t.SOURCE_ID IN (${sourceId})
     </select>
     <!--根据实体信息查询记录条数-->
@@ -454,7 +454,7 @@ WHERE
             )
         </foreach>
     </insert>
-    <insert id="insertApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
+    <insert id="insertApvRecord" parameterType="com.hjy.cloud.t_apv.entity.DApvRecord">
         insert into D_APV_RECORD
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="pkRecordId != null and pkRecordId != ''">
@@ -536,7 +536,7 @@ WHERE
         update D_APV_RECORD set IS_ING = 0
         where SOURCE_ID = #{sourceId,jdbcType=VARCHAR}
     </update>
-    <update id="updateApvRecord" parameterType="com.hjy.cloud.common.entity.DApvRecord">
+    <update id="updateApvRecord" parameterType="com.hjy.cloud.t_apv.entity.DApvRecord">
         update D_APV_RECORD
         <set>
             <if test="apvDate != null">

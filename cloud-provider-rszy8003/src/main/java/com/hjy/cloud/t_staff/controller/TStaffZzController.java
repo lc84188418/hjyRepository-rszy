@@ -7,8 +7,10 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffZzService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -53,19 +55,40 @@ public class TStaffZzController {
      * @param param json参数
      * @return 所有数据
      */
-    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看员工转正信息列表")
+    @ApiOperation(value = "已转正-已完成", notes = "查看员工已转正信息列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+    })
+    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看员工已转正信息列表")
     //@RequiresPermissions({"Zz:adminView"})
-    @PostMapping(value = "/staff/Zz/adminList")
-    public CommonResult selectAll(@RequestBody String param) throws FebsException {
+    @PostMapping(value = "/staff/Zz/adminList/ed")
+    public CommonResult selectAllEd(@RequestBody String param) throws FebsException {
         try {
-            return tStaffZzService.selectAll(param);
+            return tStaffZzService.selectAllEd(param);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);
             throw new FebsException(message);
         }
     }
-
+    @ApiOperation(value = "转正中-已完成", notes = "查看待转正员工的信息，只含审批中的")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+    })
+    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看待转正员工的信息，只含审批中的")
+    //@RequiresPermissions({"Zz:adminView"})
+    @PostMapping(value = "/staff/Zz/adminList/ing")
+    public CommonResult selectAllIng(@RequestBody String param) throws FebsException {
+        try {
+            return tStaffZzService.selectAllIng(param);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
     /**
      * 通过主键查询单条数据
      *

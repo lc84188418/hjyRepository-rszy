@@ -1,6 +1,6 @@
 package com.hjy.cloud.t_apv.dao;
 
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import org.apache.ibatis.annotations.Param;
 

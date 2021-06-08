@@ -109,9 +109,7 @@ public class DateUtil {
 //        //今日为一周的第几天-2
 //        int day = calendar.get(Calendar.DAY_OF_WEEK);
         //星期几-星期一
-        String displayName = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
-        System.err.println("displayName:"+displayName);
-        return displayName;
+        return calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault());
     }
     /**
      * 判断时间是否在时间段内
@@ -169,6 +167,17 @@ public class DateUtil {
         long endLong = endTime.getTime();
         long total = (endLong - beginLong) / (1000 * 60);
         return total;
+    }
+
+    /**
+     * 是否可以转正了，默认转正时间3个月
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    public static boolean whetherZZ(Date beginTime, Date endTime) {
+
+        return true;
     }
     /**
      * 两时间点是否为同一时间

@@ -1,7 +1,7 @@
 package com.hjy.cloud.t_apv.controller;
 
 
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
@@ -141,9 +141,9 @@ public class TApvApprovalController {
             @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
     })
-    //@RequiresPermissions({"admin:waitApv"})
+    //@RequiresPermissions({"admin:apvComplete"})
     @GetMapping(value = "/apv/approval/ApvComplete")
-    public CommonResult<PageResult<DApvRecord>> adminWaitApv(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) throws FebsException {
+    public CommonResult<PageResult<DApvRecord>> adminApvComplete(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) throws FebsException {
         try {
             return tApvApprovalService.ApvComplete(pageNum,pageSize);
         } catch (Exception e) {
@@ -159,9 +159,9 @@ public class TApvApprovalController {
      */
     //@RequiresPermissions({"admin:waitApv"})
     @GetMapping(value = "/apv/approval/waitApv")
-    public CommonResult adminWaitApv() throws FebsException {
+    public CommonResult<PageResult<DApvRecord>> adminWaitApv(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) throws FebsException {
         try {
-            return tApvApprovalService.waitApv();
+            return tApvApprovalService.waitApv(pageNum,pageSize);
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);

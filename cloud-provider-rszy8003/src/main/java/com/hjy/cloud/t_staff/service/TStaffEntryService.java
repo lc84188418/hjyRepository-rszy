@@ -84,5 +84,6 @@ public interface TStaffEntryService {
 
     TStaffEntry selectByPkId(String currentSourceId);
     TStaffEntry selectByPkId2(String currentSourceId);
+    TStaffEntry selectDetailByPkId(String currentSourceId);
 
 }

@@ -2,10 +2,12 @@ package com.hjy.cloud.common.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
+import com.hjy.cloud.t_apv.service.DApvRecordService;
 import com.hjy.cloud.t_apv.service.DCcRecordService;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
@@ -66,6 +68,8 @@ public class ObjectAsyncTask {
     private TStaffReassignService tStaffReassignService;
     @Resource
     private DCcRecordService dCcRecordService;
+    @Resource
+    private DApvRecordService dApvRecordService;
     @Resource
     private TDictionaryHtlxService tDictionaryHtlxService;
     private static ObjectAsyncTask ntClient;
@@ -463,7 +467,46 @@ public class ObjectAsyncTask {
         }
         return stringBuffer;
     }
-
+    /**
+     * 处理审批记录
+     * @param records
+     * @return
+     */
+    public static List<DApvRecord> handleApvRecord(List<DApvRecord> records) {
+        if(records != null && records.size() > 0){
+            Iterator<DApvRecord> iterator = records.iterator();
+            while (iterator.hasNext()){
+                DApvRecord next = iterator.next();
+                //处理详情
+                if(ApprovaltypeEnum.Type_12.getCode().equals(next.getApprovalType())){
+                    //查询入职详情
+                    TStaffEntry entry = ntClient.tStaffEntryService.selectDetailByPkId(next.getSourceId());
+                    next.setSourceDetail(entry);
+                }
+                //处理第二级审批
+                DApvRecord second = ntClient.dApvRecordService.selectById(next.getNextApproval());
+                if(second != null){
+                    //处理第三级审批
+                    DApvRecord third = ntClient.dApvRecordService.selectById(second.getNextApproval());
+                    if(third != null){
+                        //处理第四级审批
+                        DApvRecord fourth = ntClient.dApvRecordService.selectById(third.getNextApproval());
+                        if(fourth != null){
+                            //处理第五级审批
+                            DApvRecord five = ntClient.dApvRecordService.selectById(fourth.getNextApproval());
+                            fourth.setNextRecord(five);
+                        }
+                        third.setNextRecord(fourth);
+                    }
+                    second.setNextRecord(third);
+                }
+                next.setNextRecord(second);
+            }
+            return records;
+        }else {
+            return null;
+        }
+    }
     //初始化所有服务
     @PostConstruct
     public void init() {
@@ -478,6 +521,7 @@ public class ObjectAsyncTask {
         ntClient.tStaffInfoService = this.tStaffInfoService;
         ntClient.tStaffEntryService = this.tStaffEntryService;
         ntClient.dCcRecordService = this.dCcRecordService;
+        ntClient.dApvRecordService = this.dApvRecordService;
         ntClient.tStaffReassignService = this.tStaffReassignService;
         ntClient.tDictionaryHtlxService = this.tDictionaryHtlxService;
     }

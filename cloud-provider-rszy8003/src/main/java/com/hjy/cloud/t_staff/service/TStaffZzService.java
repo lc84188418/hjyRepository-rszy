@@ -35,7 +35,8 @@ public interface TStaffZzService {
      * @param param
      * @return
      */
-    CommonResult selectAll(String param);
+    CommonResult selectAllEd(String param);
+    CommonResult selectAllIng(String param);
 
     /**
      * 获取单个数据

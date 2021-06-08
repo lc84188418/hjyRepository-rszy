@@ -1,6 +1,6 @@
 package com.hjy.cloud.t_apv.service;
 
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
@@ -73,7 +73,7 @@ public interface TApvApprovalService {
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      *
      */
-    CommonResult waitApv();
+    CommonResult<PageResult<DApvRecord>> waitApv(int pageNum, int pageSize);
     //审批已处理
     CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize);
     /**

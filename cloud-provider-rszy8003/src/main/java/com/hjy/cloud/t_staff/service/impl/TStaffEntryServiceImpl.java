@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
@@ -354,6 +354,10 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Override
     public TStaffEntry selectByPkId(String pkEntryId) {
         return tStaffEntryMapper.selectByPkId(pkEntryId);
+    }
+    @Override
+    public TStaffEntry selectDetailByPkId(String pkEntryId) {
+        return tStaffEntryMapper.selectByPkId2(pkEntryId);
     }
     @Override
     public TStaffEntry selectByPkId2(String pkEntryId) {

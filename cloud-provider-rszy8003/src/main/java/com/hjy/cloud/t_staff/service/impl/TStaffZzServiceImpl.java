@@ -1,19 +1,17 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.common.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
-import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
-import com.hjy.cloud.t_apv.entity.DCcRecord;
-import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffZzMapper;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
 import com.hjy.cloud.t_staff.service.TStaffZzService;
 import com.hjy.cloud.t_system.dao.TSysParamMapper;
@@ -21,18 +19,18 @@ import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
 
 /**
  * (TStaffZz)表服务实现类
@@ -52,7 +50,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     @Resource
     private TSysParamMapper tSysParamMapper;
     @Resource
-    private DCcRecordMapper dCcRecordMapper;
+    private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
 
@@ -97,7 +95,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
      * @return
      */
     @Override
-    public CommonResult selectAll(String param) {
+    public CommonResult selectAllEd(String param) {
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
@@ -113,6 +111,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             pageSize = Integer.parseInt(pageSizeStr);
         }
         PageHelper.startPage(pageNum, pageSize);
+        entity.setApvStatus(1);
         List<TStaffZz> list = this.tStaffZzMapper.selectAllPage(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffZz>(list));
         JSONObject resultJson = new JSONObject();
@@ -120,6 +119,30 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
+    @Override
+    public CommonResult selectAllIng(String param) {
+        JSONObject json = JSON.parseObject(param);
+        //查询条件
+        String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
+        String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        TStaffZz entity = new TStaffZz();
+        //分页记录条数
+        int pageNum = 1;
+        int pageSize = 10;
+        if (pageNumStr != null) {
+            pageNum = Integer.parseInt(pageNumStr);
+        }
+        if (pageSizeStr != null) {
+            pageSize = Integer.parseInt(pageSizeStr);
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        entity.setApvStatus(0);
+        List<TStaffZz> list = this.tStaffZzMapper.selectAllPage(entity);
+        PageResult result = PageUtil.getPageResult(new PageInfo<TStaffZz>(list));
+        JSONObject resultJson = new JSONObject();
+        resultJson.put("PageResult", result);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
+    }
     /**
      * 获取单个数据
      *
@@ -162,10 +185,36 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         //查询自己是否提交过转正申请
         TStaffZz tStaffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
         if(tStaffZz == null){
+            StringBuilder stringBuilder = new StringBuilder();
+
+
+            //查询自己转正时间是否已到
+            boolean flag = false;
+            TStaffEntry entry = this.tStaffEntryMapper.selectByPkId(sysToken.getFkUserId());
+            if(entry == null){
+                TStaffInfo queryInfo = new TStaffInfo();
+                queryInfo.setPkStaffId(sysToken.getFkUserId());
+                TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(queryInfo);
+                if(info == null){
+                    return new CommonResult().ErrorResult("你的入职信息,档案信息已被异常移除，请联系负责人！",null);
+                }else {
+                    //判断时间是否满足转正
+                    flag = DateUtil.whetherZZ(info.getEntryTime(),new Date());
+                }
+            }else {
+                //判断时间是否满足转正
+                flag = DateUtil.whetherZZ(entry.getEntryTime(),new Date());
+            }
+            if(!flag){
+                stringBuilder.append("你还没到转正时间，是否申请！");
+            }
+
+
             JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"转正申请",1);
             String msg = (String) resultJson.get("msg");
+            stringBuilder.append(msg);
             resultJson.remove("msg");
-            return new CommonResult(200, "success", msg, resultJson);
+            return new CommonResult(200, "success", stringBuilder.toString(), resultJson);
         }else {
             return new CommonResult(444, "error", "该员工已提交过转正申请，无需再次提交", null);
         }

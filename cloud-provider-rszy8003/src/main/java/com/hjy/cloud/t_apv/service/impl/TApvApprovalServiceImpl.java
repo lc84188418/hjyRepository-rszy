@@ -5,14 +5,12 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.common.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
+import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.common.utils.ApvUtil;
 import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
-import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
-import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
-import com.hjy.cloud.t_apv.dao.TApvGroupMapper;
+import com.hjy.cloud.t_apv.dao.*;
 import com.hjy.cloud.t_apv.entity.*;
 import com.hjy.cloud.t_apv.result.ApprovalAddResult;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
@@ -52,6 +50,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private TApvApprovalMapper tApvApprovalMapper;
     @Resource
     private DCcRecordMapper dCcRecordMapper;
+    @Resource
+    private DApvRecordMapper apvRecordMapper;
     @Resource
     private TApvApvtypeMapper tApvApvtypeMapper;
     @Resource
@@ -301,33 +301,34 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     @Override
     public int deleteApvRecordBySourceId(String sourceId) {
         return tApvApprovalMapper.deleteApvRecordBySourceId(sourceId);
-
     }
     /**
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      *
      */
     @Override
-    public CommonResult waitApv() {
-        List<DApvRecord> waitApvRecords = tApvApprovalMapper.waitApv();
-        //将待审批数据进行处理
-        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("waitApvRecords", apvRecords);
-        return new CommonResult(200, "success", "获取待审批列表数据成功！", resultJson);
-
+    public CommonResult<PageResult<DApvRecord>> waitApv(int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        DApvRecord select = new DApvRecord();
+        select.setIsIng(1);
+        select.setIsStart(1);
+        List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
+        //将审批数据进行处理
+        List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
+        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
     @Override
     public CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize) {
-        //这里的分页会有问题，没时间改了
         PageHelper.startPage(pageNum, pageSize);
-        List<DApvRecord> completeApvRecords = tApvApprovalMapper.ApvComplete();
+        DApvRecord select = new DApvRecord();
+        select.setIsIng(0);
+        select.setIsStart(1);
+        List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
-        List<DApvRecord> recordResultList = this.handleApvRecord(completeApvRecords);
+        List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
         PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
-        result.setTotal(recordResultList.size());
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
-
     }
 
     /**
@@ -777,6 +778,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //采购申请
         }else if("8".equals(approvalType)){
             //调动申请
+
         }else if("9".equals(approvalType)){
             //招聘申请
         }else if("10".equals(approvalType)){
@@ -789,6 +791,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             resultJson.put("source", tStaffEntry);
         }else if("13".equals(approvalType)){
             //转正申请
+
         }else if("14".equals(approvalType)){
             //印章申请
         }else if("15".equals(approvalType)){
@@ -1005,6 +1008,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             TStaffZz tStaffZz = new TStaffZz();
             tStaffZz.setPkZzId(sourceId);
             tStaffZz.setSjzzTime(new Date());
+            //0代表正在审批中，1通过
             tStaffZz.setApvStatus(1);
             int i = tStaffZzMapper.updateByPkId(tStaffZz);
             if(i > 0){

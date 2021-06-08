@@ -104,6 +104,12 @@ public class TStaffInfoController {
      * @param param json参数
      * @return 所有数据
      */
+    @ApiOperation(value = "查看-已完成", notes = "查看单个入职员工的档案信息详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffStatus",value = "员工状态,0离职1入职2转正",required = false,dataType = "int",paramType = "body",example = "1"),
+    })
     @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看入职员工信息列表")
     //@RequiresPermissions({"staffInfo:adminView"})
     @PostMapping(value = "/staff/info/adminList")
