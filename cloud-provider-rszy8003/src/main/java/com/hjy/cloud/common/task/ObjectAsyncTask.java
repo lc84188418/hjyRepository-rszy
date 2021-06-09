@@ -96,14 +96,6 @@ public class ObjectAsyncTask {
         ntClient.tSysRoleService.deleteRolePermsByRoleId(fk_role_id);
     }
 
-    //添加角色默认的权限-即主页的3个
-    public static void addDefultRoelPerms(String fk_role_id) {
-        List<String> idList = new ArrayList<String>();
-        idList.add("1596706636946");
-        idList.add("1596706882298");
-        idList.add("1596707062416");
-        ntClient.tSysRoleService.distributeMenu(fk_role_id,idList);
-    }
     //从请求中获取token
     public static SysToken getSysToken(HttpServletRequest request) {
         String tokenId = TokenUtil.getRequestToken(request);
@@ -124,16 +116,6 @@ public class ObjectAsyncTask {
         deptUser.setFk_user_id(pkUserId);
         deptUser.setFk_dept_id(deptId);
         ntClient.tOutfitDeptService.addDeptUserByDeptUser(deptUser);
-    }
-    /**
-     * 将末尾的审批流程isEnding改为0
-     * @param pkApprovalId 用户ID
-     */
-    public static int updateAPV_isending(String pkApprovalId) {
-        TApvApproval entity = new TApvApproval();
-        entity.setPkApprovalId(pkApprovalId);
-        entity.setIsEnding(0);
-        return ntClient.tApvApprovalService.updateAPV_isending(entity);
     }
     /**
      * 删除与一级审批相关联的审批数据

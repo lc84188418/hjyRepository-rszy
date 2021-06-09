@@ -216,7 +216,7 @@ public class TStaffEntryController {
      *
      * @return 修改结果
      */
-    @ApiOperation(value = "管理端发起入职审批-已完成", notes = "发起入职审批")
+    @ApiOperation(value = "管理端发起入职审批-已完成", notes = "只有管理员可以操作，发起入职审批，若是员工端操作，肯定报错")
     @OperLog(operModul = "人员管理-入职管理",operType = "入职审批",operDesc = "员工入职审批")
     @PostMapping(value = "/staff/entry/approval")
     public CommonResult approval(HttpServletRequest request,@RequestBody String param) throws FebsException {

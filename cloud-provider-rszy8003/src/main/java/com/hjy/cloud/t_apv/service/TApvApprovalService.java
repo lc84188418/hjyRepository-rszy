@@ -1,10 +1,11 @@
 package com.hjy.cloud.t_apv.service;
 
-import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.result.ApprovalAddResult;
+import com.hjy.cloud.t_apv.result.ApprovalSource;
 import com.hjy.cloud.utils.page.PageResult;
 import org.apache.ibatis.annotations.Param;
 
@@ -99,7 +100,7 @@ public interface TApvApprovalService {
      *
      * @return 修改结果
      */
-    CommonResult waitApvDetail(String param);
+    CommonResult<ApprovalSource> waitApvDetail(String param);
     /**
      * 审批
      *

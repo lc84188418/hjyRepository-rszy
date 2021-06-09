@@ -1,8 +1,8 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffQuit)表实体类
@@ -39,5 +39,6 @@ public class TStaffQuit {
     private Date apvTime;
     //离职填写人
     private String operatedPeople;
-
+    //第一级审批id
+    private String apvId;
 }

@@ -1,12 +1,13 @@
 package com.hjy.cloud.t_apv.controller;
 
 
-import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TempApvEntity;
 import com.hjy.cloud.t_apv.result.ApprovalAddResult;
+import com.hjy.cloud.t_apv.result.ApprovalSource;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.utils.page.PageResult;
 import io.swagger.annotations.Api;
@@ -211,16 +212,15 @@ public class TApvApprovalController {
     }
     /**
      * 该审批来源的详情
-     * 这个还要将source数据进行处理
      * @return 修改结果
      */
-    @ApiOperation(value = "审批来源的详情-已完成", notes = "未处理source")
+    @ApiOperation(value = "审批来源的详情-已完成", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "approvalType",value = "审批类型",required = true,dataType = "string",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "sourceId",value = "来源",required = true,dataType = "string",paramType = "body",example = "10"),
     })
     @PostMapping(value = "/apv/approval/waitApvDetail")
-    public CommonResult waitApvDetail(@RequestBody String param) throws FebsException {
+    public CommonResult<ApprovalSource> waitApvDetail(@RequestBody String param) throws FebsException {
         try {
             return tApvApprovalService.waitApvDetail(param);
         } catch (Exception e) {

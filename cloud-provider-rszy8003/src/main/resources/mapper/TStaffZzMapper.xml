@@ -47,7 +47,7 @@
         LEFT JOIN T_OUTFIT_WORKADDRESS ON T_STAFF_ZZ.FK_WORDADDRESS_ID = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
         LEFT JOIN T_OUTFIT_DEPT ON T_STAFF_INFO.FK_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
         LEFT JOIN T_DICTIONARY_POSITION ON T_STAFF_INFO.FK_POSITION_ID = T_DICTIONARY_POSITION.PK_POSITION_ID
-        <where>
+        where 1 = 1
             <if test="pkZzId != null and pkZzId != ''">
                 and PK_ZZ_ID = #{pkZzId,jdbcType=VARCHAR}
             </if>
@@ -78,7 +78,6 @@
             <if test="firstApvrecordId != null and firstApvrecordId != ''">
                 and FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR}
             </if>
-        </where>
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffZz">
