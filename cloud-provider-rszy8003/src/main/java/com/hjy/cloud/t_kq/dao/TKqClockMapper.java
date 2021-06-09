@@ -79,5 +79,6 @@ public interface TKqClockMapper {
     List<TKqClock> selectAllByWeek(ParamStatistics paramStatistics);
 
     TKqClock selectOnDayByTodayDate(ParamStatistics param);
+
     int selectCountByTodayDate_StaffId(@Param("fkStaffId")String fkStaffId);
 }

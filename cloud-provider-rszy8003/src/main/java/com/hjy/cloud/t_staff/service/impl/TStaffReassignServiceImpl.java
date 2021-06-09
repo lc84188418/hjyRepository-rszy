@@ -235,6 +235,10 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
      */
     @Override
     public CommonResult initiateApvPage(HttpServletRequest request,TStaffReassign tStaffReassign) {
+        TStaffReassign i1 = tStaffReassignMapper.selectByPkId(tStaffReassign.getPkReassignId());
+        if(i1 != null && !StringUtils.isEmpty(i1.getFirstApvrecordId())){
+            return new CommonResult().ErrorResult("当前调动申请已发起审批，无需再次发起！",null);
+        }
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);

@@ -206,7 +206,7 @@ FROM
     <select id="selectOnDayByTodayDate" resultType="com.hjy.cloud.t_kq.entity.TKqClock" parameterType="com.hjy.cloud.t_kq.entity.ParamStatistics">
         select * from T_KQ_CLOCK
         where T_KQ_CLOCK.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
-        and T_KQ_CLOCK.TODAY_DATE = #{todayDate,jdbcType=VARCHAR}
+        and DATE_FORMAT(T_KQ_CLOCK.TODAY_DATE,'%Y-%m-%d') = #{monthDate,jdbcType=VARCHAR}
     </select>
     <select id="selectCountByTodayDate_StaffId" resultType="java.lang.Integer" parameterType="java.lang.String">
         select count(*) from T_KQ_CLOCK

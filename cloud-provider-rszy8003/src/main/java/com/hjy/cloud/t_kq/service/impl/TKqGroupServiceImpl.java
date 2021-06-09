@@ -21,6 +21,7 @@ import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,6 +51,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
     private TKqBcMapper tKqBcMapper;
     @Resource
     private TKqJbMapper tKqJbMapper;
+
+    private TKqBc defaultBc = null;
     /**
      * 添加前获取数据
      *
@@ -451,10 +454,10 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             }
         }
         /**
-         * 二、工作日设置
+         * 二、工作日、即班次设置
          */
         List<ReGroupWorkingdays> workingDaysList = new ArrayList<>();
-        JSONArray workingDaysArray = json.getJSONArray("workingDays");
+        JSONArray workingDaysArray = json.getJSONArray("bcs");
         if(workingDaysArray == null){
             stringBuffer.append("未设置工作日！");
         }else{
@@ -470,6 +473,9 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             //代表修改-先删除
             tKqGroupMapper.deleteGroupBcByGroupId(pkGroupId);
         }
+        if(defaultBc == null){
+            defaultBc = this.getDefaultBc();
+        }
         if(workingDaysList != null && workingDaysList.size() > 0){
             Iterator<ReGroupWorkingdays> workingdaysIterator = workingDaysList.iterator();
             if(kqType == 1){
@@ -478,11 +484,15 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                     ReGroupWorkingdays workingdays = workingdaysIterator.next();
                     workingdays.setPkGroupworkingdaysId(IDUtils.getUUID());
                     workingdays.setFkGroupId(pkGroupId);
-                    //workingdays、fkBcId前端传过来
+                    //workingdays、fkBcId前端传过来,如果没有则使用默认班次
+                    if(StringUtils.isEmpty(workingdays.getFkBcId())){
+                        workingdays.setFkBcId(defaultBc.getPkBcId());
+                    }
                     workingdays.setKqType(kqType);
                 }
             }else if(kqType == 2){
                 //排班制
+
             }else if(kqType == 3){
                 //自由工时
                 while (workingdaysIterator.hasNext()){
@@ -584,6 +594,9 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);
         return resultJson;
+    }
+    public TKqBc getDefaultBc(){
+        return this.tKqBcMapper.selectDefaultBc();
     }
 }
     

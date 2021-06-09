@@ -1,10 +1,10 @@
 package com.hjy.cloud.t_apv.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
 import com.hjy.cloud.t_apv.dao.TApvApvtypeMapper;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
@@ -12,22 +12,20 @@ import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
-import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.StringUtil;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * (TApvApvtype)表服务实现类
@@ -124,12 +122,13 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     @Override
     public CommonResult delete(TApvApvtype tApvApvtype) {
 //        int i = this.tApvApvtypeMapper.deleteById(tApvApvtype);
-        int i = 0;
-        if (i > 0) {
-            return new CommonResult(200, "success", "删除数据成功", null);
-        } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
-        }
+//        if (i > 0) {
+//            return new CommonResult(200, "success", "删除数据成功", null);
+//        } else {
+//            return new CommonResult(444, "error", "删除数据失败", null);
+//        }
+        return new CommonResult().ErrorResult("当前暂不支持删除！",null);
+
     }
 
     /**
