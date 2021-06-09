@@ -28,7 +28,7 @@ public class TStaffZz {
     private Date sjzzTime;
     //状态
     private Integer status;
-    //转正审批状态,0代表正在审批中，1通过
+    //转正审批状态,0代表正在审批中，1通过2拒绝
     private Integer apvStatus;
     //第一级审批id
     private String firstApvrecordId;

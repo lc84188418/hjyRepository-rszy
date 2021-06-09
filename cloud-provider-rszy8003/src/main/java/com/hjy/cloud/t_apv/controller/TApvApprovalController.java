@@ -195,7 +195,7 @@ public class TApvApprovalController {
         try {
             return tApvApprovalService.approval(session,request,param);
         } catch (Exception e) {
-            String message = "失败";
+            String message = "审批失败";
             log.error(message,e);
             throw new FebsException(message);
         }

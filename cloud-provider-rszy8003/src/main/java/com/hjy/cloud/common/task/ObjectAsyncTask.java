@@ -17,6 +17,7 @@ import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
+import com.hjy.cloud.t_staff.result.StaffInfos;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
@@ -199,7 +200,7 @@ public class ObjectAsyncTask {
             TStaffInfo financeLeader = null;
             TStaffInfo humanResources = null;
             TStaffInfo generalManager = null;
-            List<TStaffInfo> staffInfos = null;
+            List<StaffInfos> staffInfos = null;
             int isStart = 1;
             int num = 1;
             boolean flag = true;
@@ -304,9 +305,9 @@ public class ObjectAsyncTask {
             List<TDictionaryHtlx> htlxList = ntClient.tDictionaryHtlxService.queryAll();
             resultJson.put("htlx",htlxList);
         }else if("转正申请".equals(apvName)){
-            TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(currentSourceId);
-            Map<String,Object> currentSourceMap = ObjectAsyncTask.handleJsonData(tStaffEntry);
-            resultJson.put("currentSource",currentSourceMap);
+            //员工个人基本信息
+            TStaffInfo staffInfo = ntClient.tStaffInfoService.selectByPkId2(currentSourceId);
+            resultJson.put("currentSource",staffInfo);
         }else if("离职申请".equals(apvName)){
             //员工个人基本信息
             TStaffInfo staffInfo = ntClient.tStaffInfoService.selectByPkId2(currentSourceId);
@@ -507,11 +508,20 @@ public class ObjectAsyncTask {
                 }
                 next.setNextRecord(second);
             }
-            return records;
-        }else {
-            return null;
         }
+        return records;
     }
+
+    public static int updateReassignData(TStaffReassign reassign) {
+        //将员工名单信息改为调动后的
+        TStaffInfo tStaffInfo = new TStaffInfo();
+        tStaffInfo.setPkStaffId(reassign.getFkStaffId());
+        tStaffInfo.setFkDeptId(reassign.getReassignDeptId());
+        tStaffInfo.setFkPositionId(reassign.getReassignPosition());
+        tStaffInfo.setFkWorkaddressId(reassign.getReassignAddress());
+        return ntClient.tStaffInfoService.updateById(tStaffInfo);
+    }
+
     //初始化所有服务
     @PostConstruct
     public void init() {

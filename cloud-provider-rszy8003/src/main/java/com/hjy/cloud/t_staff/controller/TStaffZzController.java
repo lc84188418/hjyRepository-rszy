@@ -126,6 +126,7 @@ public class TStaffZzController {
      * 员工
      * @return 修改结果
      */
+    @ApiOperation(value = "员工发起转正申请-已完成", notes = "员工发起转正申请，只需代入token即可")
     @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
     @GetMapping(value = "/staff/entry/initiateZzPage")
     public CommonResult initiateZzPage(HttpServletRequest request) throws FebsException {
@@ -137,7 +138,24 @@ public class TStaffZzController {
             throw new FebsException(message);
         }
     }
-//    /**
+    /**
+     * 发起转正审批
+     *
+     * @return 修改结果
+     */
+    @ApiOperation(value = "员工发起调动申请-开发中", notes = "")
+    @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
+    @PostMapping(value = "/staff/entry/initiateZz")
+    public CommonResult initiateZz(HttpServletRequest request,@RequestBody String param) throws FebsException {
+        try {
+            return tStaffZzService.initiateZz(request,param);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+    //    /**
 //     * 发起转正审批页面
 //     * 管理员
 //     * @return 修改结果
@@ -153,20 +171,4 @@ public class TStaffZzController {
 //            throw new FebsException(message);
 //        }
 //    }
-    /**
-     * 发起转正审批
-     *
-     * @return 修改结果
-     */
-    @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
-    @PostMapping(value = "/staff/entry/initiateZz")
-    public CommonResult initiateZz(HttpServletRequest request,@RequestBody String param) throws FebsException {
-        try {
-            return tStaffZzService.initiateZz(request,param);
-        } catch (Exception e) {
-            String message = "失败";
-            log.error(message,e);
-            throw new FebsException(message);
-        }
-    }
 }

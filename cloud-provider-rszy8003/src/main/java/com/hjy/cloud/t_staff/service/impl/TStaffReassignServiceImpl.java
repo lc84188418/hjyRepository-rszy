@@ -19,6 +19,7 @@ import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffReassignMapper;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
+import com.hjy.cloud.t_staff.result.ReassignApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
@@ -289,7 +290,6 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
         if(apvApprovalList != null && apvApprovalList.size() >0){
             //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
-
         }else {
             //说明没有审批流直接通过，且不添加记录
             //直接通过， apvStatus = 1
@@ -309,6 +309,10 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         if(i > 0){
             if(apvStatus == 1){
                 stringBuffer.append("未有调动申请审批，已直接通过！");
+                /**
+                 * 通过后处理员工档案，也就是修改调动后的信息
+                 */
+                ObjectAsyncTask.updateReassignData(query);
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
                 stringBuffer.append("已发起调动申请成功!");
@@ -319,7 +323,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     }
 
     @Override
-    public CommonResult userInitiateApvPage(HttpServletRequest request) {
+    public CommonResult<ReassignApprovalResult> userInitiateApvPage(HttpServletRequest request) {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         /**
          * 查询员工是否已存在调动申请，即apvStatus=3

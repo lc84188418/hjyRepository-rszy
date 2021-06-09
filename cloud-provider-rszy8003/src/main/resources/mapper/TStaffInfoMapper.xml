@@ -212,7 +212,7 @@ FROM
 	LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
 	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
     </select>
-    <select id="selectAll" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+    <select id="selectAll" resultType="com.hjy.cloud.t_staff.result.StaffInfos">
 SELECT
 	T_STAFF_INFO.PK_STAFF_ID,
 	T_STAFF_INFO.STAFF_NAME,
@@ -224,9 +224,6 @@ FROM
 	T_STAFF_INFO
 	LEFT JOIN T_OUTFIT_DEPT on T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_INFO.FK_DEPT_ID
 	LEFT JOIN T_DICTIONARY_POSITION on T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
-    </select>
-    <select id="selectDeptIdByPkId" resultType="java.lang.String">
-        select FK_DEPT_ID from T_STAFF_INFO where PK_STAFF_ID = #{pkStaffId}
     </select>
     <select id="selectDeptLeader" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         SELECT
@@ -476,133 +473,133 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkStaffId != null and pkStaffId != ''">
-                #{pkStaffId},
+                #{pkStaffId,jdbcType=VARCHAR},
             </if>
             <if test="staffName != null and staffName != ''">
-                #{staffName},
+                #{staffName,jdbcType=VARCHAR},
             </if>
             <if test="staffSex != null">
-                #{staffSex},
+                #{staffSex,jdbcType=INTEGER},
             </if>
             <if test="staffAge != null">
-                #{staffAge},
+                #{staffAge,jdbcType=INTEGER},
             </if>
             <if test="staffStatus != null">
-                #{staffStatus},
+                #{staffStatus,jdbcType=INTEGER},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
-                #{fkDeptId},
+                #{fkDeptId,jdbcType=VARCHAR},
             </if>
             <if test="fkPositionId != null and fkPositionId != ''">
-                #{fkPositionId},
+                #{fkPositionId,jdbcType=VARCHAR},
             </if>
             <if test="fkWorkaddressId != null and fkWorkaddressId != ''">
-                #{fkWorkaddressId},
+                #{fkWorkaddressId,jdbcType=VARCHAR},
             </if>
             <if test="entryTime != null">
-                #{entryTime},
+                #{entryTime,jdbcType=TIMESTAMP},
             </if>
             <if test="fkHtlxId != null and fkHtlxId != ''">
-                #{fkHtlxId},
+                #{fkHtlxId,jdbcType=VARCHAR},
             </if>
             <if test="recruitWay != null and recruitWay != ''">
-                #{recruitWay},
+                #{recruitWay,jdbcType=VARCHAR},
             </if>
             <if test="syqdqTime != null">
-                #{syqdqTime},
+                #{syqdqTime,jdbcType=TIMESTAMP},
             </if>
             <if test="idType != null and idType != ''">
-                #{idType},
+                #{idType,jdbcType=VARCHAR},
             </if>
             <if test="idCard != null and idCard != ''">
-                #{idCard},
+                #{idCard,jdbcType=VARCHAR},
             </if>
             <if test="staffEmail != null and staffEmail != ''">
-                #{staffEmail},
+                #{staffEmail,jdbcType=VARCHAR},
             </if>
             <if test="staffTel != null and staffTel != ''">
-                #{staffTel},
+                #{staffTel,jdbcType=VARCHAR},
             </if>
             <if test="nativePlace != null and nativePlace != ''">
-                #{nativePlace},
+                #{nativePlace,jdbcType=VARCHAR},
             </if>
             <if test="birthday != null and birthday != ''">
-                #{birthday},
+                #{birthday,jdbcType=VARCHAR},
             </if>
             <if test="fkNationId != null and fkNationId != ''">
-                #{fkNationId},
+                #{fkNationId,jdbcType=VARCHAR},
             </if>
             <if test="hkszd != null and hkszd != ''">
-                #{hkszd},
+                #{hkszd,jdbcType=VARCHAR},
             </if>
             <if test="politivalOutlook != null and politivalOutlook != ''">
-                #{politivalOutlook},
+                #{politivalOutlook,jdbcType=VARCHAR},
             </if>
             <if test="currentAddress != null and currentAddress != ''">
-                #{currentAddress},
+                #{currentAddress,jdbcType=VARCHAR},
             </if>
             <if test="isMarry != null">
-                #{isMarry},
+                #{isMarry,jdbcType=INTEGER},
             </if>
             <if test="fkEducationId != null and fkEducationId != ''">
-                #{fkEducationId},
+                #{fkEducationId,jdbcType=VARCHAR},
             </if>
             <if test="zgxlbyyx != null and zgxlbyyx != ''">
-                #{zgxlbyyx},
+                #{zgxlbyyx,jdbcType=VARCHAR},
             </if>
             <if test="wyDj != null and wyDj != ''">
-                #{wyDj},
+                #{wyDj,jdbcType=VARCHAR},
             </if>
             <if test="jsjDj != null and jsjDj != ''">
-                #{jsjDj},
+                #{jsjDj,jdbcType=VARCHAR},
             </if>
             <if test="major != null and major != ''">
-                #{major},
+                #{major,jdbcType=VARCHAR},
             </if>
             <if test="bankName != null and bankName != ''">
-                #{bankName},
+                #{bankName,jdbcType=VARCHAR},
             </if>
             <if test="bankId != null and bankId != ''">
-                #{bankId},
+                #{bankId,jdbcType=VARCHAR},
             </if>
             <if test="branchBank != null and branchBank != ''">
-                #{branchBank},
+                #{branchBank,jdbcType=VARCHAR},
             </if>
             <if test="syr != null and syr != ''">
-                #{syr},
+                #{syr,jdbcType=VARCHAR},
             </if>
             <if test="picturePath != null and picturePath != ''">
-                #{picturePath},
+                #{picturePath,jdbcType=VARCHAR},
             </if>
             <if test="hblxName1 != null and hblxName1 != ''">
-                #{hblxName1},
+                #{hblxName1,jdbcType=VARCHAR},
             </if>
             <if test="object1 != null and object1 != ''">
-                #{object1},
+                #{object1,jdbcType=VARCHAR},
             </if>
             <if test="hblxName2 != null and hblxName2 != ''">
-                #{hblxName2},
+                #{hblxName2,jdbcType=VARCHAR},
             </if>
             <if test="object2 != null and object2 != ''">
-                #{object2},
+                #{object2,jdbcType=VARCHAR},
             </if>
             <if test="hblxName3 != null and hblxName3 != ''">
-                #{hblxName3},
+                #{hblxName3,jdbcType=VARCHAR},
             </if>
             <if test="object3 != null and object3 != ''">
-                #{object3},
+                #{object3,jdbcType=VARCHAR},
             </if>
             <if test="hblxName4 != null and hblxName4 != ''">
-                #{hblxName4},
+                #{hblxName4,jdbcType=VARCHAR},
             </if>
             <if test="object4 != null and object4 != ''">
-                #{object4},
+                #{object4,jdbcType=VARCHAR},
             </if>
             <if test="hblxName5 != null and hblxName5 != ''">
-                #{hblxName5},
+                #{hblxName5,jdbcType=VARCHAR},
             </if>
             <if test="object5 != null and object5 != ''">
-                #{object5},
+                #{object5,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -611,124 +608,133 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
         update T_STAFF_INFO
         <set>
             <if test="staffName != null and staffName != ''">
-                STAFF_NAME = #{staffName},
+                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
             </if>
             <if test="staffSex != null">
-                STAFF_SEX = #{staffSex},
+                STAFF_SEX = #{staffSex,jdbcType=INTEGER},
             </if>
             <if test="staffAge != null">
-                STAFF_AGE = #{staffAge},
+                STAFF_AGE = #{staffAge,jdbcType=INTEGER},
             </if>
             <if test="staffStatus != null">
-                STAFF_STATUS = #{staffStatus},
+                STAFF_STATUS = #{staffStatus,jdbcType=INTEGER},
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkPositionId != null and fkPositionId != ''">
+                FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR},
+            </if>
+            <if test="fkWorkaddressId != null and fkWorkaddressId != ''">
+                FK_WORKADDRESS_ID = #{fkWorkaddressId,jdbcType=VARCHAR},
             </if>
             <if test="entryTime != null">
-                ENTRY_TIME = #{entryTime},
+                ENTRY_TIME = #{entryTime,jdbcType=DATE},
             </if>
             <if test="fkHtlxId != null and fkHtlxId != ''">
-                FK_HTLX_ID = #{fkHtlxId},
+                FK_HTLX_ID = #{fkHtlxId,jdbcType=VARCHAR},
             </if>
             <if test="recruitWay != null and recruitWay != ''">
-                RECRUIT_WAY = #{recruitWay},
+                RECRUIT_WAY = #{recruitWay,jdbcType=VARCHAR},
             </if>
             <if test="syqdqTime != null">
-                SYQDQ_TIME = #{syqdqTime},
+                SYQDQ_TIME = #{syqdqTime,jdbcType=DATE},
             </if>
             <if test="idType != null and idType != ''">
-                ID_TYPE = #{idType},
+                ID_TYPE = #{idType,jdbcType=VARCHAR},
             </if>
             <if test="idCard != null and idCard != ''">
-                ID_CARD = #{idCard},
+                ID_CARD = #{idCard,jdbcType=VARCHAR},
             </if>
             <if test="staffEmail != null and staffEmail != ''">
-                STAFF_EMAIL = #{staffEmail},
+                STAFF_EMAIL = #{staffEmail,jdbcType=VARCHAR},
             </if>
             <if test="staffTel != null and staffTel != ''">
-                STAFF_TEL = #{staffTel},
+                STAFF_TEL = #{staffTel,jdbcType=VARCHAR},
             </if>
             <if test="nativePlace != null and nativePlace != ''">
-                NATIVE_PLACE = #{nativePlace},
+                NATIVE_PLACE = #{nativePlace,jdbcType=VARCHAR},
             </if>
             <if test="birthday != null and birthday != ''">
-                BIRTHDAY = #{birthday},
+                BIRTHDAY = #{birthday,jdbcType=VARCHAR},
             </if>
             <if test="fkNationId != null and fkNationId != ''">
-                FK_NATION_ID = #{fkNationId},
+                FK_NATION_ID = #{fkNationId,jdbcType=VARCHAR},
             </if>
             <if test="hkszd != null and hkszd != ''">
-                HKSZD = #{hkszd},
+                HKSZD = #{hkszd,jdbcType=VARCHAR},
             </if>
             <if test="politivalOutlook != null and politivalOutlook != ''">
-                POLITIVAL_OUTLOOK = #{politivalOutlook},
+                POLITIVAL_OUTLOOK = #{politivalOutlook,jdbcType=VARCHAR},
             </if>
             <if test="currentAddress != null and currentAddress != ''">
-                CURRENT_ADDRESS = #{currentAddress},
+                CURRENT_ADDRESS = #{currentAddress,jdbcType=VARCHAR},
             </if>
             <if test="isMarry != null">
-                IS_MARRY = #{isMarry},
+                IS_MARRY = #{isMarry,jdbcType=INTEGER},
             </if>
             <if test="fkEducationId != null and fkEducationId != ''">
-                FK_EDUCATION_ID = #{fkEducationId},
+                FK_EDUCATION_ID = #{fkEducationId,jdbcType=VARCHAR},
             </if>
             <if test="zgxlbyyx != null and zgxlbyyx != ''">
-                ZGXLBYYX = #{zgxlbyyx},
+                ZGXLBYYX = #{zgxlbyyx,jdbcType=VARCHAR},
             </if>
             <if test="wyDj != null and wyDj != ''">
-                WY_DJ = #{wyDj},
+                WY_DJ = #{wyDj,jdbcType=VARCHAR},
             </if>
             <if test="jsjDj != null and jsjDj != ''">
-                JSJ_DJ = #{jsjDj},
+                JSJ_DJ = #{jsjDj,jdbcType=VARCHAR},
             </if>
             <if test="major != null and major != ''">
-                MAJOR = #{major},
+                MAJOR = #{major,jdbcType=VARCHAR},
             </if>
             <if test="bankName != null and bankName != ''">
-                BANK_NAME = #{bankName},
+                BANK_NAME = #{bankName,jdbcType=VARCHAR},
             </if>
             <if test="bankId != null and bankId != ''">
-                BANK_ID = #{bankId},
+                BANK_ID = #{bankId,jdbcType=VARCHAR},
             </if>
             <if test="branchBank != null and branchBank != ''">
-                BRANCH_BANK = #{branchBank},
+                BRANCH_BANK = #{branchBank,jdbcType=VARCHAR},
             </if>
             <if test="syr != null and syr != ''">
-                SYR = #{syr},
+                SYR = #{syr,jdbcType=VARCHAR},
             </if>
             <if test="picturePath != null and picturePath != ''">
-                PICTURE_PATH = #{picturePath},
+                PICTURE_PATH = #{picturePath,jdbcType=VARCHAR},
             </if>
             <if test="hblxName1 != null and hblxName1 != ''">
-                HBLX_NAME1 = #{hblxName1},
+                HBLX_NAME1 = #{hblxName1,jdbcType=VARCHAR},
             </if>
             <if test="object1 != null and object1 != ''">
-                OBJECT1 = #{object1},
+                OBJECT1 = #{object1,jdbcType=VARCHAR},
             </if>
             <if test="hblxName2 != null and hblxName2 != ''">
-                HBLX_NAME2 = #{hblxName2},
+                HBLX_NAME2 = #{hblxName2,jdbcType=VARCHAR},
             </if>
             <if test="object2 != null and object2 != ''">
-                OBJECT2 = #{object2},
+                OBJECT2 = #{object2,jdbcType=VARCHAR},
             </if>
             <if test="hblxName3 != null and hblxName3 != ''">
-                HBLX_NAME3 = #{hblxName3},
+                HBLX_NAME3 = #{hblxName3,jdbcType=VARCHAR},
             </if>
             <if test="object3 != null and object3 != ''">
-                OBJECT3 = #{object3},
+                OBJECT3 = #{object3,jdbcType=VARCHAR},
             </if>
             <if test="hblxName4 != null and hblxName4 != ''">
-                HBLX_NAME4 = #{hblxName4},
+                HBLX_NAME4 = #{hblxName4,jdbcType=VARCHAR},
             </if>
             <if test="object4 != null and object4 != ''">
-                OBJECT4 = #{object4},
+                OBJECT4 = #{object4,jdbcType=VARCHAR},
             </if>
             <if test="hblxName5 != null and hblxName5 != ''">
-                HBLX_NAME5 = #{hblxName5},
+                HBLX_NAME5 = #{hblxName5,jdbcType=VARCHAR},
             </if>
             <if test="object5 != null and object5 != ''">
-                OBJECT5 = #{object5},
+                OBJECT5 = #{object5,jdbcType=VARCHAR},
             </if>
         </set>
-        where PK_STAFF_ID = #{pkStaffId}
+        where PK_STAFF_ID = #{pkStaffId, jdbcType=VARCHAR}
     </update>
 
     <!--通过主键删除-->

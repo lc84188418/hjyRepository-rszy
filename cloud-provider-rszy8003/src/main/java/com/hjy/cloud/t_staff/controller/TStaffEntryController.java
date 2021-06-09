@@ -192,12 +192,12 @@ public class TStaffEntryController {
         }
     }
     /**
-     * 发起入职审批页面
+     * 管理端 发起入职审批页面
      *
      * @param tStaffEntry 实体对象中的pkEntryId
      * @return 修改结果
      */
-    @ApiOperation(value = "发起入职审批页面-已完成", notes = "发起入职审批前获取数据")
+    @ApiOperation(value = "管理端发起入职审批页面-已完成", notes = "发起入职审批前获取数据")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pkEntryId",value = "入职信息主键",required = true,dataType = "string",paramType = "body",example = "1"),
     })
@@ -212,10 +212,11 @@ public class TStaffEntryController {
         }
     }
     /**
-     * 发起入职审批
+     * 管理端发起入职审批
      *
      * @return 修改结果
      */
+    @ApiOperation(value = "管理端发起入职审批-已完成", notes = "发起入职审批")
     @OperLog(operModul = "人员管理-入职管理",operType = "入职审批",operDesc = "员工入职审批")
     @PostMapping(value = "/staff/entry/approval")
     public CommonResult approval(HttpServletRequest request,@RequestBody String param) throws FebsException {

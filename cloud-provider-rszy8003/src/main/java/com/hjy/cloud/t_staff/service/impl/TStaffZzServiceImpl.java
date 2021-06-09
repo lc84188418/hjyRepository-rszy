@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffZzMapper;
@@ -184,40 +185,36 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         }
         //查询自己是否提交过转正申请
         TStaffZz tStaffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
-        if(tStaffZz == null){
-            StringBuilder stringBuilder = new StringBuilder();
-
-
-            //查询自己转正时间是否已到
-            boolean flag = false;
-            TStaffEntry entry = this.tStaffEntryMapper.selectByPkId(sysToken.getFkUserId());
-            if(entry == null){
-                TStaffInfo queryInfo = new TStaffInfo();
-                queryInfo.setPkStaffId(sysToken.getFkUserId());
-                TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(queryInfo);
-                if(info == null){
-                    return new CommonResult().ErrorResult("你的入职信息,档案信息已被异常移除，请联系负责人！",null);
-                }else {
-                    //判断时间是否满足转正
-                    flag = DateUtil.whetherZZ(info.getEntryTime(),new Date());
-                }
+        if(tStaffZz != null && tStaffZz.getApvStatus() != 2){
+            //0代表正在审批中，1通过2拒绝，拒绝的可以再次提交申请
+            return new CommonResult().ErrorResult("已提交过转正申请，无需再次提交！",null);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        //查询自己转正时间是否已到
+        boolean flag = false;
+        TStaffEntry entry = this.tStaffEntryMapper.selectByPkId(sysToken.getFkUserId());
+        if(entry == null){
+            TStaffInfo queryInfo = new TStaffInfo();
+            queryInfo.setPkStaffId(sysToken.getFkUserId());
+            TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(queryInfo);
+            if(info == null){
+                return new CommonResult().ErrorResult("你的入职信息,档案信息已被异常移除，请联系负责人！",null);
             }else {
                 //判断时间是否满足转正
-                flag = DateUtil.whetherZZ(entry.getEntryTime(),new Date());
+                flag = DateUtil.whetherZZ(info.getEntryTime(),new Date());
             }
-            if(!flag){
-                stringBuilder.append("你还没到转正时间，是否申请！");
-            }
-
-
-            JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"转正申请",1);
-            String msg = (String) resultJson.get("msg");
-            stringBuilder.append(msg);
-            resultJson.remove("msg");
-            return new CommonResult(200, "success", stringBuilder.toString(), resultJson);
         }else {
-            return new CommonResult(444, "error", "该员工已提交过转正申请，无需再次提交", null);
+            //判断时间是否满足转正
+            flag = DateUtil.whetherZZ(entry.getEntryTime(),new Date());
         }
+        if(!flag){
+            stringBuilder.append("你还没到转正时间，是否申请！");
+        }
+        JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"转正申请",1);
+        String msg = (String) resultJson.get("msg");
+        stringBuilder.append(msg);
+        resultJson.remove("msg");
+        return new CommonResult(200, "success", stringBuilder.toString(), resultJson);
     }
     /**
      * 发起转正审批页面
@@ -255,7 +252,6 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
         TStaffZz staffZz = new TStaffZz();
         staffZz.setPkZzId(pkEntryId);
-//        staffZz.setPkZzId(IDUtils.getUUID());
         staffZz.setFkStaffId(pkEntryId);
         staffZz.setFkWordaddressId(entry.getWorkAddress());
         staffZz.setEntryTime(entry.getEntryTime());
@@ -277,7 +273,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         staffZz.setZzTime(zzsjdate);
         //实际转正日期在审批通过后进行修改
         staffZz.setStatus(0);
-        //转正审批状态,0代表正在审批中，1通过
+        //转正审批状态,0代表正在审批中，1通过,2拒绝
         staffZz.setApvStatus(0);
         staffZz.setFirstApvrecordId(firstApvrecordId);
         int i = tStaffZzMapper.insertSelective(staffZz);
@@ -285,7 +281,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(i > 0){
             stringBuffer.append("转正申请已发起成功！");
             //审批类型
-            String approvalType = "13";
+            String approvalType = ApprovaltypeEnum.Type_13.getCode();
             stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName(),firstApvrecordId);
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {

@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_staff.dao;
 
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_staff.result.StaffInfos;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -56,9 +57,7 @@ public interface TStaffInfoMapper {
      */
     int deleteById(TStaffInfo tStaffInfo);
 
-    List<TStaffInfo> selectAll();
-
-    String selectDeptIdByPkId(@Param("pkStaffId")String pkStaffId);
+    List<StaffInfos> selectAll();
 
     TStaffInfo selectDeptLeader(@Param("pkStaffId")String pkStaffId);
 

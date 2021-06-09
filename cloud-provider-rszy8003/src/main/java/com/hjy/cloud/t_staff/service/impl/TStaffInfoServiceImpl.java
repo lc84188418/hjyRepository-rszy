@@ -15,6 +15,7 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryNation;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_staff.result.StaffInfos;
 import com.hjy.cloud.t_staff.service.TStaffInfoService;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.TSysUser;
@@ -152,6 +153,11 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         }
     }
 
+    @Transactional()
+    @Override
+    public int updateById(TStaffInfo tStaffInfo) {
+        return tStaffInfoMapper.updateByPkId(tStaffInfo);
+    }
     /**
      * 删除数据
      *
@@ -207,7 +213,7 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     }
 
     @Override
-    public List<TStaffInfo> selectAll() {
+    public List<StaffInfos> selectAll() {
         return tStaffInfoMapper.selectAll();
     }
 
@@ -232,11 +238,6 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
         List<TDictionaryEducation> educationList = tDictionaryEducationMapper.selectAllId_Name();
         resultJson.put("educationList", educationList);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
-    }
-
-    @Override
-    public String selectDeptIdByPkId(String pkStaffId) {
-        return tStaffInfoMapper.selectDeptIdByPkId(pkStaffId);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package com.hjy.cloud.t_staff.service;
 
-import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_staff.result.StaffInfos;
 
 import java.util.List;
 
@@ -43,7 +44,7 @@ public interface TStaffInfoService {
      * @return
      */
     CommonResult selectAll(String param);
-    List<TStaffInfo> selectAll();
+    List<StaffInfos> selectAll();
 
     /**
      * 获取单个数据
@@ -53,7 +54,7 @@ public interface TStaffInfoService {
      */
     CommonResult selectById(TStaffInfo tStaffInfo);
 
-    String selectDeptIdByPkId(String fkUserId);
+    int updateById(TStaffInfo tStaffInfo);
 
     TStaffInfo selectDeptLeader(String fkUserId);
 

@@ -6,8 +6,8 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,6 +32,7 @@ public class TStaffQuitController {
     /**
      * 1 跳转到新增页面
      */
+    @ApiOperation(value = "员工发起离职申请页面-已完成", notes = "员工发起离职申请，只需代入token即可")
     @GetMapping(value = "/staff/quit/addPage")
     public CommonResult insertPage(HttpServletRequest request) throws FebsException {
         try {
@@ -48,6 +49,7 @@ public class TStaffQuitController {
      *
      * @return 新增结果
      */
+    @ApiOperation(value = "员工发起离职申请-已完成", notes = "员工发起离职申请")
     @PostMapping(value = "/staff/quit/add")
     public CommonResult insert(@RequestBody String param, HttpServletRequest request) throws FebsException {
         try {

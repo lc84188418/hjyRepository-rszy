@@ -12,6 +12,7 @@ import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.*;
 import com.hjy.cloud.t_apv.entity.*;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_apv.result.ApprovalAddResult;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
 import com.hjy.cloud.t_staff.dao.*;
@@ -315,7 +316,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
-        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        PageResult<DApvRecord> result = new PageResult();
+        if(recordResultList != null && recordResultList.size() > 0){
+            result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        }
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
     @Override
@@ -327,7 +331,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
-        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        PageResult<DApvRecord> result = new PageResult();
+        if(recordResultList != null && recordResultList.size() > 0){
+            result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        }
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
 
@@ -762,6 +769,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         String approvalType = JsonUtil.getStringParam(json, "approvalType");
         String sourceId = JsonUtil.getStringParam(json, "sourceId");
         JSONObject resultJson = new JSONObject();
+        String fkStaffId = "";
         if("1".equals(approvalType)){
             //请假申请
         }else if("2".equals(approvalType)){
@@ -778,25 +786,39 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //采购申请
         }else if("8".equals(approvalType)){
             //调动申请
-
+            TStaffReassign reassign = this.tStaffReassignMapper.selectByPkId(sourceId);
+            fkStaffId = reassign.getFkStaffId();
+            resultJson.put("source", reassign);
         }else if("9".equals(approvalType)){
             //招聘申请
         }else if("10".equals(approvalType)){
             //调薪申请
         }else if("11".equals(approvalType)){
             //离职申请
+            TStaffQuit quit = this.tStaffQuitMapper.selectByPkId(sourceId);
+            fkStaffId = quit.getFkStaffId();
+            resultJson.put("source", quit);
         }else if("12".equals(approvalType)){
             //入职申请
             TStaffEntry tStaffEntry = tStaffEntryMapper.selectByPkId2(sourceId);
             resultJson.put("source", tStaffEntry);
         }else if("13".equals(approvalType)){
             //转正申请
-
+            TStaffZz zz = tStaffZzMapper.selectByPkId(sourceId);
+            fkStaffId = zz.getFkStaffId();
+            resultJson.put("source", zz);
         }else if("14".equals(approvalType)){
             //印章申请
         }else if("15".equals(approvalType)){
             //证照申请
         }
+        /**
+         * 当前员工的档案信息
+         */
+        TStaffInfo query = new TStaffInfo();
+        query.setPkStaffId(fkStaffId);
+        TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(query);
+        resultJson.put("staffInfo", info);
         return new CommonResult(200, "success", "获取审批流程来源详情成功", resultJson);
 
     }
@@ -858,11 +880,12 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 //审批驳回，后续审批就不用进行了
                 //将该审批流程的所有审批记录的is_ing该为0
                 int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
+                stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             if("0".equals(apvRecord.getNextApproval()) && resultInt == 1){
                 //将该审批流程的所有审批记录的is_ing该为0
                 int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
-                stringBuffer = this.complateAPV(approvalType,sourceId);
+                stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
@@ -943,83 +966,107 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         return tApvApprovalMapper.insertApvRecordBatch(apvRecordList);
     }
 
-    private StringBuffer complateAPV(String approvalType,String sourceId) {
+    /**
+     *
+     * @param approvalType 审批类型
+     * @param sourceId
+     * @param resultInt 审批结果 1通过 0拒绝
+     * @return
+     */
+    private StringBuffer complateAPV(String approvalType,String sourceId,int resultInt) {
         StringBuffer stringBuffer = new StringBuffer();
         //如果该审批已完成最后流程并通过，
-        if("12".equals(approvalType)){
-            //且为入职审批即approvalType=12
-            TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
-            //先查询该员工是否已被录入过
-            TStaffInfo queryInfo = new TStaffInfo();
-            queryInfo.setPkStaffId(sourceId);
-            TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId2(queryInfo);
-            if(selectInfo == null){
-                /**
-                 * 添加员工信息
-                 */
-                TStaffInfo tStaffInfo = new TStaffInfo();
-                tStaffInfo.setPkStaffId(tStaffEntry.getPkEntryId());
-                tStaffInfo.setStaffName(tStaffEntry.getStaffName());
-                tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
-                tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
-                //员工状态，0离职1入职2转正，入职审批通过后状态为1
-                tStaffInfo.setStaffStatus(1);
-                tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
-                tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
-                tStaffInfo.setFkWorkaddressId(tStaffEntry.getWorkAddress());
-                tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
-                tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
-                tStaffInfo.setIdType(tStaffEntry.getIdType());
-                tStaffInfo.setIdCard(tStaffEntry.getIdCard());
-                tStaffInfo.setStaffEmail(tStaffEntry.getEmail());
-                tStaffInfo.setStaffTel(tStaffEntry.getStaffTel());
-                //其他信息需要后期添加
-                int i = tStaffInfoMapper.insertSelective(tStaffInfo);
-                if(i > 0){
-                    stringBuffer.append("入职审批通过，已录入员工信息！");
+        /**
+         * 入职审批 即approvalType=12
+         */
+        if(ApprovaltypeEnum.Type_12.getCode().equals(approvalType)){
+            if(1 == resultInt){
+                TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
+                //先查询该员工是否已被录入过
+                TStaffInfo queryInfo = new TStaffInfo();
+                queryInfo.setPkStaffId(sourceId);
+                TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId2(queryInfo);
+                if(selectInfo == null){
+                    /**
+                     * 添加员工信息
+                     */
+                    TStaffInfo tStaffInfo = new TStaffInfo();
+                    tStaffInfo.setPkStaffId(tStaffEntry.getPkEntryId());
+                    tStaffInfo.setStaffName(tStaffEntry.getStaffName());
+                    tStaffInfo.setStaffSex(tStaffEntry.getStaffSex());
+                    tStaffInfo.setStaffAge(tStaffEntry.getStaffAge());
+                    //员工状态，0已离职1刚入职2已转正，入职审批通过后状态为1
+                    tStaffInfo.setStaffStatus(1);
+                    tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
+                    tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
+                    tStaffInfo.setFkWorkaddressId(tStaffEntry.getWorkAddress());
+                    tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
+                    tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
+                    tStaffInfo.setIdType(tStaffEntry.getIdType());
+                    tStaffInfo.setIdCard(tStaffEntry.getIdCard());
+                    tStaffInfo.setStaffEmail(tStaffEntry.getEmail());
+                    tStaffInfo.setStaffTel(tStaffEntry.getStaffTel());
+                    //其他信息需要后期添加
+                    int i = tStaffInfoMapper.insertSelective(tStaffInfo);
+                    if(i > 0){
+                        stringBuffer.append("入职审批通过，已录入员工信息！");
+                    }
+                }
+                //先查询该员工是否已有系统账户
+                TSysUser selectUser = tSysUserMapper.selectById(tStaffEntry.getPkEntryId());
+                if(selectUser == null){
+                    /**
+                     * 添加系统用户
+                     */
+                    TSysUser tSysUser = new TSysUser();
+                    tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
+                    tSysUser.setUsername(tStaffEntry.getStaffName());
+                    String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
+                    tSysUser.setPassword(password);
+                    tSysUser.setEmail(tStaffEntry.getEmail());
+                    tSysUser.setTel(tStaffEntry.getStaffTel());
+                    tSysUser.setIdcard(tStaffEntry.getIdCard());
+                    tSysUser.setFullName(tStaffEntry.getStaffName());
+                    tSysUser.setEnableStatus("1");
+                    tSysUser.setCreateTime(new Date());
+                    tSysUser.setModifyTime(new Date());
+                    int j = tSysUserMapper.insertSelective(tSysUser);
+                    if(j > 0){
+                        stringBuffer.append("已创建系统账户！");
+                    }
                 }
             }
-            //先查询该员工是否已有系统账户
-            TSysUser selectUser = tSysUserMapper.selectById(tStaffEntry.getPkEntryId());
-            if(selectUser == null){
-                /**
-                 * 添加系统用户
-                 */
-                TSysUser tSysUser = new TSysUser();
-                tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
-                tSysUser.setUsername(tStaffEntry.getStaffName());
-                String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
-                tSysUser.setPassword(password);
-                tSysUser.setEmail(tStaffEntry.getEmail());
-                tSysUser.setTel(tStaffEntry.getStaffTel());
-                tSysUser.setIdcard(tStaffEntry.getIdCard());
-                tSysUser.setFullName(tStaffEntry.getStaffName());
-                tSysUser.setEnableStatus("1");
-                tSysUser.setCreateTime(new Date());
-                tSysUser.setModifyTime(new Date());
-                int j = tSysUserMapper.insertSelective(tSysUser);
-                if(j > 0){
-                    stringBuffer.append("已创建系统账户！");
-                }
-            }
-        }else if ("13".equals(approvalType)){
-            //转正申请
+        }else if (ApprovaltypeEnum.Type_13.getCode().equals(approvalType)){
             //修改审批状态
             TStaffZz tStaffZz = new TStaffZz();
             tStaffZz.setPkZzId(sourceId);
             tStaffZz.setSjzzTime(new Date());
-            //0代表正在审批中，1通过
-            tStaffZz.setApvStatus(1);
-            int i = tStaffZzMapper.updateByPkId(tStaffZz);
-            if(i > 0){
-                stringBuffer.append("转正审批通过，已录入员工转正信息！");
+            if(1 == resultInt){
+                //转正申请
+                //0代表正在审批中，1通过2拒绝
+                tStaffZz.setApvStatus(1);
+                int i = tStaffZzMapper.updateByPkId(tStaffZz);
+                if(i > 0){
+                    stringBuffer.append("转正审批通过，已录入员工转正信息！");
+                }
+                //修改员工档案中的员工状态
+                TStaffInfo tStaffInfo = new TStaffInfo();
+                tStaffInfo.setPkStaffId(sourceId);
+                tStaffInfo.setStaffStatus(2);
+                int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
+            }else {
+                tStaffZz.setApvStatus(2);
+                int i = tStaffZzMapper.updateByPkId(tStaffZz);
+                if(i > 0){
+                    stringBuffer.append("转正审批驳回！");
+                }
             }
-            //修改员工档案中的员工状态
-            TStaffInfo tStaffInfo = new TStaffInfo();
-            tStaffInfo.setPkStaffId(sourceId);
-            tStaffInfo.setStaffStatus(2);
-            int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
         }else if ("11".equals(approvalType)){
+            if(1 == resultInt){
+
+            }else {
+
+            }
             //离职申请
             //修改审批状态-离职信息和员工信息里
             TStaffQuit tStaffQuit = new TStaffQuit();
@@ -1035,25 +1082,24 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 stringBuffer.append("离职审批通过，已保存员工离职信息！");
             }
         } else if ("8".equals(approvalType)){
-            //调动申请
             //修改审批状态-调动信息
             TStaffReassign updateEntity = new TStaffReassign();
             updateEntity.setPkReassignId(sourceId);
             updateEntity.setEndTime(new Date());
-            updateEntity.setApvStatus(1);
-            int i = tStaffReassignMapper.updateByPkId(updateEntity);
-            //查询出调动信息
-            TStaffReassign resultEntity = tStaffReassignMapper.selectByPkId(sourceId);
-            //将员工名单信息改为调动后的
-            TStaffInfo tStaffInfo = new TStaffInfo();
-            tStaffInfo.setPkStaffId(resultEntity.getFkStaffId());
-            tStaffInfo.setFkDeptId(resultEntity.getReassignDeptId());
-            tStaffInfo.setFkPositionId(resultEntity.getReassignPosition());
-            tStaffInfo.setFkWorkaddressId(resultEntity.getReassignAddress());
-            int j = tStaffInfoMapper.updateByPkId(tStaffInfo);
-            if(j > 0){
-                stringBuffer.append("调动审批通过，已更新员工档案信息！");
+            if(1 == resultInt){
+                //调动申请
+                updateEntity.setApvStatus(1);
+                //查询出调动信息
+                TStaffReassign resultEntity = tStaffReassignMapper.selectByPkId(sourceId);
+                //将员工名单信息改为调动后的
+                int j = ObjectAsyncTask.updateReassignData(resultEntity);
+                if(j > 0){
+                    stringBuffer.append("调动审批通过，已更新员工档案信息！");
+                }
+            }else {
+                updateEntity.setApvStatus(2);
             }
+            int i = tStaffReassignMapper.updateByPkId(updateEntity);
         }
         return stringBuffer;
     }

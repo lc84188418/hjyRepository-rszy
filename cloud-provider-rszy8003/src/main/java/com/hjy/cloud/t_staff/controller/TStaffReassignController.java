@@ -5,6 +5,7 @@ import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
+import com.hjy.cloud.t_staff.result.ReassignApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -173,7 +174,7 @@ public class TStaffReassignController {
     @ApiOperation(value = "员工发起调动申请页面-已完成", notes = "无需参数，代入token即可")
     @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请页面")
     @GetMapping(value = "/staff/reassign/initiateApvPage/user")
-    public CommonResult userInitiateApvPage(HttpServletRequest request) throws FebsException {
+    public CommonResult<ReassignApprovalResult> userInitiateApvPage(HttpServletRequest request) throws FebsException {
         try {
             return tStaffReassignService.userInitiateApvPage(request);
         } catch (Exception e) {
