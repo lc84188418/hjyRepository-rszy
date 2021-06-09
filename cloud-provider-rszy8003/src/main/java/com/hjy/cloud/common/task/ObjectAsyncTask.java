@@ -312,11 +312,16 @@ public class ObjectAsyncTask {
             TStaffInfo staffInfo = ntClient.tStaffInfoService.selectByPkId2(currentSourceId);
             resultJson.put("currentSource",staffInfo);
         } else if("调动申请".equals(apvName)){
-            //调动信息
-            TStaffReassign selectEntity = new TStaffReassign();
-            selectEntity.setPkReassignId(currentSourceId);
-            List<TStaffReassign> list = ntClient.tStaffReassignService.selectAllPage(selectEntity);
-            resultJson.put("currentSource",list.get(0));
+            if(StringUtils.isEmpty(currentSourceId)){
+                //说明是员工自主发起调动
+                resultJson.put("currentSource",null);
+            }else {
+                //调动信息
+                TStaffReassign selectEntity = new TStaffReassign();
+                selectEntity.setPkReassignId(currentSourceId);
+                List<TStaffReassign> list = ntClient.tStaffReassignService.selectAllPage(selectEntity);
+                resultJson.put("currentSource",list.get(0));
+            }
         }
         return resultJson;
     }

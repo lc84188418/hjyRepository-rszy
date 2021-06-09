@@ -6,6 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryPositionMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
 import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
@@ -42,6 +45,8 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Resource
     private TStaffReassignMapper tStaffReassignMapper;
+    @Resource
+    private TApvApprovalMapper tApvApprovalMapper;
     @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
     @Resource
@@ -131,13 +136,14 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         if(i2 > 0){
             return new CommonResult().ErrorResult("当前还有审批中的调动申请，请等待审批，无需再次提交!",null);
         }
-        tStaffReassign.setPkReassignId(IDUtils.getUUID());
+        String pkReassignId = IDUtils.getUUID();
+        tStaffReassign.setPkReassignId(pkReassignId);
         tStaffReassign.setStartTime(new Date());
         tStaffReassign.setApvStatus(3);
         //调动时间
         int i = this.tStaffReassignMapper.insertSelective(tStaffReassign);
         if (i > 0) {
-            return new CommonResult(200, "success", "员工调动数据添加成功，待发起审批", null);
+            return new CommonResult(200, "success", "员工调动数据添加成功，待发起审批", pkReassignId);
         } else {
             return new CommonResult(444, "error", "员工调动数据添加失败", null);
         }
@@ -261,15 +267,34 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         JSONObject jsonObject = JSON.parseObject(param);
         //调动申请信息主键
         String pkReassignId = JsonUtil.getStringParam(jsonObject, "pkReassignId");
-        //审批类型
-        String approvalType = JsonUtil.getStringParam(jsonObject, "approvalType");
-        int apvStatus = 0;
-        if(StringUtils.isEmpty(approvalType)){
-            //直接通过
-            newPkId = null;
-            apvStatus = 1;
+        if(StringUtils.isEmpty(pkReassignId)){
+            return new CommonResult().ErrorResult("请传入调动信息！",null);
+        }
+        TStaffReassign query = new TStaffReassign();
+        query.setPkReassignId(pkReassignId);
+        List<TStaffReassign> reassigns = this.tStaffReassignMapper.selectAllPage(query);
+        if(reassigns == null || reassigns.size() <= 0){
+            throw new RuntimeException("当前调动信息已不存在，或被异常删除，请刷新后重试！");
         }else {
-            apvStatus = 2;
+            query = reassigns.get(0);
+        }
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_8.getCode();
+        /**
+         * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
+         */
+        int apvStatus = 0;
+        TApvApproval queryApproval = new TApvApproval();
+        queryApproval.setApprovalType(approvalType);
+        List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
+        if(apvApprovalList != null && apvApprovalList.size() >0){
+            //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
+
+        }else {
+            //说明没有审批流直接通过，且不添加记录
+            //直接通过， apvStatus = 1
+            apvStatus = 1;
+            newPkId = null;
         }
         /**
          * 修改调动信息表中的apvId
@@ -287,8 +312,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
                 stringBuffer.append("已发起调动申请成功!");
-                String applyPeople = tStaffReassignMapper.selectStaffName(pkReassignId);
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,applyPeople,newPkId);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,query.getStaffName(),newPkId);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
@@ -296,8 +320,36 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Override
     public CommonResult userInitiateApvPage(HttpServletRequest request) {
-
-        return null;
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        /**
+         * 查询员工是否已存在调动申请，即apvStatus=3
+         */
+        int i1 = tStaffReassignMapper.selectCountByStaff_ApvStatus(sysToken.getFkUserId());
+        if(i1 > 0){
+            return new CommonResult().ErrorResult("已有调动申请或正在审批中，无需再次提交！",null);
+        }
+        //部门
+        List<TOutfitDept> depts = tOutfitDeptMapper.selectAllIdAndName();
+        //职位
+        List<TDictionaryPosition> positions = tDictionaryPositionMapper.selectAllId_Name();
+        //工作地
+        List<TOutfitWorkaddress> workaddresses = tOutfitWorkaddressMapper.selectAllId_Name();
+        //合同公司
+        List<TOutfitCompany> companies = tOutfitCompanyMapper.select_PkId_name();
+        /**
+         * 当前员工调动前信息
+         */
+        TStaffReassign resultEntity = tStaffReassignMapper.selectStaffOldInfoByStaffId(sysToken.getFkUserId());
+        //审批流程的数据
+        JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,null,"调动申请",1);
+        String msg = (String) resultJson.get("msg");
+        resultJson.remove("msg");
+        resultJson.put("depts", depts);
+        resultJson.put("positions", positions);
+        resultJson.put("workaddresses", workaddresses);
+        resultJson.put("companies", companies);
+        resultJson.put("staffInfo", resultEntity);
+        return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
     @Override

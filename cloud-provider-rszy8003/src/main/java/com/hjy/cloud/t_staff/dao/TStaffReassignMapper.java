@@ -50,12 +50,10 @@ public interface TStaffReassignMapper {
      */
     TStaffReassign selectStaffOldInfoByStaffId(@Param("fkStaffId") String fkStaffId);
 
-    String selectStaffId(@Param("pkReassignId")String sourceId);
-    String selectStaffName(@Param("pkReassignId")String sourceId);
-
-    TStaffReassign selectByStaffId_ApvStatus(@Param("fkStaffId")String fkStaffId);
     //通过实体数据删除数据
     int deleteByEntity(TStaffReassign tStaffReassign);
     //通过主键删除数据
     int deleteByPkId(String pkId);
+    //
+    int selectCountByStaff_ApvStatus(@Param("fkStaffId")String fkUserId);
 }

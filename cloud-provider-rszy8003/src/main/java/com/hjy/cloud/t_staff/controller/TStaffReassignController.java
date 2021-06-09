@@ -7,11 +7,11 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -170,8 +170,9 @@ public class TStaffReassignController {
      * 员工
      * @return 修改结果
      */
+    @ApiOperation(value = "员工发起调动申请页面-已完成", notes = "无需参数，代入token即可")
     @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请页面")
-    @PostMapping(value = "/staff/reassign/initiateApvPage/user")
+    @GetMapping(value = "/staff/reassign/initiateApvPage/user")
     public CommonResult userInitiateApvPage(HttpServletRequest request) throws FebsException {
         try {
             return tStaffReassignService.userInitiateApvPage(request);
@@ -186,6 +187,10 @@ public class TStaffReassignController {
      * 员工
      * @return 修改结果
      */
+    @ApiOperation(value = "员工发起调动申请-开发中", notes = "")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "staffName", value = "姓名",required = true, dataType = "string", paramType = "body", example = "1"),
+    })
     @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请")
     //@RequiresPermissions({"reassign:initiateApv"})
     @PostMapping(value = "/staff/reassign/initiateApv/user")
