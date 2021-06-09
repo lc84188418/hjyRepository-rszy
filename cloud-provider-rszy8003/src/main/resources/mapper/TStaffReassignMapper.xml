@@ -110,7 +110,7 @@
             and table3.PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
         </if>
     </select>
-    <select id="selectStaffOldInfoByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign">
+    <select id="selectStaffOldInfoByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign" parameterType="java.lang.String">
 SELECT
 	table1.*,
 	T_OUTFIT_COMPANY.COMPANY_NAME AS oldCompanyName

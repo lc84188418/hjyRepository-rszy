@@ -36,7 +36,7 @@ public class TStaffReassignController {
      * 管理员添加调动信息页面
      */
     @PostMapping(value = "/staff/reassign/addPage")
-    public CommonResult insertPage(TStaffReassign tStaffReassign) throws FebsException {
+    public CommonResult insertPage(@RequestBody TStaffReassign tStaffReassign) throws FebsException {
         try {
             return tStaffReassignService.insertPage(tStaffReassign);
         } catch (Exception e) {

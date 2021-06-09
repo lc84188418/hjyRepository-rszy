@@ -23,6 +23,7 @@ import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.PasswordEncryptUtils;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,6 +92,13 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffInfo tStaffInfo) {
+        //必填项的判断
+        if(StringUtils.isEmpty(tStaffInfo.getFkDeptId())
+                || StringUtils.isEmpty(tStaffInfo.getFkPositionId())
+                || StringUtils.isEmpty(tStaffInfo.getFkWorkaddressId())
+        ){
+            return new CommonResult().ErrorResult("部门、职位、工作地信息不能为空！",null);
+        }
         tStaffInfo.setPkStaffId(IDUtils.getUUID());
         tStaffInfo.setStaffStatus(1);
         tStaffInfo.setEntryTime(new Date());

@@ -58,6 +58,9 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Override
     public CommonResult insertPage(TStaffReassign tStaffReassign) {
         String fkStaffId = tStaffReassign.getFkStaffId();
+        if(StringUtils.isEmpty(fkStaffId)){
+            return new CommonResult().ErrorResult("员工id fkStaffId不能为空！",null);
+        }
         /**
          * 查询员工是否还有在审批中的调动申请
          */
