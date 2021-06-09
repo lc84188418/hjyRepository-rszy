@@ -27,6 +27,8 @@ public class KqGroupResult<T> {
     private List<ReGroupStaff> frees;
     @ApiModelProperty(value = "所有班次列表", example = "", required = false)
     private List<TKqBc> bcList;
+    @ApiModelProperty(value = "所有班次列表", example = "", required = false)
+    private List<ReGroupWorkingdays> bcs;
     @ApiModelProperty(value = "所有工作日", example = "", required = false)
     private List<ReGroupWorkingdays> workingDaysList;
     @ApiModelProperty(value = "已选工作日设置", example = "", required = false)

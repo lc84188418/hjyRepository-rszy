@@ -62,11 +62,22 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             return new CommonResult().ErrorResult("员工id fkStaffId不能为空！",null);
         }
         /**
+         * 查询员工是否已存在调动申请，即apvStatus=3
+         */
+        TStaffReassign queryReassign = new TStaffReassign();
+        queryReassign.setApvStatus(3);
+        queryReassign.setFkStaffId(fkStaffId);
+        int i1 = tStaffReassignMapper.selectCountByEntity(queryReassign);
+        if(i1 > 0){
+            return new CommonResult().ErrorResult("该员工已存在调动申请，未发起审批！",null);
+        }
+        /**
          * 查询员工是否还有在审批中的调动申请
          */
-        TStaffReassign temp = tStaffReassignMapper.selectByStaffId_ApvStatus(fkStaffId);
-        if(temp != null){
-            return new CommonResult(444, "error", "当前还有审批中的调动申请，请等待审批，无需再次提交", null);
+        queryReassign.setApvStatus(0);
+        int i2 = tStaffReassignMapper.selectCountByEntity(queryReassign);
+        if(i2 > 0){
+            return new CommonResult().ErrorResult("当前还有审批中的调动申请，请等待审批，无需再次提交!",null);
         }
         JSONObject jsonObject = new JSONObject();
         //部门
@@ -98,16 +109,31 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffReassign tStaffReassign) {
+        String fkStaffId = tStaffReassign.getFkStaffId();
+        if(StringUtils.isEmpty(fkStaffId)){
+            return new CommonResult().ErrorResult("员工id fkStaffId不能为空！",null);
+        }
+        /**
+         * 查询员工是否已存在调动申请，即apvStatus=3
+         */
+        TStaffReassign queryReassign = new TStaffReassign();
+        queryReassign.setApvStatus(3);
+        queryReassign.setFkStaffId(fkStaffId);
+        int i1 = tStaffReassignMapper.selectCountByEntity(queryReassign);
+        if(i1 > 0){
+            return new CommonResult().ErrorResult("该员工已存在调动申请，未发起审批！",null);
+        }
         /**
          * 查询员工是否还有在审批中的调动申请
          */
-        TStaffReassign temp = tStaffReassignMapper.selectByStaffId_ApvStatus(tStaffReassign.getFkStaffId());
-        if(temp != null){
+        queryReassign.setApvStatus(0);
+        int i2 = tStaffReassignMapper.selectCountByEntity(queryReassign);
+        if(i2 > 0){
             return new CommonResult().ErrorResult("当前还有审批中的调动申请，请等待审批，无需再次提交!",null);
         }
         tStaffReassign.setPkReassignId(IDUtils.getUUID());
         tStaffReassign.setStartTime(new Date());
-        tStaffReassign.setApvStatus(0);
+        tStaffReassign.setApvStatus(3);
         //调动时间
         int i = this.tStaffReassignMapper.insertSelective(tStaffReassign);
         if (i > 0) {
@@ -143,7 +169,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Transactional()
     @Override
     public CommonResult delete(TStaffReassign tStaffReassign) {
-        int i = this.tStaffReassignMapper.deleteById(tStaffReassign);
+        int i = this.tStaffReassignMapper.deleteByPkId(tStaffReassign.getPkReassignId());
         if (i > 0) {
             return new CommonResult(200, "success", "删除数据成功", null);
         } else {
@@ -247,7 +273,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         TStaffReassign reassign = new TStaffReassign();
         reassign.setPkReassignId(pkReassignId);
         reassign.setFirstApvrecordId(newPkId);
-        //状态,0代表刚添加完成调动信息，2代表已发起调动审批，正在审批中，1代表审批完成
+        //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
         reassign.setApvStatus(apvStatus);
         int i = tStaffReassignMapper.updateByPkId(reassign);
         StringBuffer stringBuffer = new StringBuffer();

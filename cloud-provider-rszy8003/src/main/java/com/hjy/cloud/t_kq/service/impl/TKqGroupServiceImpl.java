@@ -366,9 +366,12 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         //所有工作日
         List<ReGroupWorkingdays> workingdaysList = KqUtil.getGroupWorkingdays();
         resultJson.put("workingDaysList", workingdaysList);
+
         //已选工作日设置
         List<ReGroupWorkingdays> workingDays = tKqGroupMapper.select_YX_workingdaysByGroup(pkId);
         resultJson.put("workingDays", workingDays);
+        //已选班次信息
+        resultJson.put("bcs", workingDays);
         //工作地列表
         List<TOutfitWorkaddress> workaddressList = tOutfitWorkaddressMapper.selectAllId_Name();
         resultJson.put("workaddressList", workaddressList);

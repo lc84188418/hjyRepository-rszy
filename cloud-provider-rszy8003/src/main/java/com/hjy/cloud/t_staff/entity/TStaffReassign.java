@@ -1,8 +1,8 @@
 package com.hjy.cloud.t_staff.entity;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TStaffReassign)表实体类
@@ -46,7 +46,7 @@ public class TStaffReassign {
     private String reassignLeader;
     //调动原因
     private String reassignReason;
-    //审批状态,0审批中，1审批通过，2审批被拒绝
+    //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
     private Integer apvStatus;
     //第一级审批id
     private String firstApvrecordId;

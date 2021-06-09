@@ -30,7 +30,59 @@
         select * from T_STAFF_REASSIGN
         where PK_REASSIGN_ID = #{pkReassignId}
     </select>
-
+    <!--根据实体信息查询记录条数-->
+    <select id="selectCountByEntity" resultType="java.lang.Integer">
+        select count(*) from T_STAFF_REASSIGN
+        where 1 = 1
+            <if test="pkReassignId != null and pkReassignId != ''">
+                and PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                and REASSIGN_TYPE = #{reassignType,jdbcType=VARCHAR}
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                and OLD_DEPT_ID = #{oldDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                and REASSIGN_DEPT_ID = #{reassignDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                and OLD_POSITION = #{oldPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                and REASSIGN_POSITION = #{reassignPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                and OLD_ADDRESS = #{oldAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                and REASSIGN_ADDRESS = #{reassignAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                and OLD_COMPANY = #{oldCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                and REASSIGN_COMPANY = #{reassignCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                and OLD_LEADER = #{oldLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                and REASSIGN_LEADER = #{reassignLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                and REASSIGN_REASON = #{reassignReason,jdbcType=VARCHAR}
+            </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                and FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR}
+            </if>
+    </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultMap="TStaffReassignMap">
         SELECT
@@ -321,9 +373,71 @@ FROM
         </set>
         where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
     </update>
-
+    <!--通过实体各项条件删除-->
+    <delete id="deleteByEntity">
+        delete from T_STAFF_REASSIGN
+        <where>
+            <if test="pkReassignId != null and pkReassignId != ''">
+                and PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="startTime != null">
+                and START_TIME = #{startTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="endTime != null">
+                and END_TIME = #{endTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="reassignTime != null">
+                and REASSIGN_TIME = #{reassignTime,jdbcType=TIMESTAMP}
+            </if>
+            <if test="reassignType != null and reassignType != ''">
+                and REASSIGN_TYPE = #{reassignType,jdbcType=VARCHAR}
+            </if>
+            <if test="oldDeptId != null and oldDeptId != ''">
+                and OLD_DEPT_ID = #{oldDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignDeptId != null and reassignDeptId != ''">
+                and REASSIGN_DEPT_ID = #{reassignDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="oldPosition != null and oldPosition != ''">
+                and OLD_POSITION = #{oldPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignPosition != null and reassignPosition != ''">
+                and REASSIGN_POSITION = #{reassignPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="oldAddress != null and oldAddress != ''">
+                and OLD_ADDRESS = #{oldAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignAddress != null and reassignAddress != ''">
+                and REASSIGN_ADDRESS = #{reassignAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="oldCompany != null and oldCompany != ''">
+                and OLD_COMPANY = #{oldCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignCompany != null and reassignCompany != ''">
+                and REASSIGN_COMPANY = #{reassignCompany,jdbcType=VARCHAR}
+            </if>
+            <if test="oldLeader != null and oldLeader != ''">
+                and OLD_LEADER = #{oldLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignLeader != null and reassignLeader != ''">
+                and REASSIGN_LEADER = #{reassignLeader,jdbcType=VARCHAR}
+            </if>
+            <if test="reassignReason != null and reassignReason != ''">
+                and REASSIGN_REASON = #{reassignReason,jdbcType=VARCHAR}
+            </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
+            </if>
+            <if test="firstApvrecordId != null and firstApvrecordId != ''">
+                and FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </delete>
     <!--通过主键删除-->
-    <delete id="deleteById">
+    <delete id="deleteByPkId">
         delete from T_STAFF_REASSIGN where PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
     </delete>
 

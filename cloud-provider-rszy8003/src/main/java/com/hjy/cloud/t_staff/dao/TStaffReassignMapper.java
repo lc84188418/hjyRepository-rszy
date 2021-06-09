@@ -20,7 +20,8 @@ public interface TStaffReassignMapper {
      * @return 实例对象
      */
     TStaffReassign selectByPkId(@Param("pkReassignId")String pkReassignId);
-
+    //通过ID查询是否有数据
+    int selectCountByEntity(TStaffReassign tStaffReassign);
     /**
      * 通过实体作为筛选条件查询
      *
@@ -44,14 +45,6 @@ public interface TStaffReassignMapper {
      * @return 影响行数
      */
     int updateByPkId(TStaffReassign tStaffReassign);
-
-    /**
-     * 通过主键删除数据
-     *
-     * @param tStaffReassign 实例对象
-     * @return 影响行数
-     */
-    int deleteById(TStaffReassign tStaffReassign);
     /**
      * 当前员工调动前信息
      */
@@ -61,4 +54,8 @@ public interface TStaffReassignMapper {
     String selectStaffName(@Param("pkReassignId")String sourceId);
 
     TStaffReassign selectByStaffId_ApvStatus(@Param("fkStaffId")String fkStaffId);
+    //通过实体数据删除数据
+    int deleteByEntity(TStaffReassign tStaffReassign);
+    //通过主键删除数据
+    int deleteByPkId(String pkId);
 }
