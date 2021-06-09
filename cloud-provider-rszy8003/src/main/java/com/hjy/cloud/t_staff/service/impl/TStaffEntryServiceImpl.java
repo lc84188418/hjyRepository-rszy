@@ -126,8 +126,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         //操作人
         int i = this.tStaffEntryMapper.insertSelective(tStaffEntry);
         if (i > 0) {
-            JSONObject resultJson = this.getListInfo();
-            return new CommonResult(200, "success", tStaffEntry.getStaffName()+" 入职信息添加成功！", resultJson);
+            return new CommonResult(200, "success", tStaffEntry.getStaffName()+" 入职信息添加成功！", pkId);
         } else {
             return new CommonResult(444, "error", "添加数据失败！", null);
         }

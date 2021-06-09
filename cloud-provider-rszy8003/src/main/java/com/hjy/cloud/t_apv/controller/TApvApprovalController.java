@@ -136,7 +136,7 @@ public class TApvApprovalController {
             throw new FebsException(message);
         }
     }
-    @ApiOperation(value = "审批已处理-已完成", notes = "管理员查询所有已处理完成的审批")
+    @ApiOperation(value = "审批已处理-已完成", notes = "这个已经对接好了")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
@@ -154,9 +154,13 @@ public class TApvApprovalController {
     }
     /**
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
-     *
      * @return 修改结果
      */
+    @ApiOperation(value = "管理员-待审批-已完成", notes = "这个已经对接好了")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
+    })
     //@RequiresPermissions({"admin:waitApv"})
     @GetMapping(value = "/apv/approval/waitApv")
     public CommonResult<PageResult<DApvRecord>> adminWaitApv(@RequestParam(value = "pageNum",defaultValue = "1") int pageNum, @RequestParam(value = "pageSize",defaultValue = "10") int pageSize) throws FebsException {
@@ -173,6 +177,11 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    @ApiOperation(value = "用户-待审批-已完成", notes = "这个已经对接好了")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "10"),
+    })
     //@RequiresPermissions({"user:waitApv"})
     @GetMapping(value = "/apv/approval/waitApvUser")
     public CommonResult waitApv(HttpSession session, HttpServletRequest request) throws FebsException {
@@ -202,9 +211,14 @@ public class TApvApprovalController {
     }
     /**
      * 该审批来源的详情
-     *
+     * 这个还要将source数据进行处理
      * @return 修改结果
      */
+    @ApiOperation(value = "审批来源的详情-已完成", notes = "未处理source")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "approvalType",value = "审批类型",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "sourceId",value = "来源",required = true,dataType = "string",paramType = "body",example = "10"),
+    })
     @PostMapping(value = "/apv/approval/waitApvDetail")
     public CommonResult waitApvDetail(@RequestBody String param) throws FebsException {
         try {
@@ -220,6 +234,10 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    @ApiOperation(value = "审批流程的详情-已完成", notes = "已对接完成")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "apvId",value = "审批的第一id",required = true,dataType = "string",paramType = "body",example = "1"),
+    })
     @PostMapping(value = "/apv/approval/apvProcessDetail")
     public CommonResult apvProcessDetail(@RequestBody String param) throws FebsException {
         try {

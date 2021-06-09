@@ -316,10 +316,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
-        PageResult<DApvRecord> result = new PageResult();
-        if(recordResultList != null && recordResultList.size() > 0){
-            result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
-        }
+        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
     @Override
@@ -331,10 +328,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
-        PageResult<DApvRecord> result = new PageResult();
-        if(recordResultList != null && recordResultList.size() > 0){
-            result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
-        }
+        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
 
@@ -434,6 +428,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }
         //将待审批数据进行处理
         List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,tokenEntity.getFkUserId());
+//        List<DApvRecord> apvRecords = this.handleApvRecord(waitApvRecords);
         JSONObject resultJson = new JSONObject();
         resultJson.put("waitApvRecords", apvRecords);
         return new CommonResult(200, "success", "获取数据成功！", resultJson);
@@ -815,10 +810,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         /**
          * 当前员工的档案信息
          */
-        TStaffInfo query = new TStaffInfo();
-        query.setPkStaffId(fkStaffId);
-        TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(query);
-        resultJson.put("staffInfo", info);
+//        TStaffInfo query = new TStaffInfo();
+//        query.setPkStaffId(fkStaffId);
+//        TStaffInfo info = this.tStaffInfoMapper.selectByPkId2(query);
+//        resultJson.put("staffInfo", info);
         return new CommonResult(200, "success", "获取审批流程来源详情成功", resultJson);
 
     }
