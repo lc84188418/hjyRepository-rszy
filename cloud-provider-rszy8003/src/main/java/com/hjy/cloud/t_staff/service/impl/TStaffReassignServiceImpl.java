@@ -264,6 +264,9 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Override
     public CommonResult initiateApv(HttpServletRequest request,String param) {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        if(sysToken == null){
+            return new CommonResult().ErrorResult("token已失效！",null);
+        }
         String newPkId = IDUtils.getUUID();
         JSONObject jsonObject = JSON.parseObject(param);
         //调动申请信息主键

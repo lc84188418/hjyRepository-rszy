@@ -16,6 +16,7 @@ import com.hjy.cloud.t_dictionary.service.TDictionaryHtlxService;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.result.StaffInfos;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
@@ -501,6 +502,14 @@ public class ObjectAsyncTask {
         tStaffInfo.setFkDeptId(reassign.getReassignDeptId());
         tStaffInfo.setFkPositionId(reassign.getReassignPosition());
         tStaffInfo.setFkWorkaddressId(reassign.getReassignAddress());
+        return ntClient.tStaffInfoService.updateById(tStaffInfo);
+    }
+
+    public static int updateQuitData(TStaffQuit staffQuit) {
+        //将员工名单信息改为调动后的
+        TStaffInfo tStaffInfo = new TStaffInfo();
+        tStaffInfo.setPkStaffId(staffQuit.getFkStaffId());
+        tStaffInfo.setStaffStatus(0);
         return ntClient.tStaffInfoService.updateById(tStaffInfo);
     }
 

@@ -6,6 +6,9 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffQuitMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
@@ -44,6 +47,8 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TSysTokenMapper tSysTokenMapper;
+    @Resource
+    private TApvApprovalMapper tApvApprovalMapper;
     /**
      * 添加前获取数据
      *
@@ -63,16 +68,15 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         }
         //查询是否提交过离职申请
         TStaffQuit tStaffQuit = tStaffQuitMapper.selectByStaffId(sysToken.getFkUserId());
-        if(tStaffQuit == null){
-            //离职审批流程信息
-            JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"离职申请",1);
-            String msg = (String) resultJson.get("msg");
-            resultJson.remove("msg");
-            return new CommonResult(200, "success", msg, resultJson);
-        }else {
-            return new CommonResult(444, "error", "该员工已提交过离职申请，无需再次申请，请等待审批！", null);
-
+        if(tStaffQuit != null && tStaffQuit.getQuitStatus() != 2){
+            //0代表正在审批中，1通过2拒绝，拒绝的可以再次提交申请
+            return new CommonResult().ErrorResult("已提交过离职申请，无需再次提交！",null);
         }
+        //离职审批流程信息
+        JSONObject resultJson = ObjectAsyncTask.sponsorApprovalPage(sysToken,sysToken.getFkUserId(),"离职申请",1);
+        String msg = (String) resultJson.get("msg");
+        resultJson.remove("msg");
+        return new CommonResult(200, "success", msg, resultJson);
     }
 
     /**
@@ -85,16 +89,33 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     @Override
     public CommonResult insert(HttpServletRequest request,String param) throws ParseException {
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        String newPkId = IDUtils.getUUID();
         //离职人基本信息
         TStaffInfo queryInfo = new TStaffInfo();
         queryInfo.setPkStaffId(sysToken.getFkUserId());
         TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
-        //查询是否已添加过离职申请
-        TStaffQuit selectEntity = new TStaffQuit();
-        selectEntity.setFkStaffId(staffInfo.getPkStaffId());
-        List<TStaffQuit> tStaffQuits = tStaffQuitMapper.selectAllPage(selectEntity);
-        if(tStaffQuits != null && tStaffQuits.size() > 0){
-            return new CommonResult(445, "error", "已提交过离职申请，不可再次提交", null);
+        //查询是否提交过离职申请
+        TStaffQuit tStaffQuit = tStaffQuitMapper.selectByStaffId(sysToken.getFkUserId());
+        if(tStaffQuit != null && tStaffQuit.getQuitStatus() != 2){
+            //0代表正在审批中，1通过2拒绝，拒绝的可以再次提交申请
+            return new CommonResult().ErrorResult("已提交过离职申请，无需再次提交！",null);
+        }
+        /**
+         * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
+         */
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_11.getCode();
+        int apvStatus = 0;
+        TApvApproval queryApproval = new TApvApproval();
+        queryApproval.setApprovalType(approvalType);
+        List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
+        if(apvApprovalList != null && apvApprovalList.size() >0){
+            //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
+        }else {
+            //说明没有审批流直接通过，且不添加记录
+            //直接通过， apvStatus = 1
+            apvStatus = 1;
+            newPkId = null;
         }
         TStaffQuit staffQuit = new TStaffQuit();
         String pkQuitId = IDUtils.getUUID();
@@ -104,28 +125,34 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         staffQuit.setPosition(staffInfo.getFkPositionId());
         staffQuit.setOperatedPeople(sysToken.getFullName());
         staffQuit.setApplyTime(new Date());
-        staffQuit.setQuitStatus(0);
+        staffQuit.setQuitStatus(apvStatus);
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String quitType = JsonUtil.getStringParam(json, "quitType");
+        String quitReason = JsonUtil.getStringParam(json, "quitReason");
         String quitTime = JsonUtil.getStringParam(json, "quitTime");
         String remarks = JsonUtil.getStringParam(json, "remarks");
         staffQuit.setQuitType(quitType);
+        staffQuit.setQuitReason(quitReason);
         staffQuit.setQuitTime(DateUtil.formatTime(quitTime,"yyyy-MM-dd"));
         staffQuit.setRemarks(remarks);
+        staffQuit.setApvId(newPkId);
         //离职类型/离职日期/备注  需要前端传
         int i = this.tStaffQuitMapper.insertSelective(staffQuit);
         StringBuffer stringBuffer = new StringBuffer();
-        if (i > 0) {
-            stringBuffer.append("离职数据添加成功！");
-        } else {
-            stringBuffer.append("离职数据添加失败！");
-            return new CommonResult(445, "error", stringBuffer.toString(), null);
+        if(i > 0){
+            if(apvStatus == 1){
+                stringBuffer.append("未有离职申请审批，已直接通过！");
+                /**
+                 * 通过后处理员工档案，也就是修改员工的状态
+                 */
+                ObjectAsyncTask.updateQuitData(staffQuit);
+                return new CommonResult(201, "success", stringBuffer.toString(), null);
+            }else {
+                stringBuffer.append("已发起离职申请!");
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName(),newPkId);
+            }
         }
-        //审批类型
-        String approvalType = "11";
-        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName(),IDUtils.getUUID());
-
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 

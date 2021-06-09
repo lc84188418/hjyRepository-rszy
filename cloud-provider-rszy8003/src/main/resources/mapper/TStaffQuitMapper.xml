@@ -9,6 +9,7 @@
         <result property="position" column="POSITION" jdbcType="VARCHAR"/>
         <result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
         <result property="quitType" column="QUIT_TYPE" jdbcType="VARCHAR"/>
+        <result property="quitReason" column="QUIT_REASON" jdbcType="VARCHAR"/>
         <result property="quitTime" column="QUIT_TIME" jdbcType="DATE"/>
         <result property="apvPeople" column="APV_PEOPLE" jdbcType="VARCHAR"/>
         <result property="quitStatus" column="QUIT_STATUS" jdbcType="INTEGER"/>
@@ -35,6 +36,7 @@
         T_STAFF_QUIT.POSITION,
         T_STAFF_QUIT.APPLY_TIME,
         T_STAFF_QUIT.QUIT_TYPE,
+        T_STAFF_QUIT.QUIT_REASON,
         T_STAFF_QUIT.QUIT_TIME,
         T_STAFF_QUIT.APV_PEOPLE,
         T_STAFF_QUIT.QUIT_STATUS,
@@ -48,7 +50,7 @@
         LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_STAFF_QUIT.FK_STAFF_ID
         LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_QUIT.FK_DEPT_ID
         LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_QUIT.POSITION
-        <where>
+        where 1 = 1
             <if test="pkQuitId != null and pkQuitId != ''">
                 and PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
             </if>
@@ -66,6 +68,9 @@
             </if>
             <if test="quitType != null and quitType != ''">
                 and QUIT_TYPE = #{quitType,jdbcType=VARCHAR}
+            </if>
+            <if test="quitReason != null and quitReason != ''">
+                and QUIT_REASON = #{quitReason,jdbcType=VARCHAR}
             </if>
             <if test="quitTime != null">
                 and QUIT_TIME = #{quitTime,jdbcType=DATE}
@@ -85,7 +90,6 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 and OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR}
             </if>
-        </where>
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffQuit">
@@ -108,6 +112,9 @@
             </if>
             <if test="quitType != null and quitType != ''">
                 QUIT_TYPE,
+            </if>
+            <if test="quitReason != null and quitReason != ''">
+                QUIT_REASON,
             </if>
             <if test="quitTime != null">
                 QUIT_TIME,
@@ -147,6 +154,9 @@
             <if test="quitType != null and quitType != ''">
                 #{quitType,jdbcType=VARCHAR},
             </if>
+            <if test="quitReason != null and quitReason != ''">
+                #{quitReason,jdbcType=VARCHAR},
+            </if>
             <if test="quitTime != null">
                 #{quitTime,jdbcType=DATE},
             </if>
@@ -185,6 +195,9 @@
             </if>
             <if test="quitType != null and quitType != ''">
                 QUIT_TYPE = #{quitType,jdbcType=VARCHAR},
+            </if>
+            <if test="quitReason != null and quitReason != ''">
+                QUIT_REASON = #{quitReason,jdbcType=VARCHAR},
             </if>
             <if test="quitTime != null">
                 QUIT_TIME = #{quitTime,jdbcType=DATE},

@@ -6,9 +6,12 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.t_staff.service.TStaffQuitService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -32,7 +35,7 @@ public class TStaffQuitController {
     /**
      * 1 跳转到新增页面
      */
-    @ApiOperation(value = "员工发起离职申请页面-已完成", notes = "员工发起离职申请，只需代入token即可")
+    @ApiOperation(value = "员工发起离职申请页面-已完成", notes = "该接口前端已采用其他接口实现，")
     @GetMapping(value = "/staff/quit/addPage")
     public CommonResult insertPage(HttpServletRequest request) throws FebsException {
         try {
@@ -49,9 +52,17 @@ public class TStaffQuitController {
      *
      * @return 新增结果
      */
-    @ApiOperation(value = "员工发起离职申请-已完成", notes = "员工发起离职申请")
+    @ApiOperation(value = "员工发起离职申请-已完成", notes = "员工发起离职申请,如果是管理员操作肯定报错")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "quitType",value = "离职类型",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "quitReason",value = "离职原因",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "quitTime",value = "离职日期",required = true,dataType = "date",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "remarks",value = "备注",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "csrList",value = "抄送人",required = false,dataType = "object",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "apvList",value = "审批人",required = false,dataType = "object",paramType = "body",example = "1"),
+    })
     @PostMapping(value = "/staff/quit/add")
-    public CommonResult insert(@RequestBody String param, HttpServletRequest request) throws FebsException {
+    public CommonResult insert(@ApiIgnore() @RequestBody String param, HttpServletRequest request) throws FebsException {
         try {
             return tStaffQuitService.insert(request,param);
         } catch (Exception e) {

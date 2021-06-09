@@ -599,6 +599,9 @@ public class TKqClockServiceImpl implements TKqClockService {
         if(StringUtils.isEmpty(paramStatistics.getWeekOrMonth())){
             paramStatistics.setWeekOrMonth(weekOrMonth);
         }
+        if(sysToken == null ){
+            return new CommonResult().ErrorResult("token已失效请重新登录后再试！",null);
+        }
         paramStatistics.setFkStaffId(sysToken.getFkUserId());
         List<TKqClock> list = new ArrayList<>();
         if("月".equals(paramStatistics.getWeekOrMonth())){

@@ -419,6 +419,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             return new CommonResult(444, "error", "请在请求头传入token", null);
         }
         SysToken tokenEntity = tSysTokenMapper.findByToken(token);
+        if(tokenEntity == null){
+            return new CommonResult().ErrorResult("token已失效！",null);
+        }
         ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
         /**
          *
@@ -797,7 +800,13 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //调薪申请
         }else if("11".equals(approvalType)){
             //离职申请
-            TStaffQuit quit = this.tStaffQuitMapper.selectByPkId(sourceId);
+            TStaffQuit query = new TStaffQuit();
+            query.setPkQuitId(sourceId);
+            List<TStaffQuit> quits = this.tStaffQuitMapper.selectAllPage(query);
+            TStaffQuit quit = new TStaffQuit();
+            if(quits != null && quits.size() > 0){
+                quit = quits.get(0);
+            }
             SourceDetailResult resultBf = this.handleData(quit);
             result.setSource(resultBf);
         }else if("12".equals(approvalType)){
@@ -851,7 +860,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }else if(object.getClass().equals(TStaffQuit.class)){
             //离职
             TStaffQuit obj = (TStaffQuit) object;
-            System.out.println(obj);
             result.setFkStaffId(obj.getFkStaffId());
             result.setStaffName(obj.getStaffName());
             result.setStaffDept(obj.getDeptName());

@@ -27,11 +27,13 @@ public class TStaffQuit {
     private Date applyTime;
     //离职类型
     private String quitType;
+    //离职原因
+    private String quitReason;
     //离职日期
     private Date quitTime;
     //审批人
     private String apvPeople;
-    //状态
+    //状态,0审批中1通过2拒绝
     private Integer quitStatus;
     //备注
     private String remarks;
