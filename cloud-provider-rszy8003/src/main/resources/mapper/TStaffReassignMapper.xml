@@ -161,6 +161,9 @@
         <if test="pkReassignId != null and pkReassignId != ''">
             and table3.PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
         </if>
+        <if test="fkStaffId != null and fkStaffId != ''">
+            and table3.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        </if>
     </select>
     <select id="selectStaffOldInfoByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign" parameterType="java.lang.String">
 SELECT

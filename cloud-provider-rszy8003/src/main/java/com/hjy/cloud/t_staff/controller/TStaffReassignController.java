@@ -188,9 +188,17 @@ public class TStaffReassignController {
      * 员工
      * @return 修改结果
      */
-    @ApiOperation(value = "员工发起调动申请-开发中", notes = "")
+    @ApiOperation(value = "员工发起调动申请-已完成", notes = "员工发起调动申请,如果是管理员操作肯定报错")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "staffName", value = "姓名",required = true, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "reassignTime",value = "调动时间",required = true,dataType = "date",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignType",value = "调动类型",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignDeptId",value = "调动后部门id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignPosition",value = "调动后职位id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignAddress",value = "调动后工作地id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignReason",value = "调动原因",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignReason",value = "调动原因",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "csrList",value = "抄送人",required = false,dataType = "object",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "apvList",value = "审批人",required = false,dataType = "object",paramType = "body",example = "1"),
     })
     @OperLog(operModul = "工作台-全部申请-调动申请",operType = "发起调动",operDesc = "发起调动申请")
     //@RequiresPermissions({"reassign:initiateApv"})

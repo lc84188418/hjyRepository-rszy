@@ -5,6 +5,7 @@ import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.result.ReassignApprovalResult;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -68,5 +69,5 @@ public interface TStaffReassignService {
     CommonResult initiateApv(HttpServletRequest request, String param);
     //员工操作调动
     CommonResult<ReassignApprovalResult> userInitiateApvPage(HttpServletRequest request);
-    CommonResult userInitiateApv(HttpServletRequest request, String param);
+    CommonResult userInitiateApv(HttpServletRequest request, String param) throws ParseException;
 }

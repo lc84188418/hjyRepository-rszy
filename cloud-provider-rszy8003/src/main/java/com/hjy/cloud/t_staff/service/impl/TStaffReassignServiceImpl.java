@@ -17,7 +17,9 @@ import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffReassignMapper;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.result.ReassignApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
@@ -32,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +49,8 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Resource
     private TStaffReassignMapper tStaffReassignMapper;
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
     @Resource
@@ -360,8 +365,79 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     }
 
     @Override
-    public CommonResult userInitiateApv(HttpServletRequest request, String param) {
-        return null;
+    public CommonResult userInitiateApv(HttpServletRequest request, String param) throws ParseException {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        String newPkId = IDUtils.getUUID();
+        //离职人基本信息
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(sysToken.getFkUserId());
+        TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
+        //查询是否提交过申请
+        int i1 = tStaffReassignMapper.selectCountByStaff_ApvStatus(sysToken.getFkUserId());
+        if(i1 > 0){
+            return new CommonResult().ErrorResult("已有调动申请或正在审批中，无需再次提交！",null);
+        }
+        /**
+         * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
+         */
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_8.getCode();
+        int apvStatus = 0;
+        TApvApproval queryApproval = new TApvApproval();
+        queryApproval.setApprovalType(approvalType);
+        List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
+        if(apvApprovalList != null && apvApprovalList.size() >0){
+            //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
+        }else {
+            //说明没有审批流直接通过，且不添加记录
+            //直接通过， apvStatus = 1
+            apvStatus = 1;
+            newPkId = null;
+        }
+        //调动信息
+        JSONObject json = JSON.parseObject(param);
+        Date reassignTime = JsonUtil.getDateParam(json, "yyy-MM-dd","reassignTime");
+        String reassignType = JsonUtil.getStringParam(json, "reassignType");
+        String reassignDeptId = JsonUtil.getStringParam(json, "reassignDeptId");
+        String reassignPosition = JsonUtil.getStringParam(json, "reassignPosition");
+        String reassignAddress = JsonUtil.getStringParam(json, "reassignAddress");
+        String reassignReason = JsonUtil.getStringParam(json, "reassignReason");
+
+        //添加数据
+        TStaffReassign reassign = new TStaffReassign();
+        String pkReassignId = IDUtils.getUUID();
+        reassign.setPkReassignId(pkReassignId);
+        reassign.setFkStaffId(sysToken.getFkUserId());
+        reassign.setFirstApvrecordId(newPkId);
+        //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
+        reassign.setApvStatus(apvStatus);
+        reassign.setStartTime(new Date());
+        reassign.setOldDeptId(staffInfo.getFkDeptId());
+        reassign.setOldPosition(staffInfo.getFkPositionId());
+        reassign.setOldAddress(staffInfo.getFkWorkaddressId());
+        //公司没有
+        reassign.setReassignTime(reassignTime);
+        reassign.setReassignType(reassignType);
+        reassign.setReassignDeptId(reassignDeptId);
+        reassign.setReassignPosition(reassignPosition);
+        reassign.setReassignAddress(reassignAddress);
+        reassign.setReassignReason(reassignReason);
+        int i = tStaffReassignMapper.insertSelective(reassign);
+        StringBuffer stringBuffer = new StringBuffer();
+        if(i > 0){
+            if(apvStatus == 1){
+                stringBuffer.append("未有调动申请审批，已直接通过！");
+                /**
+                 * 通过后处理员工档案，也就是修改调动后的信息
+                 */
+                ObjectAsyncTask.updateReassignData(reassign);
+                return new CommonResult(201, "success", stringBuffer.toString(), null);
+            }else {
+                stringBuffer.append("已发起调动申请成功!");
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkReassignId,reassign.getStaffName(),newPkId);
+            }
+        }
+        return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 
     @Override
