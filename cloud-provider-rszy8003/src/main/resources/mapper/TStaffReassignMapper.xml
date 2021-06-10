@@ -164,6 +164,7 @@
         <if test="fkStaffId != null and fkStaffId != ''">
             and table3.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
         </if>
+        order by REASSIGN_TIME desc
     </select>
     <select id="selectStaffOldInfoByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign" parameterType="java.lang.String">
 SELECT

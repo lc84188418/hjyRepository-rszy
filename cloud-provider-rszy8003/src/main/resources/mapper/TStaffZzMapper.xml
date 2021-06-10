@@ -78,6 +78,7 @@
             <if test="firstApvrecordId != null and firstApvrecordId != ''">
                 and FIRST_APVRECORD_ID = #{firstApvrecordId,jdbcType=VARCHAR}
             </if>
+        order by ZZ_TIME desc
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffZz">

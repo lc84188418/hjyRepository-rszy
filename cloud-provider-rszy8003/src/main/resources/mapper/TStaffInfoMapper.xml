@@ -197,6 +197,7 @@
                 and ID_CARD = #{idCard}
             </if>
         </where>
+        order by ENTRY_TIME desc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
 SELECT

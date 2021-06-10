@@ -104,7 +104,7 @@ public class TStaffEntryController {
 
     /**
      * 管理员-分页查询所有待入职的数据
-     *
+     * status ！= 1
      * @param param json参数
      * @return 所有数据
      */

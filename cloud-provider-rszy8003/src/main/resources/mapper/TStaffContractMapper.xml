@@ -100,6 +100,8 @@
                 and ANNEX = #{annex,jdbcType=VARCHAR}
             </if>
         </where>
+        order by SIGN_TIME desc
+
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffContract">

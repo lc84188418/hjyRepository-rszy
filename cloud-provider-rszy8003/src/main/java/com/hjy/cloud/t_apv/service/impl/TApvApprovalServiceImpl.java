@@ -974,7 +974,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         if(ApprovaltypeEnum.Type_12.getCode().equals(approvalType)){
             if(1 == resultInt){
                 TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
-                //先查询该员工是否已被录入过,通过证件号
+                //1.修改员工入职的状态
+                tStaffEntry.setStatus(1);
+                tStaffEntryMapper.updateByPkId(tStaffEntry);
+
+                //2.先查询该员工是否已被录入过,通过证件号
                 TStaffInfo queryInfo = new TStaffInfo();
                 queryInfo.setIdCard(sourceId);
                 TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId2(queryInfo);
@@ -1005,7 +1009,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                         stringBuffer.append("入职审批通过，已录入员工信息！");
                     }
                 }
-                //先查询该员工是否已有系统账户,通过用户名
+                //3.先查询该员工是否已有系统账户,通过用户名
                 TSysUser query = new TSysUser();
                 query.setUsername(tStaffEntry.getStaffName());
                 int userCount = tSysUserMapper.selectCountByEntity(query);

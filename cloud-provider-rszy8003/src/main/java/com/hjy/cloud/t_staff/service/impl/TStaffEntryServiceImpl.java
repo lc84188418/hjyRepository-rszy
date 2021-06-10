@@ -125,6 +125,13 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         if(!IdCardUtil.isValidatedAllIdcard(tStaffEntry.getIdCard())){
             return new CommonResult().ErrorResult("请输入合法规范的证件号！",null);
         }
+        //查询此身份证是否已存在
+        TStaffEntry query = new TStaffEntry();
+        query.setIdCard(tStaffEntry.getIdCard());
+        int count = this.tStaffEntryMapper.selectCountByEntity(query);
+        if(count > 0){
+            return new CommonResult().ErrorResult("该证件已存在，请核查该证件号是否已被他人录入！",null);
+        }
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String pkId = IDUtils.getUUID();
         tStaffEntry.setPkEntryId(pkId);

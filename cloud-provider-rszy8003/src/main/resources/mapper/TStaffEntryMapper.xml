@@ -144,6 +144,7 @@
         ON
         T_STAFF_ENTRY.WORK_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
         where PK_ENTRY_ID = #{pkEntryId}
+        order by ENTRY_TIME desc
     </select>
 
     <!--通过实体作为筛选条件查询-->
@@ -245,6 +246,7 @@
             <if test="entryDesc != null and entryDesc != ''">
                 and ENTRY_DESC = #{entryDesc}
             </if>
+        order by ENTRY_TIME desc
 
     </select>
 

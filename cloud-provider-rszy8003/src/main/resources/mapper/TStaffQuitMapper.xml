@@ -95,6 +95,7 @@
             <if test="apvId != null and apvId != ''">
                 and APV_ID = #{apvId,jdbcType=VARCHAR}
             </if>
+        order by QUIT_TIME desc
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffQuit">
