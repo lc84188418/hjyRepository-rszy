@@ -72,12 +72,12 @@ public class TStaffZzController {
             throw new FebsException(message);
         }
     }
-    @ApiOperation(value = "转正中-已完成", notes = "查看待转正员工的信息，只含审批中的")
+    @ApiOperation(value = "转正中-已完成", notes = "查看转正中员工的信息，只含审批中的")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
     })
-    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看待转正员工的信息，只含审批中的")
+    @OperLog(operModul = "人员管理-人员变动",operType = "查看",operDesc = "查看转正中员工的信息，只含审批中的")
     //@RequiresPermissions({"Zz:adminView"})
     @PostMapping(value = "/staff/Zz/adminList/ing")
     public CommonResult selectAllIng(@RequestBody String param) throws FebsException {

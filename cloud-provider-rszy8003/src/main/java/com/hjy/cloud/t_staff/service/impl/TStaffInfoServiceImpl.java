@@ -20,6 +20,7 @@ import com.hjy.cloud.t_staff.service.TStaffInfoService;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.IdCardUtil;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.PasswordEncryptUtils;
 import com.hjy.cloud.utils.page.PageResult;
@@ -94,11 +95,20 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     @Override
     public CommonResult insert(TStaffInfo tStaffInfo) {
         //必填项的判断
-        if(StringUtils.isEmpty(tStaffInfo.getFkDeptId())
+        if(StringUtils.isEmpty(tStaffInfo.getStaffName())
+                || StringUtils.isEmpty(tStaffInfo.getFkDeptId())
                 || StringUtils.isEmpty(tStaffInfo.getFkPositionId())
                 || StringUtils.isEmpty(tStaffInfo.getFkWorkaddressId())
+                || StringUtils.isEmpty(tStaffInfo.getFkHtlxId())
+                || StringUtils.isEmpty(tStaffInfo.getIdCard())
+                || tStaffInfo.getEntryTime() == null
+                || tStaffInfo.getStaffSex() == null
         ){
-            return new CommonResult().ErrorResult("部门、职位、工作地信息不能为空！",null);
+            return new CommonResult().ErrorResult("姓名、性别、部门、职位、工作地、合同、证件号，入职时间信息不能为空！",null);
+        }
+        //验证证件号
+        if(!IdCardUtil.isValidatedAllIdcard(tStaffInfo.getIdCard())){
+            return new CommonResult().ErrorResult("请输入合法规范的证件号！",null);
         }
         tStaffInfo.setPkStaffId(IDUtils.getUUID());
         tStaffInfo.setStaffStatus(1);

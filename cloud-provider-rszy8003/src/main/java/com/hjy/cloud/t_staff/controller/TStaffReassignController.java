@@ -52,6 +52,18 @@ public class TStaffReassignController {
      * @param tStaffReassign 实体对象
      * @return 新增结果
      */
+    @ApiOperation(value = "管理员添加调动信息-已完成", notes = "管理员添加调动信息")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fkStaffId",value = "员工ID",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignTime",value = "调动时间",required = true,dataType = "date",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignType",value = "调动类型",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignDeptId",value = "调动后部门id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignPosition",value = "调动后职位id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignAddress",value = "调动后工作地id",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignReason",value = "调动原因",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "csrList",value = "抄送人",required = false,dataType = "object",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "apvList",value = "审批人",required = false,dataType = "object",paramType = "body",example = "1"),
+    })
     //@RequiresPermissions({"reassign:add"})
     @PostMapping(value = "/staff/reassign/add")
     public CommonResult insert(@RequestBody TStaffReassign tStaffReassign) throws FebsException {

@@ -70,12 +70,9 @@ public interface TApvApprovalService {
      * 删除与一级审批相关联的审批数据
      */
     int deleteApvRecordBySourceId(@Param("sourceId")String sourceId);
-    /**
-     * 待审批,是指所有没有审批完成的记录，非操作用户自己的
-     *
-     */
+    //管理端-待审批
     CommonResult<PageResult<DApvRecord>> waitApv(int pageNum, int pageSize);
-    //审批已处理
+    //管理端-已处理
     CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize);
     /**
      * 待审批,操作用户自己的

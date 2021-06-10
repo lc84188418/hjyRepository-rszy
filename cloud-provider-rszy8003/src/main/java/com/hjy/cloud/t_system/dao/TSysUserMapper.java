@@ -89,4 +89,6 @@ public interface TSysUserMapper {
     int addUserRoleByUserRole(ReUserRole userRole);
 
     List<User> selectId_NameByIds(@Param("ids")String[] ids);
+    //
+    int selectCountByEntity(TSysUser query);
 }

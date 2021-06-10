@@ -1050,9 +1050,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         if(ApprovaltypeEnum.Type_12.getCode().equals(approvalType)){
             if(1 == resultInt){
                 TStaffEntry  tStaffEntry = tStaffEntryMapper.selectByPkId(sourceId);
-                //先查询该员工是否已被录入过
+                //先查询该员工是否已被录入过,通过证件号
                 TStaffInfo queryInfo = new TStaffInfo();
-                queryInfo.setPkStaffId(sourceId);
+                queryInfo.setIdCard(sourceId);
                 TStaffInfo selectInfo = tStaffInfoMapper.selectByPkId2(queryInfo);
                 if(selectInfo == null){
                     /**
@@ -1080,28 +1080,32 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                         stringBuffer.append("入职审批通过，已录入员工信息！");
                     }
                 }
-                //先查询该员工是否已有系统账户
-                TSysUser selectUser = tSysUserMapper.selectById(tStaffEntry.getPkEntryId());
-                if(selectUser == null){
-                    /**
-                     * 添加系统用户
-                     */
-                    TSysUser tSysUser = new TSysUser();
-                    tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
+                //先查询该员工是否已有系统账户,通过用户名
+                TSysUser query = new TSysUser();
+                query.setUsername(tStaffEntry.getStaffName());
+                int userCount = tSysUserMapper.selectCountByEntity(query);
+                /**
+                 * 添加系统用户
+                 */
+                TSysUser tSysUser = new TSysUser();
+                tSysUser.setPkUserId(tStaffEntry.getPkEntryId());
+                if(userCount == 0){
                     tSysUser.setUsername(tStaffEntry.getStaffName());
-                    String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
-                    tSysUser.setPassword(password);
-                    tSysUser.setEmail(tStaffEntry.getEmail());
-                    tSysUser.setTel(tStaffEntry.getStaffTel());
-                    tSysUser.setIdcard(tStaffEntry.getIdCard());
-                    tSysUser.setFullName(tStaffEntry.getStaffName());
-                    tSysUser.setEnableStatus("1");
-                    tSysUser.setCreateTime(new Date());
-                    tSysUser.setModifyTime(new Date());
-                    int j = tSysUserMapper.insertSelective(tSysUser);
-                    if(j > 0){
-                        stringBuffer.append("已创建系统账户！");
-                    }
+                }else {
+                    tSysUser.setUsername(tStaffEntry.getStaffName()+userCount);
+                }
+                String password = PasswordEncryptUtils.MyPasswordEncryptUtil(null,"123456");
+                tSysUser.setPassword(password);
+                tSysUser.setEmail(tStaffEntry.getEmail());
+                tSysUser.setTel(tStaffEntry.getStaffTel());
+                tSysUser.setIdcard(tStaffEntry.getIdCard());
+                tSysUser.setFullName(tStaffEntry.getStaffName());
+                tSysUser.setEnableStatus("1");
+                tSysUser.setCreateTime(new Date());
+                tSysUser.setModifyTime(new Date());
+                int j = tSysUserMapper.insertSelective(tSysUser);
+                if(j > 0){
+                    stringBuffer.append("已创建系统账户！");
                 }
             }
         }else if (ApprovaltypeEnum.Type_13.getCode().equals(approvalType)){

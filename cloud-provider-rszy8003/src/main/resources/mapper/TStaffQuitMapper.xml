@@ -16,6 +16,7 @@
         <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
         <result property="apvTime" column="APV_TIME" jdbcType="TIMESTAMP"/>
         <result property="operatedPeople" column="OPERATED_PEOPLE" jdbcType="VARCHAR"/>
+        <result property="apvId" column="APV_ID" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
@@ -28,7 +29,7 @@
         where FK_STAFF_ID = #{fkStaffId}
     </select>
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TStaffQuitMap">
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffQuit">
         select
         T_STAFF_QUIT.PK_QUIT_ID,
         T_STAFF_QUIT.FK_STAFF_ID,
@@ -43,6 +44,7 @@
         T_STAFF_QUIT.REMARKS,
         T_STAFF_QUIT.APV_TIME,
         T_STAFF_QUIT.OPERATED_PEOPLE,
+        T_STAFF_QUIT.APV_ID,
         T_STAFF_INFO.STAFF_NAME,
         T_OUTFIT_DEPT.DEPT_NAME,
         T_DICTIONARY_POSITION.POSITION_NAME
@@ -90,6 +92,9 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 and OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR}
             </if>
+            <if test="apvId != null and apvId != ''">
+                and APV_ID = #{apvId,jdbcType=VARCHAR}
+            </if>
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffQuit">
@@ -134,6 +139,9 @@
             <if test="operatedPeople != null and operatedPeople != ''">
                 OPERATED_PEOPLE,
             </if>
+            <if test="apvId != null and apvId != ''">
+                APV_ID,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkQuitId != null and pkQuitId != ''">
@@ -174,6 +182,9 @@
             </if>
             <if test="operatedPeople != null and operatedPeople != ''">
                 #{operatedPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="apvId != null and apvId != ''">
+                #{apvId,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -216,6 +227,9 @@
             </if>
             <if test="operatedPeople != null and operatedPeople != ''">
                 OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="apvId != null and apvId != ''">
+                APV_ID = #{apvId,jdbcType=VARCHAR},
             </if>
         </set>
         where PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}

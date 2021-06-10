@@ -121,8 +121,11 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Override
     public CommonResult insert(TStaffReassign tStaffReassign) {
         String fkStaffId = tStaffReassign.getFkStaffId();
-        if(StringUtils.isEmpty(fkStaffId)){
-            return new CommonResult().ErrorResult("员工id fkStaffId不能为空！",null);
+        if(StringUtils.isEmpty(tStaffReassign.getReassignDeptId())
+                || StringUtils.isEmpty(tStaffReassign.getReassignPosition())
+                || StringUtils.isEmpty(tStaffReassign.getReassignAddress())
+        ){
+            return new CommonResult().ErrorResult("调动部门、职位、工作地不能为空！",null);
         }
         /**
          * 查询员工是否已存在调动申请，即apvStatus=3
@@ -146,13 +149,32 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         tStaffReassign.setPkReassignId(pkReassignId);
         tStaffReassign.setStartTime(new Date());
         tStaffReassign.setApvStatus(3);
-        //调动时间
-        int i = this.tStaffReassignMapper.insertSelective(tStaffReassign);
-        if (i > 0) {
-            return new CommonResult(200, "success", "员工调动数据添加成功，待发起审批", pkReassignId);
-        } else {
-            return new CommonResult(444, "error", "员工调动数据添加失败", null);
+        //处理合同公司
+        //员工档案信息
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(fkStaffId);
+        TStaffInfo staffInfo = this.tStaffInfoMapper.selectByPkId2(queryInfo);
+        if(staffInfo == null){
+            return new CommonResult().ErrorResult("系统已不存在该员工档案，请检查！",null);
         }
+        tStaffReassign.setOldDeptId(staffInfo.getFkDeptId());
+        tStaffReassign.setOldPosition(staffInfo.getFkPositionId());
+        tStaffReassign.setOldAddress(staffInfo.getFkWorkaddressId());
+        //处理合同公司
+        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(staffInfo.getFkDeptId());
+        if(dept == null){
+            return new CommonResult().ErrorResult("原部门信息不存在，请检查！",null);
+        }
+        tStaffReassign.setOldCompany(dept.getSuperiorDept());
+
+        TOutfitDept dept2 = this.tOutfitDeptMapper.selectByPkId(tStaffReassign.getReassignDeptId());
+        if(dept2 == null){
+            return new CommonResult().ErrorResult("调动后部门信息不存在，请检查！",null);
+        }
+        tStaffReassign.setReassignCompany(dept2.getSuperiorDept());
+        int i = this.tStaffReassignMapper.insertSelective(tStaffReassign);
+        return new CommonResult(200, "success", "员工调动数据添加成功，待发起审批", pkReassignId);
+
     }
 
     /**
@@ -366,6 +388,21 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Override
     public CommonResult userInitiateApv(HttpServletRequest request, String param) throws ParseException {
+        //调动信息
+        JSONObject json = JSON.parseObject(param);
+        Date reassignTime = JsonUtil.getDateParam(json, "yyy-MM-dd","reassignTime");
+        String reassignType = JsonUtil.getStringParam(json, "reassignType");
+        String reassignDeptId = JsonUtil.getStringParam(json, "reassignDeptId");
+        String reassignPosition = JsonUtil.getStringParam(json, "reassignPosition");
+        String reassignAddress = JsonUtil.getStringParam(json, "reassignAddress");
+        String reassignReason = JsonUtil.getStringParam(json, "reassignReason");
+        if(StringUtils.isEmpty(reassignDeptId)
+                || StringUtils.isEmpty(reassignPosition)
+                || StringUtils.isEmpty(reassignAddress)
+        ){
+            return new CommonResult().ErrorResult("调动部门、职位、工作地不能为空！",null);
+        }
+        //
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String newPkId = IDUtils.getUUID();
         //离职人基本信息
@@ -394,14 +431,6 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             apvStatus = 1;
             newPkId = null;
         }
-        //调动信息
-        JSONObject json = JSON.parseObject(param);
-        Date reassignTime = JsonUtil.getDateParam(json, "yyy-MM-dd","reassignTime");
-        String reassignType = JsonUtil.getStringParam(json, "reassignType");
-        String reassignDeptId = JsonUtil.getStringParam(json, "reassignDeptId");
-        String reassignPosition = JsonUtil.getStringParam(json, "reassignPosition");
-        String reassignAddress = JsonUtil.getStringParam(json, "reassignAddress");
-        String reassignReason = JsonUtil.getStringParam(json, "reassignReason");
 
         //添加数据
         TStaffReassign reassign = new TStaffReassign();
@@ -416,6 +445,18 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         reassign.setOldPosition(staffInfo.getFkPositionId());
         reassign.setOldAddress(staffInfo.getFkWorkaddressId());
         //公司没有
+        //处理合同公司
+        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(staffInfo.getFkDeptId());
+        if(dept == null){
+            return new CommonResult().ErrorResult("原部门信息不存在，请检查！",null);
+        }
+        reassign.setOldCompany(dept.getSuperiorDept());
+
+        TOutfitDept dept2 = this.tOutfitDeptMapper.selectByPkId(reassignDeptId);
+        if(dept2 == null){
+            return new CommonResult().ErrorResult("调动后部门信息不存在，请检查！",null);
+        }
+        reassign.setReassignCompany(dept2.getSuperiorDept());
         reassign.setReassignTime(reassignTime);
         reassign.setReassignType(reassignType);
         reassign.setReassignDeptId(reassignDeptId);

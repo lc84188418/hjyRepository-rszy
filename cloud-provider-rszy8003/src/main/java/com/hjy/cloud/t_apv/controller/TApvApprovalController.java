@@ -155,6 +155,7 @@ public class TApvApprovalController {
     }
     /**
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
+     * 管理员
      * @return 修改结果
      */
     @ApiOperation(value = "管理员-待审批-已完成", notes = "这个已经对接好了")

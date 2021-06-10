@@ -56,17 +56,17 @@ public class TStaffEntryController {
     @ApiOperation(value = "新增待入职-已完成", notes = "测试完成")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "staffName", value = "姓名",required = true, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "staffSex", value = "性别",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffSex", value = "性别",required = true, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "staffAge", value = "年龄",required = false, dataType = "int", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "staffDept", value = "部门",required = false, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "staffPosition", value = "职位",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffDept", value = "部门",required = true, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "staffPosition", value = "职位",required = true, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "staffTel", value = "电话",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "fkHtlxId", value = "合同类型",required = false, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "workAddress", value = "工作地点",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "workAddress", value = "工作地点",required = true, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "recruitWay", value = "招聘方式",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "idType", value = "证件类型",required = false, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "idCard", value = "证件号",required = false, dataType = "string", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "entryTime", value = "入职日期",required = false, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "idCard", value = "证件号",required = true, dataType = "string", paramType = "body", example = "1"),
+            @ApiImplicitParam(name = "entryTime", value = "入职日期",required = true, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "email", value = "个人邮箱",required = false, dataType = "string", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "entryDesc", value = "入职说明",required = false, dataType = "string", paramType = "body", example = "1"),
     })

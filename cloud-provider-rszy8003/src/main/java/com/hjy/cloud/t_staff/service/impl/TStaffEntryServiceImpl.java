@@ -29,6 +29,7 @@ import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.IdCardUtil;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageResult;
@@ -109,21 +110,29 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Override
     public CommonResult insert(TStaffEntry tStaffEntry,HttpServletRequest request) {
         //必填项的判断
-        if(StringUtils.isEmpty(tStaffEntry.getStaffDept())
+        if(StringUtils.isEmpty(tStaffEntry.getStaffName())
+                || StringUtils.isEmpty(tStaffEntry.getStaffDept())
                 || StringUtils.isEmpty(tStaffEntry.getStaffPosition())
                 || StringUtils.isEmpty(tStaffEntry.getWorkAddress())
+                || StringUtils.isEmpty(tStaffEntry.getFkHtlxId())
+                || StringUtils.isEmpty(tStaffEntry.getIdCard())
+                || tStaffEntry.getEntryTime() == null
+                || tStaffEntry.getStaffSex() == null
         ){
-            return new CommonResult().ErrorResult("部门、职位、工作地信息不能为空！",null);
+            return new CommonResult().ErrorResult("姓名、性别、部门、职位、工作地、合同、证件号，入职时间信息不能为空！",null);
+        }
+        //验证证件号
+        if(!IdCardUtil.isValidatedAllIdcard(tStaffEntry.getIdCard())){
+            return new CommonResult().ErrorResult("请输入合法规范的证件号！",null);
         }
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String pkId = IDUtils.getUUID();
         tStaffEntry.setPkEntryId(pkId);
         tStaffEntry.setStatus(0);
         if(sysToken != null){
+            //操作人
             tStaffEntry.setOperatedPeople(sysToken.getFullName());
         }
-        //入职时间
-        //操作人
         int i = this.tStaffEntryMapper.insertSelective(tStaffEntry);
         if (i > 0) {
             return new CommonResult(200, "success", tStaffEntry.getStaffName()+" 入职信息添加成功！", pkId);

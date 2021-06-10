@@ -112,6 +112,7 @@
                 and IS_ING = #{isIng,jdbcType=INTEGER}
             </if>
         </where>
+        order by START_TIME desc
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.DApvRecord">

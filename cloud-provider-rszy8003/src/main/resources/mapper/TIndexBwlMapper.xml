@@ -20,7 +20,7 @@
         select
         PK_BWL_ID, BWL_NAME, BWL_CONTENT, REMIND_TIME
         from T_INDEX_BWL
-        <where>
+        where 1 = 1
             <if test="pkBwlId != null and pkBwlId != ''">
                 and PK_BWL_ID = #{pkBwlId,jdbcType=VARCHAR}
             </if>
@@ -36,7 +36,7 @@
             <if test="fkUserId != null and fkUserId != ''">
                 and FK_USER_ID = #{fkUserId,jdbcType=VARCHAR}
             </if>
-        </where>
+        order by REMIND_TIME DESC
     </select>
     <select id="selectAllEffective" resultType="com.hjy.cloud.t_index.entity.TIndexBwl">
         SELECT * FROM T_INDEX_BWL WHERE TO_DAYS(REMIND_TIME) = TO_DAYS(NOW()) AND IS_SEND = 0

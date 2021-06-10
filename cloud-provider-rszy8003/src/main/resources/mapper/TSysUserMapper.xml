@@ -11,6 +11,44 @@
         select * from T_SYS_USER
         where USERNAME = #{username,jdbcType=VARCHAR}
     </select>
+    <!--根据实体信息查询记录条数-->
+    <select id="selectCountByEntity" resultType="java.lang.Integer">
+        select count(*) from T_SYS_USER
+        where 1 = 1
+            <if test="pkUserId != null and pkUserId != ''">
+                and PK_USER_ID = #{pkUserId,jdbcType=VARCHAR}
+            </if>
+            <if test="username != null and username != ''">
+                and USERNAME = #{username,jdbcType=VARCHAR}
+            </if>
+            <if test="password != null and password != ''">
+                and PASSWORD = #{password,jdbcType=VARCHAR}
+            </if>
+            <if test="email != null and email != ''">
+                and EMAIL = #{email,jdbcType=VARCHAR}
+            </if>
+            <if test="tel != null and tel != ''">
+                and TEL = #{tel,jdbcType=VARCHAR}
+            </if>
+            <if test="enableStatus != null and enableStatus != ''">
+                and ENABLE_STATUS = #{enableStatus,jdbcType=VARCHAR}
+            </if>
+            <if test="idcard != null and idcard != ''">
+                and IDCARD = #{idcard,jdbcType=VARCHAR}
+            </if>
+            <if test="fullName != null and fullName != ''">
+                and FULL_NAME = #{fullName,jdbcType=VARCHAR}
+            </if>
+            <if test="address != null and address != ''">
+                and ADDRESS = #{address,jdbcType=VARCHAR}
+            </if>
+            <if test="workPosition != null and workPosition != ''">
+                and WORK_POSITION = #{workPosition,jdbcType=VARCHAR}
+            </if>
+            <if test="workContent != null and workContent != ''">
+                and WORK_CONTENT = #{workContent,jdbcType=VARCHAR}
+            </if>
+    </select>
     <!--No problem 通过实体作为筛选条件查询-->
     <select id="selectAllByEntity" resultType="com.hjy.cloud.t_system.entity.TSysUser" parameterType="com.hjy.cloud.t_system.entity.TSysUser">
         select * from T_SYS_USER
