@@ -1068,6 +1068,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                     tStaffInfo.setFkDeptId(tStaffEntry.getStaffDept());
                     tStaffInfo.setFkPositionId(tStaffEntry.getStaffPosition());
                     tStaffInfo.setFkWorkaddressId(tStaffEntry.getWorkAddress());
+                    tStaffInfo.setFkHtlxId(tStaffEntry.getFkHtlxId());
                     tStaffInfo.setEntryTime(tStaffEntry.getEntryTime());
                     tStaffInfo.setRecruitWay(tStaffEntry.getRecruitWay());
                     tStaffInfo.setIdType(tStaffEntry.getIdType());

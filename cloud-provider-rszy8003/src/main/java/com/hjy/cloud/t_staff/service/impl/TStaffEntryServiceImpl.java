@@ -114,7 +114,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                 || StringUtils.isEmpty(tStaffEntry.getStaffDept())
                 || StringUtils.isEmpty(tStaffEntry.getStaffPosition())
                 || StringUtils.isEmpty(tStaffEntry.getWorkAddress())
-                || StringUtils.isEmpty(tStaffEntry.getFkHtlxId())
+//                || StringUtils.isEmpty(tStaffEntry.getFkHtlxId())
                 || StringUtils.isEmpty(tStaffEntry.getIdCard())
                 || tStaffEntry.getEntryTime() == null
                 || tStaffEntry.getStaffSex() == null
@@ -133,6 +133,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
             //操作人
             tStaffEntry.setOperatedPeople(sysToken.getFullName());
         }
+        tStaffEntry.setFkHtlxId("6f84683fc98f468c90726743fbd8bbd9");
         int i = this.tStaffEntryMapper.insertSelective(tStaffEntry);
         if (i > 0) {
             return new CommonResult(200, "success", tStaffEntry.getStaffName()+" 入职信息添加成功！", pkId);

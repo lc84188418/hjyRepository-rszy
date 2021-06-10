@@ -53,6 +53,17 @@ public class TStaffContractController {
      * @param tStaffContract 实体对象
      * @return 新增结果
      */
+    @ApiOperation(value = "查看-已完成", notes = "查看单个入职员工的档案信息详情")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fkStaffId",value = "员工关联主键",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffName",value = "姓名",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "contractQx",value = "合同期限",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "startTime",value = "合同开始日期",required = true,dataType = "date",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "fkContractType",value = "合同类型ID",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "endTime",value = "合同结束日期",required = true,dataType = "date",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "contractAttribute",value = "合同属性",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "signTime",value = "合同签订日期",required = true,dataType = "date",paramType = "body",example = "1"),
+    })
     @OperLog(operModul = "人员管理-合同管理",operType = "添加",operDesc = "添加员工合同信息")
     //@RequiresPermissions({"contract:add"})
     @PostMapping(value = "/staff/contract/add")

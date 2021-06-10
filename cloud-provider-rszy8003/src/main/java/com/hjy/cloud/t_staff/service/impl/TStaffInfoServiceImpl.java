@@ -102,7 +102,7 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
                 || StringUtils.isEmpty(tStaffInfo.getFkHtlxId())
                 || StringUtils.isEmpty(tStaffInfo.getIdCard())
                 || tStaffInfo.getEntryTime() == null
-                || tStaffInfo.getStaffSex() == null
+//                || tStaffInfo.getStaffSex() == null
         ){
             return new CommonResult().ErrorResult("姓名、性别、部门、职位、工作地、合同、证件号，入职时间信息不能为空！",null);
         }

@@ -50,7 +50,7 @@ public class DApvRecord<T> {
     private String positionName;
     @ApiModelProperty(value = "标识", example = "", required = false)
     private Integer prompt;
-    @ApiModelProperty(value = "审批状态", example = "", required = false)
+    @ApiModelProperty(value = "审批状态,0审批中1通过2拒绝", example = "", required = false)
     private Integer apvStatus;
     @ApiModelProperty(value = "审批类别", example = "", required = false)
     private DApvRecord nextRecord;

@@ -21,6 +21,7 @@ import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +78,9 @@ public class TStaffContractServiceImpl implements TStaffContractService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffContract tStaffContract) {
+        if(StringUtils.isEmpty(tStaffContract.getFkStaffId())){
+            return new CommonResult().ErrorResult("无员工id信息！",null);
+        }
         tStaffContract.setPkContrctId(IDUtils.getUUID());
         //审批状态,0代表未发起审批，2代表审批中，1代表审批完成
         tStaffContract.setApprovalStatus(0);
@@ -84,6 +88,22 @@ public class TStaffContractServiceImpl implements TStaffContractService {
         tStaffContract.setContrctStatus(0);
         //合同签订类型，1代表正签，0代表续签
         tStaffContract.setSignStatus(1);
+        /**
+         * 处理员工相关信息
+         */
+        TStaffInfo query = new TStaffInfo();
+        query.setPkStaffId(tStaffContract.getFkStaffId());
+        TStaffInfo tStaffInfo = this.tStaffInfoMapper.selectByPkId2(query);
+        if(tStaffInfo == null){
+            return new CommonResult().ErrorResult("该员工档案已不存在！",null);
+        }
+        tStaffContract.setStaffName(tStaffInfo.getStaffName());
+        tStaffContract.setFkDeptId(tStaffInfo.getFkDeptId());
+        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(tStaffInfo.getFkDeptId());
+        if(dept == null){
+            return new CommonResult().ErrorResult("部门信息不存在，请检查！",null);
+        }
+        tStaffContract.setFkContractCompany(dept.getSuperiorDept());
         int i = this.tStaffContractMapper.insertSelective(tStaffContract);
         if (i > 0) {
             JSONObject listInfo = this.getListInfo();

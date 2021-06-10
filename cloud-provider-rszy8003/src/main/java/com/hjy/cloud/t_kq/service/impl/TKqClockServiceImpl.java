@@ -306,6 +306,7 @@ public class TKqClockServiceImpl implements TKqClockService {
     @Transactional()
     @Override
     public CommonResult<ClockAddPage> insert(TKqClock tKqClockParam,HttpServletRequest request) throws ParseException {
+        System.err.println(tKqClockParam);
         SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         if(sysToken == null){
             return new CommonResult(444, "error", "token不存在或已失效，请重新登录", null);
