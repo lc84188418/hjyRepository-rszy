@@ -2,11 +2,13 @@ package com.hjy.cloud.common.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hjy.cloud.common.utils.ApvUtil;
 import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.entity.TApvApvtype;
 import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
+import com.hjy.cloud.t_apv.result.SourceDetailResult;
 import com.hjy.cloud.t_apv.service.DApvRecordService;
 import com.hjy.cloud.t_apv.service.DCcRecordService;
 import com.hjy.cloud.t_apv.service.TApvApprovalService;
@@ -14,14 +16,9 @@ import com.hjy.cloud.t_apv.service.TApvApvtypeService;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_dictionary.service.TDictionaryHtlxService;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
-import com.hjy.cloud.t_staff.entity.TStaffEntry;
-import com.hjy.cloud.t_staff.entity.TStaffInfo;
-import com.hjy.cloud.t_staff.entity.TStaffQuit;
-import com.hjy.cloud.t_staff.entity.TStaffReassign;
+import com.hjy.cloud.t_staff.entity.*;
 import com.hjy.cloud.t_staff.result.StaffInfos;
-import com.hjy.cloud.t_staff.service.TStaffEntryService;
-import com.hjy.cloud.t_staff.service.TStaffInfoService;
-import com.hjy.cloud.t_staff.service.TStaffReassignService;
+import com.hjy.cloud.t_staff.service.*;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.entity.SysToken;
@@ -74,6 +71,10 @@ public class ObjectAsyncTask {
     private DApvRecordService dApvRecordService;
     @Resource
     private TDictionaryHtlxService tDictionaryHtlxService;
+    @Resource
+    private TStaffZzService tStaffZzService;
+    @Resource
+    private TStaffQuitService tStaffQuitService;
     private static ObjectAsyncTask ntClient;
 
     /**
@@ -466,12 +467,47 @@ public class ObjectAsyncTask {
             Iterator<DApvRecord> iterator = records.iterator();
             while (iterator.hasNext()){
                 DApvRecord next = iterator.next();
+                SourceDetailResult resultBf = new SourceDetailResult();
                 //处理详情
                 if(ApprovaltypeEnum.Type_12.getCode().equals(next.getApprovalType())){
                     //查询入职详情
-                    TStaffEntry entry = ntClient.tStaffEntryService.selectDetailByPkId(next.getSourceId());
-                    next.setSourceDetail(entry);
+                    TStaffEntry tStaffEntry = ntClient.tStaffEntryService.selectByPkId2(next.getSourceId());
+                    resultBf = ApvUtil.handleData(tStaffEntry);
                 }
+                if(ApprovaltypeEnum.Type_13.getCode().equals(next.getApprovalType())){
+                    //查询转正详情
+                    TStaffZz query = new TStaffZz();
+                    query.setPkZzId(next.getSourceId());
+                    List<TStaffZz> zzs = ntClient.tStaffZzService.selectAllPage(query);
+                    TStaffZz zz = new TStaffZz();
+                    if(zzs != null && zzs.size() > 0){
+                        zz = zzs.get(0);
+                    }
+                    resultBf = ApvUtil.handleData(zz);
+                }
+                if(ApprovaltypeEnum.Type_11.getCode().equals(next.getApprovalType())){
+                    //查询离职详情
+                    TStaffQuit query = new TStaffQuit();
+                    query.setPkQuitId(next.getSourceId());
+                    List<TStaffQuit> quits = ntClient.tStaffQuitService.selectAllPage(query);
+                    TStaffQuit quit = new TStaffQuit();
+                    if(quits != null && quits.size() > 0){
+                        quit = quits.get(0);
+                    }
+                    resultBf = ApvUtil.handleData(quit);
+                }
+                if(ApprovaltypeEnum.Type_8.getCode().equals(next.getApprovalType())){
+                    //查询调动详情
+                    TStaffReassign query = new TStaffReassign();
+                    query.setPkReassignId(next.getSourceId());
+                    List<TStaffReassign> reassigns = ntClient.tStaffReassignService.selectAllPage(query);
+                    TStaffReassign reassign = new TStaffReassign();
+                    if(reassigns != null && reassigns.size() > 0){
+                        reassign = reassigns.get(0);
+                    }
+                    resultBf = ApvUtil.handleData(reassign);
+                }
+                next.setSourceDetail(resultBf);
                 //处理第二级审批
                 DApvRecord second = ntClient.dApvRecordService.selectById(next.getNextApproval());
                 if(second != null){
@@ -491,6 +527,7 @@ public class ObjectAsyncTask {
                 }
                 next.setNextRecord(second);
             }
+
         }
         return records;
     }
@@ -526,9 +563,11 @@ public class ObjectAsyncTask {
         ntClient.tApvApvtypeService = this.tApvApvtypeService;
         ntClient.tStaffInfoService = this.tStaffInfoService;
         ntClient.tStaffEntryService = this.tStaffEntryService;
+        ntClient.tStaffZzService = this.tStaffZzService;
         ntClient.dCcRecordService = this.dCcRecordService;
         ntClient.dApvRecordService = this.dApvRecordService;
         ntClient.tStaffReassignService = this.tStaffReassignService;
+        ntClient.tStaffQuitService = this.tStaffQuitService;
         ntClient.tDictionaryHtlxService = this.tDictionaryHtlxService;
     }
 }

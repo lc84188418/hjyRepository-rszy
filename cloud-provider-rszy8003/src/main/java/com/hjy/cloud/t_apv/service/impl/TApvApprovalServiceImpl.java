@@ -315,8 +315,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         select.setIsIng(1);
         select.setIsStart(1);
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
-        //将审批数据进行处理
+        //将第一级审批的后续流程放入到次级流程中
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
+
         PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
@@ -792,7 +793,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(reassigns != null && reassigns.size() > 0){
                 reassign = reassigns.get(0);
             }
-            SourceDetailResult resultBf = this.handleData(reassign);
+            SourceDetailResult resultBf = ApvUtil.handleData(reassign);
             result.setSource(resultBf);
         }else if("9".equals(approvalType)){
             //招聘申请
@@ -807,12 +808,12 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(quits != null && quits.size() > 0){
                 quit = quits.get(0);
             }
-            SourceDetailResult resultBf = this.handleData(quit);
+            SourceDetailResult resultBf = ApvUtil.handleData(quit);
             result.setSource(resultBf);
         }else if("12".equals(approvalType)){
             //入职申请
             TStaffEntry tStaffEntry = tStaffEntryMapper.selectByPkId2(sourceId);
-            SourceDetailResult resultBf = this.handleData(tStaffEntry);
+            SourceDetailResult resultBf = ApvUtil.handleData(tStaffEntry);
             result.setSource(resultBf);
         }else if("13".equals(approvalType)){
             //转正申请
@@ -823,7 +824,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(zzs != null && zzs.size() > 0){
                 zz = zzs.get(0);
             }
-            SourceDetailResult resultBf = this.handleData(zz);
+            SourceDetailResult resultBf = ApvUtil.handleData(zz);
             result.setSource(resultBf);
         }else if("14".equals(approvalType)){
             //印章申请
@@ -834,62 +835,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
 
     }
 
-    private SourceDetailResult handleData(Object object) {
-        SourceDetailResult result = new SourceDetailResult();
-        if(object == null){
-            return result;
-        }
-        if(object.getClass().equals(TStaffReassign.class)){
-            //调动
-            TStaffReassign obj = (TStaffReassign) object;
-            result.setFkStaffId(obj.getFkStaffId());
-            result.setStaffName(obj.getStaffName());
-            result.setStaffDept(obj.getOldDeptName());
-            result.setStaffPosition(obj.getOldPositionName());
-            result.setApvId(obj.getFirstApvrecordId());
-            //
-            result.setReassignTime(obj.getReassignTime());
-            result.setReassignType(obj.getReassignType());
-            result.setReassignReason(obj.getReassignReason());
-            result.setOldDeptName(obj.getOldDeptName());
-            result.setReassignDeptName(obj.getReassignDeptName());
-            result.setOldPositionName(obj.getOldPositionName());
-            result.setReassignPositionName(obj.getReassignPositionName());
-            result.setOldWorkAddressName(obj.getOldWorkAddressName());
-            result.setReassignWorkAddressName(obj.getReassignWorkAddressName());
-        }else if(object.getClass().equals(TStaffQuit.class)){
-            //离职
-            TStaffQuit obj = (TStaffQuit) object;
-            result.setFkStaffId(obj.getFkStaffId());
-            result.setStaffName(obj.getStaffName());
-            result.setStaffDept(obj.getDeptName());
-            result.setStaffPosition(obj.getPositionName());
-            result.setApvId(obj.getApvId());
-            //
-            result.setQuitTime(obj.getQuitTime());
-        }else if(object.getClass().equals(TStaffEntry.class)){
-            //入职
-            TStaffEntry obj = (TStaffEntry) object;
-            result.setFkStaffId(obj.getPkEntryId());
-            result.setStaffName(obj.getStaffName());
-            result.setStaffDept(obj.getStaffDept());
-            result.setStaffPosition(obj.getStaffPosition());
-            result.setApvId(obj.getApvId());
-            //
-            result.setEntryTime(obj.getEntryTime());
-        }else if(object.getClass().equals(TStaffZz.class)){
-            //转正
-            TStaffZz obj = (TStaffZz) object;
-            result.setFkStaffId(obj.getFkStaffId());
-            result.setStaffName(obj.getStaffName());
-            result.setStaffDept(obj.getDeptName());
-            result.setStaffPosition(obj.getPositionName());
-            result.setApvId(obj.getFirstApvrecordId());
-            //
-            result.setZzTime(obj.getZzTime());
-        }
-        return result;
-    }
     /**
      * 审批
      *

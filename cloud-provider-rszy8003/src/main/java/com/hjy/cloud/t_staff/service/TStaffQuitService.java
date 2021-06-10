@@ -1,11 +1,11 @@
 package com.hjy.cloud.t_staff.service;
 
-import com.hjy.cloud.t_staff.entity.TStaffInfo;
-import com.hjy.cloud.t_staff.entity.TStaffQuit;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_staff.entity.TStaffQuit;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.ParseException;
+import java.util.List;
 
 /**
  * (TStaffQuit)表服务接口
@@ -59,4 +59,6 @@ public interface TStaffQuitService {
      * @return
      */
     CommonResult selectById(TStaffQuit tStaffQuit);
+
+    List<TStaffQuit> selectAllPage(TStaffQuit query);
 }

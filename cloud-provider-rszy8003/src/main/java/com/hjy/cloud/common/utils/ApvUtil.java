@@ -1,6 +1,11 @@
 package com.hjy.cloud.common.utils;
 
 import com.hjy.cloud.t_apv.entity.TApvApproval;
+import com.hjy.cloud.t_apv.result.SourceDetailResult;
+import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.entity.TStaffQuit;
+import com.hjy.cloud.t_staff.entity.TStaffReassign;
+import com.hjy.cloud.t_staff.entity.TStaffZz;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -57,5 +62,62 @@ public class ApvUtil {
             }
         }
         return apvList;
+    }
+
+    public static SourceDetailResult handleData(Object object) {
+        SourceDetailResult result = new SourceDetailResult();
+        if(object == null){
+            return result;
+        }
+        if(object.getClass().equals(TStaffReassign.class)){
+            //调动
+            TStaffReassign obj = (TStaffReassign) object;
+            result.setFkStaffId(obj.getFkStaffId());
+            result.setStaffName(obj.getStaffName());
+            result.setStaffDept(obj.getOldDeptName());
+            result.setStaffPosition(obj.getOldPositionName());
+            result.setApvId(obj.getFirstApvrecordId());
+            //
+            result.setReassignTime(obj.getReassignTime());
+            result.setReassignType(obj.getReassignType());
+            result.setReassignReason(obj.getReassignReason());
+            result.setOldDeptName(obj.getOldDeptName());
+            result.setReassignDeptName(obj.getReassignDeptName());
+            result.setOldPositionName(obj.getOldPositionName());
+            result.setReassignPositionName(obj.getReassignPositionName());
+            result.setOldWorkAddressName(obj.getOldWorkAddressName());
+            result.setReassignWorkAddressName(obj.getReassignWorkAddressName());
+        }else if(object.getClass().equals(TStaffQuit.class)){
+            //离职
+            TStaffQuit obj = (TStaffQuit) object;
+            result.setFkStaffId(obj.getFkStaffId());
+            result.setStaffName(obj.getStaffName());
+            result.setStaffDept(obj.getDeptName());
+            result.setStaffPosition(obj.getPositionName());
+            result.setApvId(obj.getApvId());
+            //
+            result.setQuitTime(obj.getQuitTime());
+        }else if(object.getClass().equals(TStaffEntry.class)){
+            //入职
+            TStaffEntry obj = (TStaffEntry) object;
+            result.setFkStaffId(obj.getPkEntryId());
+            result.setStaffName(obj.getStaffName());
+            result.setStaffDept(obj.getStaffDept());
+            result.setStaffPosition(obj.getStaffPosition());
+            result.setApvId(obj.getApvId());
+            //
+            result.setEntryTime(obj.getEntryTime());
+        }else if(object.getClass().equals(TStaffZz.class)){
+            //转正
+            TStaffZz obj = (TStaffZz) object;
+            result.setFkStaffId(obj.getFkStaffId());
+            result.setStaffName(obj.getStaffName());
+            result.setStaffDept(obj.getDeptName());
+            result.setStaffPosition(obj.getPositionName());
+            result.setApvId(obj.getFirstApvrecordId());
+            //
+            result.setZzTime(obj.getZzTime());
+        }
+        return result;
     }
 }

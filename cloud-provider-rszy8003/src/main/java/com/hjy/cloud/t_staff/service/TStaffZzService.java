@@ -4,6 +4,7 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_staff.entity.TStaffZz;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * (TStaffZz)表服务接口
@@ -51,4 +52,6 @@ public interface TStaffZzService {
      */
     CommonResult initiateZzPage(HttpServletRequest request);
     CommonResult initiateZz(HttpServletRequest request,String param)throws Exception;
+
+    List<TStaffZz> selectAllPage(TStaffZz query);
 }

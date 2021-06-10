@@ -288,5 +288,10 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             return new CommonResult(444, "error","转正申请发起失败！", null);
         }
     }
+
+    @Override
+    public List<TStaffZz> selectAllPage(TStaffZz query) {
+        return this.tStaffZzMapper.selectAllPage(query);
+    }
 }
     

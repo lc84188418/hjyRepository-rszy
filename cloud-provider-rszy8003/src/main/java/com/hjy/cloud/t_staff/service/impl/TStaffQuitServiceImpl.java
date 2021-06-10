@@ -236,6 +236,11 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
+    @Override
+    public List<TStaffQuit> selectAllPage(TStaffQuit query) {
+        return this.tStaffQuitMapper.selectAllPage(query);
+    }
+
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         TStaffQuit entity = new TStaffQuit();
