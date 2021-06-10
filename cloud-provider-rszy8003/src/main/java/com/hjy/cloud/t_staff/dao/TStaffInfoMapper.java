@@ -19,7 +19,6 @@ public interface TStaffInfoMapper {
      *  但是该方法的参数，必须能保证该结果的唯一性，否则就是多结果用List接收了
      * @return 实例对象
      */
-//    TStaffInfo selectByPkId2(@Param("pkStaffId")String pkStaffId);
     TStaffInfo selectByPkId2(TStaffInfo tStaffInfo);
 
     /**
@@ -38,8 +37,6 @@ public interface TStaffInfoMapper {
      * @return 影响行数
      */
     int insertSelective(TStaffInfo tStaffInfo);
-
-    int insert(TStaffInfo tStaffInfo);
 
     /**
      * 修改数据

@@ -53,5 +53,4 @@ public interface TStaffContractMapper {
      */
     int deleteById(TStaffContract tStaffContract);
 
-    List<TStaffContract> selectAllHandlePage(TStaffContract entity);
 }

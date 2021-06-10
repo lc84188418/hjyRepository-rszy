@@ -12,8 +12,14 @@
             <if test="approvalType != null and approvalType != ''">
                 and APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR}
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                and APPLY_PEOPLE_ID = #{applyPeopleId,jdbcType=VARCHAR}
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 and APPLY_PEOPLE = #{applyPeople,jdbcType=VARCHAR}
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                and SPONSOR_ID = #{sponsorId,jdbcType=VARCHAR}
             </if>
             <if test="sponsor != null and sponsor != ''">
                 and SPONSOR = #{sponsor,jdbcType=VARCHAR}
@@ -48,18 +54,24 @@
             <if test="isIng != null">
                 and IS_ING = #{isIng,jdbcType=INTEGER}
             </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
+            </if>
     </select>
     <!--通过主键查询单个信息-->
     <select id="selectByPkId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         select * from D_APV_RECORD
         where PK_RECORD_ID = #{pkRecordId}
     </select>
-
+    <!--    通过用户id查询审批id-->
+    <select id="selectFirstRecordIdsByFkStaffId" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT distinct (FIRST_APVRECORD_ID) FROM D_CC_RECORD WHERE FK_STAFF_ID = #{fkStaffId}
+    </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllEntity" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         select
-        PK_RECORD_ID, APPROVAL_TYPE, APPLY_PEOPLE, SPONSOR, START_TIME, APV_APPROVAL, APV_DATE,
-        APV_RESULT, APV_REASON, NEXT_APPROVAL, SOURCE_ID, IS_START, IS_ING,
+        PK_RECORD_ID, APPROVAL_TYPE, APPLY_PEOPLE_ID,APPLY_PEOPLE,SPONSOR_ID, SPONSOR, START_TIME, APV_APPROVAL, APV_DATE,
+        APV_RESULT, APV_REASON, NEXT_APPROVAL, SOURCE_ID, IS_START, IS_ING,APV_STATUS,
         staffinfo.STAFF_NAME as APPROVAL_PEOPLE_NAME,
         staffinfo.FK_POSITION_ID,
         apvtype.APVTYPE_NAME AS apvtypeName,
@@ -75,8 +87,14 @@
             <if test="approvalType != null and approvalType != ''">
                 and APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR}
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                and APPLY_PEOPLE_ID = #{applyPeopleId,jdbcType=VARCHAR}
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 and APPLY_PEOPLE = #{applyPeople,jdbcType=VARCHAR}
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                and SPONSOR_ID = #{sponsorId,jdbcType=VARCHAR}
             </if>
             <if test="sponsor != null and sponsor != ''">
                 and SPONSOR = #{sponsor,jdbcType=VARCHAR}
@@ -111,8 +129,20 @@
             <if test="isIng != null">
                 and IS_ING = #{isIng,jdbcType=INTEGER}
             </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
+            </if>
         </where>
         order by START_TIME desc
+    </select>
+    <select id="selectAllByIds" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
+        select *
+        from D_APV_RECORD
+        where PK_RECORD_ID in
+        <foreach item="item" collection="ids" separator="," open="(" close=")" index="">
+            #{item, jdbcType=VARCHAR}
+        </foreach>
+        order by START_TIME DESC
     </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_apv.entity.DApvRecord">
@@ -124,8 +154,14 @@
             <if test="approvalType != null and approvalType != ''">
                 APPROVAL_TYPE,
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                APPLY_PEOPLE_ID,
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 APPLY_PEOPLE,
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                SPONSOR_ID,
             </if>
             <if test="sponsor != null and sponsor != ''">
                 SPONSOR,
@@ -160,6 +196,9 @@
             <if test="isIng != null">
                 IS_ING,
             </if>
+            <if test="apvStatus != null">
+                APV_STATUS,
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkRecordId != null and pkRecordId != ''">
@@ -168,8 +207,14 @@
             <if test="approvalType != null and approvalType != ''">
                 #{approvalType,jdbcType=VARCHAR},
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                #{applyPeopleId,jdbcType=VARCHAR},
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 #{applyPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                #{sponsorId,jdbcType=VARCHAR},
             </if>
             <if test="sponsor != null and sponsor != ''">
                 #{sponsor,jdbcType=VARCHAR},
@@ -204,6 +249,9 @@
             <if test="isIng != null">
                 #{isIng,jdbcType=INTEGER},
             </if>
+            <if test="apvStatus != null">
+                #{apvStatus,jdbcType=INTEGER},
+            </if>
         </trim>
     </insert>
     <!--通过主键修改数据-->
@@ -213,8 +261,14 @@
             <if test="approvalType != null and approvalType != ''">
                 APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR},
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                APPLY_PEOPLE_ID = #{applyPeopleId,jdbcType=VARCHAR},
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 APPLY_PEOPLE = #{applyPeople,jdbcType=VARCHAR},
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                SPONSOR_ID = #{sponsorId,jdbcType=VARCHAR},
             </if>
             <if test="sponsor != null and sponsor != ''">
                 SPONSOR = #{sponsor,jdbcType=VARCHAR},
@@ -248,7 +302,9 @@
             </if>
             <if test="isIng != null">
                 IS_ING = #{isIng,jdbcType=INTEGER},
-            </if>
+            </if><if test="apvStatus != null">
+            APV_STATUS = #{apvStatus,jdbcType=INTEGER},
+        </if>
         </set>
         where PK_RECORD_ID = #{pkRecordId,jdbcType=VARCHAR}
     </update>
@@ -263,8 +319,14 @@
             <if test="approvalType != null and approvalType != ''">
                 and APPROVAL_TYPE = #{approvalType,jdbcType=VARCHAR}
             </if>
+            <if test="applyPeopleId != null and applyPeopleId != ''">
+                and APPLY_PEOPLE_ID = #{applyPeopleId,jdbcType=VARCHAR}
+            </if>
             <if test="applyPeople != null and applyPeople != ''">
                 and APPLY_PEOPLE = #{applyPeople,jdbcType=VARCHAR}
+            </if>
+            <if test="sponsorId != null and sponsorId != ''">
+                and SPONSOR_ID = #{sponsorId,jdbcType=VARCHAR}
             </if>
             <if test="sponsor != null and sponsor != ''">
                 and SPONSOR = #{sponsor,jdbcType=VARCHAR}
@@ -298,6 +360,9 @@
             </if>
             <if test="isIng != null">
                 and IS_ING = #{isIng,jdbcType=INTEGER}
+            </if>
+            <if test="apvStatus != null">
+                and APV_STATUS = #{apvStatus,jdbcType=INTEGER}
             </if>
         </where>
     </delete>

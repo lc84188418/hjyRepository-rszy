@@ -198,6 +198,7 @@ WHERE
             <if test="turnOn != null">
                 TURN_ON,
             </if>
+            IS_DEFAULT
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="pkGroupId != null and pkGroupId != ''">
@@ -266,6 +267,7 @@ WHERE
             <if test="turnOn != null">
                 #{turnOn,jdbcType=INTEGER},
             </if>
+            0
         </trim>
     </insert>
     <insert id="insertGroupStaffBatch">
@@ -416,7 +418,7 @@ WHERE
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR}
+        delete from T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR} and IS_DEFAULT != 1
     </delete>
 
 </mapper>

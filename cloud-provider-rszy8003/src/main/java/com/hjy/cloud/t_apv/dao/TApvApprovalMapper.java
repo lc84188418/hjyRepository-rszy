@@ -37,19 +37,10 @@ public interface TApvApprovalMapper {
      * @return 对象列表
      */
     List<TApvApproval> selectAllPage(TApvApproval tApvApproval);
+
     List<TApvApproval> selectAllHandle(TApvApproval selectEntity);
 
-    /**
-     * 新增数据
-     *
-     * @param tApvApproval 实例对象
-     * @return 影响行数
-     */
-    int insertSelective(TApvApproval tApvApproval);
-
-    int insert(TApvApproval tApvApproval);
     int insertBatch(@Param("approvals")List<TApvApproval> approvals);
-
 
     /**
      * 修改数据
@@ -66,18 +57,6 @@ public interface TApvApprovalMapper {
      * @return 影响行数
      */
     int deleteById(TApvApproval tApvApproval);
-    /**
-     * 所有末尾的审批流程
-     *
-     * @return 影响行数
-     */
-    List<TApvApproval> selectAllEnding();
-    /**
-     * 查询该审批类型是否已添加过数据
-     *
-     * @return 影响行数
-     */
-    TApvApproval selectByType(@Param("apvType") String apvType);
 
     List<TApvApproval> selectApvByType(@Param("apvType")String pk_apv_type);
 
@@ -88,7 +67,6 @@ public interface TApvApprovalMapper {
      * @return 影响行数
      */
     int insertApvRecordBatch(@Param("apvRecords")List<DApvRecord> apvRecords);
-    int insertApvRecord(DApvRecord apvRecords);
     /**
      * 通过审批记录主键查询数据
      * @param pkRecordId
@@ -117,20 +95,6 @@ public interface TApvApprovalMapper {
     int updateApvRecord(DApvRecord apvRecord);
     int selectCountByEntity(DApvRecord apvRecord);
 
-    /**
-     * 通过第一审批记录的ID查询整个审批流程记录信息
-     * @param firstApvRecordId
-     * @return
-     */
-    List<DApvRecord> selectByFirstApvRecordId(@Param("firstApvRecordId")String firstApvRecordId);
-
     int deleteByType(@Param("approvalType")String approvalType);
 
-    int updateBatchApvRecord(@Param("apvRecordList")List<DApvRecord> updateList);
-
-    String selectFirstRecordIdsByFkStaffId(@Param("fkStaffId")String fkStaffId);
-
-    String selectSourceIdsByPkRecordId(@Param("pkRecordId")String pkRecordId);
-
-    List<DApvRecord> apvRecordListCCToMe(@Param("sourceId")String source_id);
 }

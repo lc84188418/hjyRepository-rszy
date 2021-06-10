@@ -143,7 +143,7 @@ public class TStaffZzController {
      *
      * @return 修改结果
      */
-    @ApiOperation(value = "员工发起调动申请-开发中", notes = "")
+    @ApiOperation(value = "员工发起转正申请-开发中", notes = "")
     @OperLog(operModul = "人员管理-入职管理",operType = "发起转正",operDesc = "员工发起转正申请")
     @PostMapping(value = "/staff/entry/initiateZz")
     public CommonResult initiateZz(HttpServletRequest request,@RequestBody String param) throws FebsException {

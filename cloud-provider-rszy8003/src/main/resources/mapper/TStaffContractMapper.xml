@@ -101,7 +101,6 @@
             </if>
         </where>
     </select>
-    <select id="selectAllHandlePage" resultType="com.hjy.cloud.t_staff.entity.TStaffContract"></select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffContract">
         insert into T_STAFF_CONTRACT

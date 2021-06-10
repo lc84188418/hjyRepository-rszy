@@ -14,14 +14,6 @@ import java.util.List;
 public interface TStaffEntryMapper {
 
     /**
-     * 分页记录条数
-     *
-     * @param tStaffEntry 实例对象
-     * @return 记录条数
-     */
-    int selectSize(TStaffEntry tStaffEntry);
-
-    /**
      * 通过ID查询单条数据
      *
      * @param pkEntryId 主键

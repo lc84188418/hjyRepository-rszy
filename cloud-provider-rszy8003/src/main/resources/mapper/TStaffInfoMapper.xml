@@ -332,11 +332,6 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
         </foreach>
         order by ENTRY_TIME DESC
     </select>
-    <!--新增所有列-->
-    <insert id="insert" keyProperty="pkStaffId" useGeneratedKeys="true">
-        insert into T_STAFF_INFO(STAFF_NAME, STAFF_SEX, STAFF_AGE, FK_DEPT_ID, FK_POSITION_ID, ENTRY_TIME, FK_HTLX_ID, RECRUIT_WAY, SYQDQ_TIME, ID_TYPE, ID_CARD, NATIVE_PLACE, BIRTHDAY, FK_NATION_ID, HKSZD, POLITIVAL_OUTLOOK, CURRENT_ADDRESS, IS_MARRY, FK_EDUCATION_ID, ZGXLBYYX, WY_DJ, JSJ_DJ, MAJOR, BANK_NAME, BANK_ID, BRANCH_BANK, SYR, PICTURE_PATH, HBLX_NAME1, OBJECT1, HBLX_NAME2, OBJECT2, HBLX_NAME3, OBJECT3, HBLX_NAME4, OBJECT4, HBLX_NAME5, OBJECT5)
-        values (#{staffName}, #{staffSex}, #{staffAge}, #{fkDeptId}, #{fkPositionId}, #{entryTime}, #{fkHtlxId}, #{recruitWay}, #{syqdqTime}, #{idType}, #{idCard}, #{nativePlace}, #{birthday}, #{fkNationId}, #{hkszd}, #{politivalOutlook}, #{currentAddress}, #{isMarry}, #{fkEducationId}, #{zgxlbyyx}, #{wyDj}, #{jsjDj}, #{major}, #{bankName}, #{bankId}, #{branchBank}, #{syr}, #{picturePath}, #{hblxName1}, #{object1}, #{hblxName2}, #{object2}, #{hblxName3}, #{object3}, #{hblxName4}, #{object4}, #{hblxName5}, #{object5})
-    </insert>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         insert into T_STAFF_INFO

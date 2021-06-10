@@ -165,8 +165,11 @@ public class DateUtil {
     public static long getMinute(Date beginTime, Date endTime) {
         long beginLong = beginTime.getTime();
         long endLong = endTime.getTime();
-        long total = (endLong - beginLong) / (1000 * 60);
-        return total;
+        if(endLong > beginLong){
+            return (endLong - beginLong) / (1000 * 60);
+        }else {
+            return 0;
+        }
     }
 
     /**

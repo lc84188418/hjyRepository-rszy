@@ -111,12 +111,16 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         int kqType = JsonUtil.getIntegerParam(json, "kqType");
         int isKxbcdk = 0;
         int isKdk = 0;
-        String typeSet = "";
+        String typeSet = "0";
         if(kqType == 2){
             isKxbcdk = JsonUtil.getIntegerParam(json, "isKxbcdk");
             isKdk = JsonUtil.getIntegerParam(json, "isKdk");
         }else if(kqType == 3){
             typeSet = JsonUtil.getStringParam(json, "typeSet");
+            if(StringUtils.isEmpty(typeSet)){
+                //默认为个工时
+                typeSet = "8";
+            }
         }
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
@@ -215,6 +219,10 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             isKdk = JsonUtil.getIntegerParam(json, "isKdk");
         }else if(kqType == 3){
             typeSet = JsonUtil.getStringParam(json, "typeSet");
+            if(StringUtils.isEmpty(typeSet)){
+                //默认为个工时
+                typeSet = "8";
+            }
         }
         int isPaixiu = JsonUtil.getIntegerParam(json, "isPaixiu");
         Date bxdkTime = JsonUtil.getDateParam(json, "yyyy-MM-dd","bxdkTime");
@@ -304,7 +312,7 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             JSONObject listInfo = this.getListInfo();
             return new CommonResult(200, "success", "删除数据成功", listInfo);
         } else {
-            return new CommonResult(444, "error", "删除数据失败", null);
+            return new CommonResult(444, "error", "默认考勤组不可删除！", null);
         }
     }
 
@@ -459,11 +467,13 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         List<ReGroupWorkingdays> workingDaysList = new ArrayList<>();
         JSONArray workingDaysArray = json.getJSONArray("bcs");
         if(workingDaysArray == null){
-            stringBuffer.append("未设置工作日！");
+            stringBuffer.append("使用默认工作日！");
+            workingDaysList = KqUtil.getGroupWorkingdays();
         }else{
             String workingDaysStr = workingDaysArray.toString();
             if(workingDaysStr.equals("[]")){
-                stringBuffer.append("未设置工作日！");
+                stringBuffer.append("使用默认工作日！");
+                workingDaysList = KqUtil.getGroupWorkingdays();
             }else {
                 workingDaysList = JSONObject.parseArray(workingDaysStr,ReGroupWorkingdays.class);
             }

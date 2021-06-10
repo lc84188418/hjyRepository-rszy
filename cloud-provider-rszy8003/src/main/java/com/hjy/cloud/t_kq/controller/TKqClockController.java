@@ -67,7 +67,6 @@ public class TKqClockController {
             @ApiImplicitParam(name = "onClockAddress",value = "上班打卡地址",required = false,dataType = "string",paramType = "body",example = "四川省成都市武侯区交子大道333号中海国际中心E座"),
             @ApiImplicitParam(name = "onIsWq",value = "上班是否外勤",required = false,dataType = "int",paramType = "body",example = "0"),
             @ApiImplicitParam(name = "isDkr",value = "今日是否为打卡日",required = false,dataType = "int",paramType = "body",example = "1"),
-            @ApiImplicitParam(name = "fkGroupId",value = "所属考勤组的id",required = false,dataType = "string",paramType = "body",example = "5517661032d94e0d9df327a08e155aa7"),
     })
     @PostMapping(value = "/kq/clock/add")
     public CommonResult<ClockAddPage> insert(@ApiParam(name = "打卡实体", required = true) @RequestBody TKqClock tKqClock,HttpServletRequest request) throws FebsException {

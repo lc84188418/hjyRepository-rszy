@@ -59,5 +59,7 @@ public class TKqGroup {
     private Integer dkJgsj;
     @ApiModelProperty("是否启用")
     private Integer turnOn;
+    @ApiModelProperty("是否默认")
+    private Integer isDefault;
 
 }

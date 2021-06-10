@@ -489,24 +489,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         //实体数据
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
-        String apvResult = "全部";
-        String apvResult2 = JsonUtil.getStringParam(json, "apvResult");
-        if(!StringUtils.isEmpty(apvResult2)){
-            apvResult = apvResult2;
-        }
-        //1.first_record_id
-        String first_record_id = tApvApprovalMapper.selectFirstRecordIdsByFkStaffId(userId);
-        if(StringUtils.isEmpty(first_record_id)){
-            return new CommonResult().ErrorResult("你暂未有抄送记录",null);
-        }
-        //2.source_id
-        String source_id = tApvApprovalMapper.selectSourceIdsByPkRecordId(first_record_id);
-        if(StringUtils.isEmpty(source_id)){
-            return new CommonResult().ErrorResult("抄送来源记录已被移除",null);
-        }
-        //3.结果集
-
-        //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
         if (pageNumStr != null) {
@@ -516,20 +498,17 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             pageSize = Integer.parseInt(pageSizeStr);
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<DApvRecord> waitApvRecords = tApvApprovalMapper.apvRecordListCCToMe(source_id);
-        if(waitApvRecords == null || waitApvRecords.size() == 0){
-            return new CommonResult(200, "success", "抄送来源记录已被移除！", null);
+        //1.first_record_id
+        List<String> first_record_ids = apvRecordMapper.selectFirstRecordIdsByFkStaffId(userId);
+        if(first_record_ids != null && first_record_ids.size() > 0){
+            List<DApvRecord> dApvRecords = apvRecordMapper.selectAllByIds(first_record_ids);
+            //将审批数据进行处理
+            List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(dApvRecords);
+            PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+            return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
+        }else {
+            return new CommonResult().ErrorResult("你暂未有抄送记录",null);
         }
-        //将审批数据进行处理
-        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
-//        //最后进行筛选，已处理，未处理，全部
-//        Iterator<TempApvEntity> iterator = apvRecords.iterator();
-//        while (iterator.hasNext()) {
-//            TempApvEntity next = iterator.next();
-//        }
-        PageResult<TempApvEntity> result = PageUtil.getPageResult(new PageInfo<TempApvEntity>(apvRecords));
-        return new CommonResult(200, "success", "获取数据成功！", result);
-
     }
     //将待审批数据进行处理
     private List<TempApvEntity> optimizeApvRecord(List<DApvRecord> dApvRecords,String userId) {

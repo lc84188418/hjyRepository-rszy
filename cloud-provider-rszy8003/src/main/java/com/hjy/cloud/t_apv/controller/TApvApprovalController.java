@@ -283,7 +283,6 @@ public class TApvApprovalController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页码", required = false, dataType = "int", paramType = "body", example = "1"),
             @ApiImplicitParam(name = "pageSize", value = "条数", required = false, dataType = "int", paramType = "body", example = "1"),
-            @ApiImplicitParam(name = "apvResult", value = "审批状态", required = false, dataType = "string", paramType = "body", example = "全部"),
     })
     @PostMapping(value = "/apv/approval/list/cc_to_me")
     public CommonResult<PageResult<TempApvEntity>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {

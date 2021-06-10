@@ -1,6 +1,7 @@
 package com.hjy.cloud.t_apv.dao;
 
 import com.hjy.cloud.t_apv.entity.DApvRecord;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,6 +21,10 @@ public interface DApvRecordMapper {
     //通过实体作为筛选条件查询
     List<DApvRecord> selectAllEntity(DApvRecord dApvRecord);
 
+    List<String> selectFirstRecordIdsByFkStaffId(@Param("fkStaffId")String fkStaffId);
+
+    //通过主键集合作为条件查询
+    List<DApvRecord> selectAllByIds(@Param("ids") List<String> idList);
     //新增数据
     int insertSelective(DApvRecord dApvRecord);
 

@@ -1,15 +1,13 @@
 package com.hjy.cloud.t_kq.enums;
 
-import com.hjy.cloud.common.enums.ApprovalResultStatus;
-
 /**
  * 审批结果枚举
  */
 public enum KqTypeEnum {
-    Type_1(0, "保留"),
-    Type_2(1, "固定班次"),
-    Type_3(2, "排班制"),
-    Type_4(3, "自由工时");
+    Type_0(0, "保留"),
+    Type_1(1, "固定班次"),
+    Type_2(2, "排班制"),
+    Type_3(3, "自由工时");
     /**
      * status 状态
      */
