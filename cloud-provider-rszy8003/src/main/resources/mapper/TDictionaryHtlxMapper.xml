@@ -59,6 +59,7 @@
                 and UPDATE_TIME = #{updateTime}
             </if>
         </where>
+        order by convert(CONTRAC_TYPE using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx">
         select PK_HTLX_ID,CONTRAC_TYPE from T_DICTIONARY_HTLX where TURN_ON = 1

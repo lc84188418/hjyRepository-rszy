@@ -293,11 +293,10 @@ LEFT JOIN
     <select id="selectId_NameByIds" resultType="com.hjy.cloud.common.entity.User">
         select T_SYS_USER.PK_USER_ID as userId,T_SYS_USER.FULL_NAME as fullName
         from T_SYS_USER
-        where T_SYS_USER.PK_USER_ID in (
-        <foreach collection="ids" item="item" index="index" separator=",">
+        where T_SYS_USER.PK_USER_ID in
+        <foreach collection="ids" item="item" index="index" open="(" close=")" separator=",">
             #{item, jdbcType=VARCHAR}
         </foreach>
-        )
     </select>
     <!--No problem 添加用户角色    -->
     <insert id="addUserRoleByUserRole" parameterType="com.hjy.cloud.t_system.entity.ReUserRole">

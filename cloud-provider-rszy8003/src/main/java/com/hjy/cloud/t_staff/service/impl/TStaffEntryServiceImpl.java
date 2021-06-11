@@ -269,7 +269,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         int i = tStaffEntryMapper.updateByPkId(tStaffEntry);
         StringBuffer stringBuffer = new StringBuffer();
         if(i > 0){
-            stringBuffer.append("离职成功！");
+            stringBuffer.append("弃职成功！");
             /**
              * 删除与一级审批相关联的审批数据
              */

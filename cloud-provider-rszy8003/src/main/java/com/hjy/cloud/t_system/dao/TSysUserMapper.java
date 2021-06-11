@@ -77,7 +77,6 @@ public interface TSysUserMapper {
      */
     TSysUser selectUserByUsername(@Param("username") String username);
 
-    int selectSize(TSysUser user);
     /**
      * 分页查询所有行数据
      * @return 对象列表

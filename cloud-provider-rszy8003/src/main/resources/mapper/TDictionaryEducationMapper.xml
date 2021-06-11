@@ -57,6 +57,7 @@
                 and UPDATE_TIME = #{updateTime}
             </if>
         </where>
+        order by convert(EDUCATION_NAME using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryEducation">
         select PK_EDUCATION_ID,EDUCATION_NAME from T_DICTIONARY_EDUCATION where TURN_ON = 1

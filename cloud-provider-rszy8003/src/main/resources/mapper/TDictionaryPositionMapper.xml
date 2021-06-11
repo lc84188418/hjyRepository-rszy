@@ -58,6 +58,7 @@
         <if test="turnOn != null">
             and TURN_ON = #{turnOn}
         </if>
+        order by convert(POSITION_NAME using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryPosition">
         select PK_POSITION_ID,POSITION_NAME from T_DICTIONARY_POSITION where TURN_ON = 1

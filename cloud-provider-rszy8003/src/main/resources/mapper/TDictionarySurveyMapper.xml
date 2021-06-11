@@ -59,6 +59,7 @@
                 and TURN_ON = #{turnOn}
             </if>
         </where>
+        order by convert(STAFF_SURVEY using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionarySurvey">
         select PK_SURVEY_ID,STAFF_SURVEY from T_DICTIONARY_SURVEY where TURN_ON = 1

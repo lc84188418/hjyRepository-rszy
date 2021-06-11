@@ -59,6 +59,7 @@
                 and UPDATE_TIME = #{updateTime}
             </if>
         </where>
+        order by convert(NATION_NAME using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryNation">
         select PK_NATION_ID,NATION_NAME from T_DICTIONARY_NATION where TURN_ON = 1

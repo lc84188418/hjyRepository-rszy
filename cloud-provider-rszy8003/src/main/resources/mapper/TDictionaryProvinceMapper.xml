@@ -73,6 +73,7 @@
                 and PROVINCE_CAPITAL = #{provinceCapital}
             </if>
         </where>
+        order by convert(PROVINCE_NAME using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryProvince">
         select

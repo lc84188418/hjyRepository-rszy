@@ -5,20 +5,19 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.ActiveResult;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_train.dao.TTrainInfoMapper;
 import com.hjy.cloud.t_train.entity.TTrainInfo;
 import com.hjy.cloud.t_train.service.TTrainInfoService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +63,7 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
         tTrainInfo.setPkInfoId(IDUtils.getUUID());
         //1
         StringBuffer stringBuffer = new StringBuffer();
-        if(tTrainInfo.getJoin()!= null){
+        if(tTrainInfo.getJoin()!= null && tTrainInfo.getJoin().size() > 0){
             for (User o : tTrainInfo.getJoin()) {
                 stringBuffer.append(o.getUserId()+",");
             }
@@ -91,7 +90,7 @@ public class TTrainInfoServiceImpl implements TTrainInfoService {
     @Override
     public CommonResult updateByPkId(TTrainInfo<User> tTrainInfo) {
         StringBuffer stringBuffer = new StringBuffer();
-        if(tTrainInfo.getJoin()!= null){
+        if(tTrainInfo.getJoin()!= null && tTrainInfo.getJoin().size() > 0){
             for (User o : tTrainInfo.getJoin()) {
                 stringBuffer.append(o.getUserId()+",");
             }

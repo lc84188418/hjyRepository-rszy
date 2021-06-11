@@ -64,6 +64,7 @@
                 and FK_CITY_ID = #{fkCityId}
             </if>
         </where>
+        order by convert(AREA_NAME using gbk) asc
     </select>
     <select id="selectAllId_Name" resultType="com.hjy.cloud.t_dictionary.entity.TDictionaryArea">
         select PK_AREA_ID,AREA_NAME from T_DICTIONARY_AREA where TURN_ON = 1
