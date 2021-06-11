@@ -4,6 +4,8 @@ import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.utils.page.PageRequest;
 
+import java.util.List;
+
 /**
  * (DApvRecord)表服务接口
  *
@@ -52,4 +54,8 @@ public interface DApvRecordService {
      * @return
      */
     DApvRecord selectById(String pkId);
+
+    int insertApvRecordBatch(List<DApvRecord> apvRecordList);
+
+    DApvRecord selectSourceIdById(String pkRecordId);
 }

@@ -72,6 +72,7 @@ public class ApvUtil {
         if(object.getClass().equals(TStaffReassign.class)){
             //调动
             TStaffReassign obj = (TStaffReassign) object;
+            result.setSourceId(obj.getFkStaffId());
             result.setFkStaffId(obj.getFkStaffId());
             result.setStaffName(obj.getStaffName());
             result.setStaffDept(obj.getOldDeptName());
@@ -90,6 +91,7 @@ public class ApvUtil {
         }else if(object.getClass().equals(TStaffQuit.class)){
             //离职
             TStaffQuit obj = (TStaffQuit) object;
+            result.setSourceId(obj.getFkStaffId());
             result.setFkStaffId(obj.getFkStaffId());
             result.setStaffName(obj.getStaffName());
             result.setStaffDept(obj.getDeptName());
@@ -97,9 +99,12 @@ public class ApvUtil {
             result.setApvId(obj.getApvId());
             //
             result.setQuitTime(obj.getQuitTime());
+            result.setQuitType(obj.getQuitType());
+            result.setQuitReason(obj.getQuitReason());
         }else if(object.getClass().equals(TStaffEntry.class)){
             //入职
             TStaffEntry obj = (TStaffEntry) object;
+            result.setSourceId(obj.getPkEntryId());
             result.setFkStaffId(obj.getPkEntryId());
             result.setStaffName(obj.getStaffName());
             result.setStaffDept(obj.getStaffDept());
@@ -110,6 +115,7 @@ public class ApvUtil {
         }else if(object.getClass().equals(TStaffZz.class)){
             //转正
             TStaffZz obj = (TStaffZz) object;
+            result.setSourceId(obj.getFkStaffId());
             result.setFkStaffId(obj.getFkStaffId());
             result.setStaffName(obj.getStaffName());
             result.setStaffDept(obj.getDeptName());
@@ -117,6 +123,7 @@ public class ApvUtil {
             result.setApvId(obj.getFirstApvrecordId());
             //
             result.setZzTime(obj.getZzTime());
+            result.setEntryTime(obj.getEntryTime());
         }
         return result;
     }

@@ -15,14 +15,6 @@ import java.util.List;
 public interface TApvApprovalMapper {
 
     /**
-     * 分页记录条数
-     *
-     * @param tApvApproval 实例对象
-     * @return 记录条数
-     */
-    int selectSize(TApvApproval tApvApproval);
-
-    /**
      * 通过ID查询单条数据
      *
      * @param pk_id 主键
@@ -61,36 +53,16 @@ public interface TApvApprovalMapper {
     List<TApvApproval> selectApvByType(@Param("apvType")String pk_apv_type);
 
     TApvApproval selectApvSet(@Param("pkApprovalId")String pkApprovalId,@Param("approvalType")String approvalType,@Param("dataType")int dataType,@Param("isStart")int isStart);
-    /**
-     * 批量添加审批记录
-     *
-     * @return 影响行数
-     */
-    int insertApvRecordBatch(@Param("apvRecords")List<DApvRecord> apvRecords);
-    /**
-     * 通过审批记录主键查询数据
-     * @param pkRecordId
-     * @return
-     */
-    DApvRecord selectApvRecordById(@Param("pkRecordId")String pkRecordId);
-    DApvRecord selectApvRecordByPkId(@Param("pkRecordId")String pkRecordId);
 
     int deleteApvRecordBySourceId(@Param("sourceId")String sourceId);
-    /**
-     * 待审批,是指所有没有审批完成的记录，非操作用户自己的
-     */
-    List<DApvRecord> waitApv();
 
-    List<DApvRecord> ApvComplete();
     /**
      * 待审批,操作用户自己的
      */
     List<DApvRecord> waitApvUser(@Param("apvApproval")String userId);
-    List<DApvRecord> apvRecordListSponsor(@Param("sponsor")String fullName);
 
     List<DApvRecord> selectApvRecordBySourceId_UserId(@Param("approvalType")String approvalType,@Param("sourceId")String sourceId, @Param("userId")String userId);
 
-    int updateIsIngBySourceId(@Param("sourceId")String sourceId);
 
     int updateApvRecord(DApvRecord apvRecord);
     int selectCountByEntity(DApvRecord apvRecord);

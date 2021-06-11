@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_staff.dao;
 
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
 import org.apache.ibatis.annotations.Param;
 
@@ -56,5 +57,5 @@ public interface TStaffEntryMapper {
     int deleteById(TStaffEntry tStaffEntry);
     int selectCountByEntity(TStaffEntry tStaffEntry);
 
-    String selectApplyPeople(String pkEntryId);
+    User selectApplyPeople(String pkEntryId);
 }

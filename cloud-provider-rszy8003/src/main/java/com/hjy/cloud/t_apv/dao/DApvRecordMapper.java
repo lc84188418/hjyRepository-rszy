@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface DApvRecordMapper {
     //通过ID查询单条数据
-    DApvRecord selectByPkId(String pk_id);
+    DApvRecord selectByPkId(@Param("pkRecordId")String pkRecordId);
 
     //通过ID查询是否有数据
     int selectCountByEntity(DApvRecord dApvRecord);
@@ -27,13 +27,24 @@ public interface DApvRecordMapper {
     List<DApvRecord> selectAllByIds(@Param("ids") List<String> idList);
     //新增数据
     int insertSelective(DApvRecord dApvRecord);
-
+    /**
+     * 批量添加审批记录
+     *
+     * @return 影响行数
+     */
+    int insertApvRecordBatch(@Param("apvRecords")List<DApvRecord> apvRecords);
     //通锅主键修改数据
     int updateByPkId(DApvRecord dApvRecord);
+//    //修改审批完成IsIng
+//    int updateIsIngBySourceId(@Param("sourceId")String sourceId);
+    //修改审批状态apvStatus
+    int updateApvStatusBySourceId(@Param("sourceId")String sourceId,@Param("apvStatus")int apvStatus);
 
     //通过实体数据删除数据
     int deleteByEntity(DApvRecord dApvRecord);
 
     //通过主键删除数据
     int deleteByPkId(String pkId);
+
+    DApvRecord selectSourceIdById(@Param("pkRecordId")String pkRecordId);
 }

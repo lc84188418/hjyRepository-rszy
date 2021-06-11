@@ -2,6 +2,7 @@ package com.hjy.cloud.common.task;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.utils.ApvUtil;
 import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.DCcRecord;
@@ -125,7 +126,7 @@ public class ObjectAsyncTask {
      * @return
      */
     public static String deleteApprovalRecord(String pkRecordId) {
-        DApvRecord entity = ntClient.tApvApprovalService.selectApvRecordById(pkRecordId);
+        DApvRecord entity = ntClient.dApvRecordService.selectSourceIdById(pkRecordId);
         int i = ntClient.tApvApprovalService.deleteApvRecordBySourceId(entity.getSourceId());
         if(i > 0){
             return "该入职审批数据删除成功！";
@@ -318,7 +319,10 @@ public class ObjectAsyncTask {
      * @param approvalType
      * @return
      */
-    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,SysToken sysToken, String approvalType,String pkSourceId,String applyPeople,String firstApvrecordId) {
+    public static StringBuffer addApprovalRecord(StringBuffer stringBuffer, JSONObject json,
+                                                 SysToken sysToken, String approvalType,
+                                                 String pkSourceId, User applyPeople,
+                                                 String firstApvrecordId,int sponsorNum) {
         /**
          * 抄送人
          */
@@ -424,8 +428,10 @@ public class ObjectAsyncTask {
                         dApvRecord.setPkRecordId(newPkId);
                     }
                     dApvRecord.setApprovalType(approvalType);
-                    dApvRecord.setApplyPeople(applyPeople);
+                    dApvRecord.setApplyPeopleId(applyPeople.getUserId());
+                    dApvRecord.setApplyPeople(applyPeople.getFullName());
                     //前端需要传peopleName
+                    dApvRecord.setSponsorId(sysToken.getFkUserId());
                     dApvRecord.setSponsor(sysToken.getFullName());
                     dApvRecord.setStartTime(new Date());
                     dApvRecord.setApvApproval(approval.getApprovalPeople());
@@ -437,6 +443,9 @@ public class ObjectAsyncTask {
                     dApvRecord.setSourceId(pkSourceId);
                     dApvRecord.setIsStart(isStart);
                     dApvRecord.setIsIng(1);
+                    //添加时初始状态为0，0审批中1通过2拒绝
+                    dApvRecord.setApvStatus(0);
+                    dApvRecord.setSponsorNum(sponsorNum);
                     apvRecordList.add(dApvRecord);
                     //改变newPkId、isStart的值
                     newPkId = nextPkId;
@@ -445,7 +454,7 @@ public class ObjectAsyncTask {
                 }
                 if(apvRecordList != null && apvRecordList.size() > 0){
                     //批量添加审批记录
-                    int j = ntClient.tApvApprovalService.insertApvRecordBatch(apvRecordList);
+                    int j = ntClient.dApvRecordService.insertApvRecordBatch(apvRecordList);
                     if(j > 0){
                         stringBuffer.append("审批记录添加成功！");
                     }else {
@@ -549,7 +558,13 @@ public class ObjectAsyncTask {
         tStaffInfo.setStaffStatus(0);
         return ntClient.tStaffInfoService.updateById(tStaffInfo);
     }
-
+    public static int updateZZData(TStaffZz staffZz) {
+        //将员工名单信息改为调动后的
+        TStaffInfo tStaffInfo = new TStaffInfo();
+        tStaffInfo.setPkStaffId(staffZz.getFkStaffId());
+        tStaffInfo.setStaffStatus(2);
+        return ntClient.tStaffInfoService.updateById(tStaffInfo);
+    }
     //初始化所有服务
     @PostConstruct
     public void init() {

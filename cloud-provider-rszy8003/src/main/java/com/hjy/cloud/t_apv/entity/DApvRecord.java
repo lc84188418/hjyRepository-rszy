@@ -49,6 +49,8 @@ public class DApvRecord<T> {
     private Integer isIng;
     @ApiModelProperty(value = "整个流程的审批状态,0审批中1通过2拒绝", example = "", required = false)
     private Integer apvStatus;
+    @ApiModelProperty(value = "发起次数", example = "", required = false)
+    private Integer sponsorNum;
     //------------
     @ApiModelProperty(value = "审批类别名称", example = "", required = false)
     private String apvtypeName;

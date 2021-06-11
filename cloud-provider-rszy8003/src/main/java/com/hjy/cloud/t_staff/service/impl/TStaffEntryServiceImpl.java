@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
 import com.hjy.cloud.t_apv.entity.DApvRecord;
@@ -73,6 +75,8 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     private TDictionaryEducationMapper tDictionaryEducationMapper;
     @Resource
     private DCcRecordMapper dCcRecordMapper;
+    @Resource
+    private DApvRecordMapper dApvRecordMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
     /**
@@ -300,12 +304,12 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         /**
          * 查询该员工入职信息
          */
-        String applyPeople = this.tStaffEntryMapper.selectApplyPeople(tStaffEntry.getPkEntryId());
-        if(StringUtils.isEmpty(applyPeople)){
+        User user = this.tStaffEntryMapper.selectApplyPeople(tStaffEntry.getPkEntryId());
+        if(user == null){
             throw new RuntimeException("该员工入职信息已不存在，请刷新后再试！");
         }
-        select.setApplyPeople(applyPeople);
-        int count = this.tApvApprovalMapper.selectCountByEntity(select);
+        select.setApplyPeopleId(user.getUserId());
+        int count = this.dApvRecordMapper.selectCountByEntity(select);
         if(count > 0){
             return new CommonResult().ErrorResult("该员工已存在入职申请信息，无需再次发起,请刷新后重试！",null);
         }
@@ -313,7 +317,6 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         String msg = (String) resultJson.get("msg");
         resultJson.remove("msg");
         return new CommonResult(200, "success", msg, resultJson);
-
     }
     /**
      * 发起入职审批
@@ -332,29 +335,39 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }
         //入职申请信息主键
         String pkEntryId = JsonUtil.getStringParam(jsonObject, "pkEntryId");
+        /**
+         * 查询该员工入职信息
+         */
+        User user = this.tStaffEntryMapper.selectApplyPeople(pkEntryId);
+        if(user == null){
+            throw new RuntimeException("该员工入职信息已不存在，请刷新后再试！");
+        }
         //审批类型
         String approvalType = ApprovaltypeEnum.Type_12.getCode();
+        int sponsorNum = 1;
         /**
          * 先判断是否已发起过入职审批
          */
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
-        /**
-         * 查询该员工入职信息
-         */
-        String applyPeople = this.tStaffEntryMapper.selectApplyPeople(pkEntryId);
-        if(StringUtils.isEmpty(applyPeople)){
-            throw new RuntimeException("该员工入职信息已不存在，请刷新后再试！");
+        select.setApplyPeopleId(user.getUserId());
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(havaRecord.get(0).getApvStatus() != 2){
+                //说明之前被拒绝，可以重复发起
+                return new CommonResult().ErrorResult("该员工已存在入职申请记录，无需再次发起",null);
+            }else {
+                sponsorNum = havaRecord.get(0).getSponsorNum();
+            }
         }
-        select.setApplyPeople(applyPeople);
-        int count = this.tApvApprovalMapper.selectCountByEntity(select);
-        if(count > 0){
-            return new CommonResult().ErrorResult("该员工已存在入职申请信息，无需再次发起",null);
-        }
+//        int count = this.dApvRecordMapper.selectCountByEntity(select);
+//        if(count > 0){
+//            return new CommonResult().ErrorResult("该员工已存在入职申请记录，无需再次发起",null);
+//        }
         //看档案中是否含有
         TStaffInfo queryInfo = new TStaffInfo();
         queryInfo.setPkStaffId(pkEntryId);
-        count = this.tStaffInfoMapper.selectCountByEntity(queryInfo);
+        int count = this.tStaffInfoMapper.selectCountByEntity(queryInfo);
         if(count > 0){
             return new CommonResult().ErrorResult("该员工已录入档案，无需发起入职审批！",null);
         }
@@ -374,7 +387,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         }else {
             stringBuffer.append("入职审批流程记录添加失败！");
         }
-        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,applyPeople,newPkId);
+        stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkEntryId,user,newPkId,sponsorNum);
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 

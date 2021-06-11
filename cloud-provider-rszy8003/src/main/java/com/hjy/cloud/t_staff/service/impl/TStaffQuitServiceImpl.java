@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
@@ -49,6 +52,8 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     private TSysTokenMapper tSysTokenMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
+    @Resource
+    private DApvRecordMapper dApvRecordMapper;
     /**
      * 添加前获取数据
      *
@@ -94,17 +99,35 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         TStaffInfo queryInfo = new TStaffInfo();
         queryInfo.setPkStaffId(sysToken.getFkUserId());
         TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
+        if(staffInfo == null){
+            return new CommonResult().ErrorResult("当前你的档案已不存在，请联系管理员!",null);
+        }
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_11.getCode();
+        int sponsorNum = 1;
         //查询是否提交过离职申请
         TStaffQuit tStaffQuit = tStaffQuitMapper.selectByStaffId(sysToken.getFkUserId());
         if(tStaffQuit != null && tStaffQuit.getQuitStatus() != 2){
             //0代表正在审批中，1通过2拒绝，拒绝的可以再次提交申请
             return new CommonResult().ErrorResult("已提交过离职申请，无需再次提交！",null);
         }
+        //查询是否发起了离职申请审批记录
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setApplyPeopleId(staffInfo.getPkStaffId());
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(havaRecord.get(0).getApvStatus() != 2){
+                return new CommonResult().ErrorResult("该员工已存在离职申请记录，无需再次发起",null);
+            }else {
+                //说明之前被拒绝，可以重复发起
+                sponsorNum = havaRecord.get(0).getSponsorNum();
+            }
+        }
         /**
          * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
          */
-        //审批类型
-        String approvalType = ApprovaltypeEnum.Type_11.getCode();
+
         int apvStatus = 0;
         TApvApproval queryApproval = new TApvApproval();
         queryApproval.setApprovalType(approvalType);
@@ -150,8 +173,11 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
                 ObjectAsyncTask.updateQuitData(staffQuit);
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
+                User user = new User();
+                user.setUserId(staffInfo.getPkStaffId());
+                user.setFullName(staffInfo.getStaffName());
                 stringBuffer.append("已发起离职申请!");
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,staffInfo.getStaffName(),newPkId);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkQuitId,user,newPkId,sponsorNum);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);

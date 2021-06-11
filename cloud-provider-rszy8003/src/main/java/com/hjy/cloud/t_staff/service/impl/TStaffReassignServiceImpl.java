@@ -4,9 +4,12 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryPositionMapper;
@@ -61,6 +64,8 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     private TOutfitWorkaddressMapper tOutfitWorkaddressMapper;
     @Resource
     private TDictionaryPositionMapper tDictionaryPositionMapper;
+    @Resource
+    private DApvRecordMapper dApvRecordMapper;
     /**
      * 添加前获取数据
      *
@@ -314,6 +319,22 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         }
         //审批类型
         String approvalType = ApprovaltypeEnum.Type_8.getCode();
+        int sponsorNum = 1;
+        /**
+         * 先判断是否已发起过调动审批
+         */
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setApplyPeopleId(query.getFkStaffId());
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(havaRecord.get(0).getApvStatus() != 2){
+                //说明之前被拒绝，可以重复发起
+                return new CommonResult().ErrorResult("该员工已存在调动申请记录，无需再次发起",null);
+            }else {
+                sponsorNum = havaRecord.get(0).getSponsorNum();
+            }
+        }
         /**
          * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
          */
@@ -348,8 +369,9 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
                 ObjectAsyncTask.updateReassignData(query);
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
+                User user = new User(query.getFkStaffId(),query.getStaffName());
                 stringBuffer.append("已发起调动申请成功!");
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,query.getStaffName(),newPkId);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,pkReassignId,user,newPkId,sponsorNum);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
@@ -417,11 +439,27 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         if(i1 > 0){
             return new CommonResult().ErrorResult("已有调动申请或正在审批中，无需再次提交！",null);
         }
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_8.getCode();
+        int sponsorNum = 1;
+        /**
+         * 先判断是否已发起过调动审批
+         */
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setApplyPeopleId(staffInfo.getPkStaffId());
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(havaRecord.get(0).getApvStatus() != 2){
+                //说明之前被拒绝，可以重复发起
+                return new CommonResult().ErrorResult("该员工已存在调动申请记录，无需再次发起",null);
+            }else {
+                sponsorNum = havaRecord.get(0).getSponsorNum();
+            }
+        }
         /**
          * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
          */
-        //审批类型
-        String approvalType = ApprovaltypeEnum.Type_8.getCode();
         int apvStatus = 0;
         TApvApproval queryApproval = new TApvApproval();
         queryApproval.setApprovalType(approvalType);
@@ -434,7 +472,6 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             apvStatus = 1;
             newPkId = null;
         }
-
         //添加数据
         TStaffReassign reassign = new TStaffReassign();
         String pkReassignId = IDUtils.getUUID();
@@ -477,8 +514,9 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
                 ObjectAsyncTask.updateReassignData(reassign);
                 return new CommonResult(201, "success", stringBuffer.toString(), null);
             }else {
+                User user = new User(staffInfo.getPkStaffId(),staffInfo.getStaffName());
                 stringBuffer.append("已发起调动申请成功!");
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkReassignId,reassign.getStaffName(),newPkId);
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkReassignId,user,newPkId,sponsorNum);
             }
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
@@ -489,14 +527,5 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         return tStaffReassignMapper.selectAllPage(selectEntity);
     }
 
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        TStaffReassign entity = new TStaffReassign();
-        List<TStaffReassign> list = this.tStaffReassignMapper.selectAllPage(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TStaffReassign>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return resultJson;
-    }
 }
     

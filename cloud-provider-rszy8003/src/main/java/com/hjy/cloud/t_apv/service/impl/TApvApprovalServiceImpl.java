@@ -284,15 +284,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         resultJson.put("entity", entity);
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
-    @Override
-    public DApvRecord selectApvRecordById(String pkRecordId) {
-        return this.tApvApprovalMapper.selectApvRecordById(pkRecordId);
-    }
-    @Transactional()
-    @Override
-    public int updateAPV_isending(TApvApproval entity) {
-        return tApvApprovalMapper.updateByPkId(entity);
-    }
 
     /**
      * 删除与一级审批相关联的审批数据
@@ -310,10 +301,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
      */
     @Override
     public CommonResult<PageResult<DApvRecord>> waitApv(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
         DApvRecord select = new DApvRecord();
         select.setIsIng(1);
         select.setIsStart(1);
+        PageHelper.startPage(pageNum, pageSize);
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将第一级审批的后续流程放入到次级流程中
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
@@ -323,10 +314,10 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     }
     @Override
     public CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
         DApvRecord select = new DApvRecord();
         select.setIsIng(0);
         select.setIsStart(1);
+        PageHelper.startPage(pageNum, pageSize);
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
@@ -440,20 +431,15 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
 
     }
     @Override
-    public CommonResult<PageResult<TempApvEntity>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param) {
-        String fullName = UserShiroUtil.getCurrentFullName(session,request);
-        if(StringUtils.isEmpty(fullName)){
+    public CommonResult<PageResult<DApvRecord>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param) {
+        SysToken token = ObjectAsyncTask.getSysToken(request);
+        if(token == null){
             return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
         }
         JSONObject json = JSON.parseObject(param);
         //实体数据
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
-        String apvResult = "全部";
-        String apvResult2 = JsonUtil.getStringParam(json, "apvResult");
-        if(!StringUtils.isEmpty(apvResult2)){
-            apvResult = apvResult2;
-        }
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -463,24 +449,17 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         if (pageSizeStr != null) {
             pageSize = Integer.parseInt(pageSizeStr);
         }
+        DApvRecord select = new DApvRecord();
+        select.setSponsorId(token.getFkUserId());
         PageHelper.startPage(pageNum, pageSize);
-        List<DApvRecord> waitApvRecords = tApvApprovalMapper.apvRecordListSponsor(fullName);
-        if(waitApvRecords == null || waitApvRecords.size() == 0){
-            return new CommonResult(200, "success", "暂未有你发起的审批流程！", null);
-        }
+        List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
-        List<TempApvEntity> apvRecords = this.optimizeApvRecord(waitApvRecords,null);
-//        //最后进行筛选，已处理，未处理，全部
-//        Iterator<TempApvEntity> iterator = apvRecords.iterator();
-//        while (iterator.hasNext()) {
-//            TempApvEntity next = iterator.next();
-//        }
-        PageResult<TempApvEntity> result = PageUtil.getPageResult(new PageInfo<TempApvEntity>(apvRecords));
-        return new CommonResult(200, "success", "获取数据成功！", result);
-
+        List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
+        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
+        return new CommonResult(200, "success", "获取我发起的审批列表数据成功！", result);
     }
     @Override
-    public CommonResult<PageResult<TempApvEntity>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param) {
+    public CommonResult<PageResult<DApvRecord>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param) {
         String userId = UserShiroUtil.getCurrentUserId(session,request);
         if(StringUtils.isEmpty(userId)){
             return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
@@ -505,7 +484,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             //将审批数据进行处理
             List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(dApvRecords);
             PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
-            return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
+            return new CommonResult(200, "success", "获取抄送记录成功！", result);
         }else {
             return new CommonResult().ErrorResult("你暂未有抄送记录",null);
         }
@@ -871,12 +850,16 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(resultInt == 0){
                 //审批驳回，后续审批就不用进行了
                 //将该审批流程的所有审批记录的is_ing该为0
-                int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
+//                int i = this.apvRecordMapper.updateIsIngBySourceId(sourceId);
+                //修改整个审批流程的状态apvStatus=2
+                int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,2);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             if("0".equals(apvRecord.getNextApproval()) && resultInt == 1){
                 //将该审批流程的所有审批记录的is_ing该为0
-                int i = tApvApprovalMapper.updateIsIngBySourceId(sourceId);
+//                int i = this.apvRecordMapper.updateIsIngBySourceId(sourceId);
+                //修改整个审批流程的状态apvStatus=1
+                int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             return new CommonResult(200, "success", stringBuffer.toString(), null);
@@ -929,7 +912,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         int num = 1;
         boolean flag = true;
         while (flag) {
-            DApvRecord apvRecord = tApvApprovalMapper.selectApvRecordByPkId(pk_apv_id);
+            DApvRecord apvRecord = apvRecordMapper.selectByPkId(pk_apv_id);
             if (apvRecord != null) {
                 apvRecord.setIsStart(num);
                 //循环次数加1
@@ -951,11 +934,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             }
         }
         return resultList;
-    }
-
-    @Override
-    public int insertApvRecordBatch(List<DApvRecord> apvRecordList) {
-        return tApvApprovalMapper.insertApvRecordBatch(apvRecordList);
     }
 
     /**

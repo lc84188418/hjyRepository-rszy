@@ -48,6 +48,10 @@ public class SourceDetailResult {
     /**
      * 以下信息为离职，若没有，说明该审批流程的审批来源不是为离职审批
      */
+    @ApiModelProperty(value = "离职类型", example = "", required = false)
+    private String quitType;
+    @ApiModelProperty(value = "离职原因", example = "", required = false)
+    private String quitReason;
     @ApiModelProperty(value = "离职日期", example = "", required = false)
     private Date quitTime;
     /**

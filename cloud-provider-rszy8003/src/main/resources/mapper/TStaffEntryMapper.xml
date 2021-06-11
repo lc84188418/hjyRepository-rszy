@@ -102,8 +102,8 @@
         select * from T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
-    <select id="selectApplyPeople" resultType="java.lang.String">
-        select STAFF_NAME from T_STAFF_ENTRY
+    <select id="selectApplyPeople" resultType="com.hjy.cloud.common.entity.User">
+        select PK_ENTRY_ID as userId,STAFF_NAME as fullName from T_STAFF_ENTRY
         where PK_ENTRY_ID = #{pkEntryId}
     </select>
     <select id="selectByPkId2" resultType="com.hjy.cloud.t_staff.entity.TStaffEntry">

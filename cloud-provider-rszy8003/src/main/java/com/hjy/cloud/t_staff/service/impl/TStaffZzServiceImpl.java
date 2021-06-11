@@ -4,9 +4,13 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
+import com.hjy.cloud.t_apv.entity.TApvApproval;
 import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
@@ -54,7 +58,8 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TApvApprovalMapper tApvApprovalMapper;
-
+    @Resource
+    private DApvRecordMapper dApvRecordMapper;
     /**
      * 修改数据
      *
@@ -235,17 +240,45 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         //查询自己是否提交过转正申请
         TStaffZz isProve = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
         if(isProve != null){
-            return new CommonResult(445, "error", "该员工已提交过转正申请，无需再次提交!", null);
+            return new CommonResult(445, "error", "已提交过转正申请，不可再次提交!", null);
         }
         JSONObject jsonObject = JSON.parseObject(param);
         //入职申请信息主键
         String pkEntryId = sysToken.getFkUserId();
-        //查询是否已添加过转正申请
-        TStaffZz selectStaffZz = tStaffZzMapper.selectByPkId(pkEntryId);
-        if(selectStaffZz != null){
-            return new CommonResult(445, "error", "已提交过转正申请，不可再次提交", null);
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_13.getCode();
+        int sponsorNum = 1;
+        /**
+         * 先判断是否已发起过入职审批
+         */
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setApplyPeopleId(pkEntryId);
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(havaRecord.get(0).getApvStatus() != 2){
+                //说明之前被拒绝，可以重复发起
+                return new CommonResult().ErrorResult("该员工已存在转正申请记录，无需再次发起",null);
+            }else {
+                sponsorNum = havaRecord.get(0).getSponsorNum();
+            }
         }
-        String firstApvrecordId = IDUtils.getUUID();
+        /**
+         * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
+         */
+        String newPkId = IDUtils.getUUID();
+        int apvStatus = 0;
+        TApvApproval queryApproval = new TApvApproval();
+        queryApproval.setApprovalType(approvalType);
+        List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
+        if(apvApprovalList != null && apvApprovalList.size() >0){
+            //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
+        }else {
+            //说明没有审批流直接通过，且不添加记录
+            //直接通过， apvStatus = 1
+            apvStatus = 1;
+            newPkId = null;
+        }
         /**
          * 添加转正信息到数据库表中
          */
@@ -274,19 +307,25 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         //实际转正日期在审批通过后进行修改
         staffZz.setStatus(0);
         //转正审批状态,0代表正在审批中，1通过,2拒绝
-        staffZz.setApvStatus(0);
-        staffZz.setFirstApvrecordId(firstApvrecordId);
+        staffZz.setApvStatus(apvStatus);
+        staffZz.setFirstApvrecordId(newPkId);
         int i = tStaffZzMapper.insertSelective(staffZz);
         StringBuffer stringBuffer = new StringBuffer();
         if(i > 0){
-            stringBuffer.append("转正申请已发起成功！");
-            //审批类型
-            String approvalType = ApprovaltypeEnum.Type_13.getCode();
-            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,sysToken.getFkUserId(),entry.getStaffName(),firstApvrecordId);
-            return new CommonResult(200, "success", stringBuffer.toString(), null);
-        }else {
-            return new CommonResult(444, "error","转正申请发起失败！", null);
+            if(apvStatus == 1){
+                stringBuffer.append("未有转正申请审批，已直接通过！");
+                /**
+                 * 通过后处理员工档案，也就是修改调动后的信息
+                 */
+                ObjectAsyncTask.updateZZData(staffZz);
+                return new CommonResult(200, "success", stringBuffer.toString(), null);
+            }else {
+                stringBuffer.append("转正申请已发起成功!");
+                User user = new User(entry.getPkEntryId(),entry.getStaffName());
+                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,staffZz.getFkStaffId(),user,newPkId,sponsorNum);
+            }
         }
+        return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
 
     @Override

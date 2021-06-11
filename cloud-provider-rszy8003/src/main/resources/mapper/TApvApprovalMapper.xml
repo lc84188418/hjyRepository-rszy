@@ -6,29 +6,6 @@
         select * from T_APV_APPROVAL
         where PK_APPROVAL_ID = #{pkApprovalId}
     </select>
-    <!--No problem 分页时查询总记录条数-->
-    <select id="selectSize" resultType="java.lang.Integer">
-        select count(*) from T_APV_APPROVAL
-        where 1 = 1
-        <if test="pkApprovalId != null and pkApprovalId != ''">
-            and PK_APPROVAL_ID = #{pkApprovalId}
-        </if>
-        <if test="approvalType != null and approvalType != ''">
-            and APPROVAL_TYPE = #{approvalType}
-        </if>
-        <if test="approvalPeople != null and approvalPeople != ''">
-            and APPROVAL_PEOPLE = #{approvalPeople}
-        </if>
-        <if test="nextApproval != null and nextApproval != ''">
-            and NEXT_APPROVAL = #{nextApproval}
-        </if>
-        <if test="dataType != null">
-            and DATA_TYPE = #{dataType}
-        </if>
-        <if test="apvStation != null and apvStation != ''">
-            and APV_STATION = #{apvStation}
-        </if>
-    </select>
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_apv.entity.TApvApproval">
         SELECT
@@ -166,74 +143,6 @@ ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_APV_APPROVAL.APV_STATION
             </if>
         </where>
     </select>
-    <select id="selectApvRecordById" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        SELECT SOURCE_ID from D_APV_RECORD where PK_RECORD_ID = #{pkRecordId}
-    </select>
-    <select id="selectApvRecordByPkId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        SELECT
-	t.PK_RECORD_ID,
-	t.APPROVAL_TYPE,
-	t.APPLY_PEOPLE,
-	t.SPONSOR,
-	t.START_TIME,
-	t.APV_APPROVAL,
-	t.APV_DATE,
-	t.APV_RESULT,
-	t.APV_REASON,
-	t.NEXT_APPROVAL,
-	T_STAFF_INFO.FK_POSITION_ID,
-	T_STAFF_INFO.STAFF_NAME as approvalPeopleName,
-	T_DICTIONARY_POSITION.POSITION_NAME positionName,
-	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
-FROM
-	D_APV_RECORD t
-	LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = t.APV_APPROVAL
-	LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_INFO.FK_POSITION_ID
-	LEFT JOIN T_APV_APVTYPE ON T_APV_APVTYPE.PK_APVTYPE_ID = t.APPROVAL_TYPE
-where PK_RECORD_ID = #{pkRecordId}
-    </select>
-<!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
-    <select id="waitApv" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        SELECT
-	PK_RECORD_ID,
-	APPROVAL_TYPE,
-	SPONSOR,
-	START_TIME,
-	APV_APPROVAL,
-	APV_DATE,
-	APV_RESULT,
-	APV_REASON,
-	NEXT_APPROVAL,
-	SOURCE_ID,
-	IS_START,
-	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
-FROM
-	D_APV_RECORD
-	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
-WHERE
-	D_APV_RECORD.IS_ING = 1
-    </select>
-    <!--    待审批,是指所有没有审批完成的记录，非操作用户自己的-->
-    <select id="ApvComplete" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        SELECT
-	PK_RECORD_ID,
-	APPROVAL_TYPE,
-	SPONSOR,
-	START_TIME,
-	APV_APPROVAL,
-	APV_DATE,
-	APV_RESULT,
-	APV_REASON,
-	NEXT_APPROVAL,
-	SOURCE_ID,
-	IS_START,
-	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
-FROM
-	D_APV_RECORD
-	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
-WHERE
-	D_APV_RECORD.IS_ING = 0
-    </select>
     <select id="waitApvUser" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         SELECT
 	PK_RECORD_ID,
@@ -254,26 +163,6 @@ FROM
 WHERE
 	D_APV_RECORD.IS_ING = 1 and SOURCE_ID in
         (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
-    </select>
-    <select id="apvRecordListSponsor" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        SELECT
-	PK_RECORD_ID,
-	APPROVAL_TYPE,
-	SPONSOR,
-	START_TIME,
-	APV_APPROVAL,
-	APV_DATE,
-	APV_RESULT,
-	APV_REASON,
-	NEXT_APPROVAL,
-	SOURCE_ID,
-	IS_START,
-	T_APV_APVTYPE.APVTYPE_NAME AS apvtypeName
-FROM
-	D_APV_RECORD
-	LEFT JOIN T_APV_APVTYPE ON D_APV_RECORD.APPROVAL_TYPE = T_APV_APVTYPE.PK_APVTYPE_ID
-WHERE
-	SPONSOR = #{sponsor,jdbcType=VARCHAR}
     </select>
     <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
         select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND APPROVAL_TYPE = #{approvalType} AND IS_ING = 1
@@ -311,27 +200,6 @@ WHERE
             and SOURCE_ID = #{sourceId,jdbcType=VARCHAR}
         </if>
     </select>
-    <!--新增-->
-    <insert id="insertApvRecordBatch" parameterType="list">
-        insert into D_APV_RECORD
-        (PK_RECORD_ID,APPROVAL_TYPE,APPLY_PEOPLE,SPONSOR,START_TIME,APV_APPROVAL,APPROVAL_PEOPLE_NAME,NEXT_APPROVAL,SOURCE_ID,IS_START,IS_ING)
-        values
-        <foreach collection="apvRecords" item="item" index="index" separator=",">
-            (
-            #{item.pkRecordId, jdbcType=VARCHAR},
-            #{item.approvalType, jdbcType=VARCHAR},
-            #{item.applyPeople, jdbcType=VARCHAR},
-            #{item.sponsor, jdbcType=VARCHAR},
-            #{item.startTime, jdbcType=TIMESTAMP},
-            #{item.apvApproval, jdbcType=VARCHAR},
-            #{item.approvalPeopleName, jdbcType=VARCHAR},
-            #{item.nextApproval, jdbcType=VARCHAR},
-            #{item.sourceId, jdbcType=VARCHAR},
-            #{item.isStart, jdbcType=INTEGER},
-            #{item.isIng, jdbcType=INTEGER}
-            )
-        </foreach>
-    </insert>
     <insert id="insertBatch" parameterType="list">
         insert into T_APV_APPROVAL
         (PK_APPROVAL_ID,APPROVAL_TYPE,APPROVAL_PEOPLE,NEXT_APPROVAL,DATA_TYPE,APV_STATION,IS_ENDING,IS_START)
@@ -377,10 +245,7 @@ WHERE
         </set>
         where PK_APPROVAL_ID = #{pkApprovalId,jdbcType=VARCHAR}
     </update>
-    <update id="updateIsIngBySourceId">
-        update D_APV_RECORD set IS_ING = 0
-        where SOURCE_ID = #{sourceId,jdbcType=VARCHAR}
-    </update>
+
     <update id="updateApvRecord" parameterType="com.hjy.cloud.t_apv.entity.DApvRecord">
         update D_APV_RECORD
         <set>

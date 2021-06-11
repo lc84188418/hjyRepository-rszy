@@ -124,6 +124,16 @@ public class DApvRecordServiceImpl implements DApvRecordService {
         return this.dApvRecordMapper.selectByPkId(pkId);
     }
 
+    @Override
+    public int insertApvRecordBatch(List<DApvRecord> apvRecordList) {
+        return this.dApvRecordMapper.insertApvRecordBatch(apvRecordList);
+    }
+
+    @Override
+    public DApvRecord selectSourceIdById(String pkRecordId) {
+        return this.dApvRecordMapper.selectSourceIdById(pkRecordId);
+    }
+
     private JSONObject getListInfo() {
         PageHelper.startPage(1, 10);
         DApvRecord entity = new DApvRecord();
