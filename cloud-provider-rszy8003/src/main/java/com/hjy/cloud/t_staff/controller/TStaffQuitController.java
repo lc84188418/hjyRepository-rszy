@@ -95,6 +95,13 @@ public class TStaffQuitController {
      * @param param json参数
      * @return 所有数据
      */
+    @ApiOperation(value = "查询离职数据-已完成", notes = "管理员查询离职数据，quitStatus = 1 代表已离职 quitStatus = 0 代表离职中")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffName",value = "员工姓名，支持模糊查询",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "quitStatus",value = "离职审批状态,",required = true,dataType = "int",paramType = "body",example = "1"),
+    })
     //@RequiresPermissions({"staffQuit:adminView"})
     @PostMapping(value = "/staff/quit/adminList")
     public CommonResult adminList(@RequestBody String param) throws FebsException {

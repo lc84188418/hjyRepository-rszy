@@ -227,11 +227,14 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         String reassignType = JsonUtil.getStringParam(json, "reassignType");
         String oldDeptName = JsonUtil.getStringParam(json, "oldDeptName");
         String oldPositionName = JsonUtil.getStringParam(json, "oldPositionName");
+        //apvStatus = 0 代表调动中 apvStatus = 1 代表已调动
+        int apvStatus = JsonUtil.getIntegerParam(json, "apvStatus");
         TStaffReassign entity = new TStaffReassign();
         entity.setStaffName(staffName);
         entity.setReassignType(reassignType);
         entity.setOldDeptName(oldDeptName);
         entity.setOldPositionName(oldPositionName);
+        entity.setApvStatus(apvStatus);
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -242,7 +245,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             pageSize = Integer.parseInt(pageSizeStr);
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<TStaffReassign> list = this.tStaffReassignMapper.selectAllPage(entity);
+        List<TStaffReassign> list = this.tStaffReassignMapper.selectAllByEntity(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffReassign>(list));
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);

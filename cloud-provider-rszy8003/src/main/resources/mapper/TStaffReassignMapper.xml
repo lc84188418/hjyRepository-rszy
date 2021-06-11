@@ -166,6 +166,96 @@
         </if>
         order by REASSIGN_TIME desc
     </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllByEntity" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        table2.*,
+        T_STAFF_INFO.STAFF_NAME AS reassignLeaderName
+        FROM
+        (
+        SELECT
+        table1.*,
+        T_OUTFIT_DEPT.DEPT_NAME AS reassignDeptName,
+        T_DICTIONARY_POSITION.POSITION_NAME AS reassignPositionName,
+        T_OUTFIT_WORKADDRESS.WORKADRESS_NAME AS reassignWorkAddressName,
+        T_OUTFIT_COMPANY.COMPANY_NAME AS reassignCompanyName,
+        T_STAFF_INFO.STAFF_NAME AS oldLeaderName
+        FROM
+        (
+        SELECT
+        T_STAFF_REASSIGN.PK_REASSIGN_ID,
+        T_STAFF_REASSIGN.FK_STAFF_ID,
+        T_STAFF_INFO.STAFF_NAME AS staffName,
+        T_STAFF_REASSIGN.START_TIME,
+        T_STAFF_REASSIGN.END_TIME,
+        T_STAFF_REASSIGN.REASSIGN_TIME,
+        T_STAFF_REASSIGN.REASSIGN_TYPE,
+        T_STAFF_REASSIGN.OLD_DEPT_ID,
+        T_OUTFIT_DEPT.DEPT_NAME AS oldDeptName,
+        T_STAFF_REASSIGN.REASSIGN_DEPT_ID,
+        T_STAFF_REASSIGN.OLD_POSITION,
+        T_DICTIONARY_POSITION.POSITION_NAME AS oldPositionName,
+        T_STAFF_REASSIGN.REASSIGN_POSITION,
+        T_STAFF_REASSIGN.OLD_ADDRESS,
+        T_OUTFIT_WORKADDRESS.WORKADRESS_NAME AS oldWorkAddressName,
+        T_STAFF_REASSIGN.REASSIGN_ADDRESS,
+        T_STAFF_REASSIGN.OLD_COMPANY,
+        T_OUTFIT_COMPANY.COMPANY_NAME AS oldCompanyName,
+        T_STAFF_REASSIGN.REASSIGN_COMPANY,
+        T_STAFF_REASSIGN.REASSIGN_LEADER,
+        T_STAFF_REASSIGN.OLD_LEADER,
+        T_STAFF_REASSIGN.REASSIGN_REASON,
+        T_STAFF_REASSIGN.APV_STATUS,
+        T_STAFF_REASSIGN.FIRST_APVRECORD_ID
+        FROM
+        T_STAFF_REASSIGN
+        LEFT JOIN T_STAFF_INFO ON T_STAFF_REASSIGN.FK_STAFF_ID = T_STAFF_INFO.PK_STAFF_ID
+        LEFT JOIN T_OUTFIT_DEPT ON T_STAFF_REASSIGN.OLD_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_STAFF_REASSIGN.OLD_POSITION = T_DICTIONARY_POSITION.PK_POSITION_ID
+        LEFT JOIN T_OUTFIT_WORKADDRESS ON T_STAFF_REASSIGN.OLD_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
+        LEFT JOIN T_OUTFIT_COMPANY ON T_STAFF_REASSIGN.OLD_COMPANY = T_OUTFIT_COMPANY.PK_COMPANY_ID
+        ) table1
+        LEFT JOIN T_OUTFIT_DEPT ON table1.REASSIGN_DEPT_ID = T_OUTFIT_DEPT.PK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON table1.REASSIGN_POSITION = T_DICTIONARY_POSITION.PK_POSITION_ID
+        LEFT JOIN T_OUTFIT_WORKADDRESS ON table1.REASSIGN_ADDRESS = T_OUTFIT_WORKADDRESS.PK_WORKADRESS_ID
+        LEFT JOIN T_OUTFIT_COMPANY ON table1.REASSIGN_COMPANY = T_OUTFIT_COMPANY.PK_COMPANY_ID
+        LEFT JOIN T_STAFF_INFO ON table1.OLD_LEADER = T_STAFF_INFO.PK_STAFF_ID
+        ) table2
+        LEFT JOIN T_STAFF_INFO ON table2.REASSIGN_LEADER = T_STAFF_INFO.PK_STAFF_ID
+        ) table3
+        WHERE
+        1 = 1
+        <if test="staffName != null and staffName != ''">
+            and table3.staffName like '%${staffName}%'
+        </if>
+        <if test="reassignType != null and reassignType != ''">
+            and table3.REASSIGN_TYPE = #{reassignType,jdbcType=VARCHAR}
+        </if>
+        <if test="oldDeptName != null and oldDeptName != ''">
+            and table3.oldDeptName = #{oldDeptName,jdbcType=VARCHAR}
+        </if>
+        <if test="oldPositionName != null and oldPositionName != ''">
+            and table3.oldPositionName = #{oldPositionName,jdbcType=VARCHAR}
+        </if>
+        <if test="pkReassignId != null and pkReassignId != ''">
+            and table3.PK_REASSIGN_ID = #{pkReassignId,jdbcType=VARCHAR}
+        </if>
+        <if test="fkStaffId != null and fkStaffId != ''">
+            and table3.FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        </if>
+        <if test="apvStatus != null and apvStatus == 1">
+            and table3.APV_STATUS != 0 and table3.APV_STATUS != 3
+        </if>
+        <if test="apvStatus != null and apvStatus == 0">
+            and table3.APV_STATUS != 1 and table3.APV_STATUS != 2
+        </if>
+        order by REASSIGN_TIME desc
+    </select>
+
     <select id="selectStaffOldInfoByStaffId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign" parameterType="java.lang.String">
 SELECT
 	table1.*,

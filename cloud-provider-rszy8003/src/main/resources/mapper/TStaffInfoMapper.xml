@@ -10,6 +10,7 @@
         <result property="staffStatus" column="STAFF_STATUS" jdbcType="INTEGER"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="fkPositionId" column="FK_POSITION_ID" jdbcType="VARCHAR"/>
+        <result property="fkWorkaddressId" column="FK_WORKADDRESS_ID" jdbcType="VARCHAR"/>
         <result property="entryTime" column="ENTRY_TIME" jdbcType="DATE"/>
         <result property="fkHtlxId" column="FK_HTLX_ID" jdbcType="VARCHAR"/>
         <result property="recruitWay" column="RECRUIT_WAY" jdbcType="VARCHAR"/>
@@ -46,7 +47,135 @@
         <result property="hblxName5" column="HBLX_NAME5" jdbcType="VARCHAR"/>
         <result property="object5" column="OBJECT5" jdbcType="VARCHAR"/>
     </resultMap>
-
+    <!--根据实体信息查询记录条数-->
+    <select id="selectCountByEntity" resultType="java.lang.Integer">
+        select count(*) from T_STAFF_INFO
+        <where>
+            <if test="pkStaffId != null and pkStaffId != ''">
+                and PK_STAFF_ID = #{pkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+            </if>
+            <if test="staffSex != null">
+                and STAFF_SEX = #{staffSex,jdbcType=INTEGER}
+            </if>
+            <if test="staffAge != null">
+                and STAFF_AGE = #{staffAge,jdbcType=INTEGER}
+            </if>
+            <if test="staffStatus != null">
+                and STAFF_STATUS = #{staffStatus,jdbcType=INTEGER}
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkPositionId != null and fkPositionId != ''">
+                and FK_POSITION_ID = #{fkPositionId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkWorkaddressId != null and fkWorkaddressId != ''">
+                and FK_WORKADDRESS_ID = #{fkWorkaddressId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkHtlxId != null and fkHtlxId != ''">
+                and FK_HTLX_ID = #{fkHtlxId,jdbcType=VARCHAR}
+            </if>
+            <if test="recruitWay != null and recruitWay != ''">
+                and RECRUIT_WAY = #{recruitWay,jdbcType=VARCHAR}
+            </if>
+            <if test="idType != null and idType != ''">
+                and ID_TYPE = #{idType,jdbcType=VARCHAR}
+            </if>
+            <if test="idCard != null and idCard != ''">
+                and ID_CARD = #{idCard,jdbcType=VARCHAR}
+            </if>
+            <if test="staffEmail != null and staffEmail != ''">
+                and STAFF_EMAIL = #{staffEmail,jdbcType=VARCHAR}
+            </if>
+            <if test="staffTel != null and staffTel != ''">
+                and STAFF_TEL = #{staffTel,jdbcType=VARCHAR}
+            </if>
+            <if test="nativePlace != null and nativePlace != ''">
+                and NATIVE_PLACE = #{nativePlace,jdbcType=VARCHAR}
+            </if>
+            <if test="birthday != null and birthday != ''">
+                and BIRTHDAY = #{birthday,jdbcType=VARCHAR}
+            </if>
+            <if test="fkNationId != null and fkNationId != ''">
+                and FK_NATION_ID = #{fkNationId,jdbcType=VARCHAR}
+            </if>
+            <if test="hkszd != null and hkszd != ''">
+                and HKSZD = #{hkszd,jdbcType=VARCHAR}
+            </if>
+            <if test="politivalOutlook != null and politivalOutlook != ''">
+                and POLITIVAL_OUTLOOK = #{politivalOutlook,jdbcType=VARCHAR}
+            </if>
+            <if test="currentAddress != null and currentAddress != ''">
+                and CURRENT_ADDRESS = #{currentAddress,jdbcType=VARCHAR}
+            </if>
+            <if test="isMarry != null">
+                and IS_MARRY = #{isMarry,jdbcType=INTEGER}
+            </if>
+            <if test="fkEducationId != null and fkEducationId != ''">
+                and FK_EDUCATION_ID = #{fkEducationId,jdbcType=VARCHAR}
+            </if>
+            <if test="zgxlbyyx != null and zgxlbyyx != ''">
+                and ZGXLBYYX = #{zgxlbyyx,jdbcType=VARCHAR}
+            </if>
+            <if test="wyDj != null and wyDj != ''">
+                and WY_DJ = #{wyDj,jdbcType=VARCHAR}
+            </if>
+            <if test="jsjDj != null and jsjDj != ''">
+                and JSJ_DJ = #{jsjDj,jdbcType=VARCHAR}
+            </if>
+            <if test="major != null and major != ''">
+                and MAJOR = #{major,jdbcType=VARCHAR}
+            </if>
+            <if test="bankName != null and bankName != ''">
+                and BANK_NAME = #{bankName,jdbcType=VARCHAR}
+            </if>
+            <if test="bankId != null and bankId != ''">
+                and BANK_ID = #{bankId,jdbcType=VARCHAR}
+            </if>
+            <if test="branchBank != null and branchBank != ''">
+                and BRANCH_BANK = #{branchBank,jdbcType=VARCHAR}
+            </if>
+            <if test="syr != null and syr != ''">
+                and SYR = #{syr,jdbcType=VARCHAR}
+            </if>
+            <if test="picturePath != null and picturePath != ''">
+                and PICTURE_PATH = #{picturePath,jdbcType=VARCHAR}
+            </if>
+            <if test="hblxName1 != null and hblxName1 != ''">
+                and HBLX_NAME1 = #{hblxName1,jdbcType=VARCHAR}
+            </if>
+            <if test="object1 != null and object1 != ''">
+                and OBJECT1 = #{object1,jdbcType=VARCHAR}
+            </if>
+            <if test="hblxName2 != null and hblxName2 != ''">
+                and HBLX_NAME2 = #{hblxName2,jdbcType=VARCHAR}
+            </if>
+            <if test="object2 != null and object2 != ''">
+                and OBJECT2 = #{object2,jdbcType=VARCHAR}
+            </if>
+            <if test="hblxName3 != null and hblxName3 != ''">
+                and HBLX_NAME3 = #{hblxName3,jdbcType=VARCHAR}
+            </if>
+            <if test="object3 != null and object3 != ''">
+                and OBJECT3 = #{object3,jdbcType=VARCHAR}
+            </if>
+            <if test="hblxName4 != null and hblxName4 != ''">
+                and HBLX_NAME4 = #{hblxName4,jdbcType=VARCHAR}
+            </if>
+            <if test="object4 != null and object4 != ''">
+                and OBJECT4 = #{object4,jdbcType=VARCHAR}
+            </if>
+            <if test="hblxName5 != null and hblxName5 != ''">
+                and HBLX_NAME5 = #{hblxName5,jdbcType=VARCHAR}
+            </if>
+            <if test="object5 != null and object5 != ''">
+                and OBJECT5 = #{object5,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
     <!--查询单个-->
     <select id="selectByPkId2" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         SELECT

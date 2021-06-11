@@ -29,6 +29,7 @@ public interface TStaffReassignMapper {
      * @return 对象列表
      */
     List<TStaffReassign> selectAllPage(TStaffReassign tStaffReassign);
+    List<TStaffReassign> selectAllByEntity(TStaffReassign tStaffReassign);
 
     /**
      * 新增数据

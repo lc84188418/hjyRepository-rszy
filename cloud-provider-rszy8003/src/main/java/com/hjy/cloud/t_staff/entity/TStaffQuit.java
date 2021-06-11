@@ -1,5 +1,7 @@
 package com.hjy.cloud.t_staff.entity;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -11,36 +13,38 @@ import java.util.Date;
  * @since 2021-03-01 15:53:15
  */
 @Data
+@ApiModel("离职")
 public class TStaffQuit {
-    //离职信息主键
+    @ApiModelProperty(value = "离职信息主键", example = "", required = false)
     private String pkQuitId;
-    //离职人ID
+    @ApiModelProperty(value = "离职人ID", example = "", required = false)
     private String fkStaffId;
+    @ApiModelProperty(value = "离职人姓名", example = "", required = false)
     private String staffName;
-    //部门ID
+    @ApiModelProperty(value = "部门ID", example = "", required = false)
     private String fkDeptId;
     private String deptName;
-    //职位ID
+    @ApiModelProperty(value = "职位ID", example = "", required = false)
     private String position;
     private String positionName;
-    //申请日期
+
+    @ApiModelProperty(value = "申请日期", example = "", required = false)
     private Date applyTime;
-    //离职类型
+    @ApiModelProperty(value = "离职类型", example = "", required = false)
     private String quitType;
-    //离职原因
+    @ApiModelProperty(value = "离职原因", example = "", required = false)
     private String quitReason;
-    //离职日期
+    @ApiModelProperty(value = "离职日期", example = "", required = false)
     private Date quitTime;
-    //审批人
-    private String apvPeople;
-    //状态,0审批中1通过2拒绝
+    @ApiModelProperty(value = "状态,0审批中1通过2拒绝", example = "", required = false)
     private Integer quitStatus;
-    //备注
+    @ApiModelProperty(value = "备注", example = "", required = false)
     private String remarks;
-    //审批时间
+    @ApiModelProperty(value = "审批时间", example = "", required = false)
     private Date apvTime;
-    //离职填写人
+    @ApiModelProperty(value = "离职填写人", example = "", required = false)
     private String operatedPeople;
-    //第一级审批id
+    @ApiModelProperty(value = "第一级审批id", example = "", required = false)
     private String apvId;
+
 }

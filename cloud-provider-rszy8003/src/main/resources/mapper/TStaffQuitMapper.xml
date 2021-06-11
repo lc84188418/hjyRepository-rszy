@@ -5,13 +5,13 @@
     <resultMap type="com.hjy.cloud.t_staff.entity.TStaffQuit" id="TStaffQuitMap">
         <result property="pkQuitId" column="PK_QUIT_ID" jdbcType="VARCHAR"/>
         <result property="fkStaffId" column="FK_STAFF_ID" jdbcType="VARCHAR"/>
+        <result property="staffName" column="STAFF_NAME" jdbcType="VARCHAR"/>
         <result property="fkDeptId" column="FK_DEPT_ID" jdbcType="VARCHAR"/>
         <result property="position" column="POSITION" jdbcType="VARCHAR"/>
         <result property="applyTime" column="APPLY_TIME" jdbcType="TIMESTAMP"/>
         <result property="quitType" column="QUIT_TYPE" jdbcType="VARCHAR"/>
         <result property="quitReason" column="QUIT_REASON" jdbcType="VARCHAR"/>
         <result property="quitTime" column="QUIT_TIME" jdbcType="DATE"/>
-        <result property="apvPeople" column="APV_PEOPLE" jdbcType="VARCHAR"/>
         <result property="quitStatus" column="QUIT_STATUS" jdbcType="INTEGER"/>
         <result property="remarks" column="REMARKS" jdbcType="VARCHAR"/>
         <result property="apvTime" column="APV_TIME" jdbcType="TIMESTAMP"/>
@@ -28,28 +28,92 @@
         select * from T_STAFF_QUIT
         where FK_STAFF_ID = #{fkStaffId}
     </select>
-    <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffQuit">
         select
         T_STAFF_QUIT.PK_QUIT_ID,
         T_STAFF_QUIT.FK_STAFF_ID,
+        T_STAFF_QUIT.STAFF_NAME,
         T_STAFF_QUIT.FK_DEPT_ID,
         T_STAFF_QUIT.POSITION,
         T_STAFF_QUIT.APPLY_TIME,
         T_STAFF_QUIT.QUIT_TYPE,
         T_STAFF_QUIT.QUIT_REASON,
         T_STAFF_QUIT.QUIT_TIME,
-        T_STAFF_QUIT.APV_PEOPLE,
         T_STAFF_QUIT.QUIT_STATUS,
         T_STAFF_QUIT.REMARKS,
         T_STAFF_QUIT.APV_TIME,
         T_STAFF_QUIT.OPERATED_PEOPLE,
         T_STAFF_QUIT.APV_ID,
-        T_STAFF_INFO.STAFF_NAME,
         T_OUTFIT_DEPT.DEPT_NAME,
         T_DICTIONARY_POSITION.POSITION_NAME
         from T_STAFF_QUIT
-        LEFT JOIN T_STAFF_INFO ON T_STAFF_INFO.PK_STAFF_ID = T_STAFF_QUIT.FK_STAFF_ID
+        LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_QUIT.FK_DEPT_ID
+        LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_QUIT.POSITION
+        where 1 = 1
+        <if test="pkQuitId != null and pkQuitId != ''">
+            and PK_QUIT_ID = #{pkQuitId,jdbcType=VARCHAR}
+        </if>
+        <if test="fkStaffId != null and fkStaffId != ''">
+            and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+        </if>
+        <if test="staffName != null and staffName != ''">
+            and STAFF_NAME like '%${staffName}%'
+        </if>
+        <if test="fkDeptId != null and fkDeptId != ''">
+            and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
+        </if>
+        <if test="position != null and position != ''">
+            and POSITION = #{position,jdbcType=VARCHAR}
+        </if>
+        <if test="applyTime != null">
+            and APPLY_TIME = #{applyTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="quitType != null and quitType != ''">
+            and QUIT_TYPE = #{quitType,jdbcType=VARCHAR}
+        </if>
+        <if test="quitReason != null and quitReason != ''">
+            and QUIT_REASON = #{quitReason,jdbcType=VARCHAR}
+        </if>
+        <if test="quitTime != null">
+            and QUIT_TIME = #{quitTime,jdbcType=DATE}
+        </if>
+        <if test="quitStatus != null">
+            and QUIT_STATUS = #{quitStatus,jdbcType=INTEGER}
+        </if>
+        <if test="remarks != null and remarks != ''">
+            and REMARKS = #{remarks,jdbcType=VARCHAR}
+        </if>
+        <if test="apvTime != null">
+            and APV_TIME = #{apvTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="operatedPeople != null and operatedPeople != ''">
+            and OPERATED_PEOPLE = #{operatedPeople,jdbcType=VARCHAR}
+        </if>
+        <if test="apvId != null and apvId != ''">
+            and APV_ID = #{apvId,jdbcType=VARCHAR}
+        </if>
+        order by QUIT_TIME desc
+    </select>
+    <!--通过实体作为筛选条件查询-->
+    <select id="selectAllByEntity" resultType="com.hjy.cloud.t_staff.entity.TStaffQuit">
+        select
+        T_STAFF_QUIT.PK_QUIT_ID,
+        T_STAFF_QUIT.FK_STAFF_ID,
+        T_STAFF_QUIT.STAFF_NAME,
+        T_STAFF_QUIT.FK_DEPT_ID,
+        T_STAFF_QUIT.POSITION,
+        T_STAFF_QUIT.APPLY_TIME,
+        T_STAFF_QUIT.QUIT_TYPE,
+        T_STAFF_QUIT.QUIT_REASON,
+        T_STAFF_QUIT.QUIT_TIME,
+        T_STAFF_QUIT.QUIT_STATUS,
+        T_STAFF_QUIT.REMARKS,
+        T_STAFF_QUIT.APV_TIME,
+        T_STAFF_QUIT.OPERATED_PEOPLE,
+        T_STAFF_QUIT.APV_ID,
+        T_OUTFIT_DEPT.DEPT_NAME,
+        T_DICTIONARY_POSITION.POSITION_NAME
+        from T_STAFF_QUIT
         LEFT JOIN T_OUTFIT_DEPT ON T_OUTFIT_DEPT.PK_DEPT_ID = T_STAFF_QUIT.FK_DEPT_ID
         LEFT JOIN T_DICTIONARY_POSITION ON T_DICTIONARY_POSITION.PK_POSITION_ID = T_STAFF_QUIT.POSITION
         where 1 = 1
@@ -58,6 +122,9 @@
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME like '%${staffName}%'
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 and FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
@@ -77,12 +144,6 @@
             <if test="quitTime != null">
                 and QUIT_TIME = #{quitTime,jdbcType=DATE}
             </if>
-            <if test="apvPeople != null and apvPeople != ''">
-                and APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR}
-            </if>
-            <if test="quitStatus != null">
-                and QUIT_STATUS = #{quitStatus,jdbcType=INTEGER}
-            </if>
             <if test="remarks != null and remarks != ''">
                 and REMARKS = #{remarks,jdbcType=VARCHAR}
             </if>
@@ -95,6 +156,12 @@
             <if test="apvId != null and apvId != ''">
                 and APV_ID = #{apvId,jdbcType=VARCHAR}
             </if>
+        <if test="quitStatus != null and quitStatus == 1">
+            and QUIT_STATUS != 0
+        </if>
+        <if test="quitStatus != null and quitStatus == 0">
+            and QUIT_STATUS != 1 and QUIT_STATUS != 2
+        </if>
         order by QUIT_TIME desc
     </select>
     <!--新增-->
@@ -107,8 +174,11 @@
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID,
             </if>
-            <if test="fkDeptId != null and fkDeptId != ''">
-                FK_DEPT_ID,
+            <if test="fkStaffId != null and fkStaffId != ''">
+                FK_STAFF_ID,
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME,
             </if>
             <if test="position != null and position != ''">
                 POSITION,
@@ -150,6 +220,9 @@
             </if>
             <if test="fkStaffId != null and fkStaffId != ''">
                 #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                #{staffName,jdbcType=VARCHAR},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 #{fkDeptId,jdbcType=VARCHAR},
@@ -195,6 +268,9 @@
         <set>
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
+            </if>
+            <if test="staffName != null and staffName != ''">
+                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
             </if>
             <if test="fkDeptId != null and fkDeptId != ''">
                 FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR},

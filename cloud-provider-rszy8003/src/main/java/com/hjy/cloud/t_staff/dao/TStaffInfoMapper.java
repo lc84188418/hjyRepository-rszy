@@ -20,6 +20,8 @@ public interface TStaffInfoMapper {
      * @return 实例对象
      */
     TStaffInfo selectByPkId2(TStaffInfo tStaffInfo);
+    //通过实体查询是否有数据
+    int selectCountByEntity(TStaffInfo tStaffInfo);
 
     /**
      * 通过实体作为筛选条件查询

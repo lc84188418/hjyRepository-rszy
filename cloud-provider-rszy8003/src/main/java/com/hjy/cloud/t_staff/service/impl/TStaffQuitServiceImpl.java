@@ -121,6 +121,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         String pkQuitId = IDUtils.getUUID();
         staffQuit.setPkQuitId(pkQuitId);
         staffQuit.setFkStaffId(staffInfo.getPkStaffId());
+        staffQuit.setStaffName(staffInfo.getStaffName());
         staffQuit.setFkDeptId(staffInfo.getFkDeptId());
         staffQuit.setPosition(staffInfo.getFkPositionId());
         staffQuit.setOperatedPeople(sysToken.getFullName());
@@ -202,8 +203,12 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         //查询条件
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
         String pageSizeStr = JsonUtil.getStringParam(json, "pageSize");
+        String staffName = JsonUtil.getStringParam(json, "staffName");
+        int quitStatus = JsonUtil.getIntegerParam(json, "quitStatus");
         TStaffQuit entity = new TStaffQuit();
-
+        //quitStatus = 1 代表已离职 quitStatus = 0 代表离职中
+        entity.setQuitStatus(quitStatus);
+        entity.setStaffName(staffName);
         //分页记录条数
         int pageNum = 1;
         int pageSize = 10;
@@ -214,7 +219,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
             pageSize = Integer.parseInt(pageSizeStr);
         }
         PageHelper.startPage(pageNum, pageSize);
-        List<TStaffQuit> list = this.tStaffQuitMapper.selectAllPage(entity);
+        List<TStaffQuit> list = this.tStaffQuitMapper.selectAllByEntity(entity);
         PageResult result = PageUtil.getPageResult(new PageInfo<TStaffQuit>(list));
         JSONObject resultJson = new JSONObject();
         resultJson.put("PageResult", result);

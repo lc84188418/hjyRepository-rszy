@@ -4,11 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.enums.ApprovaltypeEnum;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
@@ -23,7 +23,9 @@ import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffEntryMapper;
+import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffEntry;
+import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.result.EntryApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffEntryService;
 import com.hjy.cloud.t_system.dao.TSysTokenMapper;
@@ -51,6 +53,8 @@ import java.util.List;
 @Service("tStaffEntryService")
 public class TStaffEntryServiceImpl implements TStaffEntryService {
 
+    @Resource
+    private TStaffInfoMapper tStaffInfoMapper;
     @Resource
     private TStaffEntryMapper tStaffEntryMapper;
     @Resource
@@ -347,6 +351,13 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         if(count > 0){
             return new CommonResult().ErrorResult("该员工已存在入职申请信息，无需再次发起",null);
         }
+        //看档案中是否含有
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(pkEntryId);
+        count = this.tStaffInfoMapper.selectCountByEntity(queryInfo);
+        if(count > 0){
+            return new CommonResult().ErrorResult("该员工已录入档案，无需发起入职审批！",null);
+        }
         /**
          * 修改入职信息表中的apvId
          */
@@ -377,10 +388,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     }
     @Override
     public TStaffEntry selectByPkId2(String pkEntryId) {
-        TStaffEntry entry = new TStaffEntry();
-        entry.setPkEntryId(pkEntryId);
-        List<TStaffEntry> tStaffEntryList = tStaffEntryMapper.selectAllPage(entry);
-        return tStaffEntryList.get(0);
+        return tStaffEntryMapper.selectByPkId2(pkEntryId);
     }
 
     private JSONObject getListInfo() {

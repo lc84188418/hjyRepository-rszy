@@ -29,6 +29,8 @@ public interface TStaffQuitMapper {
      */
     List<TStaffQuit> selectAllPage(TStaffQuit tStaffQuit);
 
+    List<TStaffQuit> selectAllByEntity(TStaffQuit tStaffQuit);
+
     /**
      * 新增数据
      *
@@ -54,4 +56,5 @@ public interface TStaffQuitMapper {
     int deleteById(TStaffQuit tStaffQuit);
 
     TStaffQuit selectByStaffId(@Param("fkStaffId") String fkUserId);
+
 }

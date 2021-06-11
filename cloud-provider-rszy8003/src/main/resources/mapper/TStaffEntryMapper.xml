@@ -247,7 +247,6 @@
                 and ENTRY_DESC = #{entryDesc}
             </if>
         order by ENTRY_TIME desc
-
     </select>
 
     <!--新增-->

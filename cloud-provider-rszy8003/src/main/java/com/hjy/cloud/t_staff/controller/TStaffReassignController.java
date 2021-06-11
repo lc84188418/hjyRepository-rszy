@@ -99,6 +99,16 @@ public class TStaffReassignController {
      * @param param json参数
      * @return 所有数据
      */
+    @ApiOperation(value = "调动信息查看-已完成", notes = "管理员查询调动数据，apvStatus = 0 代表调动中 apvStatus = 1 代表已调动")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffName",value = "员工姓名",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "reassignType",value = "调动类型",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "oldDeptName",value = "原部门",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "oldPositionName",value = "原职位",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "apvStatus",value = "调动状态,",required = true,dataType = "int",paramType = "body",example = "1"),
+    })
     //@RequiresPermissions({"reassign:view"})
     @PostMapping(value = "/staff/reassign/list")
     public CommonResult selectAll(@RequestBody String param) throws FebsException {
