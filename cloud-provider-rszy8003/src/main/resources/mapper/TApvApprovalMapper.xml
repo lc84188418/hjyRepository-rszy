@@ -164,9 +164,6 @@ WHERE
 	D_APV_RECORD.IS_ING = 1 and SOURCE_ID in
         (SELECT SOURCE_ID from D_APV_RECORD where IS_ING = 1 and APV_APPROVAL = #{apvApproval,jdbcType=VARCHAR})
     </select>
-    <select id="selectApvRecordBySourceId_UserId" resultType="com.hjy.cloud.t_apv.entity.DApvRecord">
-        select * from D_APV_RECORD where SOURCE_ID = #{sourceId} and APV_APPROVAL = #{userId} AND APPROVAL_TYPE = #{approvalType} AND IS_ING = 1
-    </select>
 
     <!--根据实体信息查询记录条数-->
     <select id="selectCountByEntity" resultType="java.lang.Integer">

@@ -164,15 +164,6 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        TStaffZz entity = new TStaffZz();
-        List<TStaffZz> list = this.tStaffZzMapper.selectAllPage(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TStaffZz>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return resultJson;
-    }
     /**
      * 发起转正审批页面
      *
@@ -243,8 +234,8 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             return new CommonResult(445, "error", "已提交过转正申请，不可再次提交!", null);
         }
         JSONObject jsonObject = JSON.parseObject(param);
-        //入职申请信息主键
-        String pkEntryId = sysToken.getFkUserId();
+        //转正申请信息主键
+        String pkZzId = sysToken.getFkUserId();
         //审批类型
         String approvalType = ApprovaltypeEnum.Type_13.getCode();
         int sponsorNum = 1;
@@ -253,7 +244,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
          */
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
-        select.setApplyPeopleId(pkEntryId);
+        select.setApplyPeopleId(pkZzId);
         select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
@@ -283,19 +274,21 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         /**
          * 添加转正信息到数据库表中
          */
-        TStaffEntry entry = tStaffEntryMapper.selectByPkId(pkEntryId);
+        TStaffInfo queyrInfo = new TStaffInfo();
+        queyrInfo.setPkStaffId(pkZzId);
+        TStaffInfo tStaffInfo = tStaffInfoMapper.selectByPkId2(queyrInfo);
         TStaffZz staffZz = new TStaffZz();
-        staffZz.setPkZzId(pkEntryId);
-        staffZz.setFkStaffId(pkEntryId);
-        staffZz.setFkWordaddressId(entry.getWorkAddress());
-        staffZz.setEntryTime(entry.getEntryTime());
+        staffZz.setPkZzId(pkZzId);
+        staffZz.setFkStaffId(pkZzId);
+        staffZz.setFkWordaddressId(tStaffInfo.getFkWorkaddressId());
+        staffZz.setEntryTime(tStaffInfo.getEntryTime());
         //试用期到期日
         String syqsj = "3";
         String value = tSysParamMapper.selectParamById("SYQSJ");
         if(!StringUtils.isEmpty(value)){
             syqsj = value;
         }
-        Date syqsjdate = DateUtil.addSYQTime(entry.getEntryTime(),syqsj);
+        Date syqsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),syqsj);
         staffZz.setSyqdqTime(syqsjdate);
         //转正日期
         String zzsj = "3";
@@ -303,7 +296,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(!StringUtils.isEmpty(value2)){
             zzsj = value2;
         }
-        Date zzsjdate = DateUtil.addSYQTime(entry.getEntryTime(),zzsj);
+        Date zzsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),zzsj);
         staffZz.setZzTime(zzsjdate);
         //实际转正日期在审批通过后进行修改
         staffZz.setStatus(0);
@@ -322,7 +315,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
                 return new CommonResult(200, "success", stringBuffer.toString(), null);
             }else {
                 stringBuffer.append("转正申请已发起成功!");
-                User user = new User(entry.getPkEntryId(),entry.getStaffName());
+                User user = new User(tStaffInfo.getPkStaffId(),tStaffInfo.getStaffName());
                 stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,staffZz.getFkStaffId(),user,newPkId,sponsorNum);
             }
         }

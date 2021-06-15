@@ -844,6 +844,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(apvRecords.size() > 1){
                 while (iterator.hasNext()){
                     DApvRecord apvRecord = iterator.next();
+                    System.out.println(apvRecord);
                     if(tokenEntity.getFkUserId().equals(apvRecord.getApvApproval())){
                         myapvRecord = apvRecord;
                         //判断该个审批流程是否到自己了
@@ -894,9 +895,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
-            return new CommonResult(200, "success", stringBuffer.toString(), null);
+            throw new RuntimeException("");
+//            return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
-            return new CommonResult(444, "error", "未查询到相关审批流程！", null);
+            throw new RuntimeException("");
+//            return new CommonResult(444, "error", "未查询到相关审批流程！", null);
         }
     }
 

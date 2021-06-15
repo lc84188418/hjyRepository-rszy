@@ -61,9 +61,6 @@ public interface TApvApprovalMapper {
      */
     List<DApvRecord> waitApvUser(@Param("apvApproval")String userId);
 
-    List<DApvRecord> selectApvRecordBySourceId_UserId(@Param("approvalType")String approvalType,@Param("sourceId")String sourceId, @Param("userId")String userId);
-
-
     int updateApvRecord(DApvRecord apvRecord);
     int selectCountByEntity(DApvRecord apvRecord);
 
