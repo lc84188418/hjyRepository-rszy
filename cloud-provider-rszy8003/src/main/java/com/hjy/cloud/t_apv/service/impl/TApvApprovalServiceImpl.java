@@ -801,7 +801,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     @Transactional()
     @Override
     public CommonResult approval(HttpSession session,HttpServletRequest request,String param) {
-        System.out.println(param);
         String token = TokenUtil.getRequestToken(request);
         if(StringUtils.isEmpty(token)){
             return new CommonResult(444, "error", "请在请求头传入token", null);
@@ -815,6 +814,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String sourceId = JsonUtil.getStringParam(json, "sourceId");
+        if(StringUtils.isEmpty(sourceId)){
+            stringBuffer.append("sourceId为空了请检查！");
+        }
         int resultInt = 1;
         String apvResult = JsonUtil.getStringParam(json, "apvResult");
         if(StringUtils.isEmpty(apvResult)){
@@ -830,35 +832,56 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         /**
          * 验证当前审批是否为该自己审批了
          */
-//        HashMap<String,Object> resultMap = this.thisApprovalWhetherArrivalMe();
-        List<DApvRecord> apvRecords = tApvApprovalMapper.selectApvRecordBySourceId_UserId(approvalType,sourceId,tokenEntity.getFkUserId());
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setSourceId(sourceId);
+        select.setIsIng(1);
+        List<DApvRecord> apvRecords = this.apvRecordMapper.selectAllEntity(select);
         if(apvRecords != null && apvRecords.size() > 0){
-            DApvRecord apvRecord = apvRecords.get(0);
-            if(apvRecord.getApvResult() != null && !StringUtils.isEmpty(apvRecord.getApvResult().toString().trim())){
+            Iterator<DApvRecord> iterator = apvRecords.iterator();
+            boolean thisApprovalWhetherArrivalMe = true;
+            DApvRecord myapvRecord = new DApvRecord();
+            if(apvRecords.size() > 1){
+                while (iterator.hasNext()){
+                    DApvRecord apvRecord = iterator.next();
+                    if(tokenEntity.getFkUserId().equals(apvRecord.getApvApproval())){
+                        myapvRecord = apvRecord;
+                        //判断该个审批流程是否到自己了
+                        for (DApvRecord record : apvRecords) {
+                            if(record.getNextApproval().equals(apvRecord.getPkRecordId())){
+                                //判断该个审批流程是否到自己了,有结果，且不能是拒绝，若为驳回后续不用再审批
+                                if(null == record.getApvResult()){
+                                    thisApprovalWhetherArrivalMe = false;
+                                    stringBuffer.append("该审批流程还未流转给你，请等待上一级审批过后进行操作！");
+                                }else if(2 == record.getApvResult()){
+                                    thisApprovalWhetherArrivalMe = false;
+                                    stringBuffer.append("该审批流程上一级已驳回，你无需操作！");
+                                }
+                            }
+                        }
+                    }
+                }
+            }else if(apvRecords.size() == 1){
+                myapvRecord = apvRecords.get(0);
+            }
+            if(!thisApprovalWhetherArrivalMe){
+                return new CommonResult().ErrorResult(stringBuffer.toString(),null);
+            }
+            if(myapvRecord.getApvResult() != null && !StringUtils.isEmpty(myapvRecord.getApvResult().toString().trim())){
                 //说明此前已审批过了该流程，可更新审批结果
                 stringBuffer.append("已审批过该流程！");
-                apvRecord.setApvDate(new Date());
-                apvRecord.setApvResult(resultInt);
-                apvRecord.setApvReason(apvReason);
-                int j = tApvApprovalMapper.updateApvRecord(apvRecord);
-                if(j > 0){
-                    stringBuffer.append("审批结果更新成功!");
-                }else {
-                    stringBuffer.append("审批结果更新失败!");
-                    return new CommonResult(444, "error", stringBuffer.toString(), null);
-                }
+                myapvRecord.setApvDate(new Date());
+                myapvRecord.setApvResult(resultInt);
+                myapvRecord.setApvReason(apvReason);
+                int j = tApvApprovalMapper.updateApvRecord(myapvRecord);
+                stringBuffer.append("审批结果更新成功!");
             }else {
                 //未进行过该审批
-                apvRecord.setApvDate(new Date());
-                apvRecord.setApvResult(resultInt);
-                apvRecord.setApvReason(apvReason);
-                int j = tApvApprovalMapper.updateApvRecord(apvRecord);
-                if(j > 0){
-                    stringBuffer.append("审批成功!");
-                }else {
-                    stringBuffer.append("审批失败!");
-                    return new CommonResult(444, "error", stringBuffer.toString(), null);
-                }
+                myapvRecord.setApvDate(new Date());
+                myapvRecord.setApvResult(resultInt);
+                myapvRecord.setApvReason(apvReason);
+                int j = tApvApprovalMapper.updateApvRecord(myapvRecord);
+                stringBuffer.append("审批成功!");
             }
             if(resultInt == 2){
                 //审批驳回，后续审批就不用进行了
@@ -866,14 +889,14 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,2);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
-            if("0".equals(apvRecord.getNextApproval()) && resultInt == 1){
+            if("0".equals(myapvRecord.getNextApproval()) && resultInt == 1){
                 //修改整个审批流程的状态apvStatus=1
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
-            return new CommonResult(444, "error", "未查询到您所需的审批流程！", null);
+            return new CommonResult(444, "error", "未查询到相关审批流程！", null);
         }
     }
 
