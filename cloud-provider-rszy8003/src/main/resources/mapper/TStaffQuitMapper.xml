@@ -174,11 +174,11 @@
             <if test="fkStaffId != null and fkStaffId != ''">
                 FK_STAFF_ID,
             </if>
-            <if test="fkStaffId != null and fkStaffId != ''">
-                FK_STAFF_ID,
-            </if>
             <if test="staffName != null and staffName != ''">
                 STAFF_NAME,
+            </if>
+            <if test="fkDeptId != null and fkDeptId != ''">
+                FK_DEPT_ID,
             </if>
             <if test="position != null and position != ''">
                 POSITION,
@@ -194,9 +194,6 @@
             </if>
             <if test="quitTime != null">
                 QUIT_TIME,
-            </if>
-            <if test="apvPeople != null and apvPeople != ''">
-                APV_PEOPLE,
             </if>
             <if test="quitStatus != null">
                 QUIT_STATUS,
@@ -242,9 +239,6 @@
             <if test="quitTime != null">
                 #{quitTime,jdbcType=DATE},
             </if>
-            <if test="apvPeople != null and apvPeople != ''">
-                #{apvPeople,jdbcType=VARCHAR},
-            </if>
             <if test="quitStatus != null">
                 #{quitStatus,jdbcType=INTEGER},
             </if>
@@ -289,9 +283,6 @@
             </if>
             <if test="quitTime != null">
                 QUIT_TIME = #{quitTime,jdbcType=DATE},
-            </if>
-            <if test="apvPeople != null and apvPeople != ''">
-                APV_PEOPLE = #{apvPeople,jdbcType=VARCHAR},
             </if>
             <if test="quitStatus != null">
                 QUIT_STATUS = #{quitStatus,jdbcType=INTEGER},

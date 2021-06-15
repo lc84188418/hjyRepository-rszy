@@ -199,6 +199,12 @@ public class TApvApprovalController {
      *
      * @return 修改结果
      */
+    @ApiOperation(value = "用户-审批-已完成", notes = "用户对操作流程进行审批")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "sourceId",value = "页码",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "apvResult",value = "审批结果,1代表通过2代表驳回",required = true,dataType = "int",paramType = "body",example = "10"),
+            @ApiImplicitParam(name = "approvalType",value = "审批类型",required = true,dataType = "int",paramType = "body",example = "10"),
+    })
     //@RequiresPermissions({"user:approval"})
     @PostMapping(value = "/apv/approval/approvalUser")
     public CommonResult approval(HttpSession session, HttpServletRequest request, @RequestBody String param) throws FebsException {

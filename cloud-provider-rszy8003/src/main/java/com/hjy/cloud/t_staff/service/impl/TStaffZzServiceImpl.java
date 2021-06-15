@@ -254,6 +254,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
         select.setApplyPeopleId(pkEntryId);
+        select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
             if(havaRecord.get(0).getApvStatus() != 2){

@@ -31,7 +31,7 @@ public class TKqClock {
     private String onClockAddress;
     @ApiModelProperty("上班打卡IP")
     private String onClockIp;
-    @ApiModelProperty("上班打卡是否外勤,上班时传入")
+    @ApiModelProperty("上班打卡是否外勤,上班时传入,1代表是")
     private Integer onIsWq;
     @ApiModelProperty("下班打卡时间")
     private Date offDutyTime;
@@ -39,7 +39,7 @@ public class TKqClock {
     private String offClockAddress;
     @ApiModelProperty("下班班打卡IP")
     private String offClockIp;
-    @ApiModelProperty("下班打卡是否外勤")
+    @ApiModelProperty("下班打卡是否外勤,1代表是")
     private Integer offIsWq;
     @ApiModelProperty("工时,按时")
     private double workingHours;
@@ -63,7 +63,7 @@ public class TKqClock {
     private String jbMinute;
     @ApiModelProperty("加班描述")
     private String jbDesc;
-    @ApiModelProperty("是否为打卡日,上班时传入")
+    @ApiModelProperty("是否为打卡日,上班时传入,1代表是")
     private Integer isDkr;
     @ApiModelProperty("当时所属部门id")
     private String fkDeptId;

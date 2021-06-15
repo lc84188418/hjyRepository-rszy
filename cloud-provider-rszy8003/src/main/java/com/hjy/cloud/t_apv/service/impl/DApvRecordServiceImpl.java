@@ -1,15 +1,10 @@
 package com.hjy.cloud.t_apv.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.t_apv.service.DApvRecordService;
-import com.hjy.cloud.utils.page.PageRequest;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.utils.page.PageUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -94,26 +89,6 @@ public class DApvRecordServiceImpl implements DApvRecordService {
     }
 
     /**
-     * 查询所有数据
-     *
-     * @param pageRequest 分页参数
-     * @return
-     */
-    @Override
-    public CommonResult selectAll(PageRequest<DApvRecord> pageRequest) {
-        if (pageRequest.getPageNum() == 0) {
-            pageRequest.setPageNum(1);
-        }
-        if (pageRequest.getPageSize() == 0) {
-            pageRequest.setPageNum(10);
-        }
-        PageHelper.startPage(pageRequest.getPageNum(), pageRequest.getPageSize());
-        List<DApvRecord> list = this.dApvRecordMapper.selectAllEntity(pageRequest.getParam());
-        PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(list));
-        return new CommonResult(200, "success", "获取数据成功", result);
-    }
-
-    /**
      * 获取单个数据
      *
      * @param pkId 主键id
@@ -132,16 +107,6 @@ public class DApvRecordServiceImpl implements DApvRecordService {
     @Override
     public DApvRecord selectSourceIdById(String pkRecordId) {
         return this.dApvRecordMapper.selectSourceIdById(pkRecordId);
-    }
-
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        DApvRecord entity = new DApvRecord();
-        List<DApvRecord> list = this.dApvRecordMapper.selectAllEntity(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<DApvRecord>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("pageResult", result);
-        return resultJson;
     }
 }
     

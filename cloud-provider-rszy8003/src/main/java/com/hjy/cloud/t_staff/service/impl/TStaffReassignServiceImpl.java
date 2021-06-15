@@ -326,6 +326,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
         select.setApplyPeopleId(query.getFkStaffId());
+        select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
             if(havaRecord.get(0).getApvStatus() != 2){
@@ -448,6 +449,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
         select.setApplyPeopleId(staffInfo.getPkStaffId());
+        select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
             if(havaRecord.get(0).getApvStatus() != 2){

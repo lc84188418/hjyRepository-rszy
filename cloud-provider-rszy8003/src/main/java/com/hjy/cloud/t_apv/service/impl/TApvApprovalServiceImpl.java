@@ -308,7 +308,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将第一级审批的后续流程放入到次级流程中
         List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
-
         PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
@@ -451,6 +450,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }
         DApvRecord select = new DApvRecord();
         select.setSponsorId(token.getFkUserId());
+        select.setIsStart(1);
         PageHelper.startPage(pageNum, pageSize);
         List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
         //将审批数据进行处理
@@ -801,25 +801,38 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     @Transactional()
     @Override
     public CommonResult approval(HttpSession session,HttpServletRequest request,String param) {
+        System.out.println(param);
         String token = TokenUtil.getRequestToken(request);
         if(StringUtils.isEmpty(token)){
             return new CommonResult(444, "error", "请在请求头传入token", null);
         }
         SysToken tokenEntity = tSysTokenMapper.findByToken(token);
         if(tokenEntity == null){
-            return new CommonResult(445, "error", "token已失效，请重新登录后再试", null);
+            return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
+        StringBuffer stringBuffer = new StringBuffer();
 //        ActiveUser activeUser = (ActiveUser) session.getAttribute("activeUser");
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String sourceId = JsonUtil.getStringParam(json, "sourceId");
+        int resultInt = 1;
         String apvResult = JsonUtil.getStringParam(json, "apvResult");
-        int resultInt = Integer.parseInt(apvResult);
+        if(StringUtils.isEmpty(apvResult)){
+            stringBuffer.append("前端没传apvResult，出问题别找后端！");
+        }else {
+            resultInt = Integer.parseInt(apvResult);
+        }
         String apvReason = JsonUtil.getStringParam(json, "apvReason");
         String approvalType = JsonUtil.getStringParam(json, "approvalType");
+        if(StringUtils.isEmpty(approvalType)){
+            stringBuffer.append("前端没传approvalType，出问题别找后端！");
+        }
+        /**
+         * 验证当前审批是否为该自己审批了
+         */
+//        HashMap<String,Object> resultMap = this.thisApprovalWhetherArrivalMe();
         List<DApvRecord> apvRecords = tApvApprovalMapper.selectApvRecordBySourceId_UserId(approvalType,sourceId,tokenEntity.getFkUserId());
         if(apvRecords != null && apvRecords.size() > 0){
-            StringBuffer stringBuffer = new StringBuffer();
             DApvRecord apvRecord = apvRecords.get(0);
             if(apvRecord.getApvResult() != null && !StringUtils.isEmpty(apvRecord.getApvResult().toString().trim())){
                 //说明此前已审批过了该流程，可更新审批结果
@@ -847,24 +860,20 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                     return new CommonResult(444, "error", stringBuffer.toString(), null);
                 }
             }
-            if(resultInt == 0){
+            if(resultInt == 2){
                 //审批驳回，后续审批就不用进行了
-                //将该审批流程的所有审批记录的is_ing该为0
-//                int i = this.apvRecordMapper.updateIsIngBySourceId(sourceId);
                 //修改整个审批流程的状态apvStatus=2
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,2);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             if("0".equals(apvRecord.getNextApproval()) && resultInt == 1){
-                //将该审批流程的所有审批记录的is_ing该为0
-//                int i = this.apvRecordMapper.updateIsIngBySourceId(sourceId);
                 //修改整个审批流程的状态apvStatus=1
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
-            return new CommonResult(445, "error", "未查询到您所需的审批流程！", null);
+            return new CommonResult(444, "error", "未查询到您所需的审批流程！", null);
         }
     }
 

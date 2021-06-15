@@ -1,8 +1,7 @@
 package com.hjy.cloud.t_apv.service;
 
-import com.hjy.cloud.t_apv.entity.DApvRecord;
 import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.page.PageRequest;
+import com.hjy.cloud.t_apv.entity.DApvRecord;
 
 import java.util.List;
 
@@ -40,13 +39,6 @@ public interface DApvRecordService {
      * @return
      */
     CommonResult delete(String pkId);
-
-    /**
-     * 查询所有数据
-     *
-     * @return
-     */
-    CommonResult selectAll(PageRequest<DApvRecord> pageRequest);
 
     /**
      * 获取单个数据
