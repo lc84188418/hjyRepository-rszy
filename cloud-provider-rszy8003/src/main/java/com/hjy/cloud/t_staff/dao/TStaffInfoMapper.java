@@ -79,4 +79,6 @@ public interface TStaffInfoMapper {
     List<String> selectUserIdByDept(String fkDeptId);
     //
     int deleteDeptUserByDeptId(@Param("fkDeptId")String pkDeptId);
+    //
+    List<TStaffInfo> selectAllId_NameByName(TStaffInfo tStaffInfo);
 }

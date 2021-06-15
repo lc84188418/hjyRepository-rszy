@@ -226,6 +226,11 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     public List<StaffInfos> selectAll() {
         return tStaffInfoMapper.selectAll();
     }
+    @Override
+    public CommonResult selectAllId_Name(TStaffInfo tStaffInfo) {
+        List<TStaffInfo> list = this.tStaffInfoMapper.selectAllId_NameByName(tStaffInfo);
+        return new CommonResult(200, "success", "获取数据成功", list);
+    }
 
     /**
      * 获取单个数据

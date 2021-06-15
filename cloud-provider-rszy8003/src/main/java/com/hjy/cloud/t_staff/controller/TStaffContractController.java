@@ -53,7 +53,7 @@ public class TStaffContractController {
      * @param tStaffContract 实体对象
      * @return 新增结果
      */
-    @ApiOperation(value = "查看-已完成", notes = "查看单个入职员工的档案信息详情")
+    @ApiOperation(value = "查看-已完成", notes = "查看单个入职员工的档案信息详情,其中员工需访问接口")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "fkStaffId",value = "员工关联主键",required = true,dataType = "string",paramType = "body",example = "1"),
             @ApiImplicitParam(name = "staffName",value = "姓名",required = true,dataType = "string",paramType = "body",example = "1"),
@@ -102,6 +102,13 @@ public class TStaffContractController {
      * @param param json参数
      * @return 所有数据
      */
+    @ApiOperation(value = "查看-已完成", notes = "查询所有签订合同的记录")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pageNum",value = "页码",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "pageSize",value = "条数",required = false,dataType = "int",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffName",value = "员工姓名",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "idcard",value = "员工证件号",required = false,dataType = "string",paramType = "body",example = "1"),
+    })
     @OperLog(operModul = "人员管理-合同管理",operType = "查看",operDesc = "管理员查看员工合同信息列表")
     //@RequiresPermissions({"contract:adminView"})
     @PostMapping(value = "/staff/contract/admin/list")

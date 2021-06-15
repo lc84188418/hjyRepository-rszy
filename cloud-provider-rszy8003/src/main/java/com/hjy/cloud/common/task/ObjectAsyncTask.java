@@ -306,7 +306,11 @@ public class ObjectAsyncTask {
                 TStaffReassign selectEntity = new TStaffReassign();
                 selectEntity.setPkReassignId(currentSourceId);
                 List<TStaffReassign> list = ntClient.tStaffReassignService.selectAllPage(selectEntity);
-                resultJson.put("currentSource",list.get(0));
+                if(list != null && list.size() > 0){
+                    resultJson.put("currentSource",list.get(0));
+                }else {
+                    resultJson.put("currentSource",null);
+                }
             }
         }
         return resultJson;

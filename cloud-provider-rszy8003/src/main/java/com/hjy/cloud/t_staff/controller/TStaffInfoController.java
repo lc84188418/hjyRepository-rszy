@@ -123,6 +123,22 @@ public class TStaffInfoController {
         }
     }
 
+    @ApiOperation(value = "查询-已完成", notes = "模糊查询在职员工，只有id和姓名，用于选择")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "staffName",value = "",required = false,dataType = "string",paramType = "body",example = "1"),
+    })
+    @OperLog(operModul = "人员管理-名单管理",operType = "查看",operDesc = "查看入职员工信息列表")
+    //@RequiresPermissions({"staffInfo:adminView"})
+    @PostMapping(value = "/staff/info")
+    public CommonResult selectAll(@RequestBody TStaffInfo staffInfo) throws FebsException {
+        try {
+            return tStaffInfoService.selectAllId_Name(staffInfo);
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
     /**
      * 通过主键查询单条数据
      *

@@ -462,6 +462,12 @@ FROM T_STAFF_INFO WHERE PK_STAFF_ID NOT IN (SELECT DISTINCT(RE_GROUP_STAFF.FK_ST
         </foreach>
         order by ENTRY_TIME DESC
     </select>
+    <select id="selectAllId_NameByName" resultType="com.hjy.cloud.t_staff.entity.TStaffInfo">
+        select PK_STAFF_ID,STAFF_NAME from T_STAFF_INFO where 1= 1
+        <if test="staffName != null and staffName != ''">
+            STAFF_NAME like '%${staffName}%'
+        </if>
+    </select>
     <!--新增-->
     <insert id="insertSelective" parameterType="com.hjy.cloud.t_staff.entity.TStaffInfo">
         insert into T_STAFF_INFO

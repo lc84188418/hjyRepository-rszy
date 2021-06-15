@@ -61,4 +61,6 @@ public interface TStaffInfoService {
     TStaffInfo selectLeaderByPosition(String s);
 
     TStaffInfo selectByPkId2(String currentSourceId);
+
+    CommonResult selectAllId_Name(TStaffInfo staffInfo);
 }

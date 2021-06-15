@@ -97,6 +97,7 @@ public class TStaffContractServiceImpl implements TStaffContractService {
         if(tStaffInfo == null){
             return new CommonResult().ErrorResult("该员工档案已不存在！",null);
         }
+        tStaffContract.setIdcard(tStaffInfo.getIdCard());
         tStaffContract.setStaffName(tStaffInfo.getStaffName());
         tStaffContract.setFkDeptId(tStaffInfo.getFkDeptId());
         TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(tStaffInfo.getFkDeptId());
