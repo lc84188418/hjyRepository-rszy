@@ -179,11 +179,21 @@ public class TStaffZzServiceImpl implements TStaffZzService {
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
-        //查询自己是否提交过转正申请
-        TStaffZz tStaffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
-        if(tStaffZz != null && tStaffZz.getApvStatus() != 2){
-            //0代表正在审批中，1通过2拒绝，拒绝的可以再次提交申请
-            return new CommonResult().ErrorResult("已提交过转正申请，无需再次提交！",null);
+        //审批类型
+        String approvalType = ApprovaltypeEnum.Type_13.getCode();
+        //查询是否发起了转正申请审批记录
+        DApvRecord select = new DApvRecord();
+        select.setApprovalType(approvalType);
+        select.setApplyPeopleId(sysToken.getFkUserId());
+        select.setIsStart(1);
+        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+        if(havaRecord != null && havaRecord.size() > 0){
+            if(0 == havaRecord.get(0).getApvStatus()){
+                return new CommonResult().ErrorResult("该员工已存在"+ApprovaltypeEnum.getDesc(approvalType)+"记录，正在审批，无需再次发起",null);
+            }else if(1 == havaRecord.get(0).getApvStatus()){
+                //审批已通过
+                return new CommonResult().ErrorResult("你的"+ApprovaltypeEnum.getDesc(approvalType)+"已通过，已转正",null);
+            }
         }
         StringBuilder stringBuilder = new StringBuilder();
         //查询自己转正时间是否已到
@@ -220,45 +230,45 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     @Transactional()
     @Override
     public CommonResult initiateZz(HttpServletRequest request,String param)throws Exception {
-        String token = TokenUtil.getRequestToken(request);
-        SysToken sysToken = tSysTokenMapper.findByToken(token);
-        if(sysToken == null){
-            return new CommonResult(444, "error", "未传入token或已失效", null);
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        String newPkId = IDUtils.getUUID();
+        //转正人基本信息
+        TStaffInfo queryInfo = new TStaffInfo();
+        queryInfo.setPkStaffId(sysToken.getFkUserId());
+        TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
+        if(staffInfo == null){
+            return new CommonResult().ErrorResult("当前你的档案已不存在，请联系管理员!",null);
         }
-        /**
-         * 查询是否提交过转正申请
-         */
-        //查询自己是否提交过转正申请
-        TStaffZz isProve = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
-        if(isProve != null){
-            return new CommonResult(445, "error", "已提交过转正申请，不可再次提交!", null);
-        }
-        JSONObject jsonObject = JSON.parseObject(param);
-        //转正申请信息主键
-        String pkZzId = sysToken.getFkUserId();
         //审批类型
         String approvalType = ApprovaltypeEnum.Type_13.getCode();
         int sponsorNum = 1;
-        /**
-         * 先判断是否已发起过入职审批
-         */
+        //查询是否发起了转正申请审批记录
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
-        select.setApplyPeopleId(pkZzId);
+        select.setApplyPeopleId(staffInfo.getPkStaffId());
         select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
-            if(havaRecord.get(0).getApvStatus() != 2){
+            if(0 == havaRecord.get(0).getApvStatus()){
+                return new CommonResult().ErrorResult("该员工已存在"+ApprovaltypeEnum.getDesc(approvalType)+"记录，正在审批，无需再次发起",null);
+            }else if(1 == havaRecord.get(0).getApvStatus()){
+                //离职审批已通过
+                return new CommonResult().ErrorResult("你的"+ApprovaltypeEnum.getDesc(approvalType)+"已通过，已转正",null);
+            }else if(2 == havaRecord.get(0).getApvStatus()){
                 //说明之前被拒绝，可以重复发起
-                return new CommonResult().ErrorResult("该员工已存在转正申请记录，无需再次发起",null);
-            }else {
                 sponsorNum = havaRecord.get(0).getSponsorNum();
             }
+        }
+        //是否存在转正数据，以及审批流程中是否发起过
+        boolean haveZzdata = false;
+        //查询是否提交过转正申请
+        TStaffZz staffZz = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
+        if(staffZz != null){
+            haveZzdata = true;
         }
         /**
          * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
          */
-        String newPkId = IDUtils.getUUID();
         int apvStatus = 0;
         TApvApproval queryApproval = new TApvApproval();
         queryApproval.setApprovalType(approvalType);
@@ -271,53 +281,54 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             apvStatus = 1;
             newPkId = null;
         }
-        /**
-         * 添加转正信息到数据库表中
-         */
-        TStaffInfo queyrInfo = new TStaffInfo();
-        queyrInfo.setPkStaffId(pkZzId);
-        TStaffInfo tStaffInfo = tStaffInfoMapper.selectByPkId2(queyrInfo);
-        TStaffZz staffZz = new TStaffZz();
-        staffZz.setPkZzId(pkZzId);
-        staffZz.setFkStaffId(pkZzId);
-        staffZz.setFkWordaddressId(tStaffInfo.getFkWorkaddressId());
-        staffZz.setEntryTime(tStaffInfo.getEntryTime());
-        //试用期到期日
-        String syqsj = "3";
-        String value = tSysParamMapper.selectParamById("SYQSJ");
-        if(!StringUtils.isEmpty(value)){
-            syqsj = value;
-        }
-        Date syqsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),syqsj);
-        staffZz.setSyqdqTime(syqsjdate);
-        //转正日期
-        String zzsj = "3";
-        String value2 = tSysParamMapper.selectParamById("ZZSJ");
-        if(!StringUtils.isEmpty(value2)){
-            zzsj = value2;
-        }
-        Date zzsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),zzsj);
-        staffZz.setZzTime(zzsjdate);
-        //实际转正日期在审批通过后进行修改
-        staffZz.setStatus(0);
-        //转正审批状态,0代表正在审批中，1通过,2拒绝
-        staffZz.setApvStatus(apvStatus);
-        staffZz.setFirstApvrecordId(newPkId);
-        int i = tStaffZzMapper.insertSelective(staffZz);
-        StringBuffer stringBuffer = new StringBuffer();
-        if(i > 0){
-            if(apvStatus == 1){
-                stringBuffer.append("未有转正申请审批，已直接通过！");
-                /**
-                 * 通过后处理员工档案，也就是修改调动后的信息
-                 */
-                ObjectAsyncTask.updateZZData(staffZz);
-                return new CommonResult(200, "success", stringBuffer.toString(), null);
-            }else {
-                stringBuffer.append("转正申请已发起成功!");
-                User user = new User(tStaffInfo.getPkStaffId(),tStaffInfo.getStaffName());
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,staffZz.getFkStaffId(),user,newPkId,sponsorNum);
+        JSONObject json = JSON.parseObject(param);
+        if(haveZzdata){
+            staffZz = new TStaffZz();
+            staffZz.setPkZzId(staffInfo.getPkStaffId());
+            staffZz.setFkStaffId(staffInfo.getPkStaffId());
+            staffZz.setFkWordaddressId(staffInfo.getFkWorkaddressId());
+            staffZz.setEntryTime(staffInfo.getEntryTime());
+            //试用期到期日
+            String syqsj = "3";
+            String value = tSysParamMapper.selectParamById("SYQSJ");
+            if(!StringUtils.isEmpty(value)){
+                syqsj = value;
             }
+            Date syqsjdate = DateUtil.addSYQTime(staffInfo.getEntryTime(),syqsj);
+            staffZz.setSyqdqTime(syqsjdate);
+            //转正日期
+            String zzsj = "3";
+            String value2 = tSysParamMapper.selectParamById("ZZSJ");
+            if(!StringUtils.isEmpty(value2)){
+                zzsj = value2;
+            }
+            Date zzsjdate = DateUtil.addSYQTime(staffInfo.getEntryTime(),zzsj);
+            staffZz.setZzTime(zzsjdate);
+            //实际转正日期在审批通过后进行修改
+            staffZz.setStatus(0);
+            //转正审批状态,0代表正在审批中，1通过,2拒绝
+            staffZz.setApvStatus(apvStatus);
+            staffZz.setFirstApvrecordId(newPkId);
+            int i = this.tStaffZzMapper.insertSelective(staffZz);
+        }else {
+            //实际转正日期在审批通过后进行修改
+            staffZz.setStatus(0);
+            //转正审批状态,0代表正在审批中，1通过,2拒绝
+            staffZz.setApvStatus(apvStatus);
+            staffZz.setFirstApvrecordId(newPkId);
+            int i = this.tStaffZzMapper.updateByPkId(staffZz);
+        }
+        StringBuffer stringBuffer = new StringBuffer();
+        if(apvStatus == 1){
+            stringBuffer.append("未有转正申请审批，已直接通过！");
+            /**
+             * 通过后处理员工档案，也就是修改调动后的信息
+             */
+            ObjectAsyncTask.updateZZData(staffZz);
+        }else {
+            stringBuffer.append("转正申请已发起成功!");
+            User user = new User(staffInfo.getPkStaffId(),staffInfo.getStaffName());
+            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,staffZz.getFkStaffId(),user,newPkId,sponsorNum);
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }
@@ -326,5 +337,107 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     public List<TStaffZz> selectAllPage(TStaffZz query) {
         return this.tStaffZzMapper.selectAllPage(query);
     }
+//    public CommonResult initiateZz(HttpServletRequest request,String param)throws Exception {
+//        String token = TokenUtil.getRequestToken(request);
+//        SysToken sysToken = tSysTokenMapper.findByToken(token);
+//        if(sysToken == null){
+//            return new CommonResult(444, "error", "未传入token或已失效", null);
+//        }
+//        /**
+//         * 查询是否提交过转正申请
+//         */
+//        //查询自己是否提交过转正申请
+//        TStaffZz isProve = tStaffZzMapper.selectByStaffId(sysToken.getFkUserId());
+//        if(isProve != null){
+//            return new CommonResult(445, "error", "已提交过转正申请，不可再次提交!", null);
+//        }
+//        JSONObject jsonObject = JSON.parseObject(param);
+//        //转正申请信息主键
+//        String pkZzId = sysToken.getFkUserId();
+//        //审批类型
+//        String approvalType = ApprovaltypeEnum.Type_13.getCode();
+//        int sponsorNum = 1;
+//        /**
+//         * 先判断是否已发起过入职审批
+//         */
+//        DApvRecord select = new DApvRecord();
+//        select.setApprovalType(approvalType);
+//        select.setApplyPeopleId(pkZzId);
+//        select.setIsStart(1);
+//        List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
+//        if(havaRecord != null && havaRecord.size() > 0){
+//            if(havaRecord.get(0).getApvStatus() != 2){
+//                //说明之前被拒绝，可以重复发起
+//                return new CommonResult().ErrorResult("该员工已存在转正申请记录，无需再次发起",null);
+//            }else {
+//                sponsorNum = havaRecord.get(0).getSponsorNum();
+//            }
+//        }
+//        /**
+//         * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
+//         */
+//        String newPkId = IDUtils.getUUID();
+//        int apvStatus = 0;
+//        TApvApproval queryApproval = new TApvApproval();
+//        queryApproval.setApprovalType(approvalType);
+//        List<TApvApproval> apvApprovalList = this.tApvApprovalMapper.selectAllPage(queryApproval);
+//        if(apvApprovalList != null && apvApprovalList.size() >0){
+//            //判断是否为有效的审批,当未有审批人只有抄送人时看是否需要添加记录
+//        }else {
+//            //说明没有审批流直接通过，且不添加记录
+//            //直接通过， apvStatus = 1
+//            apvStatus = 1;
+//            newPkId = null;
+//        }
+//        /**
+//         * 添加转正信息到数据库表中
+//         */
+//        TStaffInfo queyrInfo = new TStaffInfo();
+//        queyrInfo.setPkStaffId(pkZzId);
+//        TStaffInfo tStaffInfo = tStaffInfoMapper.selectByPkId2(queyrInfo);
+//        TStaffZz staffZz = new TStaffZz();
+//        staffZz.setPkZzId(pkZzId);
+//        staffZz.setFkStaffId(pkZzId);
+//        staffZz.setFkWordaddressId(tStaffInfo.getFkWorkaddressId());
+//        staffZz.setEntryTime(tStaffInfo.getEntryTime());
+//        //试用期到期日
+//        String syqsj = "3";
+//        String value = tSysParamMapper.selectParamById("SYQSJ");
+//        if(!StringUtils.isEmpty(value)){
+//            syqsj = value;
+//        }
+//        Date syqsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),syqsj);
+//        staffZz.setSyqdqTime(syqsjdate);
+//        //转正日期
+//        String zzsj = "3";
+//        String value2 = tSysParamMapper.selectParamById("ZZSJ");
+//        if(!StringUtils.isEmpty(value2)){
+//            zzsj = value2;
+//        }
+//        Date zzsjdate = DateUtil.addSYQTime(tStaffInfo.getEntryTime(),zzsj);
+//        staffZz.setZzTime(zzsjdate);
+//        //实际转正日期在审批通过后进行修改
+//        staffZz.setStatus(0);
+//        //转正审批状态,0代表正在审批中，1通过,2拒绝
+//        staffZz.setApvStatus(apvStatus);
+//        staffZz.setFirstApvrecordId(newPkId);
+//        int i = tStaffZzMapper.insertSelective(staffZz);
+//        StringBuffer stringBuffer = new StringBuffer();
+//        if(i > 0){
+//            if(apvStatus == 1){
+//                stringBuffer.append("未有转正申请审批，已直接通过！");
+//                /**
+//                 * 通过后处理员工档案，也就是修改调动后的信息
+//                 */
+//                ObjectAsyncTask.updateZZData(staffZz);
+//                return new CommonResult(200, "success", stringBuffer.toString(), null);
+//            }else {
+//                stringBuffer.append("转正申请已发起成功!");
+//                User user = new User(tStaffInfo.getPkStaffId(),tStaffInfo.getStaffName());
+//                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,jsonObject,sysToken,approvalType,staffZz.getFkStaffId(),user,newPkId,sponsorNum);
+//            }
+//        }
+//        return new CommonResult(200, "success", stringBuffer.toString(), null);
+//    }
 }
     

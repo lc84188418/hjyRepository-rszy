@@ -211,7 +211,6 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
              * 通过后处理员工档案，也就是修改员工的状态
              */
             ObjectAsyncTask.updateQuitData(tStaffQuit);
-            return new CommonResult(201, "success", stringBuffer.toString(), null);
         }else {
             User user = new User();
             user.setUserId(staffInfo.getPkStaffId());

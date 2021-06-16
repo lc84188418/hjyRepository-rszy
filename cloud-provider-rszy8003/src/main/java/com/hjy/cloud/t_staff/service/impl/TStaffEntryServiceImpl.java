@@ -191,8 +191,8 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
             /**
              * 删除与一级审批相关联的审批数据
              */
-            String resultMsg = ObjectAsyncTask.deleteApprovalRecord(tStaffEntry.getApvId());
-            stringBuffer.append(resultMsg);
+//            String resultMsg = ObjectAsyncTask.deleteApprovalRecord(tStaffEntry.getApvId());
+//            stringBuffer.append(resultMsg);
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         } else {
             return new CommonResult(444, "error", "入职基本数据删除失败！", null);
