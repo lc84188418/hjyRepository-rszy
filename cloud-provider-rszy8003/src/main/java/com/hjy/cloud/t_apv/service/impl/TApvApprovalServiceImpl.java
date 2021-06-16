@@ -23,10 +23,7 @@ import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ActiveUser;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.entity.TSysUser;
-import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.JsonUtil;
-import com.hjy.cloud.utils.PasswordEncryptUtils;
-import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.*;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -74,8 +71,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     private TSysTokenMapper tSysTokenMapper;
     @Value("${server.port}")
     private String serverPort;
-    @Value("${spring.cloud.application.ip}")
-    private String webIp;
+
+    public static String webIp = null;
     /**
      * 添加前获取数据
      *
@@ -706,6 +703,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             while(it.hasNext()){
                 StringBuffer filePath = new StringBuffer();
                 TApvApvtype obj = it.next();
+                webIp = SystemUtil.getWebIp(webIp);
                 filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getIconPath());
                 obj.setIconPath(filePath.toString());
             }

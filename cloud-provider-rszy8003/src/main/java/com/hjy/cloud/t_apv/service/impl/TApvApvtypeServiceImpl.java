@@ -15,6 +15,7 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.SystemUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -46,8 +47,9 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
     private TDictionaryFileMapper tDictionaryFileMapper;
     @Value("${server.port}")
     private String serverPort;
-    @Value("${spring.cloud.application.ip}")
-    private String webIp;
+//    @Value("${spring.cloud.application.ip}")
+//    private String webIp;
+    public static String webIp = null;
     /**
      * 添加前获取数据
      *
@@ -64,6 +66,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         while(it.hasNext()){
             StringBuffer filePath = new StringBuffer();
             TDictionaryFile obj = it.next();
+            webIp = SystemUtil.getWebIp(webIp);
             filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getFilePath());
             obj.setFilePath(filePath.toString());
         }
@@ -101,6 +104,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
          * 图标路径去掉ip地址
          */
         if(!StringUtils.isEmpty(tApvApvtype.getIconPath())){
+            webIp = SystemUtil.getWebIp(webIp);
             String iconPath = tApvApvtype.getIconPath().replace("http://"+webIp+":"+serverPort+"/img/","");
             tApvApvtype.setIconPath(iconPath);
         }
@@ -175,6 +179,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         /**
          * 处理文件路径
          */
+        webIp = SystemUtil.getWebIp(webIp);
         entity.setIconPath("http://"+webIp+":"+serverPort+"/img/"+entity.getIconPath());
         JSONObject resultJson = new JSONObject();
         resultJson.put("entity", entity);
@@ -190,6 +195,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
             while(it.hasNext()){
                 StringBuffer filePath = new StringBuffer();
                 TDictionaryFile obj = it.next();
+                webIp = SystemUtil.getWebIp(webIp);
                 filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getFilePath());
                 obj.setFilePath(filePath.toString());
             }

@@ -4,18 +4,19 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryFileMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryFile;
 import com.hjy.cloud.t_dictionary.service.TDictionaryFileService;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.SystemUtil;
 import com.hjy.cloud.utils.file.FileUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -35,8 +36,10 @@ public class TDictionaryFileServiceImpl implements TDictionaryFileService {
     private TDictionaryFileMapper tDictionaryFileMapper;
     @Value("${server.port}")
     private String serverPort;
-    @Value("${spring.cloud.application.ip}")
-    private String webIp;
+//    @Value("${spring.cloud.application.ip}")
+//    private String webIp;
+    public static String webIp = null;
+
     /**
      * 添加前获取数据
      *
@@ -64,6 +67,7 @@ public class TDictionaryFileServiceImpl implements TDictionaryFileService {
         tDictionaryFile.setFileType(1);
         String filePath = null;
         if(tDictionaryFile.getFilePath() != null){
+            webIp = SystemUtil.getWebIp(webIp);
             filePath = tDictionaryFile.getFilePath().replace("http://"+webIp+":"+serverPort+"/img/","");
         }
         tDictionaryFile.setFilePath(filePath);
@@ -140,6 +144,7 @@ public class TDictionaryFileServiceImpl implements TDictionaryFileService {
         while(it.hasNext()){
             StringBuffer filePath = new StringBuffer();
             TDictionaryFile obj = it.next();
+            webIp = SystemUtil.getWebIp(webIp);
             filePath.append("http://"+webIp+":"+serverPort+"/img/"+obj.getFilePath());
             obj.setFilePath(filePath.toString());
         }
@@ -190,6 +195,7 @@ public class TDictionaryFileServiceImpl implements TDictionaryFileService {
         String filePath = FileUtil.universalFileUpload(file,shijiancuo,fenlei);
         //文件显示路径src
         StringBuffer iconPath = new StringBuffer();
+        webIp = SystemUtil.getWebIp(webIp);
         iconPath.append("http://"+webIp+":"+serverPort+"/img/"+filePath);
         pathMap.put("path", iconPath.toString());
         return new CommonResult(200, "success", "上传成功!", pathMap);
@@ -211,6 +217,7 @@ public class TDictionaryFileServiceImpl implements TDictionaryFileService {
         String filePath = FileUtil.universalFileUpload(file,shijiancuo,fenlei);
         //文件显示路径src
         StringBuffer otherPath = new StringBuffer();
+        webIp = SystemUtil.getWebIp(webIp);
         otherPath.append("http://"+webIp+":"+serverPort+"/img/"+filePath);
         pathMap.put("path", otherPath.toString());
         return new CommonResult(200, "success", "上传成功!", pathMap);

@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>cloud-provider-rszy8003</artifactId>
-
+    <packaging>jar</packaging>
 
     <build>
         <plugins>
@@ -31,13 +31,12 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>cloud-api-common</artifactId>
             <version>1.0-SNAPSHOT</version>
-            <scope>compile</scope>
+<!--            <scope>compile</scope>-->
         </dependency>
         <!--若要使用stream消息组件-->
         <dependency>
