@@ -26,7 +26,7 @@
     </resultMap>
 
     <!--查询单个-->
-    <select id="selectByPkId" resultMap="TStaffReassignMap">
+    <select id="selectByPkId" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign">
         select * from T_STAFF_REASSIGN
         where PK_REASSIGN_ID = #{pkReassignId}
     </select>
@@ -84,7 +84,7 @@
             </if>
     </select>
     <!--通过实体作为筛选条件查询-->
-    <select id="selectAllPage" resultMap="TStaffReassignMap">
+    <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffReassign">
         SELECT
         *
         FROM

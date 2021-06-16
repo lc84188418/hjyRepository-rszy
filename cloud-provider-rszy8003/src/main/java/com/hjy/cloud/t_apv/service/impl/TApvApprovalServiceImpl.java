@@ -844,7 +844,6 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             if(apvRecords.size() > 1){
                 while (iterator.hasNext()){
                     DApvRecord apvRecord = iterator.next();
-                    System.out.println(apvRecord);
                     if(tokenEntity.getFkUserId().equals(apvRecord.getApvApproval())){
                         myapvRecord = apvRecord;
                         //判断该个审批流程是否到自己了
@@ -895,11 +894,11 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
-            throw new RuntimeException("");
-//            return new CommonResult(200, "success", stringBuffer.toString(), null);
+//            throw new RuntimeException("");
+            return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
-            throw new RuntimeException("");
-//            return new CommonResult(444, "error", "未查询到相关审批流程！", null);
+//            throw new RuntimeException("");
+            return new CommonResult(444, "error", "未查询到相关审批流程！", null);
         }
     }
 
@@ -924,8 +923,17 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         JSONObject jsonObject = JSON.parseObject(param);
         JSONObject resultJson = new JSONObject();
         String firstApvRecordId = String.valueOf(jsonObject.get("apvId"));
-        List<DApvRecord> dApvRecordList = this.optimizeApvProcessDetail(firstApvRecordId);
-        resultJson.put("apvList", dApvRecordList);
+        //1
+        List<DApvRecord> recordResultList = this.optimizeApvProcessDetail(firstApvRecordId);
+
+//        //2后改的方式
+//        DApvRecord select = new DApvRecord();
+//        select.setPkRecordId(firstApvRecordId);
+//        List<DApvRecord> apvRecords = apvRecordMapper.selectAllEntity(select);
+//        //将审批数据进行处理
+//        List<DApvRecord> recordResultList = ObjectAsyncTask.handleApvRecord(apvRecords);
+
+        resultJson.put("apvList", recordResultList);
         /**
          * 处理抄送人,firstApvRecordId
          */

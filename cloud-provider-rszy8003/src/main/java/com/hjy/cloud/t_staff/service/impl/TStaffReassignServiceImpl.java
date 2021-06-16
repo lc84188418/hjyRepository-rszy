@@ -414,6 +414,11 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Override
     public CommonResult userInitiateApv(HttpServletRequest request, String param) throws ParseException {
+        //
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        if(sysToken == null){
+            return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
+        }
         //调动信息
         JSONObject json = JSON.parseObject(param);
         Date reassignTime = JsonUtil.getDateParam(json, "yyy-MM-dd","reassignTime");
@@ -428,36 +433,40 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         ){
             return new CommonResult().ErrorResult("调动部门、职位、工作地不能为空！",null);
         }
-        //
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
         String newPkId = IDUtils.getUUID();
-        //离职人基本信息
+        //调动人基本信息
         TStaffInfo queryInfo = new TStaffInfo();
         queryInfo.setPkStaffId(sysToken.getFkUserId());
         TStaffInfo staffInfo =tStaffInfoMapper.selectByPkId2(queryInfo);
-        //查询是否提交过申请
-        int i1 = tStaffReassignMapper.selectCountByStaff_ApvStatus(sysToken.getFkUserId());
-        if(i1 > 0){
-            return new CommonResult().ErrorResult("已有调动申请或正在审批中，无需再次提交！",null);
+        if(staffInfo == null){
+            return new CommonResult().ErrorResult("当前你的档案已不存在，请联系管理员!",null);
         }
         //审批类型
         String approvalType = ApprovaltypeEnum.Type_8.getCode();
         int sponsorNum = 1;
-        /**
-         * 先判断是否已发起过调动审批
-         */
+        //查询是否发起了调动申请审批记录
         DApvRecord select = new DApvRecord();
         select.setApprovalType(approvalType);
         select.setApplyPeopleId(staffInfo.getPkStaffId());
         select.setIsStart(1);
         List<DApvRecord> havaRecord = dApvRecordMapper.selectAllEntity(select);
         if(havaRecord != null && havaRecord.size() > 0){
-            if(havaRecord.get(0).getApvStatus() != 2){
+            if(0 == havaRecord.get(0).getApvStatus()){
+                return new CommonResult().ErrorResult("该员工已存在"+ApprovaltypeEnum.getDesc(approvalType)+"记录，正在审批，无需再次发起",null);
+            }else if(1 == havaRecord.get(0).getApvStatus()){
+                //离职审批已通过
+                return new CommonResult().ErrorResult("你的"+ApprovaltypeEnum.getDesc(approvalType)+"已通过，已转正",null);
+            }else if(2 == havaRecord.get(0).getApvStatus()){
                 //说明之前被拒绝，可以重复发起
-                return new CommonResult().ErrorResult("该员工已存在调动申请记录，无需再次发起",null);
-            }else {
                 sponsorNum = havaRecord.get(0).getSponsorNum();
             }
+        }
+        //是否存在调动数据，以及审批流程中是否发起过
+        boolean haveReassigndata = false;
+        //查询是否提交过调动申请
+        TStaffReassign reassign = this.tStaffReassignMapper.selectByPkId(sysToken.getFkUserId());
+        if(reassign != null){
+            haveReassigndata = true;
         }
         /**
          * 查询该审批类型是否有审批流，如果没有，则直接通过，且无需添加审批记录
@@ -474,52 +483,79 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
             apvStatus = 1;
             newPkId = null;
         }
-        //添加数据
-        TStaffReassign reassign = new TStaffReassign();
-        String pkReassignId = IDUtils.getUUID();
-        reassign.setPkReassignId(pkReassignId);
-        reassign.setFkStaffId(sysToken.getFkUserId());
-        reassign.setFirstApvrecordId(newPkId);
-        //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
-        reassign.setApvStatus(apvStatus);
-        reassign.setStartTime(new Date());
-        reassign.setOldDeptId(staffInfo.getFkDeptId());
-        reassign.setOldPosition(staffInfo.getFkPositionId());
-        reassign.setOldAddress(staffInfo.getFkWorkaddressId());
-        //公司没有
-        //处理合同公司
-        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(staffInfo.getFkDeptId());
-        if(dept == null){
-            return new CommonResult().ErrorResult("原部门信息不存在，请检查！",null);
-        }
-        reassign.setOldCompany(dept.getSuperiorDept());
-
-        TOutfitDept dept2 = this.tOutfitDeptMapper.selectByPkId(reassignDeptId);
-        if(dept2 == null){
-            return new CommonResult().ErrorResult("调动后部门信息不存在，请检查！",null);
-        }
-        reassign.setReassignCompany(dept2.getSuperiorDept());
-        reassign.setReassignTime(reassignTime);
-        reassign.setReassignType(reassignType);
-        reassign.setReassignDeptId(reassignDeptId);
-        reassign.setReassignPosition(reassignPosition);
-        reassign.setReassignAddress(reassignAddress);
-        reassign.setReassignReason(reassignReason);
-        int i = tStaffReassignMapper.insertSelective(reassign);
-        StringBuffer stringBuffer = new StringBuffer();
-        if(i > 0){
-            if(apvStatus == 1){
-                stringBuffer.append("未有调动申请审批，已直接通过！");
-                /**
-                 * 通过后处理员工档案，也就是修改调动后的信息
-                 */
-                ObjectAsyncTask.updateReassignData(reassign);
-                return new CommonResult(201, "success", stringBuffer.toString(), null);
-            }else {
-                User user = new User(staffInfo.getPkStaffId(),staffInfo.getStaffName());
-                stringBuffer.append("已发起调动申请成功!");
-                stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,pkReassignId,user,newPkId,sponsorNum);
+        if(!haveReassigndata){
+            //添加数据
+            reassign = new TStaffReassign();
+            String pkReassignId = IDUtils.getUUID();
+            reassign.setPkReassignId(pkReassignId);
+            reassign.setFkStaffId(sysToken.getFkUserId());
+            reassign.setFirstApvrecordId(newPkId);
+            //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
+            reassign.setApvStatus(apvStatus);
+            reassign.setStartTime(new Date());
+            reassign.setOldDeptId(staffInfo.getFkDeptId());
+            reassign.setOldPosition(staffInfo.getFkPositionId());
+            reassign.setOldAddress(staffInfo.getFkWorkaddressId());
+            //公司没有
+            //处理合同公司
+            TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(staffInfo.getFkDeptId());
+            if(dept == null){
+                return new CommonResult().ErrorResult("原部门信息不存在，请检查！",null);
             }
+            reassign.setOldCompany(dept.getSuperiorDept());
+            TOutfitDept dept2 = this.tOutfitDeptMapper.selectByPkId(reassignDeptId);
+            if(dept2 == null){
+                return new CommonResult().ErrorResult("调动后部门信息不存在，请检查！",null);
+            }
+            reassign.setReassignCompany(dept2.getSuperiorDept());
+            reassign.setReassignTime(reassignTime);
+            reassign.setReassignType(reassignType);
+            reassign.setReassignDeptId(reassignDeptId);
+            reassign.setReassignPosition(reassignPosition);
+            reassign.setReassignAddress(reassignAddress);
+            reassign.setReassignReason(reassignReason);
+            int i = tStaffReassignMapper.insertSelective(reassign);
+        }else {
+            //修改数据
+            reassign.setFirstApvrecordId(newPkId);
+            //审批状态,0审批中，1审批通过，2审批被拒绝,3未发起审批
+            reassign.setApvStatus(apvStatus);
+            reassign.setStartTime(new Date());
+            reassign.setOldDeptId(staffInfo.getFkDeptId());
+            reassign.setOldPosition(staffInfo.getFkPositionId());
+            reassign.setOldAddress(staffInfo.getFkWorkaddressId());
+            //公司没有
+            //处理合同公司
+            TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(staffInfo.getFkDeptId());
+            if(dept == null){
+                return new CommonResult().ErrorResult("原部门信息不存在，请检查！",null);
+            }
+            reassign.setOldCompany(dept.getSuperiorDept());
+            TOutfitDept dept2 = this.tOutfitDeptMapper.selectByPkId(reassignDeptId);
+            if(dept2 == null){
+                return new CommonResult().ErrorResult("调动后部门信息不存在，请检查！",null);
+            }
+            reassign.setReassignCompany(dept2.getSuperiorDept());
+            reassign.setReassignTime(reassignTime);
+            reassign.setReassignType(reassignType);
+            reassign.setReassignDeptId(reassignDeptId);
+            reassign.setReassignPosition(reassignPosition);
+            reassign.setReassignAddress(reassignAddress);
+            reassign.setReassignReason(reassignReason);
+            int i = tStaffReassignMapper.updateByPkId(reassign);
+        }
+
+        StringBuffer stringBuffer = new StringBuffer();
+        if(apvStatus == 1){
+            stringBuffer.append("未有调动申请审批，已直接通过！");
+            /**
+             * 通过后处理员工档案，也就是修改调动后的信息
+             */
+            ObjectAsyncTask.updateReassignData(reassign);
+        }else {
+            User user = new User(staffInfo.getPkStaffId(),staffInfo.getStaffName());
+            stringBuffer.append("已发起调动申请成功!");
+            stringBuffer = ObjectAsyncTask.addApprovalRecord(stringBuffer,json,sysToken,approvalType,reassign.getPkReassignId(),user,newPkId,sponsorNum);
         }
         return new CommonResult(200, "success", stringBuffer.toString(), null);
     }

@@ -178,7 +178,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
         String quitReason = JsonUtil.getStringParam(json, "quitReason");
         String quitTime = JsonUtil.getStringParam(json, "quitTime");
         String remarks = JsonUtil.getStringParam(json, "remarks");
-        if(haveQuitdata){
+        if(!haveQuitdata){
             tStaffQuit = new TStaffQuit();
             tStaffQuit.setPkQuitId(IDUtils.getUUID());
             tStaffQuit.setFkStaffId(staffInfo.getPkStaffId());

@@ -282,7 +282,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
             newPkId = null;
         }
         JSONObject json = JSON.parseObject(param);
-        if(haveZzdata){
+        if(!haveZzdata){
             staffZz = new TStaffZz();
             staffZz.setPkZzId(staffInfo.getPkStaffId());
             staffZz.setFkStaffId(staffInfo.getPkStaffId());
