@@ -179,41 +179,44 @@
     <update id="updateById" parameterType="com.hjy.cloud.t_system.entity.TSysUser">
         update T_SYS_USER
         <set>
+            <if test="username != null and username != ''">
+                USERNAME = #{username,jdbcType=VARCHAR},
+            </if>
             <if test="password != null and password != ''">
                 PASSWORD = #{password,jdbcType=VARCHAR},
             </if>
             <if test="lastLoginDate != null">
-                LAST_LOGIN_DATE = #{lastLoginDate,jdbcType=DATE},
+                LAST_LOGIN_DATE = #{lastLoginDate,jdbcType=TIMESTAMP},
             </if>
-            <if test="email != null">
+            <if test="email != null and email != ''">
                 EMAIL = #{email,jdbcType=VARCHAR},
             </if>
-            <if test="tel != null">
+            <if test="tel != null and tel != ''">
                 TEL = #{tel,jdbcType=VARCHAR},
             </if>
-            <if test="enableStatus != null">
+            <if test="enableStatus != null and enableStatus != ''">
                 ENABLE_STATUS = #{enableStatus,jdbcType=VARCHAR},
             </if>
             <if test="createTime != null">
-                CREATE_TIME = #{createTime,jdbcType=DATE},
+                CREATE_TIME = #{createTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="idcard != null">
+            <if test="idcard != null and idcard != ''">
                 IDCARD = #{idcard,jdbcType=VARCHAR},
             </if>
             <if test="modifyTime != null">
-                MODIFY_TIME = #{modifyTime,jdbcType=DATE},
+                MODIFY_TIME = #{modifyTime,jdbcType=TIMESTAMP},
             </if>
-            <if test="fullName != null">
+            <if test="fullName != null and fullName != ''">
                 FULL_NAME = #{fullName,jdbcType=VARCHAR},
             </if>
-            <if test="address != null and address != '' and address != 'null'">
+            <if test="address != null and address != ''">
                 ADDRESS = #{address,jdbcType=VARCHAR},
             </if>
-            <if test="workPosition != null">
-                WOKE_POSITION = #{workPosition,jdbcType=VARCHAR},
+            <if test="workPosition != null and workPosition != ''">
+                WORK_POSITION = #{workPosition,jdbcType=VARCHAR},
             </if>
-            <if test="workContent != null">
-                work_content = #{workContent,jdbcType=VARCHAR},
+            <if test="workContent != null and workContent != ''">
+                WORK_CONTENT = #{workContent,jdbcType=VARCHAR},
             </if>
             EXPIRE_TIME = #{expireTime,jdbcType=DATE},
         </set>

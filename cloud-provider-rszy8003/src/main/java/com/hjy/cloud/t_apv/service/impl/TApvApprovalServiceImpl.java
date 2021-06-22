@@ -28,6 +28,7 @@ import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,7 @@ import java.util.*;
  * @since 2021-02-26 14:50:48
  */
 @Service("tApvApprovalService")
+//@CacheConfig(cacheNames = "TApvApprovalServiceImpl_CacheConfig")
 public class TApvApprovalServiceImpl implements TApvApprovalService {
 
     @Resource
@@ -296,6 +298,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
      * 待审批,是指所有没有审批完成的记录，非操作用户自己的
      *
      */
+//    @Cacheable(key = "'waitApv'",value = {"valueName"})
     @Override
     public CommonResult<PageResult<DApvRecord>> waitApv(int pageNum, int pageSize) {
         DApvRecord select = new DApvRecord();
@@ -308,6 +311,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取已审批列表数据成功！", result);
     }
+
+//    @Cacheable(key = "'ApvComplete'",value = {"valueName"})
     @Override
     public CommonResult<PageResult<DApvRecord>> ApvComplete(int pageNum, int pageSize) {
         DApvRecord select = new DApvRecord();
@@ -455,6 +460,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         PageResult<DApvRecord> result = PageUtil.getPageResult(new PageInfo<DApvRecord>(recordResultList));
         return new CommonResult(200, "success", "获取我发起的审批列表数据成功！", result);
     }
+
+    @Cacheable(key = "'CCToMe'",value = {"valueName"})
     @Override
     public CommonResult<PageResult<DApvRecord>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param) {
         String userId = UserShiroUtil.getCurrentUserId(session,request);
@@ -796,6 +803,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
      *
      * @return 修改结果
      */
+//    @Cacheable(key = "'ApvComplete'",value = {"valueName"})
     @Transactional()
     @Override
     public CommonResult approval(HttpSession session,HttpServletRequest request,String param) {

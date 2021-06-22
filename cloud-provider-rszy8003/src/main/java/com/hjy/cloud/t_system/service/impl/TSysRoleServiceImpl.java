@@ -277,12 +277,10 @@ public class TSysRoleServiceImpl implements TSysRoleService {
         String pkRoleId=String.valueOf(jsonObject.get("pkRoleId"));
         //删除原有的用户角色
         int i = tSysRoleMapper.deleteUserRoleByRoleId(pkRoleId);
-        int code = 200;
         String msg = "该角色已成功添加0个用户!";
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
         String userIdsStr = jsonArray.toString();
         if(userIdsStr.equals("[]")){
-            code = 201;
             msg = "未选择用户，请选择后添加！";
         }else {
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
@@ -294,12 +292,7 @@ public class TSysRoleServiceImpl implements TSysRoleService {
                 msg = msg.replace("0",String.valueOf(idList.size()));
             }
         }
-        if(i>0){
-            code = 200;
-        }else {
-            code = 203;
-        }
-        return new CommonResult(code,"success",msg,null);
+        return new CommonResult(200,"success",msg,null);
     }
 
     @Transactional()

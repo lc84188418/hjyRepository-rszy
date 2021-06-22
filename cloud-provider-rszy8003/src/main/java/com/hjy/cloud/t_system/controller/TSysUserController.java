@@ -205,16 +205,19 @@ public class TSysUserController {
         }
     }
     /**
-     * 4 完善个人信息
+     * 4 修改用户名
      * @param tSysUser 实体对象
      * @return 修改结果
      */
+    @ApiOperation(value = "个人修改用户名-已完成", notes = "用户修改个人账户名信息username")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username",value = "页码",required = false,dataType = "string",paramType = "body",example = "1"),
+    })
     @PutMapping("/system/user/update")
-    public CommonResult tSysUserUpdate(@RequestBody TSysUser tSysUser) throws FebsException{
+    public CommonResult tSysUserUpdate(@RequestBody TSysUser tSysUser, HttpServletRequest request) throws FebsException{
         try {
             //
-            tSysUserService.updateById(tSysUser);
-            return new CommonResult(200,"success","修改成功!",null);
+            return tSysUserService.updateById(tSysUser,request);
         } catch (Exception e) {
             String message = "修改失败";
             log.error(message, e);

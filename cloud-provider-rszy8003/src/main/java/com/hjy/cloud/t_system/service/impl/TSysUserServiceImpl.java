@@ -22,10 +22,12 @@ import com.hjy.cloud.utils.StringUtil;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,8 +84,19 @@ public class TSysUserServiceImpl implements TSysUserService {
      * @return 实例对象
      */
     @Override
-    public int updateById(TSysUser tSysUser) throws Exception {
-        return tSysUserMapper.updateById(tSysUser);
+    public CommonResult updateById(TSysUser tSysUser, HttpServletRequest request) throws Exception {
+        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        String username = tSysUser.getUsername();
+        if(StringUtils.isEmpty(username)){
+            return new CommonResult().ErrorResult("请传入用户名",null);
+        }
+        TSysUser tSysUserExist = tSysUserMapper.selectByUsername(username);
+        if (tSysUserExist != null) {
+            return new CommonResult().ErrorResult("该用户名已存在，请重新输入！",null);
+        }
+        tSysUser.setPkUserId(sysToken.getFkUserId());
+        this.tSysUserMapper.updateById(tSysUser);
+        return new CommonResult().SuccessResult("修改用户名成功！",null);
     }
 
     /**

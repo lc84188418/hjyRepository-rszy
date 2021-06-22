@@ -8,6 +8,7 @@ import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public interface TSysUserService {
      * @param tSysUser 实例对象
      * @return 实例对象
      */
-    int updateById(TSysUser tSysUser) throws Exception;
+    CommonResult updateById(TSysUser tSysUser, HttpServletRequest request) throws Exception;
 
     /**
      * 通过主键删除数据

@@ -46,6 +46,8 @@ public class ShiroConfig {
         filterMap.put("/", "anon");
         filterMap.put("/login", "anon");
         filterMap.put("/logout", "anon");
+        //系统文件资源开放
+        filterMap.put("/img/**", "anon");
         //swagger接口权限 开放
         filterMap.put("/swagger-ui.html", "anon");
         filterMap.put("/doc.html", "anon");
