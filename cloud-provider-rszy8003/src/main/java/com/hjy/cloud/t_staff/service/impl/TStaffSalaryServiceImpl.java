@@ -1,12 +1,11 @@
 package com.hjy.cloud.t_staff.service.impl;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.DSalaryRecord;
-import com.hjy.cloud.common.task.ObjectAsyncTask;
+import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.dao.TStaffSalaryMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
@@ -16,14 +15,13 @@ import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.TokenUtil;
+import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.hjy.cloud.utils.page.PageResult;
-import com.hjy.cloud.domin.CommonResult;
-import com.hjy.cloud.utils.JsonUtil;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -222,7 +220,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
         tStaffSalary.setSendStatus(1);
         tStaffSalary.setCheckStatus(0);
         tStaffSalary.setConfirmStatus(0);
-        SysToken token = ObjectAsyncTask.getSysToken(request);
+        SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(token != null){
             tStaffSalary.setOepratePeople(token.getFullName());
         }
@@ -286,7 +284,7 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
      */
     @Override
     public CommonResult staffSendRecord(String param,HttpServletRequest request) throws ParseException {
-        SysToken token = ObjectAsyncTask.getSysToken(request);
+        SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         JSONObject json = JSON.parseObject(param);
         //查询条件
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");

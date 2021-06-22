@@ -140,7 +140,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
         if(count > 0){
             return new CommonResult().ErrorResult("该证件已存在，请核查该证件号是否已被他人录入！",null);
         }
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String pkId = IDUtils.getUUID();
         tStaffEntry.setPkEntryId(pkId);
         tStaffEntry.setStatus(0);
@@ -231,7 +231,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
 
     @Override
     public CommonResult userGet(HttpServletRequest request) {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String pkId = sysToken.getFkUserId();
         TStaffEntry entity = this.tStaffEntryMapper.selectByPkId(pkId);
         JSONObject resultJson = new JSONObject();
@@ -326,7 +326,7 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
     @Transactional()
     @Override
     public CommonResult approval(HttpServletRequest request,String param) {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String newPkId = IDUtils.getUUID();
         JSONObject jsonObject = JSON.parseObject(param);
         String fkHtlxId = JsonUtil.getStringParam(jsonObject, "fkHtlxId");

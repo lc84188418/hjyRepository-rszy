@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.common.utils.KqUtil;
 import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.CommonResult;
@@ -17,10 +16,12 @@ import com.hjy.cloud.t_kq.service.TKqClockService;
 import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +58,8 @@ public class TKqClockServiceImpl implements TKqClockService {
     private TKqBcMapper tKqBcMapper;
     @Resource
     private TStaffInfoMapper tStaffInfoMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     /**
      * 添加前获取数据
      *
@@ -307,7 +310,7 @@ public class TKqClockServiceImpl implements TKqClockService {
     @Transactional()
     @Override
     public CommonResult<ClockAddPage> insert(TKqClock tKqClockParam,HttpServletRequest request) throws ParseException {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(sysToken == null){
             return new CommonResult(444, "error", "token不存在或已失效，请重新登录", null);
         }
@@ -598,7 +601,7 @@ public class TKqClockServiceImpl implements TKqClockService {
      */
     @Override
     public CommonResult<ClockStatistics> statisticsUser(ParamStatistics paramStatistics,HttpServletRequest request) throws ParseException {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         //默认查询条件按周次
         String weekOrMonth = "周";
         if(StringUtils.isEmpty(paramStatistics.getWeekOrMonth())){
@@ -694,7 +697,7 @@ public class TKqClockServiceImpl implements TKqClockService {
      */
     @Override
     public CommonResult<ClockStatistics> userStatisticsEveryDay(ParamStatistics param, HttpServletRequest request) {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         ClockStatistics resultJson = new ClockStatistics();
         param.setFkStaffId(sysToken.getFkUserId());
         param.setIsWorkingHours(null);

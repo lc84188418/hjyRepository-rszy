@@ -9,16 +9,14 @@ import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
 import com.hjy.cloud.t_system.dao.TSysRoleMapper;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.dao.TSysUserMapper;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
 import com.hjy.cloud.t_system.entity.ReUserRole;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysUserService;
-import com.hjy.cloud.utils.IDUtils;
-import com.hjy.cloud.utils.JsonUtil;
-import com.hjy.cloud.utils.PasswordEncryptUtils;
-import com.hjy.cloud.utils.StringUtil;
+import com.hjy.cloud.utils.*;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
@@ -47,7 +45,8 @@ public class TSysUserServiceImpl implements TSysUserService {
     private TSysRoleMapper tSysRoleMapper;
     @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
-
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     /**
      * 通过ID查询单条数据
      *
@@ -85,7 +84,7 @@ public class TSysUserServiceImpl implements TSysUserService {
      */
     @Override
     public CommonResult updateById(TSysUser tSysUser, HttpServletRequest request) throws Exception {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String username = tSysUser.getUsername();
         if(StringUtils.isEmpty(username)){
             return new CommonResult().ErrorResult("请传入用户名",null);
@@ -145,18 +144,19 @@ public class TSysUserServiceImpl implements TSysUserService {
 
 
     @Override
-    public int updatePassword(String parm, SysToken token) throws Exception {
+    public CommonResult updatePassword(String param, HttpServletRequest request) throws Exception {
+        SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         //用户名
         String username = token.getUsername();
         //数据库旧密码
         String oldPasswordMd5 = token.getPassword();
-        JSONObject json = JSON.parseObject(parm);
+        JSONObject json = JSON.parseObject(param);
         //输入的旧密码
         String inputOldPassword = String.valueOf(json.get("oldPassword"));
         //输入的旧密码加密
         String inputOldPasswordMd5 = PasswordEncryptUtils.MyPasswordEncryptUtil(username, inputOldPassword);
         if (!inputOldPasswordMd5.equals(oldPasswordMd5)) {
-            return 2;
+            return new CommonResult().ErrorResult("旧密码错误!",null);
         }
         //输入的新密码
         String inputNewPassword = String.valueOf(json.get("newPassword"));
@@ -166,7 +166,9 @@ public class TSysUserServiceImpl implements TSysUserService {
         user.setPkUserId(token.getFkUserId());
         user.setPassword(inputNewPasswordMd5);
         user.setModifyTime(new Date());
-        return tSysUserMapper.updateById(user);
+        tSysUserMapper.updateById(user);
+        return new CommonResult(200,"success","修改密码成功!",null);
+
     }
 
     @Override

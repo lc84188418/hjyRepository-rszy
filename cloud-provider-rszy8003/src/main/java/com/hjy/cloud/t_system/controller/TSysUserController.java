@@ -3,13 +3,11 @@ package com.hjy.cloud.t_system.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.hjy.cloud.common.entity.User;
-import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitDeptService;
 import com.hjy.cloud.t_system.entity.ReUserRole;
-import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.t_system.entity.TSysRole;
 import com.hjy.cloud.t_system.entity.TSysUser;
 import com.hjy.cloud.t_system.service.TSysPermsService;
@@ -303,16 +301,9 @@ public class TSysUserController {
             @ApiImplicitParam(name = "newPassword", value = "新密码",required = true, dataType = "string", paramType = "body", example = "1"),
     })
     @PutMapping("/system/user/updatePassword")
-    public CommonResult updatePassword(HttpServletRequest request,@ApiIgnore() @RequestBody String parm) throws FebsException{
-        SysToken token = ObjectAsyncTask.getSysToken(request);
+    public CommonResult updatePassword(HttpServletRequest request,@ApiIgnore() @RequestBody String param) throws FebsException{
         try {
-            //
-            int i = tSysUserService.updatePassword(parm,token);
-            if (i==2) {
-                return new CommonResult(444,"error","旧密码错误!",null);
-            }else {
-                return new CommonResult(200,"success","修改密码成功!",null);
-            }
+            return tSysUserService.updatePassword(param,request);
         } catch (Exception e) {
             String message = "修改密码失败";
             log.error(message, e);

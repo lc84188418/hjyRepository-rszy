@@ -433,7 +433,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     }
     @Override
     public CommonResult<PageResult<DApvRecord>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param) {
-        SysToken token = ObjectAsyncTask.getSysToken(request);
+        SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(token == null){
             return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
         }

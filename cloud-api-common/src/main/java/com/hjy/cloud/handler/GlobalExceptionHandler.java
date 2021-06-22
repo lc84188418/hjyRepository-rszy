@@ -5,7 +5,6 @@ import com.hjy.cloud.exception.Code.Code;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.exception.LimitAccessException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.AuthorizationException;
 import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -19,9 +18,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.server.NotAcceptableStatusException;
 import org.springframework.web.servlet.NoHandlerFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author wx

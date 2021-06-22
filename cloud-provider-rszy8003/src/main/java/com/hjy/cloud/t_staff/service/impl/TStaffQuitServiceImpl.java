@@ -22,6 +22,7 @@ import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.DateUtil;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,8 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
 //        String msg = (String) resultJson.get("msg");
 //        resultJson.remove("msg");
 //        return new CommonResult(200, "success", msg, resultJson);
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
+
         //离职人基本信息
         TStaffInfo queryInfo = new TStaffInfo();
         queryInfo.setPkStaffId(sysToken.getFkUserId());
@@ -120,7 +122,7 @@ public class TStaffQuitServiceImpl implements TStaffQuitService {
     @Transactional()
     @Override
     public CommonResult insert(HttpServletRequest request,String param) throws ParseException {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String newPkId = IDUtils.getUUID();
         //离职人基本信息
         TStaffInfo queryInfo = new TStaffInfo();

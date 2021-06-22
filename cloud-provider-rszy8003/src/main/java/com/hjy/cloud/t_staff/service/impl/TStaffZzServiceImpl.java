@@ -230,7 +230,7 @@ public class TStaffZzServiceImpl implements TStaffZzService {
     @Transactional()
     @Override
     public CommonResult initiateZz(HttpServletRequest request,String param)throws Exception {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         String newPkId = IDUtils.getUUID();
         //转正人基本信息
         TStaffInfo queryInfo = new TStaffInfo();

@@ -26,9 +26,11 @@ import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.entity.TStaffReassign;
 import com.hjy.cloud.t_staff.result.ReassignApprovalResult;
 import com.hjy.cloud.t_staff.service.TStaffReassignService;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
 import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
 import org.apache.commons.lang.StringUtils;
@@ -66,6 +68,8 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     private TDictionaryPositionMapper tDictionaryPositionMapper;
     @Resource
     private DApvRecordMapper dApvRecordMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     /**
      * 添加前获取数据
      *
@@ -281,7 +285,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
         if(i1 != null && !StringUtils.isEmpty(i1.getFirstApvrecordId())){
             return new CommonResult().ErrorResult("当前调动申请已发起审批，无需再次发起！",null);
         }
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
@@ -298,7 +302,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
     @Transactional()
     @Override
     public CommonResult initiateApv(HttpServletRequest request,String param) {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(sysToken == null){
             return new CommonResult().ErrorResult("token已失效！",null);
         }
@@ -380,7 +384,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Override
     public CommonResult<ReassignApprovalResult> userInitiateApvPage(HttpServletRequest request) {
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         /**
          * 查询员工是否已存在调动申请，即apvStatus=3
          */
@@ -414,8 +418,7 @@ public class TStaffReassignServiceImpl implements TStaffReassignService {
 
     @Override
     public CommonResult userInitiateApv(HttpServletRequest request, String param) throws ParseException {
-        //
-        SysToken sysToken = ObjectAsyncTask.getSysToken(request);
+        SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         if(sysToken == null){
             return new CommonResult(444, "error", "token已失效，请重新登录后再试", null);
         }
