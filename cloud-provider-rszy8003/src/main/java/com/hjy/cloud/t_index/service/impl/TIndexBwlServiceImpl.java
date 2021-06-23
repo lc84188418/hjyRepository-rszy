@@ -8,7 +8,10 @@ import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_index.dao.TIndexBwlMapper;
 import com.hjy.cloud.t_index.entity.TIndexBwl;
 import com.hjy.cloud.t_index.service.TIndexBwlService;
+import com.hjy.cloud.t_system.dao.TSysTokenMapper;
+import com.hjy.cloud.t_system.entity.SysToken;
 import com.hjy.cloud.utils.IDUtils;
+import com.hjy.cloud.utils.TokenUtil;
 import com.hjy.cloud.utils.page.PageRequest;
 import com.hjy.cloud.utils.page.PageResult;
 import com.hjy.cloud.utils.page.PageUtil;
@@ -32,6 +35,8 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
 
     @Resource
     private TIndexBwlMapper tIndexBwlMapper;
+    @Resource
+    private TSysTokenMapper tSysTokenMapper;
     /**
      * 添加前获取数据
      *
@@ -54,8 +59,8 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
     @Override
     public CommonResult insert(HttpSession session,HttpServletRequest request, TIndexBwl tIndexBwl) {
         tIndexBwl.setPkBwlId(IDUtils.getUUID());
-        String userId = UserShiroUtil.getCurrentUserId(session,request);
-        if(StringUtils.isEmpty(userId)){
+        SysToken token = this.tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
+        if(token == null){
             return new CommonResult(444, "error", "无法验证当前用户身份！请刷新或重新登录后再试", null);
         }
         /**
@@ -64,7 +69,7 @@ public class TIndexBwlServiceImpl implements TIndexBwlService {
          */
         tIndexBwl.setRemindTime(tIndexBwl.getRemindTime());
         tIndexBwl.setIsSend(0);
-        tIndexBwl.setFkUserId(userId);
+        tIndexBwl.setFkUserId(token.getFkUserId());
         int i = this.tIndexBwlMapper.insertSelective(tIndexBwl);
         if (i > 0) {
             return new CommonResult(200, "success", "添加数据成功", null);
