@@ -7,8 +7,10 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_staff.entity.TStaffSalary;
 import com.hjy.cloud.t_staff.service.TStaffSalaryService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -50,6 +52,24 @@ public class TStaffSalaryController {
      * @param tStaffSalary 实体对象
      * @return 新增结果
      */
+    @ApiOperation(value = "新增-已完成", notes = "新增员工工资条")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "fkStaffId",value = "员工ID",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "staffName",value = "员工姓名",required = false,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jbXz",value = "基本薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "gwXz",value = "岗位薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jxXz",value = "绩效薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qqBt",value = "全勤补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jtBt",value = "交通补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "csBt",value = "餐宿补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "cdZtKq",value = "迟到/早退扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qkBKq",value = "缺卡/缺报扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "sjBjKq",value = "事假/病假扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qtKq",value = "其他扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "sbKq",value = "社保扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "gjjKq",value = "公积金扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "grsdsKq",value = "个人所得税扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+    })
     //@RequiresPermissions({"salary:add"})
     @PostMapping(value = "/staff/salary/add")
     public CommonResult insert(@RequestBody TStaffSalary tStaffSalary) throws FebsException {
@@ -121,6 +141,23 @@ public class TStaffSalaryController {
      * @param tStaffSalary 实体对象
      * @return 修改结果
      */
+    @ApiOperation(value = "修改-已完成", notes = "修改员工工资条")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "pkSalaryId",value = "工资条主键",required = true,dataType = "string",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jbXz",value = "基本薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "gwXz",value = "岗位薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jxXz",value = "绩效薪资",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qqBt",value = "全勤补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "jtBt",value = "交通补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "csBt",value = "餐宿补贴",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "cdZtKq",value = "迟到/早退扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qkBKq",value = "缺卡/缺报扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "sjBjKq",value = "事假/病假扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "qtKq",value = "其他扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "sbKq",value = "社保扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "gjjKq",value = "公积金扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+            @ApiImplicitParam(name = "grsdsKq",value = "个人所得税扣款",required = false,dataType = "double",paramType = "body",example = "1"),
+    })
     //@RequiresPermissions({"salary:update"})
     @PutMapping(value = "/staff/salary/update")
     public CommonResult update(@RequestBody TStaffSalary tStaffSalary) throws FebsException {

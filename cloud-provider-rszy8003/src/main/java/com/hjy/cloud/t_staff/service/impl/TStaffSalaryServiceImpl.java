@@ -72,6 +72,16 @@ public class TStaffSalaryServiceImpl implements TStaffSalaryService {
     @Transactional()
     @Override
     public CommonResult insert(TStaffSalary tStaffSalary) {
+        if(StringUtils.isEmpty(tStaffSalary.getFkStaffId())){
+            return new CommonResult().ErrorResult("请选择员工后操作！", null);
+        }
+        TStaffSalary query = new TStaffSalary();
+        query.setFkStaffId(tStaffSalary.getFkStaffId());
+        int i1 = this.tStaffSalaryMapper.selectCountByEntity(query);
+        if(i1 > 0){
+            //说明该名员工已添加过工资条，无法再次添加，但可进行修改
+            return new CommonResult().ErrorResult("该员工已存在工资条，无法添加，可进行修改！", null);
+        }
         tStaffSalary.setPkSalaryId(IDUtils.getUUID());
         int i = this.tStaffSalaryMapper.insertSelective(tStaffSalary);
         if (i > 0) {

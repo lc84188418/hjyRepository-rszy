@@ -29,7 +29,7 @@ public interface TStaffSalaryMapper {
      * @return 对象列表
      */
     List<TStaffSalary> selectAllPage(TStaffSalary tStaffSalary);
-//    List<TStaffSalary> selectAllPage2(TStaffSalary tStaffSalary);
+    public int selectCountByEntity(TStaffSalary tStaffSalary);
     List<DSalaryRecord> selectRecordAllPage(DSalaryRecord entity);
 
 

@@ -20,13 +20,27 @@
         <result property="gjjKq" column="GJJ_KQ" jdbcType="REAL"/>
         <result property="grsdsKq" column="GRSDS_KQ" jdbcType="REAL"/>
     </resultMap>
-
+    <!--根据实体信息查询记录条数-->
+    <select id="selectCountByEntity" resultType="java.lang.Integer">
+        select count(*) from T_STAFF_SALARY
+        <where>
+            <if test="pkSalaryId != null and pkSalaryId != ''">
+                and PK_SALARY_ID = #{pkSalaryId,jdbcType=VARCHAR}
+            </if>
+            <if test="fkStaffId != null and fkStaffId != ''">
+                and FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR}
+            </if>
+            <if test="staffName != null and staffName != ''">
+                and STAFF_NAME = #{staffName,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
     <!--查询单个-->
     <select id="selectByPkId" resultMap="TStaffSalaryMap">
         select * from T_STAFF_SALARY
         where PK_SALARY_ID = #{pkSalaryId}
     </select>
-
+    
     <!--通过实体作为筛选条件查询-->
     <select id="selectAllPage" resultType="com.hjy.cloud.t_staff.entity.TStaffSalary">
         select
@@ -61,6 +75,7 @@
             and T_STAFF_SALARY.STAFF_NAME like '%${staffName}%'
         </if>
     </select>
+
     <select id="selectRecordAllPage" resultType="com.hjy.cloud.common.entity.DSalaryRecord">
         select * FROM D_SALARY_RECORD
         where 1 =1
@@ -337,12 +352,12 @@
     <update id="updateByPkId">
         update T_STAFF_SALARY
         <set>
-            <if test="fkStaffId != null and fkStaffId != ''">
-                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},
-            </if>
-            <if test="staffName != null and staffName != ''">
-                STAFF_NAME = #{staffName,jdbcType=VARCHAR},
-            </if>
+<!--            <if test="fkStaffId != null and fkStaffId != ''">-->
+<!--                FK_STAFF_ID = #{fkStaffId,jdbcType=VARCHAR},-->
+<!--            </if>-->
+<!--            <if test="staffName != null and staffName != ''">-->
+<!--                STAFF_NAME = #{staffName,jdbcType=VARCHAR},-->
+<!--            </if>-->
             <if test="jbXz != null">
                 JB_XZ = #{jbXz,jdbcType=REAL},
             </if>
