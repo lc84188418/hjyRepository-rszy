@@ -1,8 +1,8 @@
 package com.hjy.cloud.t_dictionary.entity;
 
-import java.util.Date;
-
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * (TDictionaryPosition)表实体类
@@ -22,5 +22,10 @@ public class TDictionaryPosition {
     private Date updateTime;
     //是否启用
     private Integer turnOn;
+    public TDictionaryPosition(){
 
+    }
+    public TDictionaryPosition(String positionName){
+        this.positionName = positionName;
+    }
 }

@@ -9,6 +9,7 @@ import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
 import com.hjy.cloud.t_dictionary.service.TDictionaryPositionService;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.page.PageUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.hjy.cloud.utils.page.PageResult;
@@ -52,6 +53,16 @@ public class TDictionaryPositionServiceImpl implements TDictionaryPositionServic
     @Transactional()
     @Override
     public CommonResult insert(TDictionaryPosition tDictionaryPosition) {
+        if(StringUtils.isEmpty(tDictionaryPosition.getPositionName())){
+            return new CommonResult().ErrorResult("职位名称不能为空！",null);
+        }
+        //查询该职位是否存在
+        TDictionaryPosition query = new TDictionaryPosition();
+        query.setPositionName(tDictionaryPosition.getPositionName());
+        List<TDictionaryPosition> list = tDictionaryPositionMapper.selectAllPage(query);
+        if(list != null && list.size() > 0){
+            return new CommonResult().ErrorResult("该职位已存在！",null);
+        }
         tDictionaryPosition.setPkPositionId(IDUtils.getUUID());
         tDictionaryPosition.setCreateTime(new Date());
         tDictionaryPosition.setUpdateTime(new Date());

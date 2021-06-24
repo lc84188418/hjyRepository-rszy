@@ -100,11 +100,15 @@ public class TStaffContractServiceImpl implements TStaffContractService {
         tStaffContract.setIdcard(tStaffInfo.getIdCard());
         tStaffContract.setStaffName(tStaffInfo.getStaffName());
         tStaffContract.setFkDeptId(tStaffInfo.getFkDeptId());
-        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(tStaffInfo.getFkDeptId());
-        if(dept == null){
-            return new CommonResult().ErrorResult("部门信息不存在，请检查！",null);
-        }
-        tStaffContract.setFkContractCompany(dept.getSuperiorDept());
+        //1采用档案中的公司
+//        TOutfitDept dept = this.tOutfitDeptMapper.selectByPkId(tStaffInfo.getFkDeptId());
+//        if(dept == null){
+//            return new CommonResult().ErrorResult("部门信息不存在，请检查！",null);
+//        }
+//        tStaffContract.setFkContractCompany(dept.getSuperiorDept());
+
+        //2合同公司独立
+
         int i = this.tStaffContractMapper.insertSelective(tStaffContract);
         if (i > 0) {
             JSONObject listInfo = this.getListInfo();

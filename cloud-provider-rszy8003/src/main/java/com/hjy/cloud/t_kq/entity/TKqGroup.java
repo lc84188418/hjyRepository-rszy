@@ -33,7 +33,7 @@ public class TKqGroup {
     private Integer isKxbcdk;
     @ApiModelProperty("排班制：未排班时，员工可打卡")
     private Integer isKdk;
-    @ApiModelProperty("自由工时类型设置")
+    @ApiModelProperty("自由工时的工时设置")
     private String typeSet;
     @ApiModelProperty("法定节假日自动排休")
     private Integer isPaixiu;

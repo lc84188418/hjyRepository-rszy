@@ -7,8 +7,8 @@ import org.apache.commons.lang.StringUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class KqUtil {
     public static List<ReGroupWorkingdays> getGroupWorkingdays(){
-        List<ReGroupWorkingdays> workingdaysList = new LinkedList<>();
+        List<ReGroupWorkingdays> workingdaysList = new ArrayList<>(7);
         ReGroupWorkingdays workingdays1 = new ReGroupWorkingdays();
         workingdays1.setWorkingDays("星期一");
         workingdaysList.add(workingdays1);

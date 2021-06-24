@@ -115,6 +115,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         if(kqType == 2){
             isKxbcdk = JsonUtil.getIntegerParam(json, "isKxbcdk");
             isKdk = JsonUtil.getIntegerParam(json, "isKdk");
+            //该考勤类型暂未完成打卡逻辑实现，前端页面也未有
+            return new CommonResult().ErrorResult("暂不支持该考勤类型",null);
         }else if(kqType == 3){
             typeSet = JsonUtil.getStringParam(json, "typeSet");
             if(StringUtils.isEmpty(typeSet)){
@@ -182,7 +184,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         }
         stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,kqType,"add");
         JSONObject listInfo = this.getListInfo();
-        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
+//        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
+        return new CommonResult().SuccessResult("考勤组数据添加成功！",listInfo);
     }
 
 
@@ -217,6 +220,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         if(kqType == 2){
             isKxbcdk = JsonUtil.getIntegerParam(json, "isKxbcdk");
             isKdk = JsonUtil.getIntegerParam(json, "isKdk");
+            //该考勤类型暂未完成打卡逻辑实现，前端页面也未有
+            return new CommonResult().ErrorResult("暂不支持该考勤类型",null);
         }else if(kqType == 3){
             typeSet = JsonUtil.getStringParam(json, "typeSet");
             if(StringUtils.isEmpty(typeSet)){
@@ -284,7 +289,8 @@ public class TKqGroupServiceImpl implements TKqGroupService {
         }
         stringBuffer = this.handleGroupData(stringBuffer,json,pkGroupId,kqType,"update");
         JSONObject listInfo = this.getListInfo();
-        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
+//        return new CommonResult(200, "success", stringBuffer.toString(), listInfo);
+        return new CommonResult(200, "success", "数据提交成功！", listInfo);
     }
 
     /**
