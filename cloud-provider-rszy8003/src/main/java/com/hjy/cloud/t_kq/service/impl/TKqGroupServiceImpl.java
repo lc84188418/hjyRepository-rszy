@@ -144,8 +144,11 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             wqPz = JsonUtil.getIntegerParam(json, "wqPz");
             wqHideaddress = JsonUtil.getIntegerParam(json, "wqHideaddress");
         }
-        int dkJgsj = JsonUtil.getIntegerParam(json, "dkJgsj");
-
+        int dkJgsj = 8;
+        String dkJgsjStr = JsonUtil.getStringParam(json, "dkJgsj");
+        if (!StringUtils.isEmpty(dkJgsjStr)) {
+            dkJgsj = Integer.parseInt(dkJgsjStr);
+        }
         int turnOn = 1;
         int turnOnParam = JsonUtil.getIntegerParam(json, "turnOn");
         if(turnOnParam == 0){
