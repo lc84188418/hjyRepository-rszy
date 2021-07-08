@@ -85,6 +85,10 @@ public class TSysUserServiceImpl implements TSysUserService {
     @Override
     public CommonResult updateById(TSysUser tSysUser, HttpServletRequest request) throws Exception {
         SysToken sysToken = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
+        if("1".equals(sysToken.getFkUserId())){
+            //管理员账户无法修改用户名
+            return new CommonResult().ErrorResult("管理员账户无法修改！",null);
+        }
         String username = tSysUser.getUsername();
         if(StringUtils.isEmpty(username)){
             return new CommonResult().ErrorResult("请传入用户名",null);

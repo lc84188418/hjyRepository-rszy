@@ -214,7 +214,6 @@ public class TSysUserController {
     @PutMapping("/system/user/update")
     public CommonResult tSysUserUpdate(@RequestBody TSysUser tSysUser, HttpServletRequest request) throws FebsException{
         try {
-            //
             return tSysUserService.updateById(tSysUser,request);
         } catch (Exception e) {
             String message = "修改失败";
