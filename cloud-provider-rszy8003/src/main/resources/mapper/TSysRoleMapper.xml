@@ -153,9 +153,9 @@
     <delete id="deleteRolePermsByRoleId" parameterType="java.lang.String">
         delete from RE_ROLE_PERMS where FK_ROLE_ID =#{fkRoleId,jdbcType=VARCHAR}
     </delete>
-    <!--No Problem    通过roleId删除用户角色-->
+    <!--No Problem    通过roleId删除用户角色,管理员除外-->
     <delete id="deleteUserRoleByRoleId" parameterType="java.lang.String">
-        delete from RE_USER_ROLE where FK_ROLE_ID =#{fkRoleId,jdbcType=VARCHAR}
+        delete from RE_USER_ROLE where FK_ROLE_ID =#{fkRoleId,jdbcType=VARCHAR} and FK_USER_ID != '1'
     </delete>
     <delete id="deleteUserRoleByUsers">
         delete from RE_USER_ROLE where FK_USER_ID in (

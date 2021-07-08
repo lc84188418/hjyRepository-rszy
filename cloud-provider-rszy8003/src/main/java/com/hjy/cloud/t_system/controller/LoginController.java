@@ -42,7 +42,14 @@ public class LoginController {
         String passwordN0 = tSysUser.getPassword();
         String password = PasswordEncryptUtils.MyPasswordEncryptUtil(username,passwordN0);
         //用户信息
-        TSysUser user = shiroService.selectUserByUsername(username);
+        TSysUser user = new TSysUser();
+        if("admin".equalsIgnoreCase(username)){
+            //管理员账户
+            user = shiroService.selectUserByUsername(username);
+
+        }else {
+            user = shiroService.selectUserByUsername(username);
+        }
         //账号不存在、密码错误
         if (user == null) {
             return new CommonResult(444,"error","账号不存在");

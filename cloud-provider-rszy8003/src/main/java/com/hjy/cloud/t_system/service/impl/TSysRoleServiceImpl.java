@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -275,7 +276,7 @@ public class TSysRoleServiceImpl implements TSysRoleService {
     public CommonResult systemRoleAddUser(String param) {
         JSONObject jsonObject = JSON.parseObject(param);
         String pkRoleId=String.valueOf(jsonObject.get("pkRoleId"));
-        //删除原有的用户角色
+        //删除原有的用户角色，管理员账户除外
         int i = tSysRoleMapper.deleteUserRoleByRoleId(pkRoleId);
         String msg = "该角色已成功添加0个用户!";
         JSONArray jsonArray = jsonObject.getJSONArray("ids");
@@ -285,6 +286,15 @@ public class TSysRoleServiceImpl implements TSysRoleService {
         }else {
             List<String> idList = JSONArray.parseArray(userIdsStr,String.class);
             if(idList != null && idList.size() > 0){
+                //管理员角色不参与分配
+                Iterator<String> iterator = idList.iterator();
+                while (iterator.hasNext()){
+                    String next = iterator.next();
+                    if("1".equals(next)){
+                        iterator.remove();
+                        break;
+                    }
+                }
                 //将这些用户原来的角色删除
                 int j = tSysRoleMapper.deleteUserRoleByUsers(idList);
                 //添加用户角色
