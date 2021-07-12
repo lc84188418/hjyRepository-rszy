@@ -7,6 +7,7 @@ import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -184,6 +185,7 @@ public class TOutfitCompanyController {
             throw new FebsException(message);
         }
     }
+    @ApiOperation(value = "查看-已完成", notes = "获取组织架构（公司+部门）树数据")
     @GetMapping("/outfit/organization/tree")
     public CommonResult structureTree() throws FebsException{
         try {

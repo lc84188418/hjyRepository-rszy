@@ -45,7 +45,7 @@ public class LoginController {
         TSysUser user = new TSysUser();
         if("admin".equalsIgnoreCase(username)){
             //管理员账户
-            user = shiroService.selectUserByUsername(username);
+            user = shiroService.selectAdminUser();
         }else {
             user = shiroService.selectUserByUsername(username);
         }

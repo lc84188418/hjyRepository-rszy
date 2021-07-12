@@ -301,6 +301,19 @@ LEFT JOIN
             #{item, jdbcType=VARCHAR}
         </foreach>
     </select>
+    <select id="selectAdminUser" resultType="com.hjy.cloud.t_system.entity.TSysUser">
+        SELECT
+	t.*,
+	if(userRole.FK_ROLE_ID is null,'2','1') as FK_ROLE_ID,
+	role.ROLE_NAME
+FROM
+	T_SYS_USER t
+LEFT JOIN
+	RE_USER_ROLE userRole on userRole.FK_USER_ID = t.PK_USER_ID
+LEFT JOIN
+	T_SYS_ROLE role on role.PK_ROLE_ID = userRole.FK_ROLE_ID
+	WHERE USERNAME = #{username,jdbcType=VARCHAR}
+    </select>
     <!--No problem 添加用户角色    -->
     <insert id="addUserRoleByUserRole" parameterType="com.hjy.cloud.t_system.entity.ReUserRole">
        insert into RE_USER_ROLE(PK_USERROLE_ID,FK_USER_ID,FK_ROLE_ID)

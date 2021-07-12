@@ -343,6 +343,9 @@ public class TSysRoleServiceImpl implements TSysRoleService {
 
     @Override
     public CommonResult tSysRoleUpdate(TSysRole tSysRole) {
+        if("1".equals(tSysRole.getPkRoleId()) || "2".equals(tSysRole.getPkRoleId())){
+            return new CommonResult(444,"error","超级管理员和普通角色不可修改!",null);
+        }
         tSysRole.setModifyTime(new Date());
         int i = tSysRoleMapper.updateById(tSysRole);
         if(i > 0){

@@ -35,6 +35,7 @@ public class TStaffInfoController {
     /**
      * 1 跳转到新增页面
      */
+    @ApiOperation(value = "添加页面-已完成", notes = "获取录入员工档案前的相关数据")
     @GetMapping(value = "/staff/info/addPage")
     public CommonResult insertPage() throws FebsException {
         try {

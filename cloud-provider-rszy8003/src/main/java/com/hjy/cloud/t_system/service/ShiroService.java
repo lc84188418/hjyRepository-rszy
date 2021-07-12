@@ -47,5 +47,6 @@ public interface ShiroService {
 
     //通过角色id从数据库获取权限码
     List<String> selectPermsCodeByRole(String fkRoleId);
-
+    //直接获取管理员账户
+    TSysUser selectAdminUser();
 }

@@ -90,4 +90,6 @@ public interface TSysUserMapper {
     List<User> selectId_NameByIds(@Param("ids")String[] ids);
     //
     int selectCountByEntity(TSysUser query);
+
+    TSysUser selectAdminUser();
 }

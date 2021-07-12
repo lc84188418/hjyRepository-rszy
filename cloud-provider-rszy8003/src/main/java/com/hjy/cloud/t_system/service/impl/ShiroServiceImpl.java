@@ -105,6 +105,17 @@ public class ShiroServiceImpl implements ShiroService {
     }
 
     /**
+     * 直接获取管理员账户
+     * @return
+     */
+    @Override
+    public TSysUser selectAdminUser() {
+        TSysUser adminUser = tSysUserMapper.selectByUsername("admin");
+        adminUser.setRoleName("超级管理员");
+        return adminUser;
+    }
+
+    /**
      * 获取所有权限码
      * @return
      */
