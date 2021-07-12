@@ -76,4 +76,6 @@ public interface TOutfitCompanyService {
      * @return
      */
     CommonResult structure();
+
+    CommonResult structureTree();
 }

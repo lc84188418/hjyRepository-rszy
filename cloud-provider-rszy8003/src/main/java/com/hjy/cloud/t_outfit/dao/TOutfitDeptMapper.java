@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_outfit.dao;
 
+import com.hjy.cloud.t_outfit.entity.RDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
 import com.hjy.cloud.t_system.entity.ReDeptUser;
@@ -120,5 +121,6 @@ public interface TOutfitDeptMapper {
     void updateByDeptId(@Param("hbDeptId")String hbDeptId,@Param("hbdDeptId")String hbdDeptId);
 
     List<TOutfitStructure> selectStructure();
-
+    //
+    List<RDept> select_Id_nameByCompanyId(@Param("superiorDept")String superiorDept);
 }

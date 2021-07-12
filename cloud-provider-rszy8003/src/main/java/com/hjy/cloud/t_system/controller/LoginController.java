@@ -46,7 +46,6 @@ public class LoginController {
         if("admin".equalsIgnoreCase(username)){
             //管理员账户
             user = shiroService.selectUserByUsername(username);
-
         }else {
             user = shiroService.selectUserByUsername(username);
         }

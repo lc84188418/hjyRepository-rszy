@@ -32,6 +32,19 @@ public class TStaffInfoController {
     @Resource
     private TStaffInfoService tStaffInfoService;
 
+    /**
+     * 1 跳转到新增页面
+     */
+    @GetMapping(value = "/staff/info/addPage")
+    public CommonResult insertPage() throws FebsException {
+        try {
+            return tStaffInfoService.insertPage();
+        } catch (Exception e) {
+            String message = "失败";
+            throw new FebsException(message);
+        }
+    }
+
     @ApiOperation(value = "直接添加员工档案-已完成", notes = "直接添加员工信息，并会自动创建系统账户")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "staffName",value = "姓名",required = true,dataType = "string",paramType = "body",example = "1"),

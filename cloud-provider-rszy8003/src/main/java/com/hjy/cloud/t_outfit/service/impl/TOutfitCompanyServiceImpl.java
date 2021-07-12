@@ -8,13 +8,9 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_outfit.dao.TOutfitCompanyMapper;
 import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
-import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
-import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
-import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
+import com.hjy.cloud.t_outfit.entity.*;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
-import com.hjy.cloud.t_system.entity.ReDeptUser;
-import com.hjy.cloud.t_system.entity.TSysUser;
+import com.hjy.cloud.t_outfit.utils.CompanyUtil;
 import com.hjy.cloud.utils.IDUtils;
 import com.hjy.cloud.utils.JsonUtil;
 import com.hjy.cloud.utils.page.PageResult;
@@ -25,7 +21,6 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,6 +36,8 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
     private TOutfitCompanyMapper tOutfitCompanyMapper;
     @Resource
     private TOutfitDeptMapper tOutfitDeptMapper;
+    @Resource
+    private CompanyUtil companyUtil;
     /**
      * 添加前获取数据
      *
@@ -228,6 +225,11 @@ public class TOutfitCompanyServiceImpl implements TOutfitCompanyService {
         return new CommonResult(200,"success","获取组织架构数据成功!",resultJson);
     }
 
+    @Override
+    public CommonResult structureTree() {
+        List<RCompany> companies = companyUtil.getCompanyTree();
+        return new CommonResult(200,"success","获取组织架构树数据成功!",companies);
+    }
     /**
      * 添加公司部门
      *

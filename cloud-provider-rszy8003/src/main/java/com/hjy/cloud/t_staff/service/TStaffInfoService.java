@@ -13,6 +13,9 @@ import java.util.List;
  * @since 2021-02-25 17:06:47
  */
 public interface TStaffInfoService {
+
+    CommonResult insertPage();
+
     /**
      * 直接添加
      * @param tStaffInfo
@@ -63,4 +66,5 @@ public interface TStaffInfoService {
     TStaffInfo selectByPkId2(String currentSourceId);
 
     CommonResult selectAllId_Name(TStaffInfo staffInfo);
+
 }

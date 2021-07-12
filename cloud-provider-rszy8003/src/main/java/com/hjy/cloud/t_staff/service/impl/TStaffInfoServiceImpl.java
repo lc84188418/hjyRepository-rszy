@@ -12,7 +12,11 @@ import com.hjy.cloud.t_dictionary.dao.TDictionaryPositionMapper;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryEducation;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryHtlx;
 import com.hjy.cloud.t_dictionary.entity.TDictionaryNation;
-import com.hjy.cloud.t_outfit.dao.TOutfitDeptMapper;
+import com.hjy.cloud.t_dictionary.entity.TDictionaryPosition;
+import com.hjy.cloud.t_outfit.dao.TOutfitWorkaddressMapper;
+import com.hjy.cloud.t_outfit.entity.RCompany;
+import com.hjy.cloud.t_outfit.entity.TOutfitWorkaddress;
+import com.hjy.cloud.t_outfit.utils.CompanyUtil;
 import com.hjy.cloud.t_staff.dao.TStaffInfoMapper;
 import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import com.hjy.cloud.t_staff.result.StaffInfos;
@@ -47,7 +51,7 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     @Resource
     private TSysUserMapper tSysUserMapper;
     @Resource
-    private TOutfitDeptMapper tOutfitDeptMapper;
+    private TOutfitWorkaddressMapper tOutfitWorkaddressMapper;
     @Resource
     private TDictionaryPositionMapper tDictionaryPositionMapper;
     @Resource
@@ -56,34 +60,36 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
     private TDictionaryNationMapper tDictionaryNationMapper;
     @Resource
     private TDictionaryEducationMapper tDictionaryEducationMapper;
-//    /**
-//     * 添加前获取数据
-//     *
-//     * @return
-//     */
-//    @Override
-//    public CommonResult insertPage() {
-//        JSONObject jsonObject = new JSONObject();
-//        //部门
-//        List<TOutfitDept> depts = tOutfitDeptMapper.selectAllIdAndName();
-//        //职位
-//        List<TDictionaryPosition> positions = tDictionaryPositionMapper.selectAllId_Name();
-//        //合同类型
-//        List<TDictionaryHtlx> htlxes = tDictionaryHtlxMapper.selectAllId_Name();
-//        //民族
-//        List<TDictionaryNation> nations = tDictionaryNationMapper.selectAllId_Name();
-//        //学历
-//        List<TDictionaryEducation> educations = tDictionaryEducationMapper.selectAllId_Name();
-//        //员工
-//        List<TStaffInfo> staffInfos = tStaffInfoMapper.selectAllId_Name();
-//        jsonObject.put("depts", depts);
-//        jsonObject.put("positions", positions);
-//        jsonObject.put("htlxes", htlxes);
-//        jsonObject.put("nations", nations);
-//        jsonObject.put("educations", educations);
-//        jsonObject.put("staffInfos", staffInfos);
-//        return new CommonResult(200, "success", "获取数据成功", jsonObject);
-//    }
+    @Resource
+    private CompanyUtil companyUtil;
+    /**
+     * 添加前获取数据
+     *
+     * @return
+     */
+    @Override
+    public CommonResult insertPage() {
+        //公司+部门
+        List<RCompany> companies = companyUtil.getCompanyTree();
+        //职位
+        List<TDictionaryPosition> positions = tDictionaryPositionMapper.selectAllId_Name();
+        //工作地
+        List<TOutfitWorkaddress> workaddresses = tOutfitWorkaddressMapper.selectAllId_Name();
+        //合同类型
+        List<TDictionaryHtlx> htlxes = tDictionaryHtlxMapper.selectAllId_Name();
+        //民族
+        List<TDictionaryNation> nations = tDictionaryNationMapper.selectAllId_Name();
+        //学历
+        List<TDictionaryEducation> educations = tDictionaryEducationMapper.selectAllId_Name();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("companies", companies);
+        jsonObject.put("positions", positions);
+        jsonObject.put("workaddresses", workaddresses);
+        jsonObject.put("htlxes", htlxes);
+        jsonObject.put("nations", nations);
+        jsonObject.put("educations", educations);
+        return new CommonResult(200, "success", "获取数据成功", jsonObject);
+    }
 
     /**
      * 添加数据

@@ -161,6 +161,9 @@
     <select id="select_PkId_name" resultType="com.hjy.cloud.t_outfit.entity.TOutfitCompany">
         select PK_COMPANY_ID,COMPANY_NAME from T_OUTFIT_COMPANY
     </select>
+    <select id="select_Id_name" resultType="com.hjy.cloud.t_outfit.entity.RCompany">
+        select PK_COMPANY_ID,COMPANY_NAME from T_OUTFIT_COMPANY
+    </select>
 <!--    获取该公司已经分配的部门ID-->
     <select id="selectFPDeptId" resultType="java.lang.String">
         SELECT FK_DEPT_ID FROM RE_COMPANY_DEPT WHERE FK_COMPANY_ID = #{pkCompanyId,jdbcType=VARCHAR}

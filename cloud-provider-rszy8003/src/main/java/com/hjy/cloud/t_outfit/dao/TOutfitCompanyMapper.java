@@ -1,5 +1,6 @@
 package com.hjy.cloud.t_outfit.dao;
 
+import com.hjy.cloud.t_outfit.entity.RCompany;
 import com.hjy.cloud.t_outfit.entity.ReCompanyDept;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
 import com.hjy.cloud.t_outfit.entity.TOutfitStructure;
@@ -70,6 +71,7 @@ public interface TOutfitCompanyMapper {
      * @return 对象列表
      */
     List<TOutfitCompany> select_PkId_name();
+    List<RCompany> select_Id_name();
     /**
      * 获取该公司已经分配的部门ID
      *

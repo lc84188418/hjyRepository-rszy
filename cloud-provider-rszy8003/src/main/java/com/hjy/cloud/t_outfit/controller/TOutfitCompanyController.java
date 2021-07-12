@@ -5,11 +5,9 @@ import com.hjy.cloud.common.annotation.OperLog;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.exception.FebsException;
 import com.hjy.cloud.t_outfit.entity.TOutfitCompany;
-import com.hjy.cloud.t_outfit.entity.TOutfitDept;
 import com.hjy.cloud.t_outfit.service.TOutfitCompanyService;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -180,6 +178,16 @@ public class TOutfitCompanyController {
     public CommonResult structure() throws FebsException{
         try {
             return tOutfitCompanyService.structure();
+        } catch (Exception e) {
+            String message = "失败";
+            log.error(message,e);
+            throw new FebsException(message);
+        }
+    }
+    @GetMapping("/outfit/organization/tree")
+    public CommonResult structureTree() throws FebsException{
+        try {
+            return tOutfitCompanyService.structureTree();
         } catch (Exception e) {
             String message = "失败";
             log.error(message,e);

@@ -275,6 +275,9 @@ FROM
         where FK_DEPT_ID = #{fkDeptId,jdbcType=VARCHAR}
         and FK_COMPANY_ID = #{fkCompanyId,jdbcType=VARCHAR}
     </select>
+    <select id="select_Id_nameByCompanyId" resultType="com.hjy.cloud.t_outfit.entity.RDept">
+        select PK_DEPT_ID,DEPT_NAME from T_OUTFIT_DEPT where SUPERIOR_DEPT = #{superiorDept}
+    </select>
     <delete id="deleteDeptUserByDeptId_CompanyId2">
         delete from RE_DEPT_USER
         where FK_DEPT_ID =#{fkDeptId,jdbcType=VARCHAR}
