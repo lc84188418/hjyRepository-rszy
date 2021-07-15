@@ -252,13 +252,12 @@ public class TKqGroupServiceImpl implements TKqGroupService {
             wqPz = JsonUtil.getIntegerParam(json, "wqPz");
             wqHideaddress = JsonUtil.getIntegerParam(json, "wqHideaddress");
         }
-        int dkJgsj = JsonUtil.getIntegerParam(json, "dkJgsj");
-
-        int turnOn = 1;
-        int turnOnParam = JsonUtil.getIntegerParam(json, "turnOn");
-        if(turnOnParam == 0){
-            turnOn = turnOnParam;
+        int dkJgsj = 8;
+        String dkJgsjStr = JsonUtil.getStringParam(json, "dkJgsj");
+        if(!StringUtils.isEmpty(dkJgsjStr)){
+            dkJgsj = Integer.parseInt(dkJgsjStr);
         }
+        int turnOn = JsonUtil.getIntegerParam(json, "turnOn");
         StringBuffer stringBuffer = new StringBuffer();
         //开始添加
         TKqGroup tKqGroup = new TKqGroup();
