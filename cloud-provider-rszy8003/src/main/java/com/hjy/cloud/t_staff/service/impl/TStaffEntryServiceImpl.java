@@ -7,6 +7,7 @@ import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.entity.User;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.domin.RegexpConstant;
 import com.hjy.cloud.t_apv.dao.DApvRecordMapper;
 import com.hjy.cloud.t_apv.dao.DCcRecordMapper;
 import com.hjy.cloud.t_apv.dao.TApvApprovalMapper;
@@ -128,6 +129,11 @@ public class TStaffEntryServiceImpl implements TStaffEntryService {
                 || tStaffEntry.getStaffSex() == null
         ){
             return new CommonResult().ErrorResult("姓名、性别、部门、职位、工作地、合同、证件号，入职时间信息不能为空！",null);
+        }
+        //姓名去掉前后的空格
+        tStaffEntry.setStaffName(tStaffEntry.getStaffName().trim());
+        if(!RegexpConstant.validateName(tStaffEntry.getStaffName())){
+            return new CommonResult().ErrorResult("请输入合法规范的姓名！",null);
         }
         //验证证件号
         if(!IdCardUtil.isValidatedAllIdcard(tStaffEntry.getIdCard())){

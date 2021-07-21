@@ -341,8 +341,8 @@ public class TKqClockServiceImpl implements TKqClockService {
             return new CommonResult(444, "error", "token不存在或已失效，请重新登录", null);
         }
         if(StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
-            tKqClockParam.setOnClockAddress("四川省成都市武侯区桂溪街道和溸小颜整骨环球中心E3(新世纪环球中心)");
-//            return new CommonResult(444, "error", "请传入打卡地址", null);
+            //如果前端未传入打卡地址，则默认使用公司地址
+            tKqClockParam.setOnClockAddress("四川省成都市武侯区交子大道333号中海国际中心E座502室");
         }
         StringBuilder stringBuilder = new StringBuilder();
         ReGroupStaff reGroupStaff = tKqClockMapper.selectGroupStaffByStaffId(sysToken.getFkUserId());

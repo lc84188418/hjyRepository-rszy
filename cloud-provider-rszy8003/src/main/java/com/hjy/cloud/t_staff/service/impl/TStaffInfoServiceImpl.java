@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.domin.CommonResult;
+import com.hjy.cloud.domin.RegexpConstant;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryEducationMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryHtlxMapper;
 import com.hjy.cloud.t_dictionary.dao.TDictionaryNationMapper;
@@ -111,6 +112,11 @@ public class TStaffInfoServiceImpl implements TStaffInfoService {
 //                || tStaffInfo.getStaffSex() == null
         ){
             return new CommonResult().ErrorResult("姓名、性别、部门、职位、工作地、合同、证件号，入职时间信息不能为空！",null);
+        }
+        //姓名去掉前后的空格
+        tStaffInfo.setStaffName(tStaffInfo.getStaffName().trim());
+        if(!RegexpConstant.validateName(tStaffInfo.getStaffName())){
+            return new CommonResult().ErrorResult("请输入合法规范的姓名！",null);
         }
         //验证证件号
         if(!IdCardUtil.isValidatedAllIdcard(tStaffInfo.getIdCard())){
