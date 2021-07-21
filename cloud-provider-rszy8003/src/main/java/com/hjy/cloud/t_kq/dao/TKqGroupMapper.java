@@ -1,7 +1,6 @@
 package com.hjy.cloud.t_kq.dao;
 
 import com.hjy.cloud.t_kq.entity.*;
-import com.hjy.cloud.t_staff.entity.TStaffInfo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -84,4 +83,6 @@ public interface TKqGroupMapper {
     int deleteBkGroupByGroupId(@Param("fkGroupId")String fkGroupId);
     //删除加班-group
     int deleteJbGroupByGroupId_Batch(@Param("jbGroupList")List<ReJbGroup> joinList);
+
+    int deleteGroupStaffBatchByStaffId(@Param("joinList")List<ReGroupStaff> joinList);
 }

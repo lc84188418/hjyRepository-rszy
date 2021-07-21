@@ -462,6 +462,9 @@ public class TKqGroupServiceImpl implements TKqGroupService {
                 //代表修改-先删除
                 tKqGroupMapper.deleteGroupStaffByGroupId(pkGroupId);
             }
+            //每个员工只有一个考勤组
+            //先遍历删除
+            int jj = tKqGroupMapper.deleteGroupStaffBatchByStaffId(joinList);
             int j = tKqGroupMapper.insertGroupStaffBatch(joinList);
             if (j > 0) {
                 stringBuffer.append("考勤人员设置添加成功！");

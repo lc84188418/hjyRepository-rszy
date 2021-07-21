@@ -46,11 +46,9 @@ public interface TApvApprovalService {
     CommonResult<ApprovalSource> waitApvDetail(String param);
     //审批
     CommonResult approval(HttpSession session, HttpServletRequest request,String param);
-
+    //根据条件查询审批流程中某节点的审批信息
     TApvApproval selectApvSet(String pk_apv_id, String approvalType,int dataType, int isStart);
-    /**
-     * 查询某审批类型的默认抄送人
-     */
+    // 查询某审批类型的默认抄送人
     List<TApvApproval> selectAllPage(TApvApproval tApvApproval);
     //审批流程的详情
     CommonResult apvProcessDetail(String param);

@@ -7,7 +7,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.hjy.cloud.common.task.ObjectAsyncTask;
 import com.hjy.cloud.common.utils.ApvUtil;
-import com.hjy.cloud.common.utils.UserShiroUtil;
 import com.hjy.cloud.domin.CommonResult;
 import com.hjy.cloud.t_apv.dao.*;
 import com.hjy.cloud.t_apv.entity.*;
@@ -139,7 +138,8 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }
         if(apvList1.size() > 0 ){
             /**
-             * 先去重
+             * 一、审批人先去重
+             * 去掉审批id中重复的
              */
             List<TApvApproval> apvList2 = new ArrayList<>();
             for (int m = 0; m < apvList1.size()-1; m++) {
@@ -185,6 +185,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 newPkId = nextPkId;
                 isStart = 0;
             }
+            //设置末尾节点的isEnding=1和下级审批，0代表无下级审批了
             idList.get(idList.size()-1).setIsEnding(1);
             idList.get(idList.size()-1).setNextApproval("0");
         }
@@ -219,6 +220,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             }
             idList.addAll(idList.size(),csrList);
         }
+        //批量添加
         if(idList != null && idList.size() > 0){
             i = this.tApvApprovalMapper.insertBatch(idList);
         }
@@ -431,6 +433,14 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         return new CommonResult(200, "success", "获取数据成功！", resultJson);
 
     }
+
+    /**
+     * 员工端-我发起的申请
+     * @param session
+     * @param request
+     * @param param
+     * @return
+     */
     @Override
     public CommonResult<PageResult<DApvRecord>> apvRecordListSponsor(HttpSession session, HttpServletRequest request, String param) {
         SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
@@ -461,13 +471,17 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         return new CommonResult(200, "success", "获取我发起的审批列表数据成功！", result);
     }
 
+    /**
+     * 员工端-抄送给我的
+     * @param session
+     * @param request
+     * @param param
+     * @return
+     */
     @Cacheable(key = "'CCToMe'",value = {"valueName"})
     @Override
     public CommonResult<PageResult<DApvRecord>> apvRecordListCCToMe(HttpSession session, HttpServletRequest request, String param) {
-        String userId = UserShiroUtil.getCurrentUserId(session,request);
-        if(StringUtils.isEmpty(userId)){
-            return new CommonResult(444, "error", "无法验证当前用户信息，请刷新或重新登录后再试", null);
-        }
+        SysToken token = tSysTokenMapper.findByToken(TokenUtil.getRequestToken(request));
         JSONObject json = JSON.parseObject(param);
         //实体数据
         String pageNumStr = JsonUtil.getStringParam(json, "pageNum");
@@ -482,7 +496,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }
         PageHelper.startPage(pageNum, pageSize);
         //1.first_record_id
-        List<String> first_record_ids = apvRecordMapper.selectFirstRecordIdsByFkStaffId(userId);
+        List<String> first_record_ids = apvRecordMapper.selectFirstRecordIdsByFkStaffId(token.getFkUserId());
         if(first_record_ids != null && first_record_ids.size() > 0){
             List<DApvRecord> dApvRecords = apvRecordMapper.selectAllByIds(first_record_ids);
             //将审批数据进行处理
@@ -493,7 +507,13 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
             return new CommonResult().ErrorResult("你暂未有抄送记录",null);
         }
     }
-    //将待审批数据进行处理
+
+    /**
+     * 将待审批数据进行处理
+     * @param dApvRecords
+     * @param userId
+     * @return
+     */
     private List<TempApvEntity> optimizeApvRecord(List<DApvRecord> dApvRecords,String userId) {
         if(dApvRecords == null && dApvRecords.size() == 0){
             return null;
@@ -631,7 +651,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     }
 
     /**
-     *
+     * 处理整个流程的审批状态，前端根据这个好做提示
      * @param apvRecords
      * @return
      */
@@ -732,7 +752,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         String approvalType = JsonUtil.getStringParam(json, "approvalType");
         String sourceId = JsonUtil.getStringParam(json, "sourceId");
         ApprovalSource result = new ApprovalSource();
-        String fkStaffId = "";
+        //空的就是还没写的申请
         if("1".equals(approvalType)){
             //请假申请
         }else if("2".equals(approvalType)){
@@ -799,7 +819,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
     }
 
     /**
-     * 审批
+     * 用户-审批
      *
      * @return 修改结果
      */
@@ -900,14 +920,20 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 int i = this.apvRecordMapper.updateApvStatusBySourceId(sourceId,1);
                 stringBuffer = this.complateAPV(approvalType,sourceId,resultInt);
             }
-//            throw new RuntimeException("");
             return new CommonResult(200, "success", stringBuffer.toString(), null);
         }else {
-//            throw new RuntimeException("");
             return new CommonResult(444, "error", "未查询到相关审批流程！", null);
         }
     }
 
+    /**
+     * 根据条件查询审批流程中某节点的审批信息
+     * @param pk_apv_id 该节点审批id
+     * @param approvalType 审批类型
+     * @param dataType
+     * @param isStart 开始节点的标志
+     * @return
+     */
     @Override
     public TApvApproval selectApvSet(String pk_apv_id, String approvalType, int dataType,int isStart) {
         return tApvApprovalMapper.selectApvSet(pk_apv_id,approvalType,dataType,isStart);
@@ -929,6 +955,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         JSONObject jsonObject = JSON.parseObject(param);
         JSONObject resultJson = new JSONObject();
         String firstApvRecordId = String.valueOf(jsonObject.get("apvId"));
+        /**
+         * 两种方式采用一种，目前  前端对接采用的第一种
+         */
         //1
         List<DApvRecord> recordResultList = this.optimizeApvProcessDetail(firstApvRecordId);
 
@@ -1090,6 +1119,9 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 }
             }
         }else if ("11".equals(approvalType)){
+            /**
+             * 这里是因为离职通过和不通过后，进行什么样的操作还未确定需求，暂时不用
+             */
             if(1 == resultInt){
 
             }else {

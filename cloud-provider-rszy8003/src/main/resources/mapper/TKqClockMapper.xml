@@ -11,11 +11,11 @@
         <result property="onDutyTime" column="ON_DUTY_TIME" jdbcType="TIMESTAMP"/>
         <result property="onClockAddress" column="ON_CLOCK_ADDRESS" jdbcType="VARCHAR"/>
         <result property="onClockIp" column="ON_CLOCK_IP" jdbcType="VARCHAR"/>
-        <result property="onIsWq" column="ON_IS_WQ" jdbcType="VARCHAR"/>
+        <result property="onIsWq" column="ON_IS_WQ" jdbcType="INTEGER"/>
         <result property="offDutyTime" column="OFF_DUTY_TIME" jdbcType="TIMESTAMP"/>
         <result property="offClockAddress" column="OFF_CLOCK_ADDRESS" jdbcType="VARCHAR"/>
         <result property="offClockIp" column="OFF_CLOCK_IP" jdbcType="VARCHAR"/>
-        <result property="offIsWq" column="OFF_IS_WQ" jdbcType="VARCHAR"/>
+        <result property="offIsWq" column="OFF_IS_WQ" jdbcType="INTEGER"/>
         <result property="workingHours" column="WORKING_HOURS" jdbcType="REAL"/>
         <result property="isCd" column="IS_CD" jdbcType="INTEGER"/>
         <result property="cdMinute" column="CD_MINUTE" jdbcType="INTEGER"/>

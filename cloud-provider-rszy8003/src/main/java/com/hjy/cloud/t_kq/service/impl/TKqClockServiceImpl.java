@@ -71,20 +71,45 @@ public class TKqClockServiceImpl implements TKqClockService {
         if(StringUtils.isEmpty(userId)){
             return new CommonResult(444, "error", "无法验证当前用户身份！请刷新或重新登录后再试", null);
         }
-        ClockAddPage clockAddPage = new ClockAddPage();
+
+        Date nowDate = new Date();
+        //用作查询的打卡实体
         TKqClock selectTKqCloc = new TKqClock();
+        //返回的打卡信息
         TKqClock resultClock = new TKqClock();
+        resultClock.setTodayDate(nowDate);
+        //今日打卡的数据
+        TKqClock clockData = new TKqClock();
+
+        /**
+         * 四、判断今日是否有打卡记录，若无打卡记录，则此次打卡为上班，反之为下班打卡
+         */
+        //打卡类型，1代表上班打卡，2代表下班打卡
+        int dkType = 1;
+        selectTKqCloc.setFkStaffId(userId);
+        selectTKqCloc.setTodayDate(nowDate);
+        List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectTKqCloc);
+        if(kqClockList != null && kqClockList.size() >0){
+            //有打卡记录，说明为下班打卡
+            clockData = kqClockList.get(0);
+            dkType = 2;
+            //----------还要计算是否早退
+        }else {
+            //无打卡记录，说明为上班打卡
+        }
+
+        ClockAddPage clockAddPage = new ClockAddPage();
         StringBuffer stringBuffer = new StringBuffer();
         int isDkr = 1;
         boolean bxdkBoolean = false;
         resultClock.setIsDkr(isDkr);
         resultClock.setIsCd(0);
         resultClock.setIsZt(0);
-        Date nowDate = new Date();
         /**
          * 获取当前用户打卡相关信息
          * 一、当前用户考勤组信息
          */
+
         ReGroupStaff reGroupStaff = tKqClockMapper.selectGroupStaffByStaffId(userId);
         if(reGroupStaff == null){
             isDkr = 0;
@@ -99,7 +124,11 @@ public class TKqClockServiceImpl implements TKqClockService {
             isDkr = 0;
             resultClock.setIsDkr(isDkr);
             stringBuffer.append("非必须考勤用户，无需考勤！");
-            clockAddPage.setClock(resultClock);
+            if (clockData != null) {
+                clockAddPage.setClock(clockData);
+            }else {
+                clockAddPage.setClock(resultClock);
+            }
             return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
         }
         /**
@@ -124,7 +153,11 @@ public class TKqClockServiceImpl implements TKqClockService {
                 isDkr = 0;
                 resultClock.setIsDkr(isDkr);
                 stringBuffer.append("今日为无需打卡日期！");
-                clockAddPage.setClock(resultClock);
+                if (clockData != null) {
+                    clockAddPage.setClock(clockData);
+                }else {
+                    clockAddPage.setClock(resultClock);
+                }
                 return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
             }
         }
@@ -166,7 +199,11 @@ public class TKqClockServiceImpl implements TKqClockService {
                     isDkr = 0;
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("今日非工作时间，无需考勤");
-                    clockAddPage.setClock(resultClock);
+                    if (clockData != null) {
+                        clockAddPage.setClock(clockData);
+                    }else {
+                        clockAddPage.setClock(resultClock);
+                    }
                     return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
                 }else {
                     //必须考勤日期，就使用默认的班次设置
@@ -201,7 +238,12 @@ public class TKqClockServiceImpl implements TKqClockService {
                     isDkr = 0;
                     resultClock.setIsDkr(isDkr);
                     stringBuffer.append("今日非工作时间，无需考勤");
-                    clockAddPage.setClock(resultClock);
+                    if (clockData != null) {
+                        clockAddPage.setClock(clockData);
+                    }else {
+                        clockAddPage.setClock(resultClock);
+                    }
+//                    clockAddPage.setClock(resultClock);
                     return new CommonResult(200, "success", stringBuffer.toString(), clockAddPage);
                 }else {
                     stringBuffer.append("自由工时");
@@ -210,23 +252,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                 stringBuffer.append("自由工时");
             }
         }
-        /**
-         * 四、判断今日是否有打卡记录，若无打卡记录，则此次打卡为上班，反之为下班打卡
-         */
-        //打卡类型，1代表上班打卡，2代表下班打卡
-        int dkType = 1;
-        selectTKqCloc.setFkStaffId(userId);
-        selectTKqCloc.setTodayDate(nowDate);
-        List<TKqClock> kqClockList = tKqClockMapper.selectAllPage(selectTKqCloc);
-        resultClock.setTodayDate(nowDate);
-        if(kqClockList != null && kqClockList.size() >0){
-            //有打卡记录，说明为下班打卡
-            resultClock = kqClockList.get(0);
-            dkType = 2;
-            //----------还要计算是否早退
-        }else {
-            //无打卡记录，说明为上班打卡
-        }
+
         /**
          * 五、当前班次下的上下班时间计算，是否在上下班时间段内
          */
@@ -315,7 +341,8 @@ public class TKqClockServiceImpl implements TKqClockService {
             return new CommonResult(444, "error", "token不存在或已失效，请重新登录", null);
         }
         if(StringUtils.isEmpty(tKqClockParam.getOnClockAddress())){
-            return new CommonResult(444, "error", "请传入打卡地址", null);
+            tKqClockParam.setOnClockAddress("四川省成都市武侯区桂溪街道和溸小颜整骨环球中心E3(新世纪环球中心)");
+//            return new CommonResult(444, "error", "请传入打卡地址", null);
         }
         StringBuilder stringBuilder = new StringBuilder();
         ReGroupStaff reGroupStaff = tKqClockMapper.selectGroupStaffByStaffId(sysToken.getFkUserId());
@@ -346,6 +373,8 @@ public class TKqClockServiceImpl implements TKqClockService {
             tKqClockParam.setTodayDate(nowDate);
             tKqClockParam.setOnDutyTime(nowDate);
             tKqClockParam.setOnClockIp(sysToken.getIp());
+            //由于未有移动端  不会出现外勤
+            tKqClockParam.setOnIsWq(0);
             //isCd,cdMinute后端在计算
             tKqClockParam = this.calculationCdZt_minute(tKqClockParam,tKqGroup,"isCd");
             tKqClockParam.setFkDeptId(info.getFkDeptId());
@@ -377,7 +406,9 @@ public class TKqClockServiceImpl implements TKqClockService {
                 selectClock.setOffIsWq(tKqClockParam.getOffIsWq());
                 selectClock = this.calculationCdZt_minute(selectClock,tKqGroup,"isZt");
                 selectClock.setOffClockAddress(tKqClockParam.getOnClockAddress());
-                selectClock.setOffIsWq(tKqClockParam.getOnIsWq());
+//                selectClock.setOffIsWq(tKqClockParam.getOnIsWq());
+                //由于未有移动端  不会出现外勤
+                selectClock.setOffIsWq(0);
                 int i = tKqClockMapper.updateByPkId(selectClock);
                 if (i > 0) {
                     stringBuilder.append("成功！");
@@ -667,7 +698,7 @@ public class TKqClockServiceImpl implements TKqClockService {
                     jbMinute += Integer.valueOf(obj.getJbMinute());
                 }
                 //一天只算一次外勤
-                if(obj.getOnIsWq() == 1 ||obj.getOffIsWq() == 1){
+                if(1 == obj.getOnIsWq() || 1 == obj.getOffIsWq()){
                     wqNum++;
                 }
             }

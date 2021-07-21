@@ -420,6 +420,15 @@ WHERE
     <delete id="deleteById">
         delete from T_KQ_GROUP where PK_GROUP_ID = #{pkGroupId,jdbcType=VARCHAR} and IS_DEFAULT != 1
     </delete>
+    <delete id="deleteGroupStaffBatchByStaffId">
+        DELETE FROM RE_GROUP_STAFF
+        WHERE RE_GROUP_STAFF.FK_STAFF_ID
+        in(
+        <foreach collection="joinList" item="item" index="index" separator=",">
+            #{item.fkStaffId,jdbcType=VARCHAR}
+        </foreach>
+        )
+    </delete>
 
 </mapper>
 

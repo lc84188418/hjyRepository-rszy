@@ -118,7 +118,7 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
 
     /**
      * 删除数据
-     *
+     * 暂不支持删除操作
      * @param tApvApvtype
      * @return
      */
@@ -204,6 +204,11 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         return new CommonResult(200, "success", "获取数据成功", resultJson);
     }
 
+    /**
+     * 通过审批类型名称查询该审批类型基本信息
+     * @param apvName 审批类型名称
+     * @return
+     */
     @Override
     public TApvApvtype selectByName(String apvName) {
         return tApvApvtypeMapper.selectByName(apvName);
@@ -327,16 +332,6 @@ public class TApvApvtypeServiceImpl implements TApvApvtypeService {
         }else {
             return null;
         }
-    }
-
-    private JSONObject getListInfo() {
-        PageHelper.startPage(1, 10);
-        TApvApvtype entity = new TApvApvtype();
-        List<TApvApvtype> list = this.tApvApvtypeMapper.selectAllPage(entity);
-        PageResult result = PageUtil.getPageResult(new PageInfo<TApvApvtype>(list));
-        JSONObject resultJson = new JSONObject();
-        resultJson.put("PageResult", result);
-        return resultJson;
     }
 }
     
