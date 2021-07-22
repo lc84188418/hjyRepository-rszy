@@ -136,7 +136,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
                 apvList1 = JSONObject.parseArray(userIdsStr,TApvApproval.class);
             }
         }
-        if(apvList1.size() > 0 ){
+        if(!apvList1.isEmpty() && apvList1.size() > 0 ){
             /**
              * 一、审批人先去重
              * 去掉审批id中重复的
@@ -199,7 +199,7 @@ public class TApvApprovalServiceImpl implements TApvApprovalService {
         }else{
             String csrStr = csrArray.toString();
             if(csrStr.equals("[]")){
-                stringBuffer.append("未选择审批人");
+                stringBuffer.append("未选择抄送人");
             }else {
                 csrList = JSONObject.parseArray(csrStr,TApvApproval.class);
             }
