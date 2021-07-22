@@ -2,6 +2,8 @@ package com.hjy.cloud.domin;
 
 import org.apache.commons.lang.StringUtils;
 
+import java.util.regex.Pattern;
+
 /**
  * 正则常量
  */
@@ -42,8 +44,7 @@ public class RegexpConstant {
         if(StringUtils.isEmpty(name)){
             return false;
         }
-
-        return false;
+        return Pattern.matches(RegexpConstant.CHINESE_ENGLISH_NAME_REGEX, name);
     }
 
 }
